@@ -186,7 +186,7 @@ const Filters = forwardRef<Handle, Props>(({
   const filterView = filtersView(filters)
 
   return (
-    <SubHeader>
+    <SubHeader style={{padding :14}}>
       <View style={{flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined}}>
         {!isMobile ? <KTextInput
               placeholder="Search for a city or country"
