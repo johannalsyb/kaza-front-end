@@ -205,6 +205,8 @@ export const PropertyCard = ({
 
 const {white, greenLight, yellow} = variables.colors;
 
+
+// padding fix
 const styles = StyleSheet.create({
   container: {
     width: '100%',
