@@ -272,7 +272,7 @@ export default (
         alignItems: 'center',
         width: '100%',
         backgroundColor: isMobile ? variables.colors.greenLight : 'black',
-        padding: isMobile ? 5 : 20,
+        paddingHorizontal: isMobile ? 14 : 20,
         // flex: 1,
       }}>
 

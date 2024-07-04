@@ -81,6 +81,7 @@ export const PropertyCard = ({
         {
           width: isMobile ? '100%' : variables.propertyCardWidth,
           aspectRatio: bottomComponent ? 'auto' : 1,
+          marginBottom : 18
         },
         // @ts-ignore
         isHovered && {boxShadow: '10px 15px 20px 0px #8D835180'},
@@ -204,6 +205,8 @@ export const PropertyCard = ({
 
 const {white, greenLight, yellow} = variables.colors;
 
+
+// padding fix
 const styles = StyleSheet.create({
   container: {
     width: '100%',
@@ -221,6 +224,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 20,
     paddingHorizontal: 10,
     position: 'absolute',
+    marginBottom : 20,
     bottom: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
