@@ -58,7 +58,7 @@ export default function KButton(props: KButtonProps) {
         backgroundColor: color === "primary" ? "rgba(150,150,150,0.5)" : "rgba(0,0,0,0.3)",
         width: "100%",
         height: "100%",
-        borderRadius: 50
+        borderRadius: 50,
       }}/>}
       {loading ? 
         <ActivityIndicator color={textStyles[color].color} /> :
@@ -79,6 +79,7 @@ const {
 const containerStyles = StyleSheet.create({
   default: {
     borderRadius: 50,
+    height :53,
     justifyContent: 'center',
     alignItems: 'center',
   },

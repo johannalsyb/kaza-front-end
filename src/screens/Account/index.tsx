@@ -366,6 +366,8 @@ export default (props: Props) => {
           style={{
             alignItems: 'center',
             width: '100%',
+            // Margin top :20px
+          marginTop : 20,
             backgroundColor: variables.colors.greenLight,
             paddingHorizontal: isMobile ? 10 : "5%"
           }}>
@@ -380,6 +382,8 @@ export default (props: Props) => {
                   width: '100%',
                   display: m.active ? 'none' : 'flex',
                   borderWidth: 0,
+                  // height set :53px
+                  height : 53,
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   flexDirection: 'row',
@@ -455,6 +459,8 @@ export default (props: Props) => {
             width: '100%',
             display: isMobile && route.name !== "Account" ? "none" : 'flex',
             flexDirection: isMobile ? 'column' : 'row',
+                  // height set :53px
+                  height : 53,
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingLeft: 10,

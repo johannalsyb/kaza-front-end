@@ -123,7 +123,8 @@ export default (props:Props) => {
             justifyContent: "flex-start",
             marginTop: isMobile ? 5 : 0,
             marginBottom: isMobile ? 5 : 0,
-            borderColor: "white",
+            borderColor: "white",   
+             height : 53,
             ...style
         }}>
             <KIcon name="eyeClose" style={{marginRight: 10, marginLeft: 10}} size="medium" />
@@ -241,7 +242,9 @@ export default (props:Props) => {
                         display: 'flex',
                         flexDirection: 'row',
                         justifyContent: "flex-start",
-                        marginTop: isMobile ? 10 : 0,
+                        // increased the margin top
+                        marginTop: isMobile ? 20 : 0,
+                        height : 53,
                         marginBottom: isMobile ? 5 : 0,
                         borderColor: "white"
                     }}>
@@ -260,6 +263,7 @@ export default (props:Props) => {
                         justifyContent: "flex-start",
                         marginTop: isMobile ? 5 : 0,
                         marginBottom: isMobile ? 5 : 0,
+                        height : 53,
                         borderColor: "white"
                     }}>
                         <KIcon name="calendarEdit" style={{marginRight: 10, marginLeft: 10, stroke: "#555"}} size="medium" />
