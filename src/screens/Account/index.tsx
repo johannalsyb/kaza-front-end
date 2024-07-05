@@ -479,6 +479,7 @@ export default (props: Props) => {
               width: isMobile ? '100%' : 'auto',
               display: isMobile ? 'flex' : "none",
               paddingLeft: 5,
+              height :53,
               marginBottom: isMobile ? 10 : 0,
               alignItems: 'flex-start',
             }}
@@ -493,6 +494,7 @@ export default (props: Props) => {
               width: isMobile ? '100%' : 'auto',
               display: isMobile ? 'flex' : "none",
               paddingLeft: 5,
+              height :53,
               marginBottom: isMobile ? 10 : 0,
               alignItems: 'flex-start',
             }}
