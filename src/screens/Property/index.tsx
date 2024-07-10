@@ -27,6 +27,7 @@ type Props = NativeStackScreenProps<NavStackParamList, 'Property'>;
 
 export default ({route, navigation}: Props) => {
   const [property, setProperty] = useState<PropertyT | undefined>();
+  const {isMobile} = useIsMobile()
   const {id} = route.params;
   const {
     showModal,

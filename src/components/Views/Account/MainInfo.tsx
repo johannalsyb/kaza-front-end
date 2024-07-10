@@ -164,7 +164,7 @@ export default (props: Props) => {
                 borderRadius: 200,
                 height: 150,
                 width: 150,
-                borderWidth: 3,
+                borderWidth:  isMobile ? 5 : 3, 
                 borderColor: 'white',
                 borderStyle: 'solid',
               }}

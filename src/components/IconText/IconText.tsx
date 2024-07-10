@@ -32,7 +32,7 @@ export const IconText = ({
           <KIcon
             size={size}
             name={iconName ?? 'defaultIcon'}
-            style={{minWidth: variables.icon.size[size]}}
+            style={{minWidth: variables.icon.size[size], marginRight : 2}}
           />
         {text || ''}
       </KText>

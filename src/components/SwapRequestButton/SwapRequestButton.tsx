@@ -97,7 +97,7 @@ export default forwardRef<SwapRequestButtonHandle, Props>(({
         }}
         textStyle={{
           ...{
-            color: buttonText === "Send Message" ? "white" : "initial"
+            color: buttonText === "Send Message"  && isMobile ?  variables.colors.yellow  : "initial"
           },
           // : buttonDisabled ? 'grayscale(100%)' : 'initial',
           // color: buttonDisabled ? variables.colors.grey : 'initial',
