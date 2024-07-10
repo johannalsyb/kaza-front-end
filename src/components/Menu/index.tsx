@@ -30,7 +30,7 @@ export default ({
 
     if(!isMobile) return <></>
     return <View style={{
-        display: 'flex',
+        display: 'flex', 
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -62,7 +62,7 @@ export default ({
                     marginRight: 5,
                     width: size,
                     height: size,
-                    padding: 10,
+                    // padding: 10,
                     borderRadius: size,
                     stroke: route.name === "Home" ? "black" : "white",
                     backgroundColor: route.name === "Home" ? "white" : variables.colors.blackLight

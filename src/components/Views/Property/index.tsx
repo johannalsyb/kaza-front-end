@@ -138,9 +138,13 @@ export default (props: Props) => {
               padding: 10,
               borderRadius: 20,
               marginBottom: 10,
-              display: property.owner.id === user?.id || (swapRequest && swapRequestStatus === 'received') ? "none" : 'flex',
+              display:
+               property.owner.id === user?.id
+                || (swapRequest && swapRequestStatus === 'received')
+                 ? "none" : 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
+              paddingVertical : isMobile ? 14 :0
             }}>
               <KIcon name="chat" style={{stroke: variables.colors.black, height: "100%", width:30}} />
               <SwapRequestButton property={property} hideIcon={true} />
