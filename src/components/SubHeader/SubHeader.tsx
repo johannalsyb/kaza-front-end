@@ -18,7 +18,7 @@ const SubHeader = ({style, children = null}: Props) => {
           backgroundColor: isMobile
             ? variables.colors.greenLight
             : variables.colors.white,
-          padding: isMobile ? 5 : 20,
+          padding: isMobile ? 14 : 20,
           borderTopRightRadius: isMobile ? 0 : 20,
           borderTopLeftRadius: isMobile ? 0 : 20,
         },

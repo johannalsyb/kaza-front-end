@@ -144,7 +144,7 @@ export default (props: Props) => {
                  ? "none" : 'flex',
               flexDirection: 'row',
               justifyContent: 'space-between',
-              paddingVertical : isMobile ? 14 :0
+              paddingVertical : isMobile ? 16 :0
             }}>
               <KIcon name="chat" style={{stroke: variables.colors.black, height: "100%", width:30}} />
               <SwapRequestButton property={property} hideIcon={true} />
