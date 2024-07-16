@@ -67,7 +67,9 @@ export default function KButton(props: KButtonProps) {
           {icon && iconPosition === "left" && <KIcon name={icon} size={iconSize} style={{marginRight: 5, stroke: textStyles[color].color, ...iconStyle}} />}
           {text && <KText style={[textStyles[color], textStyle]}>{text}</KText>}
           {icon && iconPosition === "right" && <KIcon name={icon} size={iconSize} style={{marginLeft: 5, stroke: textStyles[color].color, ...iconStyle}} />}
-        </View>}
+        
+          </View>}
+        
     </Pressable>
   );
 }

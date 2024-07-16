@@ -385,14 +385,18 @@ export default (props: Props) => {
                   // height set :53px
                   height : 53,
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  justifyContent: 'flex-start',
                   flexDirection: 'row',
                   paddingLeft: 5,
                   paddingRight: 15,
                   marginBottom: 5,
                   marginTop: 5,
                 }}
-              />
+              >
+              <KIcon name={m.icon as any} style={{marginRight: 10, marginLeft: 10}} size="medium" />
+              <KText style={{flex: 1}}>{m.text}</KText>
+              <KIcon name="chevronRight" style={{marginRight: 10, marginLeft: 10}} size="medium" />
+               </KButton>
             ))}
 
           {/* <KButton
