@@ -81,6 +81,7 @@ export default ({route, navigation}: Props) => {
       <View style={{
         backgroundColor: variables.colors.greenLight,
         flex: 1,
+        display  : 'none',
         justifyContent: "center",
         alignItems: "center",
       }}>

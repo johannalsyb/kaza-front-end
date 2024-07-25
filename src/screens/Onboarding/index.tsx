@@ -292,7 +292,7 @@ export default (props:Props) => {
           // justifyContent: isMobile ? "flex-start" : "center"
         }} style={{
           flex: 1,
-          width: "100%"
+          width: "100%",
         }}>
           {!currentStep ? <ActivityIndicator color={variables.colors.yellow} size="large" style={{marginTop: 20}} /> :
           <View style={{

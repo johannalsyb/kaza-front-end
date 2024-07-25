@@ -84,7 +84,7 @@ export default (props:Props) => {
 
     return <>
         <FormField label={<KText>
-            Where is your place located?
+            What is your exact address ?
             <Pressable style={{
                 // position: "absolute",
                 // right: 0,
@@ -185,7 +185,8 @@ export default (props:Props) => {
                 {amenities.map((amenity, i) => {
                     return <CheckBox
                         key={i}
-                        style={{width:"48%", marginBottom: 20}}
+                        // margin bottom fixed
+                        style={{width:"48%", marginBottom: 14}}
                         name={amenity}
                         checked={property.amenities.includes(amenity)}
                         onPress={() => {

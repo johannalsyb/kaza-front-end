@@ -126,7 +126,10 @@ const Filters = forwardRef<Handle, Props>(({
     <KButton
       color={ffilters.petsFriendlyOnly[0] === "true" ? "tertiary" : "light"}
       onPress={() => onFilter({type: "petsFriendlyOnly", filters: ffilters.petsFriendlyOnly[0] === "false" ? ["true"] : ["false"]})}
-      style={{flexDirection: 'row', marginLeft: 10, width: isMobile ? "80%" : "auto", paddingLeft: 5, paddingRight: 5, height: 40, borderWidth: 1, borderColor: variables.colors.blackLight}}
+      style={{flexDirection: 'row', marginLeft: 10, width: isMobile ? "80%" : "auto", paddingLeft: 5, 
+         paddingRight: 5, height: 40, borderWidth: 1,
+          borderColor: variables.colors.blackLight ,
+          }}
       icon='pet'
       iconSize='medium'
       text="Pet Friendly" />

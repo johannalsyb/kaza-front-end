@@ -37,7 +37,7 @@ export default (props:Props) => {
     return <>
         <Property1 property={props.property} onChange={props.onChange} error={error}/>
         <View style={{
-            flex:1
+            flex:1, display : "none"
         }}></View>
         <View style={{
             display: "flex",
@@ -71,7 +71,7 @@ export default (props:Props) => {
                     // marginTop: 20,
                     // marginBottom: 20
             }}/>
-            <View style={{height: 10}}><KText>{" "}</KText></View>
+            <View style={{height: 10, }}><KText>{" "}</KText></View>
         </View>
     </>
 }

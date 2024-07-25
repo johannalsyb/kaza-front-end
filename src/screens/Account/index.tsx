@@ -228,7 +228,7 @@ export default (props: Props) => {
       active: route.name === 'Myplace',
     },
     {
-      text: 'Swap History',
+      text: ' History',
       icon: 'history',
       onPress: () => props.navigation.navigate('History'),
       active: isHistory,
@@ -283,7 +283,7 @@ export default (props: Props) => {
                   text={m.text}
                   icon={m.icon as any}
                   onPress={m.onPress}
-                  // style={{marginRight: 10}}
+                  style={{marginRight: 10}}
                 />
               ))}
             </View>
