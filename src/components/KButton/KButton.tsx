@@ -84,6 +84,7 @@ const containerStyles = StyleSheet.create({
     height :53,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize : 10
   },
   primary: {backgroundColor: black},
   secondary: {backgroundColor: yellow},

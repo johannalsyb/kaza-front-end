@@ -263,13 +263,14 @@ export default ({
               alignItems: "center",
             }}>
 
-            {isMobile ? <Header
+            {isMobile ?
+             <Header
                 route={route}
                 navigation={navigation}
                 options={{}}
                 force={true}
                 title={request ? <View style={{
-                    display: "flex",
+                    display: "none",
                     flexDirection: "row",
                     alignItems: "center"
                 }}>
@@ -279,7 +280,7 @@ export default ({
                         type="users"
                         style={{width: 40, height: 40, marginRight: 10, marginLeft: 10}}/>
                     <KText>{request.otherUser.firstName}</KText>
-                </View> : (showArchive ? "Archive" : "Inbox")}
+                </View> : (showArchive ? "Archive" : "Chat")}
                 leftComponent={headerLeftComponent}
                 rightComponent={headerRightComponent}
             /> : null}
@@ -306,7 +307,7 @@ export default ({
                     }}>
                         <KButton
                             icon="chat"
-                            text="Inbox"
+                            text="Chat"
                             color="light"
                             onPress={() => setShowArchive(false)}
                             style={{marginBottom: 10, borderWidth: 0, width: "50%", backgroundColor: showArchive ? "transparent" : variables.colors.greenLight}}/>

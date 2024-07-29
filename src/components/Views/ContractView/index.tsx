@@ -15,7 +15,7 @@ import Swap from "../Swap"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { NavStackParamList } from "../../../navigation/screens"
-
+import useIsMobile from "../../../hooks/useIsMobile"
 type Props = {
     user: User,
     request: SwapRequestChat,
@@ -38,6 +38,7 @@ export default ({
     onNavigateOut
 }:Props) => {
 
+    const {isMobile} = useIsMobile()
     const [nloading, setLoading] = useState<boolean>(loading)
     const [swap, setSwap] = useState<Api.Swaps.Swap>()
     const navigation = useNavigation<NativeStackNavigationProp<NavStackParamList, "Chat", undefined>>()
@@ -117,7 +118,7 @@ export default ({
             style={{backgroundColor: variables.colors.greenLight, width: "100%"}}
             property={property}/>
         
-        <KText style={{width: "100%", textAlign: "center", marginTop: 10}}>{statusText}</KText>
+        <KText style={{width: "100%", textAlign: "center", marginTop:  isMobile ? 10 : 16}}>{statusText}</KText>
 
         
         {status !== "declined" ? <View style={{
