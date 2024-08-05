@@ -60,9 +60,12 @@ export default () => {
     }, [])
 
 
-    const toggleVerified = (id:string, value:boolean) => {
-        admin.properties.verify(id, value)
-        .then(d => {
+    const toggleVerified = (id:string, value:boolean, userId:string) => {
+        Promise.all([
+            admin.properties.verify(id, value),
+            admin.users.verify(userId, value)
+        ])
+        .then(([d, u]) => {
             toastSuccess(`PROPERTY ${d.data.id} NOW ${value ? "" : "UN"}VERIFIED`)
             setProperties(properties?.map(u => {
                 if(u.id === id) u.verified = value
@@ -117,9 +120,12 @@ export default () => {
                         <KCarousel id={u.id} images={images} type="properties" imageStyle={{objectFit: "contain", maxHeight: 200}}/>
                     : <KText style={{height: 200, textAlign: "center", alignContent: "center", backgroundColor: "#00000022"}}>No images</KText>}
 
-                    <KButton style={{width: "100%", marginBottom: 5}} disabled={true} text={u.verified ? "VERIFIED" : "NOT VERIFIED"} onPress={() => {
-                        // toggleVerified(u.id, !u.verified) // Disabling to simplify process
-                    }} />
+                    <KButton
+                        style={{width: "100%", marginBottom: 5}}
+                        text={u.verified ? "VERIFIED" : "NOT VERIFIED"}
+                        onPress={() => {
+                            toggleVerified(u.id, !u.verified, u.owner) // Disabling to simplify process
+                        }} />
                     <KButton style={{width: "100%", marginBottom: 5}} color="greenLight" text="OPEN" onPress={() => {
                         console.log(u)
                         setSelectedProprty(u)

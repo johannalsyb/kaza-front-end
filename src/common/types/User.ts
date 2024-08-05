@@ -35,6 +35,7 @@ export type User = PublicUser & {
     unreadNotifications?: number,
     onboarding: string | null,
     newMatches?: number
+    payment: string | null
 }
 
 export default User

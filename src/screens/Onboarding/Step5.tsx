@@ -66,7 +66,7 @@ export default (props:Props) => {
                 style={{width: "48%"}}/>
 
             <KButton
-                text="Submit"
+                text="Next"
                 loading={loading}
                 disabled={loading || !isValid}
                 onPress={updateUser}

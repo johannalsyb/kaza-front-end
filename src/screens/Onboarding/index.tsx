@@ -18,6 +18,7 @@ import useIsMobile from "../../hooks/useIsMobile";
 import KIcon from "../../components/KIcon/KIcon";
 import users from "../../api/users";
 import { OnboardingInfo } from "../../common/types/api/auth";
+import Step6 from "./Step6";
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'> 
 // & {
@@ -51,6 +52,10 @@ export const onboardingSteps:{
     icon: "✈️",
     title: "Finally, tell us about your trip!",
   },
+  {
+    icon: "💸",
+    title: "Registration fee",
+  },
 ]
 
 export const defaultProperty:Property = {
@@ -79,7 +84,7 @@ export default (props:Props) => {
     const navigationListenerFn = (e:any) => {
       if(currentStep === 1) return props.navigation.push("Login")
       if(!props.route?.params) return
-      if(currentStep === undefined && props.route.params.step === 5) {
+      if(currentStep === undefined && props.route.params.step === onboardingSteps.length) {
         callback && callback()
         return; // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
       }
@@ -103,7 +108,23 @@ export default (props:Props) => {
       .then(([me, properties]) => {
 
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
-        const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : (properties.data.length ? {step: 5, data: {}, completed: true} : {step: 1, data: defaultProperty, completed: false})
+        let onboarding:OnboardingInfo
+        if(me.data.onboarding) {
+          onboarding = JSON.parse(me.data.onboarding)
+        } else {
+          let step = 1
+          let completed = false
+          let data:any = defaultProperty
+          if(properties.data.length) {
+            data = {}
+            step = 5
+            if(me.data.payment) {
+              step = 6 // If the user has already paid, skip to the end
+              completed = true
+            }
+          }
+          onboarding = {step, data, completed}
+        }
 
         if(onboarding.completed) return props.navigation.navigate("Success")
 
@@ -181,7 +202,7 @@ export default (props:Props) => {
     }
 
     const finish = () => {
-      return users.me.update({onboarding: JSON.stringify({data: property, completed: true})})
+      return users.me.update({onboarding: JSON.stringify({step: currentStep, data: property, completed: true})})
       .then(() => {
         // console.log("FINISHED, calling callback to unsubscribe...")
         callback && callback()
@@ -204,7 +225,8 @@ export default (props:Props) => {
       onboardingSteps[1].content = <Step2 property={property || defaultProperty} onChange={setProperty} onNext={() => stepUp(3)} />
       onboardingSteps[2].content = <Step3 property={property || defaultProperty} onChange={setProperty} onNext={() => stepUp(4)} onPrev={() => stepDown(2)} />
       onboardingSteps[3].content = <Step4 property={property || defaultProperty} onChange={setProperty} onNext={() => stepUp(5)} onPrev={() => stepDown(3)} />
-      onboardingSteps[4].content = <Step5 onChange={p => {}} onNext={finish} onPrev={() => stepDown(4)}/>
+      onboardingSteps[4].content = <Step5 onChange={p => {}} onNext={() => stepUp(6)} onPrev={() => stepDown(4)}/>
+      onboardingSteps[5].content = <Step6 onNext={finish} onPrev={() => stepDown(5)}/>
     // }
 
     const currentStepObject = onboardingSteps[(currentStep || 1)-1]

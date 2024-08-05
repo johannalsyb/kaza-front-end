@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native"
+import { Pressable, View, ViewStyle } from "react-native"
 import useAuthentication from "../../hooks/useAuthentication";
 import { CircleImage } from "../CircleImage/CircleImage";
 import { useNavigationContainerRef, useRoute } from "@react-navigation/native";
@@ -16,9 +16,11 @@ import { showSwapNowAtom } from "../../atoms";
 const size = 30
 
 export default ({
-    navigate
+    navigate,
+    style
 }:{
-    navigate: (name: keyof NavStackParamList) => void
+    navigate: (name: keyof NavStackParamList) => void,
+    style?: ViewStyle
 }) => {
 
     const {isMobile} = useIsMobile()
@@ -37,6 +39,7 @@ export default ({
         position: 'absolute',
         bottom: 10,
         zIndex: 101,
+        ...style
     }}>
         <View style={{
             // width: '90%',
