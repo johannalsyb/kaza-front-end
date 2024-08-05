@@ -9,7 +9,7 @@ import KIcon from '../../components/KIcon/KIcon';
 import {Link, useRoute} from '@react-navigation/native';
 import MainInfo from '../../components/Views/Account/MainInfo';
 import History from '../../components/Views/Account/History';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import EditProfile from '../../components/Views/Account/EditProfile';
 import {parsePhone} from '../../utils/phone';
 import KSideModal from '../../components/KModal/KSideModal';
@@ -26,6 +26,7 @@ import useConfig from '../../hooks/useConfig';
 import HeaderEvent from '../../events/HeaderEvent';
 import MyPlace from './MyPlace';
 import { shareProperty } from '../../utils/Share';
+import Menu from '../../components/Menu';
 
 type Props = NativeStackScreenProps<
   NavStackParamList,
@@ -506,6 +507,13 @@ export default (props: Props) => {
           />
         </View>
 
+      </> : null}
+
+      {isMobile ? <>
+        <View style={{height: 90}}></View>
+        <Menu navigate={props.navigation.navigate} style={{
+          // position: "fixed"
+        }}/>
       </> : null}
 
       <KSideModal

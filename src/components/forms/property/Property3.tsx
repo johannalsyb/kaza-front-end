@@ -19,6 +19,118 @@ type Props = {
     showRotate?: boolean,
 }
 
+export const PropertyImage = ({
+    propertyId,
+    pictureId,
+    onDeleted,
+    onLoaded,
+    showRotate,
+    rotateFn,
+    primaryImage,
+    setPrimaryImage
+}:{
+    propertyId?:string,
+    pictureId:string,
+    onDeleted:() => void,
+    onLoaded:(b64:string) => void
+    showRotate?: boolean,
+    rotateFn:(id:string, degrees:number) => Promise<string | undefined>,
+    primaryImage?:string,
+    setPrimaryImage:(id:string) => void
+}) => {
+
+    const [loading, setLoading] = useState(false)
+    const [rotate, setRotate] = useState(0)
+
+    if(!propertyId) return null
+
+    return <View
+        style={{marginRight: 10}}
+    >
+    <KImageUpload
+        pressable={false}
+        imageId={propertyId+"/"+pictureId}
+        type="properties"
+        loading={loading}
+        imageStyle={{
+            transform: `rotate(${rotate}deg)`,
+        }}
+        thumbnail={false}
+        onDeleted={onDeleted}
+        deleteFn={async () => {
+            if(!propertyId)  return;
+            await properties.pictures.delete(propertyId, pictureId)
+        }}
+        onLoaded={(b64) => {
+            if(!b64 || !b64[0]) return;
+            onLoaded(b64[0])
+        }}
+        />
+    <View style={{
+        display: showRotate ? "flex" : "none",
+        flexDirection: "row",
+        position: "absolute",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        width: "100%",
+        bottom: 30,
+    }}>
+        <KText style={{
+            color: variables.colors.grey,
+            fontSize: 20,
+            textAlign: "center",
+            backgroundColor: "#000000",
+            padding: 1,
+            borderRadius: 50,
+            width: 35
+        }}
+        onPress={() => {
+            if(loading) return;
+            setRotate((rotate+90)%360)
+            // picsRotate[i] = (picsRotate[i]+90)%360
+            // setPicsRotate([...picsRotate])
+        }}>↻</KText>
+        <KButton
+            text="Save"
+            onPress={() => {
+                // imagesLoading[i] = true
+                // setImagesLoading([...imagesLoading])
+                setLoading(true)
+                return rotateFn(pictureId, rotate)
+                .then(r => {
+                    console.log(r)
+                })
+                .catch(() => {
+                    toastError("Failed to save rotation")
+                })
+                .finally(() => {
+                    // picsRotate[i] = 0
+                    // setPicsRotate([...picsRotate])
+                    setRotate(0)
+                    // imagesLoading[i] = false
+                    // setImagesLoading([...imagesLoading])
+                    setLoading(false)
+                })
+            }}
+            loading={loading}
+            disabled={rotate === 0}
+            style={{height: 25, width: 50}}/>
+    </View>
+    <CheckBox
+        checked={primaryImage === pictureId}
+        name={"Main picture"}
+        onPress={() => setPrimaryImage(pictureId)}
+        style={{
+            marginTop: 2,
+            width: "100%",
+            alignContent: "center",
+            justifyContent: "center",
+            alignItems: "center",
+        }}
+        />
+</View>
+}
+
 export default (props:Props) => {
     // if(props.showRotate === undefined) props.showRotate = false
     const {config} = useConfig()
@@ -117,87 +229,25 @@ export default (props:Props) => {
                 width: isMobile ? (KImageUploadWidth*2)+20 : "100%",
             }}>
                 {pics.map((pic, i) => {
-                    return <View
-                        style={{marginRight: 10}}
+                    return <PropertyImage
                         key={`pic_${i}`}
-                        >
-                        <KImageUpload
-                            pressable={false}
-                            imageId={props.property.id+"/"+pics[i]}
-                            type="properties"
-                            loading={imagesLoading[i]}
-                            imageStyle={{
-                                transform: `rotate(${picsRotate[i]}deg)`,
-                            }}
-                            thumbnail={false}
-                            onDeleted={() => {
-                                const newPics = [...pics];
-                                newPics.splice(i, 1);
-                                setPics([...newPics]);
-                            }}
-                            deleteFn={async () => {
-                                if(!props.property.id)  return;
-                                await properties.pictures.delete(props.property.id, pics[i])
-                            }}
-                            onLoaded={(b64) => {
-                                if(!b64) return;
-                                pics[i] = b64[0]!;
-                                setPics([...pics]);
-                            }}
-                            />
-                        <View style={{
-                            display: props.showRotate ? "flex" : "none",
-                            flexDirection: "row",
-                            position: "absolute",
-                            justifyContent: "space-evenly",
-                            alignItems: "center",
-                            width: "100%",
-                            bottom: 30,
-                        }}>
-                            <KText style={{
-                                color: variables.colors.grey,
-                                fontSize: 20,
-                                textAlign: "center",
-                                backgroundColor: "#000000",
-                                padding: 1,
-                                borderRadius: 50,
-                                width: 35
-                            }} onPress={() => {
-                                if(imagesLoading[i]) return;
-                                picsRotate[i] = (picsRotate[i]+90)%360
-                                setPicsRotate([...picsRotate])
-                            }}>↻</KText>
-                            <KButton
-                                text="Save"
-                                onPress={() => {
-                                    imagesLoading[i] = true
-                                    setImagesLoading([...imagesLoading])
-                                    return rotateFn(pic, picsRotate[i])
-                                    .catch(() => {toastError("Failed to save rotation")})
-                                    .finally(() => {
-                                        picsRotate[i] = 0
-                                        setPicsRotate([...picsRotate])
-                                        imagesLoading[i] = false
-                                        setImagesLoading([...imagesLoading])
-                                    })
-                                }}
-                                loading={imagesLoading[i]}
-                                disabled={picsRotate[i] === 0}
-                                style={{height: 25, width: 50}}/>
-                        </View>
-                        <CheckBox
-                            checked={primaryImage === pic}
-                            name={"Main picture"}
-                            onPress={() => setPrimaryImage(pic)}
-                            style={{
-                                marginTop: 2,
-                                width: "100%",
-                                alignContent: "center",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                            />
-                    </View>
+                        propertyId={props.property.id}
+                        pictureId={pic}
+                        onDeleted={() => {
+                            const newPics = [...pics];
+                            newPics.splice(i, 1);
+                            setPics([...newPics]);
+                        }}
+                        onLoaded={(b64) => {
+                            if(!b64) return;
+                            pics[i] = b64;
+                            setPics([...pics]);
+                        }}
+                        showRotate={props.showRotate}
+                        rotateFn={rotateFn}
+                        primaryImage={primaryImage}
+                        setPrimaryImage={setPrimaryImage}
+                        />
                 })}
                 <View style={{display: "none"}}>
                     <KImageUpload
