@@ -25,6 +25,10 @@ export default ({property}: Props) => {
     let {images, id} = property;
     // images = Array.isArray(images) ? images.join(',') : images;
 
+    if (images == null) {
+      return null;
+    }
+
     const uniqueImages = [...new Set(images.split(','))];
     return (
       <View

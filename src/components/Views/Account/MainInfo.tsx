@@ -75,13 +75,14 @@ export default (props: Props) => {
   const img = `${user?.id}/${
     props.creds.creds.image || props.creds.creds.primaryImage
   }`;
-  const propImage = property
-    ? `${property.id}/${
-        property.images.includes(',')
-          ? (property.images + '').split(',')[0]
-          : property.images
-      }`
-    : undefined;
+  // const propImage =
+  //   property && property.images != null
+  //     ? `${property.id}/${
+  //         property.images.includes(',')
+  //           ? (property.images + '').split(',')[0]
+  //           : property.images
+  //       }`
+  //     : undefined;
 
   let propAddress = property?.address.split(',').slice(1).join();
   if(!propAddress || propAddress.length === 0) propAddress = `${property?.city ? property?.city+"," : ""} ${property?.country || ""}`
