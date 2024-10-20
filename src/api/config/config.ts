@@ -4,3 +4,5 @@ export const WS_URL =
   `${document.location.protocol === 'https:' ? 'wss' : 'ws'}://${
     document.location.host
   }${API_URL}`;
+
+console.log({API_URL, WS_URL});
