@@ -265,7 +265,8 @@ export default ({
                 send();
               }
             }}
-            editable={connected && !loading}
+            editable={!loading}
+            // editable={connected && !loading}
           />
           <KIcon
             name="attach"
