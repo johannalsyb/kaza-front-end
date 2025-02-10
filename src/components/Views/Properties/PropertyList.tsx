@@ -236,7 +236,7 @@ export default forwardRef<Handle, Props>(
                           onPress={() =>
                             navigation.navigate('Property', {id, property})
                           }
-                          photo={`${id}/${images.split(',')[0]}`}
+                          photo={`${id}/${(images ?? '').split(',')[0]}`}
                           avatar={`${owner.id}/${owner.primaryImage}`}
                           location={`${city}`}
                           swapFor={owner.swapLocations || 'Flexible'}
