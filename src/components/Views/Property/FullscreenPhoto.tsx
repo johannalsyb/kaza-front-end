@@ -32,8 +32,9 @@ export default ({
   const [photoDisplayedIndex, setPhotoDisplayedIndex] = useState(index);
   const {isMobile} = useIsMobile();
   let {images, id} = property;
-  const imagesArray = [...new Set(images.split(','))];
-
+  const imagesArray = images 
+  ? [...new Set(images.split(',').filter(image => image.trim() !== ""))] 
+  : [];
   const {width, height} = useWindowDimensions();
 
   useEffect(() => {

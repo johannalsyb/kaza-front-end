@@ -89,7 +89,9 @@ export default ({property}: Props) => {
           {uniqueImages.slice(1, isMobile ? 3 : 4).map((image, i) => {
             // if (isMobile ? i > 0 && i < 3 : i < 4) {
               return (
-                <Pressable
+                <>
+                {image &&
+                  <Pressable
                   key={`image-${i}`}
                   style={{
                     height: isMobile ? '98%' : '98%',
@@ -110,6 +112,9 @@ export default ({property}: Props) => {
                     }}
                   />
                 </Pressable>
+                }
+                </>
+              
               );
             // }
           })}
