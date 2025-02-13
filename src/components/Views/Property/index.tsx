@@ -160,7 +160,7 @@ export default (props: Props) => {
                   ? true
                   : false
               }
-              photo={`${props.id}/${images.split(',')[0]}`}
+              photo={`${props.id}/${(images ?? '').split(',')[0]}`}
               avatar={`${owner.id}/${owner.primaryImage}`}
               location={`${city}`}
               swapFor={owner.swapLocations || 'Flexible'}
