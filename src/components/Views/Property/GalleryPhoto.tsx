@@ -82,7 +82,7 @@ export default ({property}: Props) => {
             {
               flexDirection: 'row',
               justifyContent: isMobile ? "space-between" : 'flex-start',
-              aspectRatio: isMobile ? 2 : 4,
+              aspectRatio: isMobile ? 1 : 4,
               width: '100%',
             },
           ]}>
@@ -94,7 +94,7 @@ export default ({property}: Props) => {
                   <Pressable
                   key={`image-${i}`}
                   style={{
-                    height: isMobile ? '98%' : '98%',
+                    height: isMobile ? '100%' : '98%',
                     borderRadius: 20,
                     aspectRatio: 1,
                     marginRight: isMobile ? 0 : 5,
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 20,
     display: 'flex',
+    overflow: 'hidden', 
   },
   lightText: {
     opacity: 0.5,
