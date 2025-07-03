@@ -19,6 +19,7 @@ export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by d
 export {ReactComponent as smile} from './smile.svg';
 export {ReactComponent as search} from './search.svg';
 export {ReactComponent as close} from './close.svg';
+export {ReactComponent as closeWithBorder} from './closeWithBorder.svg';
 export {ReactComponent as back} from './back.svg';
 export {ReactComponent as down} from './down.svg';
 export {ReactComponent as emptyPic} from './emptyuserpic.svg';
@@ -40,6 +41,7 @@ export {ReactComponent as login} from './login.svg';
 export {ReactComponent as logout} from './logout.svg';
 export {ReactComponent as map} from './map.svg';
 export {ReactComponent as register} from './register.svg';
+export {ReactComponent as Google} from './google.svg';
 
 export {ReactComponent as arrowDown} from './arrowDown.svg';
 export {ReactComponent as placeType} from './placeType.svg';

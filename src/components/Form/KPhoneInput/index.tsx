@@ -24,7 +24,7 @@ type Props = {
 export default (props:Props) => {
     const {isMobile} = useIsMobile()
     const [modalVisible, setModalVisible] = useState(false)
-    const [code, setCode] = useState(props.phone?.code || "+1")
+    const [code, setCode] = useState("+1")
     const [number, setNumber] = useState(props.phone?.number || "")
     const [countries, setCountries] = useState<Countries>({})
     const [countrySearch, setCountrySearch] = useState("")
@@ -38,7 +38,7 @@ export default (props:Props) => {
             getCountries()
             .then(c => {
                 setCountries(c)
-                const index = Object.keys(c).findIndex(code => code === props.phone?.code)
+                const index = Object.keys(c).findIndex(c => c === code)
                 setSelectedIndex(index)
             })
         }
@@ -47,7 +47,7 @@ export default (props:Props) => {
     useEffect(() => {
         if(code !== undefined && number !== undefined) props.onChange({code, number})
     }, [code, number])
-
+    console.log('countries', countries)
     return <View style={{
         display: 'flex',
         flexDirection: 'row',

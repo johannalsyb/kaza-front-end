@@ -19,7 +19,6 @@ import variables from './styles/variables';
 import KIcon from './components/KIcon/KIcon';
 import { OnboardingInfo } from './common/types/api/auth';
 import { toastSuccess } from './components/Toast/Toast';
-
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
