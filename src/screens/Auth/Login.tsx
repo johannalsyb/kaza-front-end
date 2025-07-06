@@ -1,35 +1,35 @@
-import {useState} from 'react';
-import {Button, Image, ImageBackground, TextInput, View} from 'react-native';
-import useAuthentication from '../../hooks/useAuthentication';
-import KTextInput from '../../components/Form/KTextInput/KTextInput';
-import KButton from '../../components/KButton/KButton';
-import KText from '../../components/KText';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavStackParamList} from '../../navigation/screens';
-import FormField from '../../components/Form/FormField/FormField';
-import variables from '../../styles/variables';
-import useIsMobile from '../../hooks/useIsMobile';
-import KIcon from '../../components/KIcon/KIcon';
+import { useEffect, useRef, useState } from 'react'
+import { Button, Image, ImageBackground, TextInput, View } from 'react-native'
+import useAuthentication from '../../hooks/useAuthentication'
+import KTextInput from '../../components/Form/KTextInput/KTextInput'
+import KButton from '../../components/KButton/KButton'
+import KText from '../../components/KText'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../navigation/screens'
+import FormField from '../../components/Form/FormField/FormField'
+import variables from '../../styles/variables'
+import useIsMobile from '../../hooks/useIsMobile'
+import KIcon from '../../components/KIcon/KIcon'
+import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
+// import { GoogleLogin } from '@react-oauth/google'
+// import { useGoogleOneTapLogin } from '@react-oauth/google'
 
-const TopImg = require('../../assets/Auth/top.webp');
-const LeftImg = require('../../assets/Auth/left_1920_x2.webp');
+const TopImg = require('../../assets/Auth/top.webp')
+const LeftImg = require('../../assets/Auth/left_1920_x2.webp')
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
 
-export default ({route, navigation}: Props) => {
-  const {isMobile} = useIsMobile();
-  const authentication = useAuthentication();
-  const {isAuthLoading} = authentication;
-  const [creds, setCreds] = useState({email: '', password: ''});
-  const [showPassword, setShowPassword] = useState(false);
-
-  // useEffect(() => {
-  //   authentication.check();
-  // }, []);
+export default ({ route, navigation }: Props) => {
+  const { isMobile } = useIsMobile()
+  const authentication = useAuthentication()
+  const { isAuthLoading } = authentication
+  const [creds, setCreds] = useState({ email: '', password: '' })
+  const [showPassword, setShowPassword] = useState(false)
 
   const login = () => {
-    authentication.login(creds.email, creds.password);
-  };
+    authentication.login(creds.email, creds.password)
+  }
+
 
   return (
     <View
@@ -86,8 +86,8 @@ export default ({route, navigation}: Props) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <KIcon name="logoText2" style={{width: 200, height: 150}} />
-          <KText style={{fontSize: 25, fontWeight: 'bold', marginBottom: 50}}>
+          <KIcon name="logoText2" style={{ width: 200, height: 150 }} />
+          <KText style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 50 }}>
             Swap your place, explore the world
           </KText>
           <KText
@@ -127,7 +127,7 @@ export default ({route, navigation}: Props) => {
           <KTextInput
             placeholder="Email"
             value={creds.email}
-            onChangeText={email => setCreds({...creds, email})}
+            onChangeText={email => setCreds({ ...creds, email })}
           />
         </FormField>
 
@@ -136,12 +136,12 @@ export default ({route, navigation}: Props) => {
             placeholder="Password"
             secureTextEntry={!showPassword}
             value={creds.password}
-            onChangeText={password => setCreds({...creds, password})}
+            onChangeText={password => setCreds({ ...creds, password })}
             rightComponent={
               <KIcon
                 name={showPassword ? 'eyeOpen' : 'eyeClose'}
                 size={'medium'}
-                style={{marginRight: 10, opacity: 0.5}}
+                style={{ marginRight: 10, opacity: 0.5 }}
               />
             }
             onRightComponentPress={() => setShowPassword(!showPassword)}
@@ -158,12 +158,12 @@ export default ({route, navigation}: Props) => {
             marginTop: isMobile ? 0 : 4,
           }}
           onPress={() => {
-            navigation.navigate('ForgotPassword');
+            navigation.navigate('ForgotPassword')
           }}>
           <KIcon
             name="password"
             size={'medium'}
-            style={{marginRight: 10, opacity: 0.5}}
+            style={{ marginRight: 10, opacity: 0.5 }}
           />
           Forgot Password?
         </KText>
@@ -199,19 +199,18 @@ export default ({route, navigation}: Props) => {
             }}
           />
         </KText>
-        <KButton
-          color="light"
-          text="Sign in with Google"
-          style={{
-            width: '100%',
-            marginBottom: isMobile ? 12 : 80,
-            marginLeft: 56,
-            marginRight: 56,
+        {/* <GoogleLogin
+          locale='en'
+
+          onSuccess={credentialResponse => {
+            console.log('Google Login Success', credentialResponse)
+            authentication.loginGoogle(credentialResponse.credential)
           }}
-          icon="Google"
-          iconStyle={{stroke: 'transparent'}}
-          onPress={() => {}}
-        />
+          onError={() => {
+            console.log('Login Failed')
+          }}
+        /> */}
+        <GoogleLoginButton />
 
         <KText
           style={{
@@ -223,7 +222,7 @@ export default ({route, navigation}: Props) => {
             color: variables.colors.grey,
           }}
           onPress={() => {
-            navigation.navigate('SignUp');
+            navigation.navigate('SignUp')
           }}>
           Don't have an account yet?
           <KIcon
@@ -236,11 +235,11 @@ export default ({route, navigation}: Props) => {
               stroke: 'black',
             }}
           />
-          <KText style={{fontWeight: 'bold', color: 'black'}}>Register</KText>
+          <KText style={{ fontWeight: 'bold', color: 'black' }}>Register</KText>
         </KText>
       </View>
       {!isMobile && (
-        <View style={{position: 'absolute', top: 20, right: 20}}>
+        <View style={{ position: 'absolute', top: 20, right: 20 }}>
           {/* <KText onPress={() => {
                 navigation.navigate('Home')
             }}>{"> Look around"}</KText> */}
@@ -248,7 +247,7 @@ export default ({route, navigation}: Props) => {
             name="closeWithBorder"
             size={'large'}
             onPress={() => {
-              navigation.navigate('Home');
+              navigation.navigate('Home')
             }}
           />
         </View>
@@ -266,5 +265,5 @@ export default ({route, navigation}: Props) => {
         </KText>
       )}
     </View>
-  );
-};
+  )
+}

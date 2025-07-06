@@ -10,6 +10,7 @@ export type Me = {
 }
 
 export type Login = Me & {token: string}
+export type LoginGoogle = Me & {token: string}
 export type Logout = string
 export type Signup = Me
 export type ResetPassword = {message: string}

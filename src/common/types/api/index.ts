@@ -18,6 +18,7 @@ export namespace Api {
     export namespace Auth {
         export type Me = TAuth.Me & {unreadNotifications?: number, newMatches?: number}
         export type Login = TAuth.Login
+        export type LoginGoogle = TAuth.LoginGoogle
         export type Logout = TAuth.Logout
         export type Signup = TAuth.Signup
         export type ResetPassword = TAuth.ResetPassword
