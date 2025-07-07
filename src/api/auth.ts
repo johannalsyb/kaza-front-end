@@ -10,7 +10,6 @@ export const login = async (email: string, password: string) => {
 }
 export const loginGoogle = async (token: string) => {
     const res = await api.post<Api.Auth.LoginGoogle>(`/auth/google/validation`, { token })
-    console.log('res', res)
     localStorage.setItem("token", res.data.token)
     return res
 }

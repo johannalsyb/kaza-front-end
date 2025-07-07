@@ -16,6 +16,7 @@ import { RegisterFormError } from '../../components/forms/auth/Register'
 import { ApiResponseError } from '../../api'
 import KPhoneInputV2 from '../../components/Form/KPhoneInput/KPhoneInputV2'
 import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js'
+import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
 
 const TopImg = require('../../assets/Auth/top.webp')
 const LeftImg = require('../../assets/Auth/left_1920_x2.webp')
@@ -175,17 +176,6 @@ export default (props: any) => {
 
         <FormField labelAlign="left" label="Phone" style={{ zIndex: 5 }}>
 
-          {/* <KTextInput
-            placeholder="Add your phone number"
-            value={body.phone}
-            autoComplete="tel"
-            onChangeText={phone => setBody({...body, phone})}
-            inputStyles={{
-              textAlign: 'left',
-              paddingLeft: 20,
-              paddingVertical: 12,
-            }}
-          /> */}
           <KPhoneInputV2
             phone={body.phone}
             // placeholder="Add your phone number"
@@ -271,19 +261,8 @@ export default (props: any) => {
               }}
             />
           </KText>
-          <KButton
-            color="light"
-            text="Sign in with Google"
-            style={{
-              width: '100%',
-              marginBottom: isMobile ? 12 : 80,
-              marginLeft: 56,
-              marginRight: 56,
-            }}
-            icon="Google"
-            iconStyle={{ stroke: 'transparent' }}
-            onPress={() => { }}
-          />
+          <GoogleLoginButton />
+
         </View>
       </View>
       {!isMobile && (

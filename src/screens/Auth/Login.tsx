@@ -199,17 +199,6 @@ export default ({ route, navigation }: Props) => {
             }}
           />
         </KText>
-        {/* <GoogleLogin
-          locale='en'
-
-          onSuccess={credentialResponse => {
-            console.log('Google Login Success', credentialResponse)
-            authentication.loginGoogle(credentialResponse.credential)
-          }}
-          onError={() => {
-            console.log('Login Failed')
-          }}
-        /> */}
         <GoogleLoginButton />
 
         <KText

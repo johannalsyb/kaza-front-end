@@ -19,7 +19,6 @@ import variables from './styles/variables'
 import KIcon from './components/KIcon/KIcon'
 import { OnboardingInfo } from './common/types/api/auth'
 import { toastSuccess } from './components/Toast/Toast'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark'
 
@@ -51,34 +50,32 @@ function App(): JSX.Element {
     config.load()
   }, [])
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID || ''}>
-      <SafeAreaView
-        style={[
-          backgroundStyle,
-          {
+    <SafeAreaView
+      style={[
+        backgroundStyle,
+        {
+          height: '100%',
+        },
+      ]}>
+      <ClickOutsideProvider>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <ToastManager>
+          {isAuthLoading ? <View style={{
             height: '100%',
-          },
-        ]}>
-        <ClickOutsideProvider>
-          <StatusBar
-            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-            backgroundColor={backgroundStyle.backgroundColor}
-          />
-          <ToastManager>
-            {isAuthLoading ? <View style={{
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-              <KIcon name="logoText2" size={120} style={{}} />
-              <ActivityIndicator color={"black"} />
-            </View> : <Navigation ref={navRef} />}
-          </ToastManager>
-        </ClickOutsideProvider>
-      </SafeAreaView>
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <KIcon name="logoText2" size={120} style={{}} />
+            <ActivityIndicator color={"black"} />
+          </View> : <Navigation ref={navRef} />}
+        </ToastManager>
+      </ClickOutsideProvider>
+    </SafeAreaView>
 
-    </GoogleOAuthProvider>
 
   )
 }
