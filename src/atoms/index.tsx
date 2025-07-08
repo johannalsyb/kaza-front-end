@@ -15,3 +15,5 @@ export const showMessageAtom = atom<string | null>(null);
 export const showComponentAtom = atom<ReactNode | null>(null);
 
 export const showOverlayAtom = atom<false | string>(false);
+
+export const showModalRegisterPlaceAtom = atom<boolean>(false);

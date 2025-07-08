@@ -13,6 +13,7 @@ const variables = {
     black: '#000000',
     blackLight: '#1E1E1E',
     yellow: '#ffe361',
+    lightCream: '#FAF9E7',
     greenLight: '#f7f6e9',
     closeButton: '#7f7230',
     borderGray: '#C6C5BA',
