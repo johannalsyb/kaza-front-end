@@ -6,64 +6,56 @@ import {
   ScrollView,
   TextInput,
   View,
-} from 'react-native';
-import KText from '../../components/KText';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavStackParamList} from '../../navigation/screens';
-import StepView from '../../components/StepView';
-import React, {useEffect, useState} from 'react';
-import {clamp} from '../../utils/math';
-import Step2 from './Step2';
-import Step3 from './Step3';
-import Step4 from './Step4';
-import Step5 from './Step5';
-import variables from '../../styles/variables';
-import {Property} from '../../components/forms/property';
-import properties from '../../api/properties';
-import useAuthentication from '../../hooks/useAuthentication';
-import useIsMobile from '../../hooks/useIsMobile';
-import KIcon from '../../components/KIcon/KIcon';
-import users from '../../api/users';
-import {OnboardingInfo} from '../../common/types/api/auth';
+} from 'react-native'
+import KText from '../../components/KText'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../navigation/screens'
+import StepView from '../../components/StepView'
+import React, { useEffect, useState } from 'react'
+import { clamp } from '../../utils/math'
+import Step2 from './Step2'
+import Step3 from './Step3'
+import Step4 from './Step4'
+import Step5 from './Step5'
+import variables from '../../styles/variables'
+import { Property } from '../../components/forms/property'
+import properties from '../../api/properties'
+import useAuthentication from '../../hooks/useAuthentication'
+import useIsMobile from '../../hooks/useIsMobile'
+import KIcon from '../../components/KIcon/KIcon'
+import users from '../../api/users'
+import { OnboardingInfo } from '../../common/types/api/auth'
 // import Step6 from "./Step6";
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>;
+type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>
 // & {
 //   step: number,
 // };
 
 export const onboardingSteps: {
-  icon: string;
-  title: string;
-  subtitle?: string;
-  content?: JSX.Element;
+  icon: string
+  title: string
+  subtitle?: string
+  content?: JSX.Element
 }[] = [
-  {
-    icon: '✋',
-    title: 'Tell us more about you',
-  },
-  {
-    icon: '🏡',
-    title: 'About your place',
-  },
-  {
-    icon: '🤓',
-    title: 'A bit more details',
-  },
-  {
-    icon: '📷',
-    title: 'Time to show off',
-    subtitle: 'Minimum 3 pictures',
-  },
-  {
-    icon: '✈️',
-    title: 'Finally, tell us about your trip!',
-  },
-  // {
-  //   icon: '💸',
-  //   title: 'Registration fee',
-  // },
-];
+    {
+      icon: '🏡',
+      title: 'About your place',
+    },
+    {
+      icon: '🤓',
+      title: 'A bit more details',
+    },
+    {
+      icon: '📷',
+      title: 'Time to show off',
+      subtitle: 'Minimum 3 pictures',
+    },
+    {
+      icon: '✈️',
+      title: 'Finally, tell us about your trip!',
+    },
+  ]
 
 export const defaultProperty: Property = {
   location: '',
@@ -74,31 +66,31 @@ export const defaultProperty: Property = {
   bedrooms: 1,
   beds: 1,
   bathrooms: 1,
-  bedroomsBeds: [{single: 0, double: 1}],
+  bedroomsBeds: [{ single: 0, double: 1 }],
   pics: [],
-};
+}
 
-let callback: (() => void) | undefined;
+let callback: (() => void) | undefined
 
 export default (props: Props) => {
-  const [currentStep, setCurrentStep] = useState<number | undefined>();
-  const [property, setProperty] = useState<Property>();
-  const {user} = useAuthentication();
-  const {isMobile, height} = useIsMobile();
+  const [currentStep, setCurrentStep] = useState<number | undefined>(2)
+  const [property, setProperty] = useState<Property>()
+  const { user } = useAuthentication()
+  const { isMobile, height } = useIsMobile()
 
   const navigationListenerFn = (e: any) => {
-    if (currentStep === 1) return props.navigation.push('Login');
-    if (!props.route?.params) return;
+    if (currentStep === 1) return props.navigation.push('Login')
+    if (!props.route?.params) return
     if (
       currentStep === undefined &&
       props.route.params.step === onboardingSteps.length
     ) {
-      callback && callback();
-      return; // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
+      callback && callback()
+      return // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
     }
-    e.preventDefault();
-    stepDown();
-  };
+    e.preventDefault()
+    stepDown()
+  }
 
   useEffect(() => {
     if (!callback) {
@@ -106,49 +98,49 @@ export default (props: Props) => {
       callback = props.navigation.addListener(
         'beforeRemove',
         navigationListenerFn,
-      );
+      )
     }
     return () => {
       // console.log("UNMOUNTING calling callback...")
-      callback && callback();
-    };
-  }, [props.navigation]);
+      callback && callback()
+    }
+  }, [props.navigation])
 
   useEffect(() => {
     Promise.all([users.me.get(), properties.ofUser('me')])
       .then(([me, properties]) => {
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
-        let onboarding: OnboardingInfo;
+        let onboarding: OnboardingInfo
         if (me.data.onboarding) {
-          onboarding = JSON.parse(me.data.onboarding);
+          onboarding = JSON.parse(me.data.onboarding)
         } else {
-          let step = 1;
-          let completed = false;
-          let data: any = defaultProperty;
+          let step = 1
+          let completed = false
+          let data: any = defaultProperty
           if (properties.data.length) {
-            data = {};
-            step = 5;
+            data = {}
+            step = 5
             if (me.data.payment) {
-              step = 6; // If the user has already paid, skip to the end
-              completed = true;
+              step = 6 // If the user has already paid, skip to the end
+              completed = true
             }
           }
-          onboarding = {step, data, completed};
+          onboarding = { step, data, completed }
         }
 
-        if (onboarding.completed) return props.navigation.navigate('Success');
+        if (onboarding.completed) return props.navigation.navigate('Success')
 
         const propData =
           onboarding.data && Object.keys(onboarding.data).length
             ? onboarding.data
-            : defaultProperty;
+            : defaultProperty
 
         if (properties.data.length) {
-          setProperty({...propData, id: properties.data[0].id});
+          setProperty({ ...propData, id: properties.data[0].id })
         } else {
-          setProperty(propData);
+          setProperty(propData)
         }
-        setCurrentStep(onboarding.step);
+        setCurrentStep(onboarding.step)
         // if(currentStep === 1) {
         //   if(user) setCurrentStep(2)
         // } else {
@@ -184,16 +176,16 @@ export default (props: Props) => {
       })
       .catch(err => {
         // We're most likely not logged in
-        setCurrentStep(1);
-      });
-  }, []);
+        setCurrentStep(1)
+      })
+  }, [])
 
   // useEffect(() => {
   //   console.log("property", property)
   // }, [property])
 
   const stepUp = (v = (currentStep || 1) + 1) => {
-    const vv = clamp(v, 1, onboardingSteps.length);
+    const vv = clamp(v, 1, onboardingSteps.length)
     return users.me
       .update({
         onboarding: JSON.stringify({
@@ -203,13 +195,13 @@ export default (props: Props) => {
         }),
       })
       .then(() => {
-        setCurrentStep(vv);
-        props.navigation.push('Onboarding', {step: vv});
-      });
-  };
+        setCurrentStep(vv)
+        props.navigation.push('Onboarding', { step: vv })
+      })
+  }
 
   const stepDown = (v = (currentStep || 2) - 1) => {
-    const vv = clamp(v, 1, onboardingSteps.length);
+    const vv = clamp(v, 1, onboardingSteps.length)
     return users.me
       .update({
         onboarding: JSON.stringify({
@@ -219,14 +211,14 @@ export default (props: Props) => {
         }),
       })
       .then(() => {
-        setCurrentStep(vv);
-        props.navigation.push('Onboarding', {step: vv});
+        setCurrentStep(vv)
+        props.navigation.push('Onboarding', { step: vv })
       })
       .catch(err => {
-        console.log(err);
-        props.navigation.push('Login');
-      });
-  };
+        console.log(err)
+        props.navigation.push('Login')
+      })
+  }
 
   const finish = () => {
     return users.me
@@ -239,10 +231,10 @@ export default (props: Props) => {
       })
       .then(() => {
         // console.log("FINISHED, calling callback to unsubscribe...")
-        callback && callback();
-        props.navigation.navigate('Success');
-      });
-  };
+        callback && callback()
+        props.navigation.navigate('Success')
+      })
+  }
 
   // if(user && !property) {
   //   return <Pressable onPress={() => {
@@ -256,39 +248,39 @@ export default (props: Props) => {
   // }
 
   // if(property) {
-  onboardingSteps[1].content = (
+  onboardingSteps[0].content = (
     <Step2
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(3)}
+      onNext={() => stepUp(1)}
     />
-  );
-  onboardingSteps[2].content = (
+  )
+  onboardingSteps[1].content = (
     <Step3
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(4)}
-      onPrev={() => stepDown(2)}
+      onNext={() => stepUp(2)}
+      onPrev={() => stepDown(1)}
     />
-  );
-  onboardingSteps[3].content = (
+  )
+  onboardingSteps[2].content = (
     <Step4
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(5)}
-      onPrev={() => stepDown(3)}
+      onNext={() => stepUp(3)}
+      onPrev={() => stepDown(2)}
     />
-  );
-  onboardingSteps[4].content = (
-    <Step5 onChange={p => {}} onNext={finish} onPrev={() => stepDown(4)} />
-  );
+  )
+  onboardingSteps[3].content = (
+    <Step5 onChange={p => { }} onNext={finish} onPrev={() => stepDown(3)} />
+  )
   // onboardingSteps[5].content = (
   //   <Step6 onNext={finish} onPrev={() => stepDown(5)} />
   // );
   // }
 
-  const currentStepObject = onboardingSteps[(currentStep || 1) - 1];
-  const Comp = isMobile ? ScrollView : View;
+  const currentStepObject = onboardingSteps[(currentStep || 1) - 1]
+  const Comp = isMobile ? ScrollView : View
 
   const ContentView = () => (
     <View
@@ -302,7 +294,7 @@ export default (props: Props) => {
       }}>
       {currentStepObject.content}
     </View>
-  );
+  )
 
   return (
     <Comp
@@ -379,7 +371,7 @@ export default (props: Props) => {
 
         {!isMobile && (
           <>
-            <KText style={{marginTop: 20, opacity: !currentStep ? 0 : 1}}>
+            <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1 }}>
               Step {currentStep} of {onboardingSteps.length}
             </KText>
             <StepView
@@ -393,9 +385,9 @@ export default (props: Props) => {
               }}
             />
             <Pressable
-              style={{position: 'absolute', top: 0, left: 40}}
+              style={{ position: 'absolute', top: 0, left: 40 }}
               onPress={() => {
-                Linking.openURL('https://www.kazaswap.co');
+                Linking.openURL('https://www.kazaswap.co')
               }}>
               <KIcon name="logoText2" size={120} />
             </Pressable>
@@ -441,7 +433,7 @@ export default (props: Props) => {
           <ActivityIndicator
             color={variables.colors.yellow}
             size="large"
-            style={{marginTop: 20}}
+            style={{ marginTop: 20 }}
           />
         ) : (
           <View
@@ -457,5 +449,5 @@ export default (props: Props) => {
         )}
       </ScrollView>
     </Comp>
-  );
-};
+  )
+}

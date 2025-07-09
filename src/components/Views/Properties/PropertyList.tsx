@@ -1,59 +1,62 @@
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {ActivityIndicator, Pressable, ScrollView, View} from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native'
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
-import {Property} from '../../../common/types/api/properties';
-import {NavStackParamList} from '../../../navigation/screens';
-import useAuthentication from '../../../hooks/useAuthentication';
-import useIsMobile from '../../../hooks/useIsMobile';
+} from 'react'
+import { Property } from '../../../common/types/api/properties'
+import { NavStackParamList } from '../../../navigation/screens'
+import useAuthentication from '../../../hooks/useAuthentication'
+import useIsMobile from '../../../hooks/useIsMobile'
 import Filters, {
   placeTypeFilters,
   nbBedroomFilters,
   Handle,
-} from '../../Filters';
-import MapView from '../../MapView';
-import variables from '../../../styles/variables';
-import {PropertyCard} from '../../PropertyCard/PropertyCard';
-import Menu from '../../Menu';
-import useConfig from '../../../hooks/useConfig';
-import KText from '../../KText';
-import KButton from '../../KButton/KButton';
-import Footer from '../../Footer';
+} from '../../Filters'
+import MapView from '../../MapView'
+import variables from '../../../styles/variables'
+import { PropertyCard } from '../../PropertyCard/PropertyCard'
+import Menu from '../../Menu'
+import useConfig from '../../../hooks/useConfig'
+import KText from '../../KText'
+import KButton from '../../KButton/KButton'
+import Footer from '../../Footer'
+import Modal from '../../Modal'
+import { useAtom } from 'jotai'
+import { showModalRegisterPlaceAtom } from '../../../atoms'
 
-type PProperty = Property & {bubble?: string};
+type PProperty = Property & { bubble?: string }
 
 type Props = {
-  properties: PProperty[];
+  properties: PProperty[]
   navigation: NativeStackNavigationProp<
     NavStackParamList,
     'Properties' | 'Matching' | 'Favourites',
     undefined
-  >;
-  emptyListView: React.ReactNode;
-  onSearch: (search: string) => void;
-  onShowMore: (() => void) | null;
-  showSearchBar?: boolean;
-  loading?: boolean;
-};
+  >
+  emptyListView: React.ReactNode
+  onSearch: (search: string) => void
+  onShowMore: (() => void) | null
+  showSearchBar?: boolean
+  loading?: boolean
+}
 
 export type PropertyFilter = {
-  placeType: string[];
-  bedrooms: string[];
-  petsFriendlyOnly: string[];
-  swapWithWomen: string[];
-};
+  placeType: string[]
+  bedrooms: string[]
+  petsFriendlyOnly: string[]
+  swapWithWomen: string[]
+}
 
 const defaultFilters: PropertyFilter = {
   bedrooms: nbBedroomFilters,
   petsFriendlyOnly: ['false'],
   swapWithWomen: ['false'],
   placeType: placeTypeFilters,
-};
+}
 
 export default forwardRef<Handle, Props>(
   (
@@ -68,80 +71,89 @@ export default forwardRef<Handle, Props>(
     },
     ref,
   ) => {
-    const [showMap, setShowMap] = useState(false);
-    const [columns, setColumns] = useState(0);
-    const [filters, setFilters] = useState<PropertyFilter>(defaultFilters);
-    const [contentHeight, setContentHeight] = useState(-1);
-    const [scrollViewHeight, setScrollViewHeight] = useState(-1);
+    const [showMap, setShowMap] = useState(false)
+    const [columns, setColumns] = useState(0)
+    const [filters, setFilters] = useState<PropertyFilter>(defaultFilters)
+    const [contentHeight, setContentHeight] = useState(-1)
+    const [scrollViewHeight, setScrollViewHeight] = useState(-1)
+    const [showModalAuthCreateAccount, setShowModalAuthCreateAccount] = useAtom(showModalRegisterPlaceAtom)
+    const { isMobile } = useIsMobile()
+    const { user, isAdmin } = useAuthentication()
 
-    const {isMobile} = useIsMobile();
-    const {user, isAdmin} = useAuthentication();
+    const { config, overlay } = useConfig()
 
-    const {config, overlay} = useConfig();
-
-    const filtersRef = useRef<Handle>(null);
+    const filtersRef = useRef<Handle>(null)
     useImperativeHandle(ref, () => ({
       setSearch: (search: string) => {
-        filtersRef.current?.setSearch(search);
+        filtersRef.current?.setSearch(search)
       },
-    }));
+    }))
 
     const calculateNumberOfColumns = (width: number) => {
-      const columnCount = Math.floor(width / variables.propertyCardWidth);
-      return columnCount > 0 ? columnCount : 1;
-    };
+      const columnCount = Math.floor(width / variables.propertyCardWidth)
+      return columnCount > 0 ? columnCount : 1
+    }
 
     useEffect(() => {
       if (showMap) {
         // force rerender
-        setShowMap(false);
-        setTimeout(() => setShowMap(true), 0);
+        setShowMap(false)
+        setTimeout(() => setShowMap(true), 0)
       }
-    }, [filters]);
+    }, [filters])
 
     const propertiesFiltered =
       properties?.filter(p => {
-        let visible = true;
-        if (!filters['placeType'].includes(p.type)) visible = false;
+        let visible = true
+        if (!filters['placeType'].includes(p.type)) visible = false
         if (
           filters['bedrooms'][0] !== 'any' &&
           parseInt(filters['bedrooms'][0]) > p.bedrooms
         )
-          visible = false;
+          visible = false
         if (filters['petsFriendlyOnly'][0] === 'true' && !p.pets)
-          visible = false;
+          visible = false
         if (
           filters['swapWithWomen'][0] === 'true' &&
           !(p.owner.gender === 'female')
         )
-          visible = false;
-        return visible;
-      }) || [];
+          visible = false
+        return visible
+      }) || []
 
     const isContentSmallerThanScreen = () => {
-      if (contentHeight === -1 || scrollViewHeight === -1) return false;
-      return contentHeight < scrollViewHeight;
-    };
+      if (contentHeight === -1 || scrollViewHeight === -1) return false
+      return contentHeight < scrollViewHeight
+    }
+
+    const handleClikOpenDetailInfo = (id: string, property: Property) => {
+      if (!user) {
+        setShowModalAuthCreateAccount(true)
+        return
+
+      }
+      navigation.navigate('Property', { id, property })
+    }
 
     return (
       <>
-        <View style={{backgroundColor: 'black', zIndex: 1}}>
+        <View style={{ backgroundColor: 'black', zIndex: 1 }}>
           <Filters
             ref={filtersRef}
             showSearchBar={showSearchBar}
             filters={filters}
             onShowMap={setShowMap}
             onFilter={(...nfilters) => {
-              const ufilters = {...filters};
-              nfilters.forEach(({type, filters}) => {
-                ufilters[type] = filters;
-              });
-              setFilters(ufilters);
+              const ufilters = { ...filters }
+              nfilters.forEach(({ type, filters }) => {
+                ufilters[type] = filters
+              })
+              setFilters(ufilters)
             }}
             onSearch={onSearch}
             onClearFilters={() => {
-              onSearch('');
-              setFilters(defaultFilters);
+              onSearch('')
+              setFilters(defaultFilters)
             }}
           />
         </View>
@@ -171,8 +183,8 @@ export default forwardRef<Handle, Props>(
               borderTopRightRadius: isMobile ? 0 : 20,
             }}
             onLayout={e => {
-              setColumns(calculateNumberOfColumns(e.nativeEvent.layout.width));
-              setScrollViewHeight(e.nativeEvent.layout.height);
+              setColumns(calculateNumberOfColumns(e.nativeEvent.layout.width))
+              setScrollViewHeight(e.nativeEvent.layout.height)
             }}
             contentContainerStyle={{
               flexDirection: 'column',
@@ -185,7 +197,7 @@ export default forwardRef<Handle, Props>(
             }}>
             <View
               onLayout={e => {
-                setContentHeight(e.nativeEvent.layout.height);
+                setContentHeight(e.nativeEvent.layout.height)
               }}
               style={{
                 flexDirection: 'row',
@@ -201,13 +213,13 @@ export default forwardRef<Handle, Props>(
                 <ActivityIndicator
                   size="large"
                   color={variables.colors.white}
-                  style={{marginTop: 20}}
+                  style={{ marginTop: 20 }}
                 />
               ) : propertiesFiltered.length ? (
                 <>
                   {propertiesFiltered.map((property, i) => {
-                    let {images, owner, city, country, id} = property;
-                    images = Array.isArray(images) ? images.join(',') : images;
+                    let { images, owner, city, country, id } = property
+                    images = Array.isArray(images) ? images.join(',') : images
                     return (
                       <View
                         style={[
@@ -227,25 +239,23 @@ export default forwardRef<Handle, Props>(
                           property={property}
                           favourite={
                             user &&
-                            user.favourites &&
-                            property &&
-                            user.favourites.includes(property.id)
+                              user.favourites &&
+                              property &&
+                              user.favourites.includes(property.id)
                               ? true
                               : false
                           }
-                          onPress={() =>
-                            navigation.navigate('Property', {id, property})
-                          }
+                          onPress={() => handleClikOpenDetailInfo(id, property)}
                           photo={`${id}/${(images ?? '').split(',')[0]}`}
                           avatar={`${owner.id}/${owner.primaryImage}`}
                           location={`${city}`}
                           swapFor={owner.swapLocations || 'Flexible'}
-                          availableDate={{
-                            from: owner.dateFrom
-                              ? new Date(owner.dateFrom)
-                              : null,
-                            to: owner.dateTo ? new Date(owner.dateTo) : null,
-                          }}
+                        // availableDate={{
+                        //   from: owner.dateFrom
+                        //     ? new Date(owner.dateFrom)
+                        //     : null,
+                        //   to: owner.dateTo ? new Date(owner.dateTo) : null,
+                        // }}
                         />
                         {property.bubble ? (
                           <KText
@@ -264,7 +274,7 @@ export default forwardRef<Handle, Props>(
                           </KText>
                         ) : null}
                       </View>
-                    );
+                    )
                   })}
                   {onShowMore && (
                     <View
@@ -284,15 +294,15 @@ export default forwardRef<Handle, Props>(
                           marginTop: isMobile ? 10 : 0,
                         }}
                         icon="arrowDown"
-                        iconStyle={{stroke: 'white'}}
-                        textStyle={{color: 'white'}}
+                        iconStyle={{ stroke: 'white' }}
+                        textStyle={{ color: 'white' }}
                         text="Load More"
                       />
                     </View>
                   )}
                 </>
               ) : (
-                <View style={{width: '100%'}}>{emptyListView}</View>
+                <View style={{ width: '100%' }}>{emptyListView}</View>
               )}
               {Array.from(
                 {
@@ -310,9 +320,9 @@ export default forwardRef<Handle, Props>(
               )}
             </View>
             {isMobile ? (
-              <View style={{height: 100, width: '100%'}} />
+              <View style={{ height: 100, width: '100%' }} />
             ) : (
-              <View style={{flex: 1}} />
+              <View style={{ flex: 1 }} />
             )}
             <View
               style={{
@@ -327,7 +337,23 @@ export default forwardRef<Handle, Props>(
         )}
 
         <Menu navigate={navigation.navigate} />
+        {showModalAuthCreateAccount && <Modal
+          isSignIn
+          setOpen={setShowModalAuthCreateAccount}
+          title='Create account'
+          button={
+            {
+              label: 'Create account',
+              onPress: () => {
+                navigation.navigate('SignUp')
+                setShowModalAuthCreateAccount(false)
+              }
+            }
+          }
+          navigation={navigation}
+          description='You need to create an account <br/> to see more details.' />}
+
       </>
-    );
+    )
   },
-);
+)

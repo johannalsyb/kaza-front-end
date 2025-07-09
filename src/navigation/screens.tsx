@@ -1,62 +1,62 @@
-import {TestPageComponent} from '../components/utils/TestPageComponent/TestPageComponent';
-import Error404 from '../screens/Error404';
-import Splash from '../screens/Splash';
-import Login from '../screens/Auth/Login';
-import Auth from '../screens/Auth';
-import Register from '../screens/Auth/Register';
-import Account from '../screens/Account';
-import Onboarding from '../screens/Onboarding';
-import Success from '../screens/Onboarding/Success';
-import Matching from '../screens/Matching';
-import Favourites from '../screens/Favourites';
-import Home from '../screens/Home';
-import {useAtomValue} from 'jotai';
-import {showHeaderAtom} from '../atoms';
-import ForgotPassword from '../screens/Auth/ForgotPassword';
-import ResetPassword from '../screens/Auth/ResetPassword';
-import Property from '../screens/Property';
-import {Property as PP} from '../common/types/api/properties';
-import Chats from '../screens/Chats';
-import Admin from '../screens/Admin';
-import Verify from '../screens/Auth/Verify';
-import Legal from '../screens/Legal';
-import Blog from '../screens/Blog';
+import { TestPageComponent } from '../components/utils/TestPageComponent/TestPageComponent'
+import Error404 from '../screens/Error404'
+import Splash from '../screens/Splash'
+import Login from '../screens/Auth/Login'
+import Auth from '../screens/Auth'
+import Register from '../screens/Auth/Register'
+import Account from '../screens/Account'
+import Onboarding from '../screens/Onboarding'
+import Success from '../screens/Onboarding/Success'
+import Matching from '../screens/Matching'
+import Favourites from '../screens/Favourites'
+import Home from '../screens/Home'
+import { useAtomValue } from 'jotai'
+import { showHeaderAtom } from '../atoms'
+import ForgotPassword from '../screens/Auth/ForgotPassword'
+import ResetPassword from '../screens/Auth/ResetPassword'
+import Property from '../screens/Property'
+import { Property as PP } from '../common/types/api/properties'
+import Chats from '../screens/Chats'
+import Admin from '../screens/Admin'
+import Verify from '../screens/Auth/Verify'
+import Legal from '../screens/Legal'
+import Blog from '../screens/Blog'
 
 export type NavStackParamList = {
-  Auth: undefined;
-  Login: undefined;
-  SignUp: undefined;
-  ForgotPassword: undefined;
-  ResetPassword: undefined;
-  Verify: {type: "email" | "phone", token: string};
-  Home: {map?: boolean} | undefined;
-  Test: undefined;
-  Splash: undefined;
-  Error404: undefined;
-  Properties: undefined;
-  Account: {edit?: boolean};
-  Myplace: {edit?: boolean, preview?: boolean};
-  History: undefined;
-  Onboarding: {step?: number};
-  Success: undefined;
-  Matching: undefined;
-  Favourites: undefined;
-  Property: {id: string; property?: PP};
-  Chats: undefined;
-  Chat: {id: string};
-  Swap: {id: string};
-  Admin: {tab?: string};
+  Auth: undefined
+  Login: undefined
+  SignUp: undefined
+  ForgotPassword: undefined
+  ResetPassword: undefined
+  Verify: { type: "email" | "phone", token: string }
+  Home: { map?: boolean } | undefined
+  Test: undefined
+  Splash: undefined
+  Error404: undefined
+  Properties: undefined
+  Account: { edit?: boolean }
+  Myplace: { edit?: boolean, preview?: boolean }
+  History: undefined
+  Onboarding: { step?: number }
+  Success: undefined
+  Matching: undefined
+  Favourites: undefined
+  Property: { id: string; property?: PP }
+  Chats: undefined
+  Chat: { id: string }
+  Swap: { id: string }
+  Admin: { tab?: string }
   Legal: undefined,
   Blog: undefined,
-  Article: {slug: string},
-};
+  Article: { slug: string },
+}
 
 export const isHeaderHidden = (
   name: keyof NavStackParamList,
   isMobile = false,
 ) => {
-  const visible = useAtomValue(showHeaderAtom);
-  if (!visible) return true;
+  const visible = useAtomValue(showHeaderAtom)
+  if (!visible) return true
   const screens = [
     'Auth',
     'Login',
@@ -66,9 +66,9 @@ export const isHeaderHidden = (
     'Splash',
     'Onboarding',
     'Success',
-  ];
+  ]
   if (isMobile) {
-    screens.push('Account');
+    screens.push('Account')
     // screens.push('History');
     // screens.push('Myplace');
     screens.push('Chats')
@@ -76,11 +76,11 @@ export const isHeaderHidden = (
     screens.push('Swap')
     screens.push('Property')
   }
-  return screens.includes(name);
-};
+  return screens.includes(name)
+}
 
 export const isFooterHidden = (name: keyof NavStackParamList, isMobile = false) => {
-  if(isMobile) return true;
+  if (isMobile) return true
   const screens = [
     'Auth',
     'Login',
@@ -90,12 +90,12 @@ export const isFooterHidden = (name: keyof NavStackParamList, isMobile = false) 
     'Splash',
     'Onboarding',
     'Success',
-  ];
-  return screens.includes(name);
+  ]
+  return screens.includes(name)
 }
 
 export const linking = (loggedIn: boolean) => {
-  const screens: {[key: string]: any} = {
+  const screens: { [key: string]: any } = {
     Home: '',
     Login: 'login',
     SignUp: 'register',
@@ -141,17 +141,17 @@ export const linking = (loggedIn: boolean) => {
         slug: (slug: string) => slug,
       },
     },
-  };
+  }
 
   return {
     prefixes: ['https://kazaswap.co', 'kazaswap://'],
-    config: {screens},
-  };
-};
+    config: { screens },
+  }
+}
 
-type Screens = {[key:string]: [(p?:any) => React.JSX.Element | null, string?]}
+type Screens = { [key: string]: [(p?: any) => React.JSX.Element | null, string?] }
 
-export const openScreens:Screens = {
+export const openScreens: Screens = {
   Error404: [Error404, "Woops!"],
   Test: [TestPageComponent],
   Splash: [Splash],
@@ -166,9 +166,9 @@ export const openScreens:Screens = {
   Blog: [Blog, "Blog"],
   Article: [Blog, "Blog Article"],
   ResetPassword: [ResetPassword, "Reset Password"],
-};
+}
 
-export const authenticatedScreens:Screens = {
+export const authenticatedScreens: Screens = {
   Account: [Account, "My Account"],
   History: [Account, "My swap history"],
   Myplace: [Account, "My place"],
@@ -177,18 +177,18 @@ export const authenticatedScreens:Screens = {
   Chat: [Chats, "Chats"],
   Swap: [Account, "Swap"],
   ...openScreens,
-};
+}
 
-export const unauthenticatedScreens:Screens = {
+export const unauthenticatedScreens: Screens = {
   // 'Auth': [Auth, ],
   Login: [Login, "Sign In"],
   SignUp: [Register, "Register"],
   ForgotPassword: [ForgotPassword, "Forgot Password"],
   ...openScreens,
-};
+}
 
 
-export const adminScreens:Screens = {
+export const adminScreens: Screens = {
   Admin: [Admin, "Admin"],
   ...authenticatedScreens
-};
+}

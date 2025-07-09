@@ -13,6 +13,7 @@ import KButton from '../KButton/KButton'
 import KIcon from '../KIcon/KIcon'
 import SwapRequestButton from '../SwapRequestButton/SwapRequestButton'
 import { Property } from '../../common/types/api/properties'
+import { useRoute } from '@react-navigation/native'
 
 type PropertyCardProps = {
   favourite?: boolean
@@ -32,6 +33,7 @@ type PropertyCardProps = {
   onEditPressed?: () => void
   hoverable?: boolean
   bottomComponent?: React.ReactNode
+  isDetails?: boolean
 }
 
 const photoStyle: CSSProperties = {
@@ -59,6 +61,7 @@ export const PropertyCard = ({
   onEditPressed,
   hoverable = true,
   bottomComponent,
+  isDetails = false,
 }: PropertyCardProps) => {
   const { isMobile } = useIsMobile()
   const { user } = useAuthentication()
@@ -70,7 +73,6 @@ export const PropertyCard = ({
         availableDate?.to,
       )}`
       : 'Flexible'
-
   return (
     <Pressable
       onPress={onPress}
@@ -86,6 +88,7 @@ export const PropertyCard = ({
         // @ts-ignore
         isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
+        !isDetails && { maxHeight: 290, height: '100%'}
       ]}>
       <View style={styles.imageContainer}>
         {photo.startsWith('http') ? (
@@ -115,7 +118,24 @@ export const PropertyCard = ({
             />
           </View>
         </View>
-        <View style={styles.infoBottomContainer}>
+        <View style={[styles.infoBottomContainer, !isDetails && { paddingTop:5 }]}>
+          {!isDetails && <KText style={{
+            fontSize: 13,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginRight: 20
+          }}
+            numberOfLines={1}>
+            <KIcon name='calendar' size='medium' />
+            <KText
+              style={{
+                paddingHorizontal: variables.spacing.xxsmall,
+                fontSize: 13
+              }}>
+              {availableDateText}
+            </KText>
+          </KText>}
           <KText
             style={{
               fontSize: 13,
@@ -152,7 +172,7 @@ export const PropertyCard = ({
             )}
           </KText>
         </View>
-        <View style={styles.infoTopContainer}>
+        {isDetails && <View style={styles.infoTopContainer}>
           <IconText
             iconName="calendar"
             text={availableDateText}
@@ -167,7 +187,7 @@ export const PropertyCard = ({
             hideIcon
           // iconStyle={{ color: variables.colors.yellow }}
           />}
-        </View>
+        </View>}
       </View>
 
       {user && user?.id === userId && (

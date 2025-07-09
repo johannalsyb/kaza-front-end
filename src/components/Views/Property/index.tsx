@@ -20,12 +20,18 @@ import KIcon from "../../KIcon/KIcon"
 import Onboarding from '../../../screens/Onboarding/Onboarding'
 import { useAtomValue } from 'jotai'
 import { showModalRegisterPlaceAtom } from '../../../atoms'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../../navigation/screens'
+import { useNavigation } from '@react-navigation/native'
 
 type Props = {
   id: string,
   property?: Property,
   style?: ViewStyle,
   contentContainerStyle?: ViewStyle,
+  // navigation: NativeStackNavigationProp<NavStackParamList,
+  //   'Properties' | 'Matching' | 'Favourites',
+  //   undefined>
 }
 
 export const leftColumnWidth = 700
@@ -45,7 +51,7 @@ export default (props: Props) => {
     setShowModal,
   } = useSwapRequest(props.id)
   const [ploading, setPloading] = useState(false)
-
+  const navigation = useNavigation<NativeStackNavigationProp<NavStackParamList, 'Properties' | 'Matching' | 'Favourites', undefined>>()
   useEffect(() => {
     if (!props.property || property?.id !== props.id) {
       setPloading(true)
@@ -70,7 +76,7 @@ export default (props: Props) => {
   let { images, owner, city, country, approxLat, approxLon } = property
   images = Array.isArray(images) ? images.join(',') : images
   const showModalregisterPlaceAtom = useAtomValue(showModalRegisterPlaceAtom)
-  
+
   if (ploading) return <ActivityIndicator color={variables.colors.yellow} />
 
   return <>
@@ -272,7 +278,7 @@ export default (props: Props) => {
           setVisibility={() => setShowModal(undefined)}>
           {showModal}
         </KModal> */}
-        <Onboarding open={showModalregisterPlaceAtom} />
+    <Onboarding open={showModalregisterPlaceAtom} />
   </>
 }
 
