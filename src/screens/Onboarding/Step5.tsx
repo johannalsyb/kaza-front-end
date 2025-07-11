@@ -5,16 +5,20 @@ import User1, { Preferences } from "../../components/forms/user/User1"
 import users from "../../api/users"
 import useAuthentication from "../../hooks/useAuthentication"
 import { toastError } from "../../components/Toast/Toast"
+import KText from '../../components/KText'
+import KIcon from '../../components/KIcon/KIcon'
+import variables from '../../styles/variables'
+import CalendarComponent from '../../components/Screens/Onboarding/CalendarComponent'
 
 type Props = {
     onPrev: () => void,
     onNext: () => void,
-    onChange: (prefs:Preferences) => void,
+    onChange: (prefs: Preferences) => void,
     preferences?: Preferences,
 }
 
-export default (props:Props) => {
-    const {user} = useAuthentication()
+export default (props: Props) => {
+    const { user } = useAuthentication()
     const [loading, setLoading] = useState(false)
     const [prefs, setPrefs] = useState<Preferences>(props.preferences || {
         location: undefined,
@@ -29,7 +33,7 @@ export default (props:Props) => {
         prefs.location === null || (Array.isArray(prefs.location) && prefs.location.length > 0)
 
     const updateUser = () => {
-        if(!user) return
+        if (!user) return
         setLoading(true)
         return users.update({
             id: user.id,
@@ -37,18 +41,18 @@ export default (props:Props) => {
             dateTo: prefs.dateFromTo ? prefs.dateFromTo[1] : undefined,
             dateFrom: prefs.dateFromTo ? prefs.dateFromTo[0] : undefined,
         })
-        .then(() => props.onNext())
-        .catch(() => {
-            toastError("An error occured while updating your profile")
-        })
-        .finally(() => {
-            setLoading(false)
-        })
+            .then(() => props.onNext())
+            .catch(() => {
+                toastError("An error occured while updating your profile")
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
 
     return <>
-        <User1 onChange={setPrefs} preferences={prefs}/>
-        <View style={{flex: 1}} />
+        {/* <User1 onChange={setPrefs} preferences={prefs}/> */}
+        <CalendarComponent />
         <View style={{
             display: "flex",
             flexDirection: "row",
@@ -63,7 +67,7 @@ export default (props:Props) => {
                 disabled={loading}
                 onPress={props.onPrev}
                 color="greenLight"
-                style={{width: "48%"}}/>
+                style={{ width: "48%" }} />
 
             <KButton
                 text="Next"
@@ -71,8 +75,8 @@ export default (props:Props) => {
                 disabled={loading || !isValid}
                 onPress={updateUser}
                 color="primary"
-                style={{width: "48%"}}/>
+                style={{ width: "48%" }} />
         </View>
-        <View style={{height: 10}} />
+        <View style={{ height: 10 }} />
     </>
 }

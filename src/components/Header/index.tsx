@@ -86,7 +86,7 @@ export default (
     editFn = () => HeaderEvent.emit("edit", "user")
   } else if(route.name === "Myplace") {
     leftButton = "back"
-    const isPreview = !!((route.params as {preview?: boolean}).preview)
+    const isPreview = !!((route.params as {preview?: boolean})?.preview ?? false)
     rightButton = isPreview ? "share" : "edit"
     headerText = 'My Place'
     editFn = () => {

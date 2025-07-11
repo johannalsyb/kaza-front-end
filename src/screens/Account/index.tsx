@@ -1,73 +1,74 @@
-import {ActivityIndicator, Linking, ScrollView, View} from 'react-native';
-import KButton from '../../components/KButton/KButton';
-import useAuthentication from '../../hooks/useAuthentication';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavStackParamList} from '../../navigation/screens';
-import variables from '../../styles/variables';
-import KText from '../../components/KText';
-import KIcon from '../../components/KIcon/KIcon';
-import {Link, useRoute} from '@react-navigation/native';
-import MainInfo from '../../components/Views/Account/MainInfo';
-import History from '../../components/Views/Account/History';
-import React, {useEffect, useState} from 'react';
-import EditProfile from '../../components/Views/Account/EditProfile';
-import {parsePhone} from '../../utils/phone';
-import KSideModal from '../../components/KModal/KSideModal';
-import useIsMobile from '../../hooks/useIsMobile';
-import {Creds} from '../../components/forms/auth/Register';
-import users from '../../api/users';
-import EditProperty from '../../components/Views/Account/EditProperty';
-import {Api} from '../../common';
-import {toastError} from '../../components/Toast/Toast';
-import {useSetAtom} from 'jotai';
-import {showSwapNowAtom} from '../../atoms';
-import UserEvent from '../../events/UserEvent';
-import useConfig from '../../hooks/useConfig';
-import HeaderEvent from '../../events/HeaderEvent';
-import MyPlace from './MyPlace';
-import { shareProperty } from '../../utils/Share';
-import Menu from '../../components/Menu';
-
+import { ActivityIndicator, Linking, ScrollView, View } from 'react-native'
+import KButton from '../../components/KButton/KButton'
+import useAuthentication from '../../hooks/useAuthentication'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../navigation/screens'
+import variables from '../../styles/variables'
+import KText from '../../components/KText'
+import KIcon from '../../components/KIcon/KIcon'
+import { Link, useRoute } from '@react-navigation/native'
+import MainInfo from '../../components/Views/Account/MainInfo'
+import History from '../../components/Views/Account/History'
+import React, { useEffect, useState } from 'react'
+import EditProfile from '../../components/Views/Account/EditProfile'
+import { parsePhone } from '../../utils/phone'
+import KSideModal from '../../components/KModal/KSideModal'
+import useIsMobile from '../../hooks/useIsMobile'
+import { Creds } from '../../components/forms/auth/Register'
+import users from '../../api/users'
+import EditProperty from '../../components/Views/Account/EditProperty'
+import { Api } from '../../common'
+import { toastError } from '../../components/Toast/Toast'
+import { useSetAtom } from 'jotai'
+import { showSwapNowAtom } from '../../atoms'
+import UserEvent from '../../events/UserEvent'
+import useConfig from '../../hooks/useConfig'
+import HeaderEvent from '../../events/HeaderEvent'
+import MyPlace from './MyPlace'
+import { shareProperty } from '../../utils/Share'
+import Menu from '../../components/Menu'
+import MenuButtons from '../../components/Screens/Account/Menu'
+import EditProfileComponent from '../../components/Screens/Account/EditProfile'
 type Props = NativeStackScreenProps<
   NavStackParamList,
   'Account' | 'Swap' | 'History' | 'Myplace'
->;
+>
 
 let shareEvId: string | undefined = undefined
 
 export default (props: Props) => {
-  const {route} = props;
-  const [modal, setModal] = useState<'user' | 'property' | 'swap' | null>(null);
-  const {isMobile} = useIsMobile();
-  const [user, setUser] = useState<{user: Api.Users.Me; creds: Creds}>();
+  const { route } = props
+  const [modal, setModal] = useState<'user' | 'property' | 'swap' | null>(null)
+  const { isMobile } = useIsMobile()
+  const [user, setUser] = useState<{ user: Api.Users.Me; creds: Creds }>()
   // const [property, setProperty] = useState<Property>()
-  const [prop, setProp] = useState<Api.Properties.PrivateProperty>();
-  const [loading, setLoading] = useState(false);
-  const [ueListenerId, setUeListenerId] = useState<string>();
-  const setShowSwapNow = useSetAtom(showSwapNowAtom);
-  const {logout, properties} = useAuthentication();
-  const {config} = useConfig();
+  const [prop, setProp] = useState<Api.Properties.PrivateProperty>()
+  const [loading, setLoading] = useState(false)
+  const [ueListenerId, setUeListenerId] = useState<string>()
+  const setShowSwapNow = useSetAtom(showSwapNowAtom)
+  const { logout, properties } = useAuthentication()
+  const { config } = useConfig()
 
-  const [contentHeight, setContentHeight] = useState(-1);
-  const [scrollViewHeight, setScrollViewHeight] = useState(-1);
+  const [contentHeight, setContentHeight] = useState(-1)
+  const [scrollViewHeight, setScrollViewHeight] = useState(-1)
 
-  const swapId = (route.params as Readonly<{id: string}>)?.id;
-  const edit = (route.params as Readonly<{edit: boolean}>)?.edit;
+  const swapId = (route.params as Readonly<{ id: string }>)?.id
+  const edit = (route.params as Readonly<{ edit: boolean }>)?.edit
 
   useEffect(() => {
     if (!prop) {
-      setLoading(true);
+      setLoading(true)
       loadProperty().finally(() => {
-        setLoading(false);
-      });
+        setLoading(false)
+      })
     }
-    if (!user) loadUser();
+    if (!user) loadUser()
     if (!ueListenerId) {
       setUeListenerId(
         UserEvent.addListener('update', u => {
-          loadUser();
+          loadUser()
         }),
-      );
+      )
     }
 
     const evId = HeaderEvent.addListener("edit", (data) => {
@@ -76,25 +77,25 @@ export default (props: Props) => {
     })
 
     return () => {
-      if (ueListenerId) UserEvent.removeListener('update', ueListenerId);
+      if (ueListenerId) UserEvent.removeListener('update', ueListenerId)
       if (evId) HeaderEvent.removeListener("edit", evId)
       if (shareEvId) HeaderEvent.removeListener("share", shareEvId)
-    };
-  }, []);
+    }
+  }, [])
 
   useEffect(() => {
-    if(!ueListenerId) return // wait til first load
-    props.navigation.setParams({edit: modal ? true : undefined})
+    if (!ueListenerId) return // wait til first load
+    props.navigation.setParams({ edit: modal ? true : undefined })
   }, [modal])
 
   useEffect(() => {
-    if(edit && user && prop && !modal) {
-      if(props.route.name === "Account") setModal("user")
-      else if(props.route.name === "Myplace") setModal("property")
+    if (edit && user && prop && !modal) {
+      if (props.route.name === "Account") setModal("user")
+      else if (props.route.name === "Myplace") setModal("property")
     }
 
-    if(prop) {
-      if(shareEvId) HeaderEvent.removeListener("share", shareEvId)
+    if (prop) {
+      if (shareEvId) HeaderEvent.removeListener("share", shareEvId)
       shareEvId = HeaderEvent.addListener("share", (data) => {
         if (data === "property") {
           shareProperty(`${window.location.origin}/property/${prop?.id}`)
@@ -103,22 +104,22 @@ export default (props: Props) => {
     }
   }, [user, prop])
 
-  const loadProperty = (changeHidden?:boolean) => {
+  const loadProperty = (changeHidden?: boolean) => {
     return properties.reload(changeHidden)
       .then((array) => {
-        const p = array[0];
-        if (!p) return;
-        setProp(p);
+        const p = array[0]
+        if (!p) return
+        setProp(p)
       })
       .catch(err => {
-        toastError('An error occured while fetching your property');
-      });
-  };
+        toastError('An error occured while fetching your property')
+      })
+  }
 
   const loadUser = () => {
     return users.me
       .get()
-      .then(({data}) => Promise.all([data, parsePhone(data.phone)]))
+      .then(({ data }) => Promise.all([data, parsePhone(data.phone)]))
       .then(([user, phone]) =>
         setUser({
           user,
@@ -138,25 +139,8 @@ export default (props: Props) => {
             },
           },
         }),
-      );
-  };
-
-  const EditProfileView = !user ? (
-    <ActivityIndicator />
-  ) : (
-    <EditProfile
-      style={{
-        width: isMobile ? '100%' : '90%',
-      }}
-      creds={user.creds}
-      onChange={c => setUser({user: user.user, creds: c})}
-      onClose={() => setModal(null)}
-      onUpdated={() => {
-        setModal(null);
-        loadUser();
-      }}
-    />
-  );
+      )
+  }
 
   const EditPropertyView = !prop ? (
     <ActivityIndicator />
@@ -186,34 +170,34 @@ export default (props: Props) => {
       }}
       onClose={() => setModal(null)}
       onUpdated={(np) => {
-        setModal(null);
-        loadProperty(np.private !== prop.private ? np.private : undefined);
+        setModal(null)
+        loadProperty(np.private !== prop.private ? np.private : undefined)
       }}
     />
-  );
+  )
 
-  const onEditPropertyPressed = () => setModal('property');
-  const onEditProfilePressed = () => setModal('user');
+  const onEditPropertyPressed = () => setModal('property')
+  const onEditProfilePressed = () => setModal('user')
 
   const EditProfileText = (text: string) => (
     <KText
-      style={{textDecorationLine: 'underline'}}
+      style={{ textDecorationLine: 'underline' }}
       onPress={() => onEditProfilePressed()}>
       {text} <KIcon name="edit" />
     </KText>
-  );
+  )
 
-  const isHistory = route.name === 'History' || route.name === 'Swap';
+  const isHistory = route.name === 'History' || route.name === 'Swap'
 
   const phoneValid =
     user &&
     user.creds.phone &&
     user.creds.phone.number &&
     user.creds.phone.number.length &&
-    user.creds.phone.code;
+    user.creds.phone.code
   const phone = phoneValid
     ? `${user.creds.phone.code}${user.creds.phone.number}`
-    : undefined;
+    : undefined
 
   const menu = [
     {
@@ -237,9 +221,9 @@ export default (props: Props) => {
   ]
 
   const isContentSmallerThanScreen = () => {
-    if (contentHeight === -1 || scrollViewHeight === -1) return false;
-    return contentHeight < scrollViewHeight;
-  };
+    if (contentHeight === -1 || scrollViewHeight === -1) return false
+    return contentHeight < scrollViewHeight
+  }
 
   return (
     <ScrollView
@@ -254,14 +238,14 @@ export default (props: Props) => {
         flexDirection: 'column',
         backgroundColor: isMobile ? variables.colors.greenLight : 'black',
       }}>
-      {isMobile ? 
+      {isMobile ?
         <></>
-      : <View
-        style={{
-          display: 'flex',
-          width: '100%',
-          backgroundColor: isMobile ? variables.colors.yellow : 'black',
-        }}>
+        : <View
+          style={{
+            display: 'flex',
+            width: '100%',
+            backgroundColor: isMobile ? variables.colors.yellow : 'black',
+          }}>
           <View style={{
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -275,22 +259,11 @@ export default (props: Props) => {
             paddingRight: 20,
             justifyContent: 'space-around',
           }}>
-            <View style={{flex: 1}}></View>
-            <View style={{flexDirection: isMobile ? 'column' : 'row'}}>
-              {menu.map((m, i) => (
-                <KButton
-                  key={`menu_${i}`}
-                  color={m.active ? 'tertiary' : 'light'}
-                  text={m.text}
-                  icon={m.icon as any}
-                  onPress={m.onPress}
-                  style={{marginRight: 10}}
-                />
-              ))}
-            </View>
+            <View style={{ flex: 1 }}></View>
+            <MenuButtons navigation={props.navigation} route={route} />
 
-            <View style={{flex: 1, justifyContent: "flex-end", flexDirection: "row"}}>
-              {/* {route.name === "Myplace" && <>
+            <View style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}>
+              {route.name === "Myplace" && <>
                 <KButton
                   color="light"
                   onPress={() => setModal('property')}
@@ -299,14 +272,14 @@ export default (props: Props) => {
                   <KIcon name="edit" size="large" />
                   {isMobile ? null : <KText>Edit property</KText>}
                 </KButton>
-              </>} */}
+              </>}
             </View>
-        </View>
-      </View>}
+          </View>
+        </View>}
 
       <ScrollView
         onLayout={e => {
-          setScrollViewHeight(e.nativeEvent.layout.height);
+          setScrollViewHeight(e.nativeEvent.layout.height)
         }}
         contentContainerStyle={{
           paddingTop: isMobile ? 0 : 10,
@@ -322,7 +295,7 @@ export default (props: Props) => {
         {route.name === 'Account' && (<>
           <MainInfo
             onLayout={e => {
-              setContentHeight(e.nativeEvent.layout.height);
+              setContentHeight(e.nativeEvent.layout.height)
             }}
             property={prop}
             creds={user}
@@ -347,16 +320,16 @@ export default (props: Props) => {
             }}
             color="greenLight" /> */}
 
-          </>
+        </>
         )}
         {route.name === "Myplace" && <MyPlace
           onEditPropertyPressed={onEditPropertyPressed}
           onPropertyEdited={loadProperty}
           privateProperty={prop}
           id={prop?.id}
-          onBackPressed={() => props.navigation.navigate("Account", {edit: undefined})}
+          onBackPressed={() => props.navigation.navigate("Account", { edit: undefined })}
           navigation={props.navigation}
-          />}
+        />}
         {isHistory && <History />}
 
 
@@ -368,38 +341,42 @@ export default (props: Props) => {
             alignItems: 'center',
             width: '100%',
             // Margin top :20px
-          marginTop : 20,
+            marginTop: 20,
             backgroundColor: variables.colors.greenLight,
             paddingHorizontal: isMobile ? 10 : "5%"
           }}>
-            {menu.map((m, i) => (
-              <KButton
-                color={'light'}
-                text={m.text}
-                icon={m.icon as any}
-                onPress={m.onPress}
-                key={`menu_${i}`}
-                style={{
-                  width: '100%',
-                  display: m.active ? 'none' : 'flex',
-                  borderWidth: 0,
-                  // height set :53px
-                  height : 53,
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  flexDirection: 'row',
-                  paddingLeft: 5,
-                  paddingRight: 15,
-                  marginBottom: 5,
-                  marginTop: 5,
-                }}
-              >
-              <KIcon name={m.icon as any} style={{marginRight: 10, marginLeft: 10}} size="medium" />
-              <KText style={{flex: 1}}>{m.text}</KText>
-              <KIcon name="chevronRight" style={{marginRight: 10, marginLeft: 10}} size="medium" />
-               </KButton>
-            ))}
 
+
+          {/* #TODO Check how it work  */}
+
+          {menu.map((m, i) => (
+            <KButton
+              color={'light'}
+              text={m.text}
+              icon={m.icon as any}
+              onPress={m.onPress}
+              key={`menu_${i}`}
+              style={{
+                width: '100%',
+                display: m.active ? 'none' : 'flex',
+                borderWidth: 0,
+                // height set :53px
+                height: 53,
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                flexDirection: 'row',
+                paddingLeft: 5,
+                paddingRight: 15,
+                marginBottom: 5,
+                marginTop: 5,
+              }}
+            >
+              <KIcon name={m.icon as any} style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
+              <KText style={{ flex: 1 }}>{m.text}</KText>
+              <KIcon name="chevronRight" style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
+            </KButton>
+          ))}
+          {/* ________________________________end */}
           {/* <KButton
             color={'light'}
             onPress={() => {}}
@@ -458,14 +435,14 @@ export default (props: Props) => {
         </View>
       )}
 
-      {props.route.name === "Account" ? <>
+      {/* {props.route.name === "Account" ? <>
         <View
           style={{
             width: '100%',
             display: isMobile && route.name !== "Account" ? "none" : 'flex',
             flexDirection: isMobile ? 'column' : 'row',
-                  // height set :53px
-                  height : 53,
+            // height set :53px
+            height: 53,
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingLeft: 10,
@@ -477,14 +454,14 @@ export default (props: Props) => {
             icon="support"
             text={config?.emails.support || 'Contact support'}
             onPress={() => {
-              Linking.openURL(`mailto:${config?.emails.support}`);
+              Linking.openURL(`mailto:${config?.emails.support}`)
             }}
             style={{
               backgroundColor: variables.colors.darkYellow,
               width: isMobile ? '100%' : 'auto',
               display: isMobile ? 'flex' : "none",
               paddingLeft: 5,
-              height :53,
+              height: 53,
               marginBottom: isMobile ? 10 : 0,
               alignItems: 'flex-start',
             }}
@@ -499,7 +476,7 @@ export default (props: Props) => {
               width: isMobile ? '100%' : 'auto',
               display: isMobile ? 'flex' : "none",
               paddingLeft: 5,
-              height :53,
+              height: 53,
               marginBottom: isMobile ? 10 : 0,
               alignItems: 'flex-start',
             }}
@@ -507,13 +484,13 @@ export default (props: Props) => {
           />
         </View>
 
-      </> : null}
+      </> : null} */}
 
       {isMobile ? <>
-        <View style={{height: 90}}></View>
+        <View style={{ height: 90 }}></View>
         <Menu navigate={props.navigation.navigate} style={{
           // position: "fixed"
-        }}/>
+        }} />
       </> : null}
 
       <KSideModal
@@ -522,9 +499,9 @@ export default (props: Props) => {
         }}
         visible={!!modal}
         onClose={() => setModal(null)}>
-        {modal === 'user' && EditProfileView}
-        {modal === 'property' && EditPropertyView}
+        {modal === 'user' && <EditProfileComponent user={user} setUser={setUser} setModal={setModal} loadUser={loadUser} />}
+        {/* {modal === 'property' && EditPropertyView} */}
       </KSideModal>
     </ScrollView>
-  );
-};
+  )
+}

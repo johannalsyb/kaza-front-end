@@ -1,6 +1,7 @@
 export {ReactComponent as defaultIcon} from './defaultIcon.svg';
 export {ReactComponent as calendar} from './calendar.svg';
 export {ReactComponent as calendarEdit} from './calendarEdit.svg';
+export {ReactComponent as calendarNew} from './calendarNew.svg';
 export {ReactComponent as location} from './location.svg';
 export {ReactComponent as tick} from './tick.svg';
 export {ReactComponent as eyeOpen} from './eyeOpen.svg';

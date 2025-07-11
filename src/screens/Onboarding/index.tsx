@@ -4,6 +4,7 @@ import {
   Linking,
   Pressable,
   ScrollView,
+  StyleSheet,
   TextInput,
   View,
 } from 'react-native'
@@ -52,8 +53,8 @@ export const onboardingSteps: {
       subtitle: 'Minimum 3 pictures',
     },
     {
-      icon: '✈️',
-      title: 'Finally, tell us about your trip!',
+      icon: 'calendarNew',
+      title: 'Finally, availabilities of your place?',
     },
   ]
 
@@ -252,14 +253,14 @@ export default (props: Props) => {
     <Step2
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(1)}
+      onNext={() => stepUp(2)}
     />
   )
   onboardingSteps[1].content = (
     <Step3
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(2)}
+      onNext={() => stepUp(3)}
       onPrev={() => stepDown(1)}
     />
   )
@@ -267,7 +268,7 @@ export default (props: Props) => {
     <Step4
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(3)}
+      onNext={() => stepUp(4)}
       onPrev={() => stepDown(2)}
     />
   )
@@ -282,19 +283,19 @@ export default (props: Props) => {
   const currentStepObject = onboardingSteps[(currentStep || 1) - 1]
   const Comp = isMobile ? ScrollView : View
 
-  const ContentView = () => (
-    <View
-      style={{
-        width: isMobile ? '90%' : '70%',
-        zIndex: 10,
-        flex: 1,
-        marginTop: 20,
-        justifyContent: isMobile ? 'flex-start' : 'center',
-        alignItems: isMobile ? 'flex-start' : 'center',
-      }}>
-      {currentStepObject.content}
-    </View>
-  )
+  // const ContentView = () => (
+  //   <View
+  //     style={{
+  //       width: isMobile ? '90%' : '70%',
+  //       zIndex: 10,
+  //       flex: 1,
+  //       marginTop: 20,
+  //       justifyContent: isMobile ? 'flex-start' : 'center',
+  //       alignItems: isMobile ? 'flex-start' : 'center',
+  //     }}>
+  //     {currentStepObject.content}
+  //   </View>
+  // )
 
   return (
     <Comp
@@ -348,7 +349,14 @@ export default (props: Props) => {
             width: isMobile ? 'auto' : 120,
             textAlign: 'center',
           }}>
-          {currentStepObject.icon}
+          {currentStepObject.icon === 'calendarNew' ? <KIcon
+            name={currentStepObject.icon as 'calendarNew'}
+            size={isMobile ? 40 : 70}
+            style={{
+              color: variables.colors.yellow,
+              marginTop: isMobile ? 0 : 10,
+            }} /> :
+            currentStepObject.icon}
         </KText>
         <KText
           style={{
@@ -419,11 +427,12 @@ export default (props: Props) => {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
-          // paddingBottom: 30,
+          justifyContent: 'center',
+          marginHorizontal: 'auto',
+          width: isMobile ? '100%' : 400,
+          paddingHorizontal: isMobile ? 30 : 0,
           flex: 1,
           backgroundColor: 'white',
-          // width: '100%',
-          // justifyContent: isMobile ? "flex-start" : "center"
         }}
         style={{
           flex: 1,
@@ -437,13 +446,7 @@ export default (props: Props) => {
           />
         ) : (
           <View
-            style={{
-              width: '90%',
-              zIndex: 10,
-              flex: 1,
-              marginTop: 20,
-              // justifyContent: isMobile ? "flex-start" : "center"
-            }}>
+            style={styles.containerRightSide}>
             {currentStepObject.content}
           </View>
         )}
@@ -451,3 +454,15 @@ export default (props: Props) => {
     </Comp>
   )
 }
+
+const styles = StyleSheet.create({
+  containerRightSide: {
+    zIndex: 10,
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  }
+})

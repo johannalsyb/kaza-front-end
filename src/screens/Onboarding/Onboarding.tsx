@@ -24,7 +24,7 @@ export default (props: IOnboarding) => {
           label: 'Register',
           onPress: () => {
             navigate('Onboarding', { step: 0 })
-            // setShowModalRegisterPlace(false)
+            setShowModalRegisterPlace(false)
           }
         }}
         setOpen={setShowModalRegisterPlace}

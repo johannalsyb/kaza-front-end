@@ -26,7 +26,9 @@ const variables = {
     orange: '#FF784E',
   },
   font: {
-    size: {},
+    size: {
+      normal: 14
+    },
     weight: {},
     colors: {},
     family: {

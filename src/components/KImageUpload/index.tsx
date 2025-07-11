@@ -30,7 +30,7 @@ export type Handle = {
     open: () => void,
 }
 
-export const KImageUploadWidth = 155
+export const KImageUploadWidth = 120
 
 export default forwardRef<Handle, Props>(({
     src,
@@ -137,7 +137,7 @@ export default forwardRef<Handle, Props>(({
                             name="crossCircle"
                             size="medium"
                             style={{
-                                backgroundColor: variables.colors.closeButton,
+                                backgroundColor: variables.colors.orange,
                                 borderRadius: 100,
                                 padding: 5,
                             }}
