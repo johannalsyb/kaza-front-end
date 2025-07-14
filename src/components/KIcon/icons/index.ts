@@ -30,6 +30,7 @@ export {ReactComponent as crossCircle} from './crossCircle.svg';
 export {ReactComponent as plusCircle} from './plusCircle.svg';
 export {ReactComponent as minusCircle} from './minusCircle.svg';
 export {ReactComponent as sqm2} from './sqm2.svg';
+export {ReactComponent as delete} from './delete.svg';
 
 export {ReactComponent as bell} from './bell.svg';
 export {ReactComponent as matching} from './matching.svg';

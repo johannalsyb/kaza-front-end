@@ -26,6 +26,7 @@ import useIsMobile from '../../hooks/useIsMobile'
 import KIcon from '../../components/KIcon/KIcon'
 import users from '../../api/users'
 import { OnboardingInfo } from '../../common/types/api/auth'
+import KAlert from '../../components/KAlert'
 // import Step6 from "./Step6";
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>
@@ -273,7 +274,10 @@ export default (props: Props) => {
     />
   )
   onboardingSteps[3].content = (
-    <Step5 onChange={p => { }} onNext={finish} onPrev={() => stepDown(3)} />
+    <Step5
+      onChange={setProperty}
+      property={property || defaultProperty}
+      onNext={finish} onPrev={() => stepDown(3)} />
   )
   // onboardingSteps[5].content = (
   //   <Step6 onNext={finish} onPrev={() => stepDown(5)} />
@@ -298,160 +302,163 @@ export default (props: Props) => {
   // )
 
   return (
-    <Comp
-      style={{
-        display: 'flex',
-        flex: 1,
-        backgroundColor: 'white',
-        flexDirection: isMobile ? 'column' : 'row',
-      }}
-      contentContainerStyle={{
-        display: 'flex',
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: 'white',
-        flexDirection: isMobile ? 'column' : 'row',
-      }}>
-      <View
+    <>
+      <Comp
         style={{
           display: 'flex',
-          justifyContent: 'center',
+          flex: 1,
+          backgroundColor: 'white',
+          flexDirection: isMobile ? 'column' : 'row',
+        }}
+        contentContainerStyle={{
+          display: 'flex',
           alignItems: 'center',
-          flexDirection: 'column',
-          paddingBottom: 30,
-          paddingTop: 20,
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-          zIndex: 1,
-          width: isMobile ? '100%' : undefined,
-          // height: isMobile ? "auto" : '100%',
-          flex: isMobile ? undefined : 1,
-          backgroundColor: variables.colors.greenLight,
+          flex: 1,
+          backgroundColor: 'white',
+          flexDirection: isMobile ? 'column' : 'row',
         }}>
-        {isMobile && (
-          <StepView
-            number={onboardingSteps.length}
-            current={currentStep || 1}
-            style={{
-              height: 3,
-              width: '90%',
-              flex: 1,
-              opacity: !currentStep ? 0 : 1,
-            }}
-          />
-        )}
-        <KText
+        <View
           style={{
-            fontSize: isMobile ? 40 : 70,
-            backgroundColor: isMobile ? 'transparent' : 'white',
-            padding: isMobile ? 0 : 10,
-            borderRadius: isMobile ? 0 : 60,
-            width: isMobile ? 'auto' : 120,
-            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            paddingBottom: 30,
+            paddingTop: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            zIndex: 1,
+            width: isMobile ? '100%' : undefined,
+            // height: isMobile ? "auto" : '100%',
+            flex: isMobile ? undefined : 1,
+            backgroundColor: variables.colors.greenLight,
           }}>
-          {currentStepObject.icon === 'calendarNew' ? <KIcon
-            name={currentStepObject.icon as 'calendarNew'}
-            size={isMobile ? 40 : 70}
-            style={{
-              color: variables.colors.yellow,
-              marginTop: isMobile ? 0 : 10,
-            }} /> :
-            currentStepObject.icon}
-        </KText>
-        <KText
-          style={{
-            fontWeight: 'bold',
-            fontSize: isMobile ? 15 : 20,
-            marginTop: isMobile ? 0 : 20,
-          }}>
-          {currentStepObject.title}
-        </KText>
-        {currentStepObject.subtitle && (
-          <KText
-            style={{
-              fontSize: 10,
-              color: variables.colors.grey,
-              marginTop: 5,
-            }}>
-            {currentStepObject.subtitle}
-          </KText>
-        )}
-
-        {!isMobile && (
-          <>
-            <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1 }}>
-              Step {currentStep} of {onboardingSteps.length}
-            </KText>
+          {isMobile && (
             <StepView
               number={onboardingSteps.length}
               current={currentStep || 1}
               style={{
                 height: 3,
                 width: '90%',
-                marginTop: 30,
+                flex: 1,
                 opacity: !currentStep ? 0 : 1,
               }}
             />
-            <Pressable
-              style={{ position: 'absolute', top: 0, left: 40 }}
-              onPress={() => {
-                Linking.openURL('https://www.kazaswap.co')
-              }}>
-              <KIcon name="logoText2" size={120} />
-            </Pressable>
+          )}
+          <KText
+            style={{
+              fontSize: isMobile ? 40 : 70,
+              backgroundColor: isMobile ? 'transparent' : 'white',
+              padding: isMobile ? 0 : 10,
+              borderRadius: isMobile ? 0 : 60,
+              width: isMobile ? 'auto' : 120,
+              textAlign: 'center',
+            }}>
+            {currentStepObject.icon === 'calendarNew' ? <KIcon
+              name={currentStepObject.icon as 'calendarNew'}
+              size={isMobile ? 40 : 70}
+              style={{
+                color: variables.colors.yellow,
+                marginTop: isMobile ? 0 : 10,
+              }} /> :
+              currentStepObject.icon}
+          </KText>
+          <KText
+            style={{
+              fontWeight: 'bold',
+              fontSize: isMobile ? 15 : 20,
+              marginTop: isMobile ? 0 : 20,
+            }}>
+            {currentStepObject.title}
+          </KText>
+          {currentStepObject.subtitle && (
             <KText
               style={{
-                position: 'absolute',
-                bottom: 10,
-                left: 10,
                 fontSize: 10,
                 color: variables.colors.grey,
+                marginTop: 5,
               }}>
-              © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
+              {currentStepObject.subtitle}
             </KText>
-            <KText
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                right: 20,
-                fontSize: 10,
-                color: variables.colors.grey,
-              }}>
-              ♥️ Made by friends
-            </KText>
-          </>
-        )}
-      </View>
-      <ScrollView
-        contentContainerStyle={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          marginHorizontal: 'auto',
-          width: isMobile ? '100%' : 400,
-          paddingHorizontal: isMobile ? 30 : 0,
-          flex: 1,
-          backgroundColor: 'white',
-        }}
-        style={{
-          flex: 1,
-          width: '100%',
-        }}>
-        {!currentStep ? (
-          <ActivityIndicator
-            color={variables.colors.yellow}
-            size="large"
-            style={{ marginTop: 20 }}
-          />
-        ) : (
-          <View
-            style={styles.containerRightSide}>
-            {currentStepObject.content}
-          </View>
-        )}
-      </ScrollView>
-    </Comp>
+          )}
+
+          {!isMobile && (
+            <>
+              <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1 }}>
+                Step {currentStep} of {onboardingSteps.length}
+              </KText>
+              <StepView
+                number={onboardingSteps.length}
+                current={currentStep || 1}
+                style={{
+                  height: 3,
+                  width: '90%',
+                  marginTop: 30,
+                  opacity: !currentStep ? 0 : 1,
+                }}
+              />
+              <Pressable
+                style={{ position: 'absolute', top: 0, left: 40 }}
+                onPress={() => {
+                  Linking.openURL('https://www.kazaswap.co')
+                }}>
+                <KIcon name="logoText2" size={120} />
+              </Pressable>
+              <KText
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  left: 10,
+                  fontSize: 10,
+                  color: variables.colors.grey,
+                }}>
+                © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
+              </KText>
+              <KText
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  right: 20,
+                  fontSize: 10,
+                  color: variables.colors.grey,
+                }}>
+                ♥️ Made by friends
+              </KText>
+            </>
+          )}
+        </View>
+        <ScrollView
+          contentContainerStyle={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            marginHorizontal: 'auto',
+            width: isMobile ? '100%' : 400,
+            paddingHorizontal: isMobile ? 30 : 0,
+            flex: 1,
+            backgroundColor: 'white',
+          }}
+          style={{
+            flex: 1,
+            width: '100%',
+          }}>
+          {!currentStep ? (
+            <ActivityIndicator
+              color={variables.colors.yellow}
+              size="large"
+              style={{ marginTop: 20 }}
+            />
+          ) : (
+            <View
+              style={styles.containerRightSide}>
+              {currentStepObject.content}
+            </View>
+          )}
+        </ScrollView>
+      </Comp>
+      <KAlert />
+    </>
   )
 }
 

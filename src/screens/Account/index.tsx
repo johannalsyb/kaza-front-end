@@ -203,13 +203,13 @@ export default (props: Props) => {
     {
       text: 'My Profile',
       icon: 'user',
-      onPress: () => props.navigation.navigate('Account', {edit: undefined}),
+      onPress: () => props.navigation.navigate('Account', { edit: undefined }),
       active: route.name === 'Account',
     },
     {
       text: 'My Place',
       icon: 'placeType',
-      onPress: () => props.navigation.navigate('Myplace', {edit: undefined, preview: isMobile ? undefined : true}),
+      onPress: () => props.navigation.navigate('Myplace', { edit: undefined, preview: isMobile ? undefined : true }),
       active: route.name === 'Myplace',
     },
     {
@@ -267,7 +267,7 @@ export default (props: Props) => {
                 <KButton
                   color="light"
                   onPress={() => setModal('property')}
-                  style={{flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray}}
+                  style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
                   size={isMobile ? 'small' : 'medium'}>
                   <KIcon name="edit" size="large" />
                   {isMobile ? null : <KText>Edit property</KText>}
@@ -499,7 +499,13 @@ export default (props: Props) => {
         }}
         visible={!!modal}
         onClose={() => setModal(null)}>
-        {modal === 'user' && <EditProfileComponent user={user} setUser={setUser} setModal={setModal} loadUser={loadUser} />}
+        {modal === 'user' &&
+          <EditProfileComponent
+            user={user}
+            setUser={setUser}
+            setModal={setModal}
+            loadUser={loadUser}
+          />}
         {/* {modal === 'property' && EditPropertyView} */}
       </KSideModal>
     </ScrollView>
