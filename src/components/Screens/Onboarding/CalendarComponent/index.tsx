@@ -1,37 +1,109 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import KText from '../../../KText'
 import KIcon from '../../../KIcon/KIcon'
 import KButton from '../../../KButton/KButton'
 import variables from '../../../../styles/variables'
 import ListAvailbleDates from './ListAvailbleDates'
+import KSideModal from '../../../KModal/KSideModal'
+import KCalendar from '../../../KCalendar'
+import SelectDates from './SelectDates'
+import dayjs from 'dayjs'
+import { useAtom } from 'jotai'
+import { avilebleDatesAtom } from '../../../../atoms'
+
+
+type ValuePiece = Date | null
+
+type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 const CalendarComponent = () => {
+  const [items, setItems] = useState<any>([])
+
+  const [availableDates, setAvailableDates] = useAtom(avilebleDatesAtom)
+  console.log('availableDates', availableDates)
+  const [isOpenCalendar, setIsOpenCalendar] = useState(false)
+  const [value, onChange] = useState<Value>([
+    new Date(),
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 6)
+      return d
+    })()
+  ])
+
+  const handleClickAddSlots = () => {
+    setAvailableDates([{ id: availableDates.length + 1, value }, ...availableDates])
+    adjustRangeIfBlocked(value as [Date, Date])
+    setIsOpenCalendar(false)
+  }
+
+  const isDateInRanges = (date: Date) => {
+    return availableDates.some((item: any) => {
+      if (!Array.isArray(item.value) || item.value.length < 2) return false
+      const start = new Date(item.value[0])
+      const end = new Date(item.value[1])
+      const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+      const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
+      const e = new Date(end.getFullYear(), end.getMonth(), end.getDate())
+      return d >= s && d <= e
+    })
+  }
+
+  const adjustRangeIfBlocked = (range: [Date, Date]) => {
+    for (const item of availableDates) {
+      if (!Array.isArray(item.value) || item.value.length < 2) continue
+      const blockedStart = new Date(item.value[0])
+      const blockedEnd = new Date(item.value[1])
+      // Якщо діапазони перетинаються
+      if (
+        range[0] <= blockedEnd &&
+        range[1] >= blockedStart
+      ) {
+        const newStart = dayjs(blockedEnd).add(1, 'day').toDate()
+        const newEnd = dayjs(newStart).add(6, 'day').toDate()
+        onChange([newStart, newEnd])
+        return true
+      }
+    }
+    return false
+  }
+
+  const handleChange = (val: Value) => {
+    if (Array.isArray(val) && val[0] && val[1]) {
+      if (adjustRangeIfBlocked([val[0], val[1]])) {
+        return
+      }
+    }
+    onChange(val)
+  }
+  const [itemEdit, setItemEdit] = useState<any>(undefined)
+  const handleClickEdit = (item: any) => {
+    let updateItems = availableDates.filter((i: any) => {
+      i.id !== item.id
+    })
+    setAvailableDates(updateItems)
+    onChange(item.value)
+    setIsOpenCalendar(true)
+    setItemEdit(item)
+  }
+
+  useEffect(() => {
+    if (Array.isArray(value) && value[0] && value[1]) {
+      adjustRangeIfBlocked([value[0], value[1]])
+    }
+  }, [availableDates])
   return (
     <>
       <View style={[styles.container, { justifyContent: 'center', marginBottom: 70, width: '100%' }]}>
         <Pressable onPress={() => { }} style={{ width: '100%' }}>
-          <KText style={styles.label}>
-            Select dates
-          </KText>
-          <View style={styles.input}>
-            <View style={styles.container}>
-              <KText style={{ color: "#000", fontSize: 15, marginLeft: 20, marginRight: 18 }}>
-                Nov 23,
-                <KText style={{ color: 'rgba(0,0,0,0.5)' }}>2023</KText>
-              </KText>
-              -
-              <KText style={{ color: "#000", fontSize: 15, marginLeft: 18 }}>
-                Nov 30,
-                <KText style={{ color: 'rgba(0,0,0,0.5)' }}>2023</KText>
-              </KText>
+          <SelectDates
+            startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
+            endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
+          />
+        </Pressable >
 
-            </View>
-            <KIcon name="arrowDown" size={'large'} style={{ marginRight: 20 }} />
-          </View>
-        </Pressable>
-
-        <KButton onPress={() => { }} color='light' style={styles.button} >
+        <KButton onPress={() => setIsOpenCalendar(true)} color='light' style={styles.button} >
           <KIcon name="plusCircle" size="medium" style={{ stroke: '#000', opacity: 0.5 }} />
           <KText style={{ color: "#000", fontSize: 15, marginLeft: 10 }}>
             Add more slots
@@ -39,7 +111,45 @@ const CalendarComponent = () => {
         </KButton>
 
       </View >
-      <ListAvailbleDates />
+      <ListAvailbleDates items={availableDates} setItems={setAvailableDates} onPressEdit={handleClickEdit} />
+      <KSideModal
+        visible={isOpenCalendar}
+        onClose={() => setIsOpenCalendar(false)}
+      // style={{ maxWidth: 500 }}
+      >
+        <View style={[styles.container, styles.calendarContainer]}>
+          <SelectDates
+            style={{ marginBottom: 46 }}
+            startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
+            endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
+          />
+          <KCalendar
+            onChange={handleChange}
+            value={value}
+            minDate={new Date()}
+            tileDisabled={({ date, view }) =>
+              view === 'month' && isDateInRanges(date)
+            }
+          />
+          <View style={styles.containerButtons}>
+            <KButton
+              text='Cancel'
+              onPress={() => {
+                setIsOpenCalendar(false)
+                Boolean(itemEdit) && setAvailableDates([...availableDates, itemEdit])
+              }}
+              color='light'
+              style={{ width: '100%', flex: 1 }}
+            />
+            <KButton
+              text='Confirm'
+              onPress={() => handleClickAddSlots()}
+              color='primary'
+              style={{ width: '100%', flex: 1 }}
+            />
+          </View>
+        </View>
+      </KSideModal>
     </>
   )
 }
@@ -49,8 +159,9 @@ export default CalendarComponent
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexWrap: 'wrap',
   },
   label: {
@@ -80,4 +191,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingVertical: 8,
   },
+  calendarContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 50,
+    height: '100%',
+  },
+  containerButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 80,
+    columnGap: 23
+  }
 })
