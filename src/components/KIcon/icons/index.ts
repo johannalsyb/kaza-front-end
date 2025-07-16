@@ -15,6 +15,7 @@ export {ReactComponent as logo} from './logo.svg';
 export {ReactComponent as logoCircle} from './logoCircle.svg';
 export {ReactComponent as logoText} from './logoText.svg';
 export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by default
+export {ReactComponent as KazaSwap} from './KazaSwap.svg'; // => Beta by default
 // export {ReactComponent as logoText2Beta} from './logoText2Beta.svg';
 
 export {ReactComponent as smile} from './smile.svg';
@@ -112,3 +113,5 @@ export {ReactComponent as pet} from './pet.svg';
 export {ReactComponent as more} from './more.svg';
 export {ReactComponent as support} from './support.svg';
 export {ReactComponent as pin} from './pin.svg';
+
+export {ReactComponent as tada} from './tada.svg';

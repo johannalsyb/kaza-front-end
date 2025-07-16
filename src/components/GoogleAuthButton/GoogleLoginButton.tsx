@@ -15,12 +15,12 @@ export default () => {
           callback: handleCredentialResponse,
         })
         //@ts-ignore
-        // authInstance.current.renderButton(document.getElementById('googleBtn'), {
-        //   theme: 'outline',
-        //   size: 'large',
-        //   text: 'signin_with',
-        //   language: 'en',
-        // })
+        authInstance.current.renderButton(document.getElementById('googleBtn'), {
+          theme: 'outline',
+          size: 'large',
+          text: 'signin_with',
+          language: 'en',
+        })
       }
     }
 
@@ -63,7 +63,7 @@ export default () => {
     },
   })
 
-  // return (<div id="googleBtn" style={styles.button} />
+  // return (<div id="googleBtn" style={styles.button} />)
   return (
     <KButton
       text='Sign in with Google'

@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import KButton from "../../components/KButton/KButton"
 import { useEffect, useState } from "react"
 import User1, { Preferences } from "../../components/forms/user/User1"
@@ -19,9 +19,9 @@ type Props = NativeStackScreenProps<NavStackParamList, 'Success'>
 const mimg = require("../../assets/Onboarding/Congrats.webp")
 const dimg = require("../../assets/Onboarding/Desktop_Congrats.jpg")
 
-export default (props:Props) => {
-    const {user} = useAuthentication()
-    const {isMobile} = useIsMobile()
+export default (props: Props) => {
+    const { user } = useAuthentication()
+    const { isMobile } = useIsMobile()
     const [loading, setLoading] = useState(false)
     // if(!user) {
     //     props.navigation.navigate("Home")
@@ -30,82 +30,60 @@ export default (props:Props) => {
     return <ScrollView
         style={{
             paddingBottom: isMobile ? 20 : 0,
-            width: "100%",       
-        }}
-        contentContainerStyle={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            justifyContent: "space-between",
-            alignItems: "center",
             width: "100%",
-            paddingBottom: isMobile ? 20 : 0,
-            marginBottom: isMobile ? 20 : 0,
-            flex: 1
-        }}>
-            <View style={{
-                width: isMobile ? "100%" : "50%",
-                height: isMobile ? 380 : "100%",
-            }}>
-                <KImage
-                    source={isMobile ? mimg : dimg}
-                    style={{
-                        width: "100%",
-                        height: isMobile ? "auto" : "100%",
-                        objectFit: isMobile ? "contain" : "cover",
-                    }} />
-                <View style={{
-                    alignItems: "center",
-                    width: "100%",
-                    top: isMobile ? -120 : undefined,
-                    bottom: isMobile ? undefined : 100,
-                    marginTop: isMobile ? 20 : 0,
-                    marginBottom: isMobile ? 20 : 0,
-                    position: isMobile ? "relative" : "absolute",
-                }}>
-                    <KText style={{fontWeight: "bold", fontSize: isMobile ? 30 : 50}}>Congratulations</KText>
-                    <KText style={{fontWeight: "bold", fontSize: isMobile ? 30 : 50}}>{user?.firstName}!</KText>
-                </View>
-
-                {!isMobile && <>
-                    <KIcon name="logoText2" size={120} style={{position: "absolute", top: 0, left: 40}} />
-                    <KText
-                    style={{position: "absolute", bottom: 10, left: 10, fontSize: 10, color: variables.colors.black}}>
-                        © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-                    </KText>
-                    <KText
-                    style={{position: "absolute", bottom: 10, right: 20, fontSize: 10, color: variables.colors.black}}>
-                    ♥️ Made by friends
-                    </KText>
-                </>}
+        }}
+        contentContainerStyle={styles.container}>
+        <View
+            style={[styles.containerLeftSide, styles.borderRadiusDesktop]}
+        >
+            <KIcon name="KazaSwap" size={124} style={styles.logo} />
+            <KIcon name="tada" size={140} />
+            <View style={styles.containerText} >
+                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 30 : 50 }}>Congratulations</KText>
+                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 30 : 50 }}>{user?.firstName}!</KText>
             </View>
+            <KText
+                style={{ position: "absolute", bottom: 35, right: 130 }}>
+                ♥️
+            </KText>
+        </View>
 
-            <View style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flex: 1,
-                width: "90%",
-                marginTop: 20,
-                marginBottom: 20
-            }}>
-                <View style={{
-                    display: "flex",
-                    width: isMobile ? "100%" : "90%",
-                    marginTop: 30,
-                    marginBottom: 20
-                }}>
-                    <KText style={{fontWeight: "bold", fontSize: isMobile ? 18 : 30}}>Thank you for registering with us! Check your mailbox to confirm your email address.</KText>
-                    <KText style={{fontWeight: "100", fontSize: isMobile ? 18 : 30, marginTop: 15, color: variables.colors.blackLight}}>🚨 Please note that your profile is currently under review. You will be notified once it is approved. 🚨</KText>
+
+        <View style={[styles.containerRightSide]}>
+
+            <KText style={styles.label}>
+                Welcome to the KazaSwap community!
+            </KText>
+            <View style={{ marginTop: 95, marginBottom: 65 }}>
+                {true && <View style={[styles.contaiterNotification, { marginBottom: 34 }]}>
+                    <KIcon name="email" size={33} style={styles.icon} />
+                    <KText style={styles.emailText}>
+                        Please cjheck your mailbox to validate your email now
+                    </KText>
+                </View>}
+                <View style={styles.contaiterNotification}>
+                    <KIcon name="swap" size={33} style={styles.icon} />
+                    <KText style={styles.emailText}>
+                        For registering you get {' '}
+                        <KText style={{ fontWeight: "bold" }}>
+                            5 credits
+                        </KText>
+                        , which is equal to 5 nights at someone else place.
+                    </KText>
                 </View>
-
-                <KButton
-                    text="Start Exploring"
-                    loading={loading}
-                    onPress={() => {
-                        setLoading(true)
-                        localStorage.setItem("onboardingFinishedAt", `${new Date().toISOString()}`)
-                        users.me.update({onboarding: JSON.stringify({step: 5, data: {}, completed: true})})
+            </View>
+            <KText style={{ fontSize: 16, marginBottom: 68, width: '100%' }}>
+                Cheers!
+            </KText>
+            <View style={{ justifyContent: 'flex-start' }}>
+            </View>
+            <KButton
+                text="Start Exploring"
+                loading={loading}
+                onPress={() => {
+                    setLoading(true)
+                    localStorage.setItem("onboardingFinishedAt", `${new Date().toISOString()}`)
+                    users.me.update({ onboarding: JSON.stringify({ step: 5, data: {}, completed: true }) })
                         .catch(e => {
                             console.log(e)
                         })
@@ -114,14 +92,106 @@ export default (props:Props) => {
                             // props.navigation.navigate("Home")
                             document.location.href = "/" // Force reload
                         })
-                    }}
-                    color="primary"
-                    style={{width: isMobile ? "100%" : "90%", marginBottom: 10}}
-                    textStyle={{fontSize: 18}}
-                    />
-                <KText>{" "}</KText> {/* Spacer */}
-            </View>
+                }}
+                color="primary"
+                style={{ width: '100%', marginBottom: 15 }}
+                textStyle={{ fontSize: 15, fontWeight: '600' }}
+            />
+            <KButton
+                text="Check your mailbox"
+                onPress={() => { window.open('https://mail.google.com', '_blank') }}
+                color="light"
+                style={styles.buttonMailbox}
+                textStyle={{ fontSize: 15, fontWeight: '600' }}
+            />
 
-        </ScrollView>
-        
+        </View>
+
+    </ScrollView>
 }
+
+const styles = StyleSheet.create({
+    container: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        marginBottom: 0,
+        flex: 1
+
+    },
+    containerLeftSide: {
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        backgroundColor: variables.colors.yellow,
+        position: "relative",
+        maxWidth: '50%'
+    },
+    borderRadiusDesktop: {
+        borderTopEndRadius: 20,
+        borderBottomEndRadius: 20,
+    },
+    containerText: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 57,
+    },
+    logo: {
+        position: "absolute",
+        top: 0,
+        left: 40,
+        width: 124,
+        height: 124,
+    },
+    containerRightSide: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        maxWidth: 400,
+        marginHorizontal: 'auto'
+    },
+    label: {
+        fontSize: 28,
+        fontWeight: "600",
+        lineHeight: 32,
+        letterSpacing: -0.5,
+        maxWidth: 400,
+        textAlign: "center",
+
+    },
+    icon: {
+        backgroundColor: variables.colors.lightCream,
+        borderRadius: 100,
+        padding: 12
+    },
+    emailText: {
+        fontSize: 16,
+        maxWidth: 324,
+        lineHeight: 21,
+        letterSpacing: -0.5,
+
+    },
+    contaiterNotification: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 18,
+    },
+    buttonMailbox: {
+        width: '100%',
+        borderRadius: 23,
+        backgroundColor: variables.colors.lightCream,
+        borderWidth: 0,
+    }
+})
