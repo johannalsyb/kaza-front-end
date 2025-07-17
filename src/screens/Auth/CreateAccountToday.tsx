@@ -40,14 +40,33 @@ export default (props: any) => {
   // useEffect(() => {
   //   authentication.check();
   // }, []);
-  console.log('isAuthLoading', isAuthLoading)
   const createAccount = async () => {
     const isValid = isValidPhoneNumber(body.phone)
+    if (!body.firstName) {
+      setError((prev) => ({ ...prev, firstName: 'First name is required' }))
+      return
+    } else {
+      setError((prev) => ({ ...prev, firstName: undefined }))
+    }
     if (!isValid) {
-      setError({ phone: 'Invalid phone number' })
+      setError((prev) => ({ ...prev, phone: 'Invalid phone number' }))
       setLoading(false)
       console.log('error', error)
       return
+    } else {
+      setError((prev) => ({ ...prev, phone: undefined }))
+    }
+    if (!body.email) {
+      setError((prev) => ({ ...prev, email: 'Email is required' }))
+      return
+    } else {
+      setError((prev) => ({ ...prev, email: undefined }))
+    }
+    if (!body.password) {
+      setError((prev) => ({ ...prev, password: 'Password is required' }))
+      return
+    } else {
+      setError((prev) => ({ ...prev, password: undefined }))
     }
     setLoading(true)
     try {
@@ -70,7 +89,7 @@ export default (props: any) => {
   const login = (email: string) => {
     authentication.login(email, body.password)
   }
-
+  console.log('error', error)
   return (
     <View
       style={{
@@ -178,6 +197,7 @@ export default (props: any) => {
               paddingLeft: 20,
               paddingVertical: 12,
             }}
+            error={error.firstName}
           />
         </FormField>
 
@@ -187,7 +207,7 @@ export default (props: any) => {
             phone={body.phone}
             // placeholder="Add your phone number"
             onChange={(phone) => setBody({ ...body, phone })}
-
+            error={error.phone}
           />
         </FormField>
 
@@ -201,6 +221,7 @@ export default (props: any) => {
               paddingLeft: 20,
               paddingVertical: 12,
             }}
+            error={error.email}
           />
         </FormField>
 
@@ -222,6 +243,7 @@ export default (props: any) => {
               paddingLeft: 20,
               paddingVertical: 12,
             }}
+            error={error.password}
             onRightComponentPress={() => setShowPassword(!showPassword)}
           />
         </FormField>

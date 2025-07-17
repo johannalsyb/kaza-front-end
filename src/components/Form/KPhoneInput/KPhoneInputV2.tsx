@@ -1,4 +1,4 @@
-import { Modal, ScrollView, TextInput, TextStyle, View, Animated, TouchableOpacity, Pressable, StyleSheet, Platform } from "react-native"
+import { Modal, ScrollView, TextInput, TextStyle, View, Animated, TouchableOpacity, Pressable, StyleSheet, Platform, Text } from "react-native"
 import KButton from "../../KButton/KButton"
 import variables from "../../../styles/variables"
 import KText from "../../KText"
@@ -20,6 +20,7 @@ const inputStyles: TextStyle = {
 type Props = {
     phone?: string
     onChange: (phone: string) => void
+    error: string | undefined
 }
 
 const styles = StyleSheet.create({
@@ -45,6 +46,25 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         zIndex: 1,
         boxShadow: '15px 15px 55px 0px rgba(77, 75, 63, 0.25)',
+    },
+    formError: {
+        borderColor: variables.form.colors.border.error,
+    },
+    errorText: {
+        color: variables.colors.white,
+        fontSize: 11,
+        borderRadius: variables.form.input.borderRadius,
+        backgroundColor: variables.form.colors.background.error,
+        paddingHorizontal: variables.spacing.xxsmall,
+    },
+    errorContainer: {
+        position: 'absolute',
+        bottom: -6,
+        width: '100%',
+        display: 'flex',
+        backgroundColor: 'transparent',
+        alignItems: 'flex-start',
+        left: 55
     },
 })
 
@@ -84,7 +104,7 @@ export default (props: Props) => {
             duration: 300,
             useNativeDriver: true,
         }).start()
-    }, [isOpenDropdown]) 
+    }, [isOpenDropdown])
 
     useEffect(() => {
         if (code !== undefined && number !== undefined) props.onChange(`${code}${number}`)
@@ -130,25 +150,29 @@ export default (props: Props) => {
                 }}
             />
             <View style={{ flex: 1, paddingLeft: 10, paddingRight: 20 }}>
-                {/* <KText style={{ color: variables.colors.black, opacity: 0.6, fontSize: 16 }}>
-                    Phone number
-                </KText> */}
                 <TextInput
                     value={number}
                     onChangeText={(e) => setNumber(e)
-                        
+
                     }
                     placeholder='Phone number'
-                    style={{
+                    style={[{
                         color: variables.colors.black,
                         opacity: 0.6,
                         fontSize: 16,
                         height: 44,
                         textAlign: 'left',
                         paddingVertical: 0,
-                        ...(Platform.OS === 'web' ? { outlineWidth: 0 } : {}), // тільки для web
-
-                    }} />
+                    },
+                    //@ts-ignore
+                    Platform.OS === 'web' ? { outlineWidth: 0 } : {}, // тільки для web
+                    !!props.error ? styles.formError : {},
+                    ]} />
+                {!!props.error ? (
+                    <View style={styles.errorContainer}>
+                        <Text style={styles.errorText}>{props.error}</Text>
+                    </View>
+                ) : null}
             </View>
             {isOpenDropdown && <View style={[
                 styles.dropdown,
