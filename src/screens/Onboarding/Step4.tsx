@@ -35,7 +35,7 @@ export default (props: Props) => {
             <KButton
                 text="Next"
                 // loading={loading}
-                disabled={props.property.pics.length < 3}
+                disabled={props.property.pics.length < 4}
                 onPress={() => {
                     if (props.property.primaryImage) {
                         properties.update({

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { Button, Image, ImageBackground, TextInput, View } from 'react-native'
+import { useState } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import useAuthentication from '../../hooks/useAuthentication'
 import KTextInput from '../../components/Form/KTextInput/KTextInput'
 import KButton from '../../components/KButton/KButton'
@@ -11,18 +11,15 @@ import variables from '../../styles/variables'
 import useIsMobile from '../../hooks/useIsMobile'
 import KIcon from '../../components/KIcon/KIcon'
 import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
-// import { GoogleLogin } from '@react-oauth/google'
-// import { useGoogleOneTapLogin } from '@react-oauth/google'
+import LeftSide from '../../components/Screens/Auth/LeftSide'
 
-const TopImg = require('../../assets/Auth/top.webp')
-const LeftImg = require('../../assets/Auth/left_1920_x2.webp')
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
 
-export default ({ route, navigation }: Props) => {
+export default ({ navigation }: Props) => {
   const { isMobile } = useIsMobile()
   const authentication = useAuthentication()
-  const { isAuthLoading } = authentication
+
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
 
@@ -32,101 +29,25 @@ export default ({ route, navigation }: Props) => {
 
 
   return (
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        // justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        // width: "90%",
-        // padding: "15%",
-        flex: 1,
-        position: 'relative',
-        paddingHorizontal: isMobile ? 20 : 0,
-      }}>
-      <Image
-        source={isMobile ? TopImg : LeftImg}
-        resizeMode={isMobile ? 'contain' : 'cover'}
-        style={{
-          width: isMobile ? '100%' : '50%',
-          height: isMobile ? 250 : '100%',
-          position: 'relative',
-          top: 0,
-          // left: 0,
-          // right: 0,
-          zIndex: -1,
-          borderTopRightRadius: isMobile ? 0 : 30,
-          borderBottomRightRadius: isMobile ? 0 : 30,
-        }}
-      />
-      {isMobile ? (
-        <View
-          style={{
-            height: 150,
-            width: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: variables.colors.yellow,
-            zIndex: -2,
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            display: isMobile ? 'flex' : 'none',
-          }}
-        />
-      ) : (
-        <>
-          <View
-            style={{
-              position: 'absolute',
-              width: '50%',
-              top: 65,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <KIcon name="KazaSwapBlackYellow" style={{ width: 200, height: 150 }} />
-          </View>
-          <View
-            style={{
-              position: 'absolute',
-              width: '50%',
-              bottom: 65,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-
-            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, maxWidth: 260, textAlign: 'center' }}>
-              Swap your place, explore the world
-            </KText>
-
-          </View>
-        </>
-      )}
+    <ScrollView
+      contentContainerStyle={[
+        styles.container,
+        isMobile && {
+          flexDirection: 'column'
+        }]}>
+      <LeftSide />
 
       <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: isMobile ? 'flex-start' : 'space-between',
-          alignItems: 'center',
-          margin: 'auto',
-          gap: 16,
-          flex: 1,
-          width: '100%',
-          maxWidth: isMobile ? '100%' : 400,
-        }}>
+        style={[styles.containerLogin,
+        isMobile && {
+          justifyContent: 'flex-start',
+          maxWidth: '100%',
+          paddingHorizontal: 60,
+        }]}>
         <KText
-          style={{
-            fontSize: isMobile ? 20 : 30,
-            fontWeight: 'bold',
-            marginBottom: 24,
-          }}>
+          style={[styles.title,
+          isMobile && { fontSize: 25 }]}
+        >
           Sign In
         </KText>
 
@@ -156,14 +77,10 @@ export default ({ route, navigation }: Props) => {
         </FormField>
 
         <KText
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: '100%',
-            alignItems: 'center',
-            marginTop: isMobile ? 0 : 4,
-          }}
+          style={[
+            styles.forgotPassword,
+            isMobile && { margin: 0 }
+          ]}
           onPress={() => {
             navigation.navigate('ForgotPassword')
           }}>
@@ -183,40 +100,15 @@ export default ({ route, navigation }: Props) => {
           }}
           onPress={login}
         />
-        <KText
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            width: '100%',
-            color: '#C6C5BA',
-          }}>
-          <div
-            style={{
-              flex: 1,
-              borderBottom: '1px solid #EFEFEF',
-              marginRight: '0.5em',
-            }}
-          />
+        <KText style={styles.dividerContainer}>
+          <View style={styles.divider} />
           <span>or</span>
-          <div
-            style={{
-              flex: 1,
-              borderBottom: '1px solid #EFEFEF',
-              marginLeft: '0.5em',
-            }}
-          />
+          <View style={styles.divider} />
         </KText>
         <GoogleLoginButton />
 
         <KText
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: '100%',
-            alignItems: 'center',
-            color: variables.colors.grey,
-          }}
+          style={styles.registrationContainer}
           onPress={() => {
             navigation.navigate('SignUp')
           }}>
@@ -225,8 +117,8 @@ export default ({ route, navigation }: Props) => {
             name="register"
             size={'medium'}
             style={{
-              marginLeft: 20,
-              marginRight: 10,
+              marginLeft: 10,
+              marginRight: 5,
               opacity: 0.5,
               stroke: 'black',
             }}
@@ -234,32 +126,92 @@ export default ({ route, navigation }: Props) => {
           <KText style={{ fontWeight: 'bold', color: 'black' }}>Register</KText>
         </KText>
       </View>
-      {!isMobile && (
-        <View style={{ position: 'absolute', top: 20, right: 20 }}>
-          {/* <KText onPress={() => {
+      {
+        !isMobile && (
+          <View style={{ position: 'absolute', top: 20, right: 20 }}>
+            <KIcon
+              name="closeWithBorder"
+              size={'large'}
+              onPress={() => {
                 navigation.navigate('Home')
-            }}>{"> Look around"}</KText> */}
-          <KIcon
-            name="closeWithBorder"
-            size={'large'}
-            onPress={() => {
-              navigation.navigate('Home')
-            }}
-          />
-        </View>
-      )}
-      {!isMobile && (
-        <KText
-          style={{
-            position: 'absolute',
-            bottom: 20,
-            right: 20,
-            fontSize: 13,
-            color: 'black',
-          }}>
-          ♥️
-        </KText>
-      )}
-    </View>
+              }}
+            />
+          </View>
+        )
+      }
+      {
+        !isMobile && (
+          <KText
+            style={{
+              position: 'absolute',
+              bottom: 20,
+              right: 20,
+              fontSize: 13,
+              color: 'black',
+            }}>
+            ♥️
+          </KText>
+        )
+      }
+    </ScrollView >
   )
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%',
+    flex: 1,
+    position: 'relative',
+    flexDirection: 'row',
+    paddingHorizontal: 0,
+  },
+  containerLogin: {
+    display: 'flex',
+    justifyContent: 'space-between',
+
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 'auto',
+    gap: 16,
+    flex: 1,
+    maxWidth: 400,
+    width: '100%',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 24,
+  },
+  forgotPassword: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  dividerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    color: '#C6C5BA',
+  },
+  divider: {
+    flex: 1,
+    backgroundColor: '#EFEFEF',
+    height: 1,
+  },
+  registrationContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    alignItems: 'center',
+    color: variables.colors.grey,
+    fontSize: 13
+  }
+}
+)

@@ -55,12 +55,12 @@ const variables = {
       placeholder: '#808080',
     },
     input: {
-      borderRadius: 30,
+      borderRadius: 28,
       borderWidth: 1,
       padding: 15,
       paddingLeft: 35,
       fontSize: 15,
-      lineHeight: 20,
+      lineHeight: 15,
     },
   },
   button: {

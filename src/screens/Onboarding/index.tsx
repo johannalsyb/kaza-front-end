@@ -51,7 +51,7 @@ export const onboardingSteps: {
     {
       icon: '📷',
       title: 'Time to show off',
-      subtitle: 'Minimum 3 pictures',
+      subtitle: 'Minimum 4 pictures',
     },
     {
       icon: 'calendarNew',
@@ -430,15 +430,16 @@ export default (props: Props) => {
         </View>
         <ScrollView
           contentContainerStyle={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            marginHorizontal: 'auto',
+            // display: 'flex',
+            // alignItems: 'center',
+            // flexDirection: 'column',
+            // justifyContent: 'center',
+            // marginHorizontal: 'auto',
+            marginVertical: isMobile ? 30 : 0,
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
-            flex: 1,
-            backgroundColor: 'white',
+            // flex: 1,
+            // backgroundColor: 'white',
           }}
           style={{
             flex: 1,
@@ -472,5 +473,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    height: '100%',
   }
 })
