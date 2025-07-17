@@ -83,6 +83,7 @@ export default (props: any) => {
         // padding: "15%",
         flex: 1,
         position: 'relative',
+        paddingHorizontal: isMobile ? 20 : 0,
       }}>
       <Image
         source={isMobile ? TopImg : LeftImg}
@@ -112,18 +113,19 @@ export default (props: any) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            position: 'absolute',
-            width: '50%',
-            bottom: 50,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <KIcon name="logoText2" style={{ width: 200, height: 150 }} />
-          <KText style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 50 }}>
+        <>
+          <View
+            style={{
+              position: 'absolute',
+              width: '50%',
+              top: 65,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <KIcon name="KazaSwapBlackYellow" style={{ width: 200, height: 150 }} />
+            {/* <KText style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 50 }}>
             Swap your place, explore the world
           </KText>
           <KText
@@ -134,8 +136,25 @@ export default (props: any) => {
               textAlign: 'left',
             }}>
             © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-          </KText>
-        </View>
+          </KText> */}
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              width: '50%',
+              bottom: 65,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+
+            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, maxWidth: 260, textAlign: 'center' }}>
+              Swap your place, explore the world
+            </KText>
+
+          </View>
+        </>
       )}
 
       <View

@@ -27,43 +27,44 @@ export default (props: Props) => {
     //     props.navigation.navigate("Home")
     //     return null
     // }
+    console.log('user', user)
     return <ScrollView
         style={{
             paddingBottom: isMobile ? 20 : 0,
             width: "100%",
         }}
-        contentContainerStyle={styles.container}>
+        contentContainerStyle={[styles.container, isMobile && { flexDirection: "column" }]}>
         <View
-            style={[styles.containerLeftSide, styles.borderRadiusDesktop]}
+            style={[styles.containerLeftSide, styles.borderRadiusDesktop, isMobile && { maxWidth: '100%', borderTopEndRadius: 0, borderBottomStartRadius: 23, maxHeight: 295 }]}
         >
-            <KIcon name="KazaSwap" size={124} style={styles.logo} />
-            <KIcon name="tada" size={140} />
-            <View style={styles.containerText} >
-                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 30 : 50 }}>Congratulations</KText>
-                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 30 : 50 }}>{user?.firstName}!</KText>
+            {!isMobile && <KIcon name="KazaSwap" size={124} style={styles.logo} />}
+            <KIcon name="tada" size={isMobile ? 99 : 140} />
+            <View style={[styles.containerText, isMobile && { marginTop: 22 }]} >
+                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>Congratulations</KText>
+                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>{user?.firstName}!</KText>
             </View>
-            <KText
+            {!isMobile && <KText
                 style={{ position: "absolute", bottom: 35, right: 130 }}>
                 ♥️
-            </KText>
+            </KText>}
         </View>
 
 
-        <View style={[styles.containerRightSide]}>
+        <View style={[styles.containerRightSide, isMobile && { paddingHorizontal: 30 }]}>
 
-            <KText style={styles.label}>
+            <KText style={[styles.label && { fontSize: 17, lineHeight: 24, textAlign: 'center', fontWeight: '700' }]}>
                 Welcome to the KazaSwap community!
             </KText>
-            <View style={{ marginTop: 95, marginBottom: 65 }}>
-                {true && <View style={[styles.contaiterNotification, { marginBottom: 34 }]}>
-                    <KIcon name="email" size={33} style={styles.icon} />
-                    <KText style={styles.emailText}>
+            <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 95, marginBottom: 65 }}>
+                {!Boolean(user?.emailVerified) && <View style={[styles.contaiterNotification, { marginBottom: isMobile ? 26 : 34 }]}>
+                    <KIcon name="email" size={33} style={{ ...styles.icon }} />
+                    <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         Please cjheck your mailbox to validate your email now
                     </KText>
                 </View>}
                 <View style={styles.contaiterNotification}>
-                    <KIcon name="swap" size={33} style={styles.icon} />
-                    <KText style={styles.emailText}>
+                    <KIcon name="swap" size={33} style={isMobile ? styles.iconMobile : styles.icon} />
+                    <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         For registering you get {' '}
                         <KText style={{ fontWeight: "bold" }}>
                             5 credits
@@ -72,9 +73,9 @@ export default (props: Props) => {
                     </KText>
                 </View>
             </View>
-            <KText style={{ fontSize: 16, marginBottom: 68, width: '100%' }}>
+            {!isMobile && <KText style={{ fontSize: 16, marginBottom: 68, width: '100%' }}>
                 Cheers!
-            </KText>
+            </KText>}
             <View style={{ justifyContent: 'flex-start' }}>
             </View>
             <KButton
@@ -97,13 +98,13 @@ export default (props: Props) => {
                 style={{ width: '100%', marginBottom: 15 }}
                 textStyle={{ fontSize: 15, fontWeight: '600' }}
             />
-            <KButton
+            {!Boolean(user?.emailVerified) && <KButton
                 text="Check your mailbox"
                 onPress={() => { window.open('https://mail.google.com', '_blank') }}
                 color="light"
                 style={styles.buttonMailbox}
                 textStyle={{ fontSize: 15, fontWeight: '600' }}
-            />
+            />}
 
         </View>
 
@@ -174,11 +175,19 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         padding: 12
     },
+    iconMobile: {
+        backgroundColor: variables.colors.lightCream,
+        borderRadius: 100,
+        width: 33,
+        height: 33,
+        padding: 8.5,
+    },
     emailText: {
         fontSize: 16,
         maxWidth: 324,
         lineHeight: 21,
         letterSpacing: -0.5,
+        flex: 1,
 
     },
     contaiterNotification: {

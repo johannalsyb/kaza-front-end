@@ -43,6 +43,7 @@ export default ({ route, navigation }: Props) => {
         // padding: "15%",
         flex: 1,
         position: 'relative',
+        paddingHorizontal: isMobile ? 20 : 0,
       }}>
       <Image
         source={isMobile ? TopImg : LeftImg}

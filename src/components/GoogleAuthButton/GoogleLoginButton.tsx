@@ -15,12 +15,12 @@ export default () => {
           callback: handleCredentialResponse,
         })
         //@ts-ignore
-        authInstance.current.renderButton(document.getElementById('googleBtn'), {
-          theme: 'outline',
-          size: 'large',
-          text: 'signin_with',
-          language: 'en',
-        })
+        // authInstance.current.renderButton(document.getElementById('googleBtn'), {
+        //   theme: 'outline',
+        //   size: 'large',
+        //   text: 'signin_with',
+        //   language: 'en',
+        // })
       }
     }
 
