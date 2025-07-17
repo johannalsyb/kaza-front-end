@@ -435,7 +435,7 @@ export default (props: Props) => {
         </View>
       )}
 
-      {/* {props.route.name === "Account" ? <>
+      {props.route.name === "Account" ? <>
         <View
           style={{
             width: '100%',
@@ -484,7 +484,7 @@ export default (props: Props) => {
           />
         </View>
 
-      </> : null} */}
+      </> : null}
 
       {isMobile ? <>
         <View style={{ height: 90 }}></View>
@@ -506,7 +506,7 @@ export default (props: Props) => {
             setModal={setModal}
             loadUser={loadUser}
           />}
-        {/* {modal === 'property' && EditPropertyView} */}
+        {modal === 'property' && EditPropertyView}
       </KSideModal>
     </ScrollView>
   )

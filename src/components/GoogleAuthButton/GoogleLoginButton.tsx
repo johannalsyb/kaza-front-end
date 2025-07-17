@@ -63,7 +63,7 @@ export default () => {
     },
   })
 
-  // return (<div id="googleBtn" style={styles.button} />
+  // return (<div id="googleBtn" style={styles.button} />)
   return (
     <KButton
       text='Sign in with Google'

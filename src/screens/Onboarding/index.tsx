@@ -353,13 +353,14 @@ export default (props: Props) => {
               borderRadius: isMobile ? 0 : 60,
               width: isMobile ? 'auto' : 120,
               textAlign: 'center',
+              marginTop: isMobile ? 44 : 0
             }}>
             {currentStepObject.icon === 'calendarNew' ? <KIcon
               name={currentStepObject.icon as 'calendarNew'}
               size={isMobile ? 40 : 70}
               style={{
                 color: variables.colors.yellow,
-                marginTop: isMobile ? 0 : 10,
+                // marginTop: isMobile ? 44 : 10,
               }} /> :
               currentStepObject.icon}
           </KText>
@@ -400,7 +401,7 @@ export default (props: Props) => {
               <Pressable
                 style={{ position: 'absolute', top: 0, left: 40 }}
                 onPress={() => {
-                  Linking.openURL('https://www.kazaswap.co')
+                  Linking.openURL('/')
                 }}>
                 <KIcon name="logoText2" size={120} />
               </Pressable>
