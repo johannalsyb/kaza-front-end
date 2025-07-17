@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     button: {
         maxWidth: 150,
         width: '100%',
+        marginTop: 30
 
     }
 })

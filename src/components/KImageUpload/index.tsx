@@ -30,7 +30,7 @@ export type Handle = {
     open: () => void,
 }
 
-export const KImageUploadWidth = 120
+export const KImageUploadWidth = 159
 
 export default forwardRef<Handle, Props>(({
     src,

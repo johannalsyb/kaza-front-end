@@ -16,7 +16,7 @@ export default (props: Props) => {
                 fontSize: 12,
                 letterSpacing: -0.5
             }}>
-                minimum 3 pictures
+                minimum 4 pictures
             </KText>}
             <div
                 onClick={() => {
@@ -46,7 +46,7 @@ export default (props: Props) => {
                     {isMobile ?
                         <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                             <KText style={{ color: "black" }}>Add pictures of your place</KText>
-                            <KText style={{ color: variables.colors.grey }}>minimum 3 pictures</KText>
+                            <KText style={{ color: variables.colors.grey }}>minimum 4 pictures</KText>
                         </View>
                         : <KText style={{ color: variables.colors.grey }}>Drag and drop files here, or <KText style={{ color: "black" }}>click to browse</KText></KText>}
                 </View>}

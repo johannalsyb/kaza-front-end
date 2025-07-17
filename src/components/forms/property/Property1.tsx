@@ -189,7 +189,7 @@ export default (props: Props) => {
                         key={i}
                         // margin bottom fixed
                         // style={{ width: "48%", marginBottom: 14 }}
-                        style={{ maxWidth: 180, width: '100%' }}
+                        style={{ maxWidth: 150, width: '100%' }}
                         name={amenity}
                         checked={property.amenities.includes(amenity)}
                         onPress={() => {
@@ -226,6 +226,9 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     containerSwap: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         gap: 8
     },
     containerAmenities: {
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
 
     },
     buttonMobile: {
-        maxWidth: 180,
+        maxWidth: '48%',
         height: 45
     }
 

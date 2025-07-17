@@ -18,10 +18,8 @@ type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 const CalendarComponent = () => {
-  const [items, setItems] = useState<any>([])
 
   const [availableDates, setAvailableDates] = useAtom(avilebleDatesAtom)
-  console.log('availableDates', availableDates)
   const [isOpenCalendar, setIsOpenCalendar] = useState(false)
   const [value, onChange] = useState<Value>([
     new Date(),
@@ -115,7 +113,8 @@ const CalendarComponent = () => {
       <KSideModal
         visible={isOpenCalendar}
         onClose={() => setIsOpenCalendar(false)}
-      // style={{ maxWidth: 500 }}
+
+        style={{ height: '100%' }}
       >
         <View style={[styles.container, styles.calendarContainer]}>
           <SelectDates
