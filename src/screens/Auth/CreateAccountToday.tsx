@@ -125,18 +125,6 @@ export default (props: any) => {
               alignItems: 'center',
             }}>
             <KIcon name="KazaSwapBlackYellow" style={{ width: 200, height: 150 }} />
-            {/* <KText style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 50 }}>
-            Swap your place, explore the world
-          </KText>
-          <KText
-            style={{
-              fontSize: 15,
-              color: variables.colors.grey,
-              width: '90%',
-              textAlign: 'left',
-            }}>
-            © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-          </KText> */}
           </View>
           <View
             style={{

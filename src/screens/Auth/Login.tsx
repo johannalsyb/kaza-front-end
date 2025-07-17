@@ -77,30 +77,36 @@ export default ({ route, navigation }: Props) => {
           }}
         />
       ) : (
-        <View
-          style={{
-            position: 'absolute',
-            width: '50%',
-            bottom: 50,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <KIcon name="logoText2" style={{ width: 200, height: 150 }} />
-          <KText style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 50 }}>
-            Swap your place, explore the world
-          </KText>
-          <KText
+        <>
+          <View
             style={{
-              fontSize: 15,
-              color: variables.colors.grey,
-              width: '90%',
-              textAlign: 'left',
+              position: 'absolute',
+              width: '50%',
+              top: 65,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-          </KText>
-        </View>
+            <KIcon name="KazaSwapBlackYellow" style={{ width: 200, height: 150 }} />
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              width: '50%',
+              bottom: 65,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+
+            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, maxWidth: 260, textAlign: 'center' }}>
+              Swap your place, explore the world
+            </KText>
+
+          </View>
+        </>
       )}
 
       <View
