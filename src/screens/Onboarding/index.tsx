@@ -430,19 +430,14 @@ export default (props: Props) => {
         </View>
         <ScrollView
           contentContainerStyle={{
-            // display: 'flex',
-            // alignItems: 'center',
-            // flexDirection: 'column',
-            // justifyContent: 'center',
-            // marginHorizontal: 'auto',
+            margin: 'auto',
             marginVertical: isMobile ? 30 : 0,
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
-            // flex: 1,
-            // backgroundColor: 'white',
           }}
           style={{
             flex: 1,
+            margin: 'auto',
             width: '100%',
           }}>
           {!currentStep ? (
