@@ -30,33 +30,17 @@ export default ({ navigation }: Props) => {
 
   return (
     <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        isMobile && {
-          flexDirection: 'column'
-        }]}>
+      contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
       <LeftSide />
-
       <View
         style={[styles.containerLogin,
-        isMobile && {
-          justifyContent: 'flex-start',
-          maxWidth: '100%',
-          paddingHorizontal: 60,
-        }]}>
-        <KText
-          style={[styles.title,
-          isMobile && { fontSize: 25 }]}
-        >
+        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: 60 }]}>
+        <KText style={[styles.title, isMobile && { fontSize: 25 }]}>
           Sign In
         </KText>
 
         <FormField labelAlign="center" label="Email">
-          <KTextInput
-            placeholder="Email"
-            value={creds.email}
-            onChangeText={email => setCreds({ ...creds, email })}
-          />
+          <KTextInput placeholder="Email" value={creds.email} onChangeText={email => setCreds({ ...creds, email })} />
         </FormField>
 
         <FormField labelAlign="center" label="Password">
@@ -77,29 +61,13 @@ export default ({ navigation }: Props) => {
         </FormField>
 
         <KText
-          style={[
-            styles.forgotPassword,
-            isMobile && { margin: 0 }
-          ]}
-          onPress={() => {
-            navigation.navigate('ForgotPassword')
-          }}>
-          <KIcon
-            name="password"
-            size={'medium'}
-            style={{ marginRight: 10, opacity: 0.5 }}
-          />
+          style={[styles.forgotPassword, isMobile && { margin: 0 }]}
+          onPress={() => navigation.navigate('ForgotPassword')}>
+          <KIcon name="password" size={'medium'} style={{ marginRight: 10, opacity: 0.5 }} />
           Forgot Password?
         </KText>
 
-        <KButton
-          text="Sign In"
-          style={{
-            width: '100%',
-            marginTop: isMobile ? 0 : 40,
-          }}
-          onPress={login}
-        />
+        <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40 }} onPress={login} />
         <KText style={styles.dividerContainer}>
           <View style={styles.divider} />
           <span>or</span>
@@ -109,49 +77,21 @@ export default ({ navigation }: Props) => {
 
         <KText
           style={styles.registrationContainer}
-          onPress={() => {
-            navigation.navigate('SignUp')
-          }}>
+          onPress={() => navigation.navigate('SignUp')}>
           Don't have an account yet?
-          <KIcon
-            name="register"
-            size={'medium'}
-            style={{
-              marginLeft: 10,
-              marginRight: 5,
-              opacity: 0.5,
-              stroke: 'black',
-            }}
-          />
+          <KIcon name="register" size={'medium'} style={styles.iconRegister} />
           <KText style={{ fontWeight: 'bold', color: 'black' }}>Register</KText>
         </KText>
       </View>
       {
         !isMobile && (
           <View style={{ position: 'absolute', top: 20, right: 20 }}>
-            <KIcon
-              name="closeWithBorder"
-              size={'large'}
-              onPress={() => {
-                navigation.navigate('Home')
-              }}
-            />
+            <KIcon name="closeWithBorder" size={'large'} onPress={() => navigation.navigate('Home')} />
           </View>
         )
       }
       {
-        !isMobile && (
-          <KText
-            style={{
-              position: 'absolute',
-              bottom: 20,
-              right: 20,
-              fontSize: 13,
-              color: 'black',
-            }}>
-            ♥️
-          </KText>
-        )
+        !isMobile && (<KText style={styles.iconHeart}> ♥️ </KText>)
       }
     </ScrollView >
   )
@@ -212,6 +152,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: variables.colors.grey,
     fontSize: 13
+  },
+  iconRegister: {
+    marginLeft: 10,
+    marginRight: 5,
+    opacity: 0.5,
+    stroke: 'black',
+  },
+  iconHeart: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    fontSize: 13,
+    color: 'black',
   }
 }
 )
