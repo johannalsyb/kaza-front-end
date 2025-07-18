@@ -26,8 +26,6 @@
     "react-calendar": "^6.0.0",
     "react-datepicker": "^8.4.0",
     "react-dom": "18.2.0",
-    "react-calendar": "^6.0.0",
-    "react-dom": "18.2.0",
     "react-hook-form": "^7.60.0",
     "react-native": "0.72.6",
     "react-native-click-outside": "^0.1.1",

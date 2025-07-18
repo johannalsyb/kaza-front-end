@@ -1,16 +1,16 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from 'react'
-import {  Property  } from '../../../common/types/api/properties'
-import {  NavStackParamList  } from '../../../navigation/screens'
-import useAuthentication from '../../../hooks/useAuthentication'
-import useIsMobile from '../../../hooks/useIsMobile'
+} from 'react';
+import { Property } from '../../../common/types/api/properties';
+import { NavStackParamList } from '../../../navigation/screens';
+import useAuthentication from '../../../hooks/useAuthentication';
+import useIsMobile from '../../../hooks/useIsMobile';
 import Filters, {
   placeTypeFilters,
   nbBedroomFilters,
@@ -86,7 +86,7 @@ export default forwardRef<Handle, Props>(
     const {  isMobile  } = useIsMobile()
     const {  user, isAdmin  } = useAuthentication()
 
-    const {  config, overlay  } = useConfig()
+    const { config, overlay } = useConfig();
 
     const filtersRef = useRef<Handle>(null)
     useImperativeHandle(ref, () => ({
