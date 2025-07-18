@@ -49,6 +49,7 @@ export {ReactComponent as register} from './register.svg';
 export {ReactComponent as Google} from './google.svg';
 
 export {ReactComponent as arrowDown} from './arrowDown.svg';
+export {ReactComponent as backArrow} from './backArrow.svg';
 export {ReactComponent as placeType} from './placeType.svg';
 export {ReactComponent as star} from './star.svg';
 export {ReactComponent as review} from './review.svg';

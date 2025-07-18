@@ -11,6 +11,7 @@ import SelectDates from './SelectDates'
 import dayjs from 'dayjs'
 import { useAtom } from 'jotai'
 import { avilebleDatesAtom } from '../../../../atoms'
+import useIsMobile from '../../../../hooks/useIsMobile'
 
 
 type ValuePiece = Date | null
@@ -77,15 +78,17 @@ const CalendarComponent = () => {
   }
   const [itemEdit, setItemEdit] = useState<any>(undefined)
   const handleClickEdit = (item: any) => {
-    let updateItems = availableDates.filter((i: any) => {
+    console.log('availableDates', availableDates, item)
+    let updateItems = availableDates.filter((i: any) =>
       i.id !== item.id
-    })
+    )
+
     setAvailableDates(updateItems)
     onChange(item.value)
     setIsOpenCalendar(true)
     setItemEdit(item)
   }
-
+  const { isMobile } = useIsMobile()
   useEffect(() => {
     if (Array.isArray(value) && value[0] && value[1]) {
       adjustRangeIfBlocked([value[0], value[1]])
@@ -94,27 +97,43 @@ const CalendarComponent = () => {
   return (
     <>
       <View style={[styles.container, { justifyContent: 'center', marginBottom: 70, width: '100%' }]}>
-        <Pressable onPress={() => { }} style={{ width: '100%' }}>
+        <Pressable onPress={() => availableDates.length ? {} : setIsOpenCalendar(true)} style={{ width: '100%' }}>
           <SelectDates
-            startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
-            endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
+            startDate={availableDates[0]?.value?.[0] ?? new Date()}
+            endDate={availableDates[0]?.value?.[1] ?? new Date()}
+          // startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
+          // endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
           />
         </Pressable >
 
-        <KButton onPress={() => setIsOpenCalendar(true)} color='light' style={styles.button} >
-          <KIcon name="plusCircle" size="medium" style={{ stroke: '#000', opacity: 0.5 }} />
-          <KText style={{ color: "#000", fontSize: 15, marginLeft: 10 }}>
-            Add more slots
-          </KText>
-        </KButton>
+        {availableDates && availableDates?.length > 0 && availableDates?.length < 3 &&
+          <KButton onPress={() => setIsOpenCalendar(true)} color='light' style={styles.button} >
+            <KIcon name="plusCircle" size="medium" style={{ stroke: '#000', opacity: 0.5 }} />
+            <KText style={{ color: "#000", fontSize: 15, marginLeft: 10 }}>
+              Add more slots
+            </KText>
+          </KButton>}
 
       </View >
       <ListAvailbleDates items={availableDates} setItems={setAvailableDates} onPressEdit={handleClickEdit} />
       <KSideModal
         visible={isOpenCalendar}
         onClose={() => setIsOpenCalendar(false)}
-
-        style={{ height: '100%' }}
+        showCross={!isMobile}
+        position={isMobile ? 'bottom' : 'right'}
+        style={isMobile ? {
+          height: 'auto',
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          paddingTop: 23,
+          paddingBottom: 50,
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+        } : {
+          // maxWidth: 500,
+          // left: '81%'
+        }}
       >
         <View style={[styles.container, styles.calendarContainer]}>
           <SelectDates

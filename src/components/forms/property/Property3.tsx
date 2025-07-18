@@ -3,7 +3,7 @@ import FormField from "../../Form/FormField/FormField"
 import variables from "../../../styles/variables"
 import { RefObject, createRef, useEffect, useRef, useState } from "react"
 import { Property } from "."
-import KImageUpload, { Handle as KImageUploadHandle, KImageUploadWidth } from "../../KImageUpload"
+import KImageUpload, { Handle as KImageUploadHandle, KImageUploadWidthDesktop, KImageUploadWidthMobile } from "../../KImageUpload"
 import properties from "../../../api/properties"
 import useIsMobile from "../../../hooks/useIsMobile"
 import KDragAndDropZone from "../../Form/KDragAndDropZone"
@@ -222,13 +222,13 @@ export default (props: Props) => {
                         .then(ff => iuRef.current?.onFiles(ff))
                 }} />
             <View style={{
-                maxWidth: (KImageUploadWidth * 3) + (2 * 20),
+                maxWidth: ((isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop) * 3) + (2 * 20),
                 display: "flex",
                 flexDirection: "row",
                 flexWrap: "wrap",
                 // flexBasis: "30%",
                 rowGap: 20,
-                width: isMobile ? (KImageUploadWidth * 2) + 20 : "100%",
+                width: isMobile ? ((isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop) * 2) + 20 : "100%",
             }}>
                 {pics.map((pic, i) => {
                     return <PropertyImage
@@ -279,8 +279,8 @@ export default (props: Props) => {
                     return <Pressable onPress={() => iuRef.current?.open()}
                         style={{
                             marginRight: 10,
-                            width: KImageUploadWidth,
-                            height: KImageUploadWidth,
+                            width: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
+                            height: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
                             borderWidth: 1,
                             borderColor: variables.colors.greenLight,
                             backgroundColor: variables.colors.greenLight,

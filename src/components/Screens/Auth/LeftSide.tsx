@@ -5,11 +5,17 @@ import { Link } from '@react-navigation/native'
 import KIcon from '../../KIcon/KIcon'
 import KText from '../../KText'
 
-const TopImg = require('../../../assets/Auth/top.webp')
+const TopImg = require('../../../assets/Auth/top2.webp')
 const LeftImg = require('../../../assets/Auth/left_1920_x2.webp')
 
-const LeftSide = () => {
+interface LeftSideProps {
+  style?: object
+  title?: string
+}
+
+const LeftSide = (props: LeftSideProps) => {
   const { isMobile } = useIsMobile()
+  const { style, title } = props
 
   return (
     <>
@@ -21,29 +27,54 @@ const LeftSide = () => {
           height: isMobile ? 250 : '100%',
           position: 'relative',
           top: 0,
-          // left: 0,
+          left: isMobile ? -15 : 0,
           // right: 0,
           zIndex: -1,
+          marginBottom: isMobile ? 24 : 0,
           borderTopRightRadius: isMobile ? 0 : 30,
           borderBottomRightRadius: isMobile ? 0 : 30,
         }}
       />
-      {isMobile ? (
-        <View
-          style={{
-            height: 150,
-            width: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: variables.colors.yellow,
-            zIndex: -2,
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            display: isMobile ? 'flex' : 'none',
-          }}
+      {isMobile && <Link to={'/'}
+        style={{ position: 'absolute', top: 20, left: 20 }}>
+        <KIcon
+          name="backArrow"
+          size={'large'}
         />
+      </Link>}
+      {isMobile ? (
+        <>
+
+          <View
+            style={{
+              height: 150,
+              width: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: variables.colors.yellow,
+              zIndex: -2,
+              borderBottomLeftRadius: 20,
+              borderBottomRightRadius: 20,
+              display: isMobile ? 'flex' : 'none',
+              ...style
+            }}
+          />
+          <KText
+            style={{
+              position: 'absolute',
+              top: 200,
+              left: 0,
+              right: 0,
+              fontSize: 31,
+              fontWeight: '600',
+              lineHeight: 31,
+              textAlign: 'center',
+              color: 'black',
+              letterSpacing: -0.5,
+            }}> {title}</KText>
+        </>
       ) : (
         <>
           <Link
