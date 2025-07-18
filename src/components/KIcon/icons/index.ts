@@ -118,3 +118,7 @@ export {ReactComponent as support} from './support.svg';
 export {ReactComponent as pin} from './pin.svg';
 
 export {ReactComponent as tada} from './tada.svg';
+
+export {ReactComponent as kids} from './kids.svg';
+export {ReactComponent as clearAll} from './clearAll.svg';
+export {ReactComponent as credits} from './credits.svg';
