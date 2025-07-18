@@ -29,7 +29,7 @@ const SelectDates = (props: ISelectDatesProps) => {
             {dayjs(startDate).format('MMM DD,')}
             <KText style={{ color: 'rgba(0,0,0,0.5)' }}>{dayjs(startDate).format('YYYY')}</KText>
           </KText>
-          -
+          <KText>-</KText>
           <KText style={{ color: "#000", fontSize: 15, marginLeft: 18 }}>
             {dayjs(endDate).format('MMM DD,')}
             <KText style={{ color: 'rgba(0,0,0,0.5)' }}>{dayjs(endDate).format('YYYY')}</KText>

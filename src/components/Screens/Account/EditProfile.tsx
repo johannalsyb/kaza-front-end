@@ -4,7 +4,7 @@ import EditProfile from '../../Views/Account/EditProfile'
 import useIsMobile from '../../../hooks/useIsMobile'
 
 const EditProfileComponent = (props: any) => {
-  const isMobile = useIsMobile()
+  const { isMobile } = useIsMobile()
   const { user, setUser, setModal, loadUser } = props
 
 

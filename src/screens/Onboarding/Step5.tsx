@@ -121,7 +121,7 @@ export default (props: Props) => {
             <KButton
                 text="Next"
                 loading={loading}
-                disabled={loading}
+                disabled={loading || availableDates.length < 1}
                 onPress={createOrUpdate}
                 color="primary"
                 style={{ width: "48%" }} />
