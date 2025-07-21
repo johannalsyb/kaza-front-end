@@ -34,6 +34,7 @@ type Props = {
 
 export type Handle = {
   setSearch: (search: string) => void;
+  clearFilters: () => void;
 }
 
 export const placeTypeFilters = ['flat', 'house', 'studio', 'room'];
@@ -77,7 +78,8 @@ const Filters = forwardRef<Handle, Props>(({
   }, [route])
 
   useImperativeHandle(ref, () => ({
-    setSearch
+    setSearch,
+    clearFilters,
   }));
 
   const nbFilters = (ffilters: PropertyFilter) => {
@@ -96,6 +98,8 @@ const Filters = forwardRef<Handle, Props>(({
   const clearFilters = () => {
     setSearch('')
     onSearch('')
+    setStartDate(null)
+    setEndDate(null)
     onFilter(
       { type: "placeType", filters: placeTypeFilters },
       { type: "petsFriendlyOnly", filters: ["false"] },
@@ -247,7 +251,18 @@ const Filters = forwardRef<Handle, Props>(({
           </View>
         }
       </View>
-      {!isMobile &&
+      {isMobile ?
+        <>
+          {/* <DatePicker
+            label="Starting date"
+            isRange
+            onDateSelected={(date: any) => {
+              setStartDate(date);
+              // onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
+            }}
+          /> */}
+        </>
+        :
         <View style={{
           flex: 1,
           gap: 10,
@@ -260,14 +275,14 @@ const Filters = forwardRef<Handle, Props>(({
             label="Starting date"
             onDateSelected={(date: any) => {
               setStartDate(date);
-              console.log(date);
+              onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
             }}
           />
           <DatePicker
             label="Ending date"
             onDateSelected={(date: any) => {
               setEndDate(date);
-              console.log(date);
+              onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] });
             }}
           />
         </View>}

@@ -13,15 +13,42 @@ const MyContainer = ({ className, children }) => {
   );
 };
 
-const CustomDatePicker = ({ onDateSelected, label }) => {
+const CustomDatePicker = ({ onDateSelected, label, isRange = false }) => {
   const [date, setDate] = useState(null);
+  const [dateRange, setDateRange] = useState([null, null]);
   const [open, setOpen] = useState(false);
   const { form } = variables;
+  const [startDate, endDate] = dateRange;
 
-  const handleDateChange = (newDate) => {
+  const formatDate = (date) => {
+    if (!date) return '';
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const day = date.toLocaleString('en-US', { day: '2-digit' });
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
+  };
+
+  // Handlers
+  const handleSingleDateChange = (newDate) => {
     setDate(newDate);
     onDateSelected?.(newDate);
   };
+  const handleRangeDateChange = (range) => {
+    setDateRange(range);
+    onDateSelected?.(range);
+  };
+
+  // Display label
+  let displayLabel = label;
+  if (isRange) {
+    if (startDate && endDate) {
+      displayLabel = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+  } else {
+    if (date) {
+      displayLabel = formatDate(date);
+    }
+  }
 
   return (
     <View>
@@ -39,25 +66,42 @@ const CustomDatePicker = ({ onDateSelected, label }) => {
         onPress={() => setOpen((prevState) => !prevState)}
         activeOpacity={0.7}
       >
-        <Text style={styles.buttonText}>
-          {date ? date.toLocaleDateString() : label}
-        </Text>
+        <Text style={styles.buttonText}>{displayLabel}</Text>
         <KIcon name="down" size="large" style={{ stroke: 'gray' }} />
       </TouchableOpacity>
       {open && (
         <View style={styles.webPickerContainer}>
-          <ReactDatePicker
-            selected={date}
-            onChange={(d) => {
-              handleDateChange(d);
-              setOpen(false);
-            }}
-            inline
-            dateFormat="dd/MM/yyyy"
-            calendarClassName="my-custom-calendar"
-            dayClassName={d => d.getDay() === 0 ? 'sunday' : undefined}
-            calendarContainer={MyContainer}
-          />
+          {isRange ? (
+            <ReactDatePicker
+              selectsRange
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(update) => {
+                handleRangeDateChange(update);
+                if (update[0] && update[1]) setOpen(false);
+              }}
+              inline
+              dateFormat="dd/MM/yyyy"
+              calendarClassName="my-custom-calendar"
+              dayClassName={d => d.getDay() === 0 ? 'sunday' : undefined}
+              calendarContainer={MyContainer}
+              minDate={new Date()}
+            />
+          ) : (
+            <ReactDatePicker
+              selected={date}
+              onChange={(d) => {
+                handleSingleDateChange(d);
+                setOpen(false);
+              }}
+              inline
+              dateFormat="dd/MM/yyyy"
+              calendarClassName="my-custom-calendar"
+              dayClassName={d => d.getDay() === 0 ? 'sunday' : undefined}
+              calendarContainer={MyContainer}
+              minDate={new Date()}
+            />
+          )}
         </View>
       )}
     </View>

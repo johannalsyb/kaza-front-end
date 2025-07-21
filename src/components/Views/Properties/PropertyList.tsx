@@ -93,6 +93,11 @@ export default forwardRef<Handle, Props>(
       setSearch: (search: string) => {
         filtersRef.current?.setSearch(search)
       },
+      clearFilters: () => {
+        setFilters(defaultFilters);
+        filtersRef.current?.setSearch('');
+        onSearch('');
+      },
     }))
 
     const calculateNumberOfColumns = (width: number) => {
@@ -118,6 +123,8 @@ export default forwardRef<Handle, Props>(
         )
           visible = false
         if (filters['petsFriendlyOnly'][0] === 'true' && !p.pets)
+          visible = false;
+        if (filters['kidsFriendlyOnly'][0] === 'true' && !p.childrenAllowed)
           visible = false
         if (
           filters['swapWithWomen'][0] === 'true' &&
@@ -133,7 +140,9 @@ export default forwardRef<Handle, Props>(
 
         // If both startDate and endDate are set, check for overlap
         if (filterStart && filterEnd) {
-          if (propertyStart && propertyEnd) {
+          if (!propertyStart && !propertyEnd) {
+            visible = false;
+          } else if (propertyStart && propertyEnd) {
             // No overlap
             if (propertyEnd < filterStart || propertyStart > filterEnd) visible = false;
           } else if (propertyStart && propertyStart > filterEnd) {
@@ -141,10 +150,6 @@ export default forwardRef<Handle, Props>(
           } else if (propertyEnd && propertyEnd < filterStart) {
             visible = false;
           }
-        } else if (filterStart) {
-          if (propertyEnd && propertyEnd < filterStart) visible = false;
-        } else if (filterEnd) {
-          if (propertyStart && propertyStart > filterEnd) visible = false;
         }
         // --- END DATE FILTERS ---
 
@@ -182,8 +187,9 @@ export default forwardRef<Handle, Props>(
             }}
             onSearch={onSearch}
             onClearFilters={() => {
-              onSearch('')
               setFilters(defaultFilters)
+              filtersRef.current?.setSearch('');
+              filtersRef.current?.clearFilters();
             }}
           />
         </View>
