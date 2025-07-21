@@ -415,23 +415,13 @@ export default (props: Props) => {
                 }}>
                 © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
               </KText>
-              <KText
-                style={{
-                  position: 'absolute',
-                  bottom: 10,
-                  right: 20,
-                  fontSize: 10,
-                  color: variables.colors.grey,
-                }}>
-                ♥️ Made by friends
-              </KText>
             </>
           )}
         </View>
         <ScrollView
           contentContainerStyle={{
-            margin: 'auto',
-            marginVertical: isMobile ? 30 : 0,
+            marginHorizontal: 'auto',
+            marginVertical: 30,
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
           }}

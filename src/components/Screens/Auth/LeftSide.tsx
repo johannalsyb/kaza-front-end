@@ -4,6 +4,7 @@ import variables from '../../../styles/variables'
 import { Link } from '@react-navigation/native'
 import KIcon from '../../KIcon/KIcon'
 import KText from '../../KText'
+import useResizeImage from '../../../hooks/useResizeImage'
 
 const TopImg = require('../../../assets/Auth/top2.webp')
 const LeftImg = require('../../../assets/Auth/left_1920_x2.webp')
@@ -16,7 +17,6 @@ interface LeftSideProps {
 const LeftSide = (props: LeftSideProps) => {
   const { isMobile } = useIsMobile()
   const { style, title } = props
-
   return (
     <>
       <Image
@@ -82,7 +82,7 @@ const LeftSide = (props: LeftSideProps) => {
             style={{
               position: 'absolute',
               width: '50%',
-              top: 65,
+              top: 0,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -101,7 +101,7 @@ const LeftSide = (props: LeftSideProps) => {
               alignItems: 'center',
             }}>
 
-            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, maxWidth: 260, textAlign: 'center' }}>
+            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, textAlign: 'center' }}>
               Swap your place, explore the world
             </KText>
 

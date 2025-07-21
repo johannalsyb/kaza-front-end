@@ -470,7 +470,8 @@ export default (props: Props) => {
           <KButton
             icon="logout"
             text="Log out"
-            onPress={logout}
+            // onPress={logout}
+            onPress={() => console.log('logout')}
             style={{
               backgroundColor: variables.colors.darkYellow,
               width: isMobile ? '100%' : 'auto',
@@ -487,7 +488,7 @@ export default (props: Props) => {
       </> : null}
 
       {isMobile ? <>
-        <View style={{ height: 90 }}></View>
+        <View style={{ height: 190 }}></View>
         <Menu navigate={props.navigation.navigate} style={{
           // position: "fixed"
         }} />
