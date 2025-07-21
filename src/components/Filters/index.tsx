@@ -368,7 +368,7 @@ const Filters = forwardRef<Handle, Props>(({
                 visible={showFilterModal}
                 clearFiltersView={clearFiltersView}
                 setVisibility={() => setShowFilterModal(false)}
-                style={{ backgroundColor: variables.colors.greenLight, padding: 20, display: 'flex', flexDirection: 'column', minWidth: 550 }}
+                style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection:  isMobile ? 'row' : 'column', gap: isMobile? 20 : 0, minWidth: 550 }}
               >
                 {filterView}
               </KModalWeb>
