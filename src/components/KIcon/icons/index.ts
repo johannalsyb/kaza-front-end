@@ -2,7 +2,9 @@ export {ReactComponent as defaultIcon} from './defaultIcon.svg';
 export {ReactComponent as calendar} from './calendar.svg';
 export {ReactComponent as calendarEdit} from './calendarEdit.svg';
 export {ReactComponent as calendarNew} from './calendarNew.svg';
+export {ReactComponent as calendar27} from './calendar27.svg';
 export {ReactComponent as location} from './location.svg';
+export {ReactComponent as locationNew} from './locationNew.svg';
 export {ReactComponent as tick} from './tick.svg';
 export {ReactComponent as eyeOpen} from './eyeOpen.svg';
 export {ReactComponent as eyeClose} from './eyeClose.svg';
@@ -18,6 +20,7 @@ export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by d
 export {ReactComponent as KazaSwap} from './KazaSwap.svg'; // => Beta by default
 export {ReactComponent as KazaSwapBlackYellow} from './KazaSwap_black_and_yellow.svg'; // => Beta by default
 export {ReactComponent as KazaSwapBlackWhiteYellow} from './KazaSwap_black_and_white_and_yellow.svg'; // => Beta by default
+export {ReactComponent as KazaSwapLogoBlackYellow} from './KazaSwap_logo_black_and_yellow.svg'; // => Beta by default
 // export {ReactComponent as logoText2Beta} from './logoText2Beta.svg';
 
 export {ReactComponent as smile} from './smile.svg';
@@ -36,6 +39,7 @@ export {ReactComponent as sqm2} from './sqm2.svg';
 export {ReactComponent as delete} from './delete.svg';
 
 export {ReactComponent as bell} from './bell.svg';
+export {ReactComponent as bomb} from './bomb.svg';
 export {ReactComponent as matching} from './matching.svg';
 export {ReactComponent as fav} from './fav.svg';
 
@@ -93,6 +97,7 @@ export {ReactComponent as noSmoking} from './placeRules/noSmoking.svg';
 export {ReactComponent as baby} from './placeRules/baby.svg';
 
 export {ReactComponent as chat} from './chat.svg';
+export {ReactComponent as chatNew} from './chatNew.svg';
 export {ReactComponent as contract} from './contract.svg';
 export {ReactComponent as accept} from './accept.svg';
 export {ReactComponent as doc} from './doc.svg';

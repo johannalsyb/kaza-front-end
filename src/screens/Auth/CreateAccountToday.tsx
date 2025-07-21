@@ -245,12 +245,7 @@ export default (props: any) => {
                 minLength: {
                   value: 6,
                   message: 'Password must be at least 6 characters'
-                },
-                pattern: {
-                  value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/,
-                  message: 'Passwords must contain 1 number, 1 uppercase and 1 lowercase'
                 }
-
               }}
               render={({ field: { onChange, value } }) => (
                 <KTextInput

@@ -115,9 +115,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
     marginTop: 12,
     maxWidth: 166,
-    fontSize: 20,
+    fontSize: 17,
     letterSpacing: -0.5,
-    lineHeight: 23
+    lineHeight: 17
   },
   divider: {
     flex: 1,

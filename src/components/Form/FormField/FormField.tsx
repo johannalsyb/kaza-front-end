@@ -37,12 +37,19 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     width: '100%',
+    marginBottom: 25
   },
   labelContainer: {
     width: '100%',
+    marginBottom: 15
   },
   label: {
-    // opacity: 0.5,
-    marginBottom: 12
+    color: '#000',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 16,
+    fontStyle: 'normal',
+    fontWeight: '600',
+    lineHeight: 13,
+    letterSpacing: -0.5
   },
 })

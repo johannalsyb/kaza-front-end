@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Button,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -75,7 +76,7 @@ export const defaultProperty: Property = {
 let callback: (() => void) | undefined
 
 export default (props: Props) => {
-  const [currentStep, setCurrentStep] = useState<number | undefined>(2)
+  const [currentStep, setCurrentStep] = useState<number | undefined>()
   const [property, setProperty] = useState<Property>()
   const { user } = useAuthentication()
   const { isMobile, height } = useIsMobile()
@@ -365,20 +366,12 @@ export default (props: Props) => {
               currentStepObject.icon}
           </KText>
           <KText
-            style={{
-              fontWeight: 'bold',
-              fontSize: isMobile ? 15 : 20,
-              marginTop: isMobile ? 0 : 20,
-            }}>
+            style={styles.title}>
             {currentStepObject.title}
           </KText>
           {currentStepObject.subtitle && (
             <KText
-              style={{
-                fontSize: 10,
-                color: variables.colors.grey,
-                marginTop: 5,
-              }}>
+              style={styles.subtitle}>
               {currentStepObject.subtitle}
             </KText>
           )}
@@ -403,7 +396,7 @@ export default (props: Props) => {
                 onPress={() => {
                   Linking.openURL('/')
                 }}>
-                <KIcon name="logoText2" size={120} />
+                <KIcon name="KazaSwapLogoBlackYellow" size={120} />
               </Pressable>
               <KText
                 style={{
@@ -424,10 +417,12 @@ export default (props: Props) => {
             marginVertical: 30,
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
+            ...(Platform.OS === 'web' && typeof height === 'number'
+              ? { minHeight: height - 60 }
+              : {}),
           }}
           style={{
             flex: 1,
-            margin: 'auto',
             width: '100%',
           }}>
           {!currentStep ? (
@@ -459,5 +454,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '100%',
+  },
+  title: {
+    color: '#000',
+    textAlign: 'center',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 20,
+    fontStyle: 'normal',
+    fontWeight: '700',
+    lineHeight: 23,
+    letterSpacing: -0.5
+  },
+  subtitle: {
+    marginTop: 5,
+    opacity: 0.5,
+    textAlign: 'center',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 13,
+    fontStyle: 'normal',
+    fontWeight: '500',
+    lineHeight: 13,
+    letterSpacing: -0.5
   }
 })
