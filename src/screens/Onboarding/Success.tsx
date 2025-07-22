@@ -43,30 +43,26 @@ export default (props: Props) => {
                 <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>Congratulations</KText>
                 <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>{user?.firstName}!</KText>
             </View>
-            {!isMobile && <KText
-                style={{ position: "absolute", bottom: 35, right: 130 }}>
-                ♥️
-            </KText>}
         </View>
 
 
         <View style={[styles.containerRightSide, isMobile && { paddingHorizontal: 30 }]}>
 
-            <KText style={[styles.label && { fontSize: 17, lineHeight: 24, textAlign: 'center', fontWeight: '700' }]}>
-                Welcome to the KazaSwap community!
+            <KText style={[styles.label && { fontSize: isMobile ? 17 : 28, lineHeight: 24, textAlign: isMobile ? 'left' : 'center', fontWeight: '700' }]}>
+                Welcome to the Kaza Swap community! We are thrilled to have you here.
             </KText>
             <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 95, marginBottom: 65 }}>
                 {!Boolean(user?.emailVerified) && <View style={[styles.contaiterNotification, { marginBottom: isMobile ? 26 : 34 }]}>
-                    <KIcon name="email" size={33} style={{ ...styles.icon }} />
+                    <KIcon name="email" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         Please cjheck your mailbox to validate your email now
                     </KText>
                 </View>}
                 <View style={styles.contaiterNotification}>
-                    <KIcon name="swap" size={33} style={isMobile ? styles.iconMobile : styles.icon} />
+                    <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         For registering you get {' '}
-                        <KText style={{ fontWeight: "bold" }}>
+                        <KText style={{ fontWeight: "bold", color: variables.colors.yellow }}>
                             5 credits
                         </KText>
                         , which is equal to 5 nights at someone else place.
@@ -143,6 +139,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        fontSize: 28,
         marginTop: 57,
     },
     logo: {
@@ -153,13 +150,15 @@ const styles = StyleSheet.create({
         height: 124,
     },
     containerRightSide: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        flex: 1,
+        // display: "flex",
+        // flexDirection: "column",
+        // justifyContent: "center",
+        // alignItems: "center",
+        // flex: 1,
         maxWidth: 400,
-        marginHorizontal: 'auto'
+        marginHorizontal: 'auto',
+        // height: "100%",
+        marginTop: 35
     },
     label: {
         fontSize: 28,

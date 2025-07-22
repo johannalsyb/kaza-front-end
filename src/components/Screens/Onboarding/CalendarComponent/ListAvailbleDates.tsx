@@ -7,24 +7,15 @@ import AvalibleSlot from './AvalibleSlot'
 import dayjs from 'dayjs'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { showAlert } from '../../../../atoms'
+import useIsMobile from '../../../../hooks/useIsMobile'
+import Notification from './Notification'
 
 const ListAvailbleDates = (props: any) => {
   const { items, setItems, onPressEdit } = props
-  const setShowAlert = useSetAtom(showAlert)
-  const valueAlert = useAtomValue(showAlert)
+
   const handleClickDelete = (id: number) => {
-    setShowAlert({
-      open: true,
-      title: 'Delete date',
-      message: 'Are you sure you want to delete this date?',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
-      onConfirm: () => {
-        const updatedItems = items.filter((item: any) => item.id !== id)
-        setItems(updatedItems)
-      },
-      onClose: () => setShowAlert({ ...valueAlert, open: false })
-    })
+    const updatedItems = items.filter((item: any) => item.id !== id)
+    setItems(updatedItems)
 
   }
 
@@ -32,16 +23,17 @@ const ListAvailbleDates = (props: any) => {
     if (!item || !item.value || !item.value[0] || !item.value[1]) return ''
     return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(item.value[1]).format('MMM DD')}`
   }
+  const { isMobile } = useIsMobile()
   return (
-    <>
+    <View style={{ position: 'relative', width: '100%' }}>
       <View style={[styles.container]}>
-        <KText style={styles.label}>
+        {((items.length && isMobile) || !isMobile) && <KText style={styles.label}>
           List of available dates
           <View style={styles.divider} />
-        </KText>
+        </KText>}
         {
           items?.length ?
-            <View style={[styles.container, { rowGap: 10, marginTop: 34, marginBottom: 160 }]}>
+            <View style={[styles.container, { rowGap: 10, marginTop: isMobile ? 15 : 34, marginBottom: isMobile ? 20 : 160 }]}>
               {items.map((item: any) => (
                 <AvalibleSlot
                   key={item?.id}
@@ -52,20 +44,18 @@ const ListAvailbleDates = (props: any) => {
                 />
 
               ))}
-            </View> :
-            <View style={styles.containerNotResults}>
-              <View style={styles.containerIcon}>
-                <KIcon name="smile" style={styles.icon} />
-              </View>
-              <KText style={styles.labelNotResults}>
-                Add your available dates now!
-              </KText>
-            </View>
+            </View> : !isMobile ?
+              <View style={styles.containerNotResults}>
+                <View style={styles.containerIcon}>
+                  <KIcon name="smile" style={styles.icon} />
+                </View>
+                <KText style={styles.labelNotResults}>
+                  Add your available dates now!
+                </KText>
+              </View> : null
         }
       </View>
-
-
-    </>
+    </View>
   )
 }
 
@@ -115,9 +105,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
     marginTop: 12,
     maxWidth: 166,
-    fontSize: 20,
+    fontSize: 17,
     letterSpacing: -0.5,
-    lineHeight: 23
+    lineHeight: 17
   },
   divider: {
     flex: 1,

@@ -479,6 +479,7 @@ export default (props: Props) => {
               height: 53,
               marginBottom: isMobile ? 10 : 0,
               alignItems: 'flex-start',
+              zIndex: 1000,
             }}
             color="greenLight"
           />
@@ -487,7 +488,7 @@ export default (props: Props) => {
       </> : null}
 
       {isMobile ? <>
-        <View style={{ height: 90 }}></View>
+        <View style={{ height: 190, zIndex: -1 }}></View>
         <Menu navigate={props.navigation.navigate} style={{
           // position: "fixed"
         }} />

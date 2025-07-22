@@ -33,7 +33,7 @@ export default (props: Props) => {
                 style={{ width: "48%" }} />
 
             <KButton
-                text="Next"
+                text="Next Step"
                 // loading={loading}
                 disabled={props.property.pics.length < 4}
                 onPress={() => {

@@ -16,11 +16,11 @@ import KPhoneInputV2 from '../../components/Form/KPhoneInput/KPhoneInputV2'
 import { isValidPhoneNumber } from 'libphonenumber-js'
 import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
 import LeftSide from '../../components/Screens/Auth/LeftSide'
-// import VerifyPhone from '../../components/VerifyPhone'
-// import { toastSuccess } from '../../components/Toast/Toast'
-// import { useSetAtom } from 'jotai'
-// import { showComponentAtom } from '../../atoms'
-// import users from '../../api/users'
+import VerifyPhone from '../../components/VerifyPhone'
+import { toastSuccess } from '../../components/Toast/Toast'
+import { useSetAtom } from 'jotai'
+import { showComponentAtom } from '../../atoms'
+import users from '../../api/users'
 import { Controller, FieldValues, useForm } from 'react-hook-form'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
@@ -57,6 +57,8 @@ export default (props: any) => {
   })
 
 
+  const [setShowModalComponent] = [useSetAtom(showComponentAtom)]
+
   const createAccount = async (body: FieldValues) => {
 
     setLoading(true)
@@ -70,11 +72,10 @@ export default (props: any) => {
       const response = await auth.signup(signupBody)
       await login(response.data.email, body.password)
 
-      // setShowModalComponent(<VerifyPhone onVerified={() => {
-      //   toastSuccess("Phone verified successfully")
-      //   setShowModalComponent(null)
-      // }} />)
-      // await users.me.requestVerify('phone')
+      setShowModalComponent(<VerifyPhone onVerified={() => {
+        toastSuccess("Phone verified successfully")
+        setShowModalComponent(null)
+      }} />)
     } catch (err: any) {
       const error = err.json
       if (error?.data?.error && error?.data?.error.indexOf("User already exists") >= 0) {
@@ -84,9 +85,9 @@ export default (props: any) => {
       setLoading(false)
     }
   }
-  // const [setShowModalComponent] = [useSetAtom(showComponentAtom)]
   const login = async (email: string, password: string) => {
-    await authentication.login(email, password)
+    await auth.login(email, password)
+    window.location.href = '/'
   }
   return (
     <View
@@ -112,7 +113,6 @@ export default (props: any) => {
             justifyContent: isMobile ? 'flex-start' : 'space-between',
             alignItems: 'center',
             margin: 'auto',
-            gap: isMobile ? 15 : 21,
             flex: 1,
             width: '100%',
             maxWidth: isMobile ? '100%' : 400,
@@ -245,12 +245,7 @@ export default (props: any) => {
                 minLength: {
                   value: 6,
                   message: 'Password must be at least 6 characters'
-                },
-                pattern: {
-                  value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/,
-                  message: 'Passwords must contain 1 number, 1 uppercase and 1 lowercase'
                 }
-
               }}
               render={({ field: { onChange, value } }) => (
                 <KTextInput
@@ -319,20 +314,6 @@ export default (props: any) => {
           </View>
         )
       }
-      {
-        !isMobile && (
-          <KText
-            style={{
-              position: 'absolute',
-              bottom: 20,
-              right: 20,
-              fontSize: 13,
-              color: 'black',
-            }}>
-            ♥️
-          </KText>
-        )
-      }
     </View >
   )
 }
@@ -353,7 +334,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    gap: 16,
+    // gap: 16,
     flex: 1,
     maxWidth: 400,
     width: '100%',

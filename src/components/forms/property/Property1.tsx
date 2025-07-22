@@ -85,20 +85,16 @@ export default (props: Props) => {
     const { isMobile } = useIsMobile()
 
     return <>
-        <FormField label={<KText>
-            What is your exact address ?
-            <Pressable style={{
-                // position: "absolute",
-                // right: 0,
-                marginLeft: 10,
-            }} onPress={() => setModal("This information is required to verify your property. However it is private and is only shared with another person that has accepted a swap request with you.")}>
-                <KText style={{ width: 20, height: 20, borderWidth: 1, borderColor: variables.colors.borderGray, color: variables.colors.borderGray, borderRadius: 20, textAlign: "center" }}>?</KText>
-            </Pressable>
-        </KText>} style={{ zIndex: 100 }}>
+        <FormField
+            label='What is your exact address ?'
+            style={{ zIndex: 100 }}
+            gapBeforeChildren={false}
+            gapAfterChildren={false}
+        >
 
             <KTextInput
-                leftComponent={<KIcon name="location" size="medium" />}
-                placeholder="e.g. Main Street 123, Paris, France"
+                leftComponent={<KIcon name="location" size="medium" style={{ opacity: 0.5 }} />}
+                placeholder="42 Elm Road, New York, NY 10001, USA"
                 value={property.location}
                 inputStyles={inputStyles}
                 suggestionCallback={autocompleteAddress}
@@ -122,7 +118,13 @@ export default (props: Props) => {
             />
         }
 
-        <FormField labelAlign="left" label="What do you want to swap?" style={{ height: isMobile ? 140 : 'auto' }}>
+        <FormField
+            labelAlign="left"
+            label="What do you want to swap?"
+            style={{ height: isMobile ? 140 : 'auto' }}
+            gapBeforeChildren={false}
+            gapAfterChildren={false}
+        >
             <View style={[styles.container, styles.containerSwap]}>
                 <KButton
                     style={
@@ -165,7 +167,12 @@ export default (props: Props) => {
             </View>
         </FormField>
 
-        <FormField labelAlign="left" label="Pets friendly?">
+        <FormField
+            labelAlign="left"
+            label="Pets friendly?"
+            gapBeforeChildren={false}
+            gapAfterChildren={false}
+        >
             <View style={[styles.container, { gap: 8 }]}>
                 <KButton
                     style={{ width: "48%", marginBottom: 10 }}
@@ -182,8 +189,13 @@ export default (props: Props) => {
             </View>
         </FormField>
 
-        <FormField labelAlign="left" label="Add some amenities (3 minimum)">
-            <View style={[styles.container, { rowGap: 15, marginTop: 20 }]}>
+        <FormField
+            labelAlign="left"
+            label="Add some amenities (3 minimum)"
+            gapBeforeChildren={false}
+            gapAfterChildren={false}
+        >
+            <View style={[styles.container, { rowGap: 15, marginTop: 0 }]}>
                 {amenities.map((amenity, i) => {
                     return <CheckBox
                         key={i}
@@ -246,6 +258,15 @@ const styles = StyleSheet.create({
     buttonMobile: {
         maxWidth: '48%',
         height: 45
+    },
+    labelText: {
+        color: '#000',
+        fontFamily: "Plus Jakarta Sans",
+        fontSize: 16,
+        fontStyle: 'normal',
+        fontWeight: '600',
+        lineHeight: 13,
+        letterSpacing: -0.5
     }
 
 })

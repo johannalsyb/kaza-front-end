@@ -1,4 +1,4 @@
-import { TextStyle, View } from "react-native"
+import { Platform, TextStyle, View } from "react-native"
 import FormField from "../../Form/FormField/FormField"
 import KTextInput from "../../Form/KTextInput/KTextInput"
 import variables from "../../../styles/variables"
@@ -22,7 +22,10 @@ type Props = {
 
 export default (props: Props) => {
     return <>
-        <FormField label="How big is your space?" style={{ marginBottom: 15 }}>
+        <FormField label="How big is your space?"
+            gapAfterChildren={false}
+            gapBeforeChildren={false}
+        >
             <KTextInput
                 leftComponent={<KIcon name="sqm2" size="medium" />}
                 rightComponent={<KText>m²</KText>}
@@ -41,7 +44,12 @@ export default (props: Props) => {
                 inputStyles={inputStyles} />
         </FormField>
 
-        <FormField labelAlign="left" label="How many bedroom(s)?" style={{ marginBottom: 15 }}>
+        <FormField
+            labelAlign="left"
+            label="How many bedroom(s)?"
+            gapAfterChildren={false}
+            gapBeforeChildren={false}
+        >
             <KNumberInput
                 inputStyles={inputStyles}
                 topStyle={inputStyles}
@@ -51,19 +59,41 @@ export default (props: Props) => {
                 onChange={n => props.onChange({ ...props.property, bedrooms: n as number })} />
         </FormField>
 
-        <FormField labelAlign="left" label="How many beds?" style={{ marginBottom: 15 }}>
+        <FormField
+            labelAlign="left"
+            label="How many beds?"
+            gapAfterChildren={false}
+            gapBeforeChildren={false}
+        >
             {new Array(props.property.bedrooms).fill(undefined).map((bedroom, i) => {
                 if (props.property.bedroomsBeds.length < i + 1) props.property.bedroomsBeds.push({ single: 0, double: 0 })
                 const bb = props.property.bedroomsBeds[i]
-                return <View key={`br_${i}`} style={{ marginVertical: 10 }}>
-                    <KText style={{ marginBottom: 15 }}>Room {i + 1}</KText>
+                return <View key={`br_${i}`} >
+                    <KText style={{
+                        marginBottom: 12,
+                        backgroundColor: variables.colors.yellow,
+                        maxWidth: 69,
+                        textAlign: 'center',
+                        borderRadius: 20,
+                        paddingBottom: 4
+                    }}>Room {i + 1}</KText>
                     <View style={{
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",
                         width: "100%",
                     }}>
-                        <FormField labelAlign="left" label="Single" style={{ flex: 1, marginRight: 10 }}>
+                        <FormField labelAlign="left" label={
+                            <KText style={{ fontSize: 15, fontWeight: "500", opacity: 0.5 }}>
+
+                                Single
+                            </KText>
+                        }
+                            gapAfterChildren={false}
+                            gapBeforeChildren={false}
+                            style={{ flex: 1 }}
+
+                        >
                             <KNumberInput
                                 inputStyles={inputStyles}
                                 topStyle={inputStyles}
@@ -79,7 +109,15 @@ export default (props: Props) => {
                                 }} />
                         </FormField>
 
-                        <FormField labelAlign="left" label="Double" style={{ flex: 1 }}>
+                        <FormField labelAlign="left" label={
+                            <KText style={{ fontSize: 15, fontWeight: "500", opacity: 0.5 }}>
+                                Double
+                            </KText>
+                        }
+                            gapAfterChildren={false}
+                            gapBeforeChildren={false}
+                            style={{ flex: 1, marginLeft: 10 }}
+                        >
                             <KNumberInput
                                 inputStyles={inputStyles}
                                 topStyle={inputStyles}

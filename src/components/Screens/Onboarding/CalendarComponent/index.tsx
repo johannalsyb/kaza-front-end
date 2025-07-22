@@ -96,7 +96,7 @@ const CalendarComponent = () => {
   }, [availableDates])
   return (
     <>
-      <View style={[styles.container, { justifyContent: 'center', marginBottom: 70, width: '100%' }]}>
+      <View style={[styles.container, { justifyContent: 'center', marginBottom: isMobile ? 25 : 70, width: '100%' }]}>
         <Pressable onPress={() => availableDates.length ? {} : setIsOpenCalendar(true)} style={{ width: '100%' }}>
           <SelectDates
             startDate={availableDates[0]?.value?.[0] ?? new Date()}

@@ -82,14 +82,12 @@ export default (props: Props) => {
         }}>
             <KButton
                 text="Back"
-                loading={loading}
-                disabled={loading}
                 onPress={props.onPrev}
                 color="greenLight"
                 style={{ width: "48%" }} />
 
             <KButton
-                text="Next"
+                text="Next Step"
                 loading={loading}
                 disabled={loading || !isValid(props.property)}
                 onPress={createOrUpdate}

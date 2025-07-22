@@ -42,7 +42,7 @@ export default (props: Props) => {
                 }}
             >
                 {props.children || <View style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: 20 }}>
-                    <KIcon name="addPicture" size={50} style={{ marginBottom: 20 }} />
+                    <KIcon name="addPicture" size={isMobile ? 25 : 50} style={{ marginBottom: 10 }} />
                     {isMobile ?
                         <View style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                             <KText style={{ color: "black" }}>Add pictures of your place</KText>

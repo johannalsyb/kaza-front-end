@@ -13,6 +13,7 @@ import KButton from "../../KButton/KButton"
 import { toastError } from "../../Toast/Toast"
 import useConfig from "../../../hooks/useConfig"
 import RadioButton from '../../RadioButton/RadioButton'
+import AnimatedProgressBar from '../../AnimatedProgressBar/AnimatedProgressBar'
 
 type Props = {
     onChange: (property: Property) => void,
@@ -191,7 +192,7 @@ export default (props: Props) => {
         setPics(res.data.images.split(","))
         return res.data.images
     }
-
+    console.log('imageLoading', imageLoading)
     const nbSquares = Math.max(imageLoading.length, pics.length, 6)
     return <View style={{
         width: "100%",
@@ -291,12 +292,13 @@ export default (props: Props) => {
                             alignItems: "center",
                         }} key={`pic_placeholder_${i}`}>
                         {imageLoading[i + pics.length] ?
-                            <View style={{ width: "100%", height: "100%", borderRadius: 20 }}>
+                            <View style={{ width: "100%", height: "100%", borderRadius: 20, position: 'relative' }}>
                                 <Image
                                     source={{ uri: imageLoading[i + pics.length] as string }}
                                     style={{ width: "100%", height: "100%", borderRadius: 20 }} />
                                 <View style={{ width: "100%", height: "100%", backgroundColor: "#000000aa", position: "absolute", borderRadius: 20 }} />
-                                <ActivityIndicator size="large" color={variables.colors.yellow} style={{ position: "absolute", width: "100%", height: "100%" }} />
+                                {/* <ActivityIndicator size="large" color={variables.colors.yellow} style={{ position: "absolute", width: "100%", height: "100%" }} /> */}
+                                <AnimatedProgressBar />
                             </View> : null}
                     </Pressable>
                 }) : null}
