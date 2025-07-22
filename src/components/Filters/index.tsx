@@ -1,11 +1,11 @@
-import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import variables from '../../styles/variables';
 import KTextInput from '../Form/KTextInput/KTextInput';
 import KIcon from '../KIcon/KIcon';
 import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown';
 import SubHeader from '../SubHeader/SubHeader';
 import useIsMobile from '../../hooks/useIsMobile';
-import {Pressable, StyleSheet, View, ViewStyle} from 'react-native';
+import { Pressable, StyleSheet, View, ViewStyle, Text } from 'react-native';
 import KText from '../KText';
 import KButton from '../KButton/KButton';
 import { useSetAtom } from 'jotai';
@@ -13,15 +13,19 @@ import { showSignInAtom, showSwapNowAtom } from '../../atoms';
 import useAuthentication from '../../hooks/useAuthentication';
 import { PropertyFilter } from '../Views/Properties/PropertyList';
 import KModal from '../KModal/KModal';
+import KModalWeb from '../KModal/KModalWeb';
 import properties from '../../api/properties';
 import autocomplete from '../../api/autocomplete';
 import { set } from '../../utils/Storage/storage';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NavStackParamList } from '../../navigation/screens';
+import DatePicker from '../DatePicker';
+import MapToggleButton from './MapToggleButton';
+import FiltersView from './FiltersView';
 
 type Props = {
   onShowMap: (show: boolean) => void;
-  onFilter: (...filters:{type: keyof PropertyFilter , filters: string[]}[]) => void;
+  onFilter: (...filters: { type: keyof PropertyFilter, filters: string[] }[]) => void;
   onClearFilters: () => void;
   onSearch: (search: string) => void;
   filters: PropertyFilter
@@ -30,6 +34,7 @@ type Props = {
 
 export type Handle = {
   setSearch: (search: string) => void;
+  clearFilters: () => void;
 }
 
 export const placeTypeFilters = ['flat', 'house', 'studio', 'room'];
@@ -48,55 +53,67 @@ const Filters = forwardRef<Handle, Props>(({
 
   //@ts-expect-error
   const [showMap, setShowMap] = useState(route.params?.map || false);
-  const {isMobile} = useIsMobile();
+  const { isMobile } = useIsMobile();
   const setShowSwapNow = useSetAtom(showSwapNowAtom);
   const setShowSignIn = useSetAtom(showSignInAtom);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [search, setSearch] = useState<string>("");
-  const {user} = useAuthentication();
+  const { user } = useAuthentication();
   const isFavourites = route.name === "Favourites"
 
   const flatFilterRef = React.createRef<DropdownHandle>()
   const brFilterRef = React.createRef<DropdownHandle>()
+  const [showDateModal, setShowDateModal] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   useEffect(() => {
     onShowMap?.(showMap);
   }, [showMap]);
 
   useEffect(() => {
-    if(!route) return
+    if (!route) return
     //@ts-expect-error
     setShowMap(!!route.params?.map)
   }, [route])
 
   useImperativeHandle(ref, () => ({
-    setSearch
+    setSearch,
+    clearFilters,
   }));
 
   const nbFilters = (ffilters: PropertyFilter) => {
     let nb = 0
-    if(ffilters["placeType"].length !== placeTypeFilters.length) nb++
-    if(ffilters["petsFriendlyOnly"][0] !== "false") nb++
-    if(ffilters["swapWithWomen"][0] !== "false") nb++
-    if(ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
-    if(search.length) nb++
+    if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
+    if (ffilters["petsFriendlyOnly"][0] !== "false") nb++
+    if (ffilters["kidsFriendlyOnly"][0] !== "false") nb++
+    if (ffilters["swapWithWomen"][0] !== "false") nb++
+    if (ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
+    if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
+    if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
+    if (search.length) nb++
     return nb
   }
 
   const clearFilters = () => {
     setSearch('')
     onSearch('')
+    setStartDate(null)
+    setEndDate(null)
     onFilter(
-      {type: "placeType", filters: placeTypeFilters},
-      {type: "petsFriendlyOnly", filters: ["false"]},
-      {type: "swapWithWomen", filters: ["false"]},
-      {type: "bedrooms", filters: nbBedroomFilters},
+      { type: "placeType", filters: placeTypeFilters },
+      { type: "petsFriendlyOnly", filters: ["false"] },
+      { type: "kidsFriendlyOnly", filters: ["false"] },
+      { type: "swapWithWomen", filters: ["false"] },
+      { type: "bedrooms", filters: nbBedroomFilters },
+      { type: "startDate", filters: startDate ? [startDate.toISOString()] : [] },
+      { type: "endDate", filters: endDate ? [endDate.toISOString()] : [] },
     )
     flatFilterRef.current && flatFilterRef.current.setSelectedItems(["any"])
     brFilterRef.current && brFilterRef.current.setSelectedItems(["any"])
   }
 
-  const filterCount = nbFilters(filters)
+  const filterCount = nbFilters(filters);
 
   const flatTypeView = <Dropdown
     ref={flatFilterRef}
@@ -114,118 +131,98 @@ const Filters = forwardRef<Handle, Props>(({
     dropdownStyle={{
       width: isMobile ? "100%" : "auto",
     }}
-    onChange={(values) => onFilter({type: "placeType", filters: values[0] === "any" ? placeTypeFilters : values})}
+    onChange={(values) => onFilter({ type: "placeType", filters: values[0] === "any" ? placeTypeFilters : values })}
     leftIcon="placeType"
-    leftIconStyle={{stroke: "white"}}
+    leftIconStyle={{ stroke: "white" }}
     items={['any'].concat(placeTypeFilters)}
   />
 
-  const filtersView = (ffilters:PropertyFilter) => <>
-    {!isMobile && flatTypeView}
-    <View style={{margin: 5, display: isMobile ? "flex" : "none"}} />
-    <KButton
-      color={ffilters.petsFriendlyOnly[0] === "true" ? "tertiary" : "light"}
-      onPress={() => onFilter({type: "petsFriendlyOnly", filters: ffilters.petsFriendlyOnly[0] === "false" ? ["true"] : ["false"]})}
-      style={{flexDirection: 'row', marginLeft: 10, width: isMobile ? "80%" : "auto", paddingLeft: 5, 
-         paddingRight: 5, height: 40, borderWidth: 1,
-          borderColor: variables.colors.blackLight ,
+  const clearFiltersView = () =>
+    <Pressable
+      style={isMobile ? [
+        styles.lightCircle,
+        {
+          marginLeft: isMobile ? 8.5 : 10,
+          marginRight: 2.5,
+          backgroundColor: variables.colors.orange,
+          borderColor: variables.colors.orange,
+          // position: !isMobile ? "absolute" : undefined,
+          // right: 50
+        },
+      ] : { display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      onPress={clearFilters}
+      disabled={filterCount === 0}
+    >
+      {isMobile ?
+        <KIcon
+          name="crossCircle"
+          size="large"
+          style={{
+            transform: "scale(1.5)"
           }}
-      icon='pet'
-      iconSize='medium'
-      text="Pet Friendly" />
-    <View style={{margin: 5, display: isMobile ? "flex" : "none"}} />
-    <KButton
-      color={ffilters.swapWithWomen[0] === "true" ? "tertiary" : "light"}
-      onPress={() => onFilter({type: "swapWithWomen", filters: ffilters.swapWithWomen[0] === "true" ? ["false"] : ["true"]})}
-      style={{flexDirection: 'row', marginLeft: 10, width: isMobile ? "80%" : "auto", paddingLeft: 5, paddingRight: 5, height: 40, borderWidth: 1, borderColor: variables.colors.blackLight}}
-      icon='woman'
-      iconSize='medium'
-      text="Swap with women" />
-    <View style={{margin: 5, display: isMobile ? "flex" : "none"}} />
-    <Dropdown
-      // multiple={true}
-      // selectedIndexes={placeTypeFilters.map(i => filters.placeType.includes(i))}
-      ref={brFilterRef}
-      style={{
-        backgroundColor: variables.colors.blackLight,
-        width: isMobile ? "80%" : "auto",
-        height: 40,
-        zIndex: 1,
-        marginLeft: 10,
-      }}
-      dropdownStyle={{
-        width: isMobile ? "100%" : "auto",
-      }}
-      onChange={(values) => onFilter({type: "bedrooms", filters: values[0] === "any" ? nbBedroomFilters : values})}
-      leftIcon="bed"
-      leftIconStyle={{stroke: "white"}}
-      items={['any'].concat(nbBedroomFilters)}
-    />
-    {filterCount > 0 && !isMobile ? clearFiltersView() : null}
-  </>
+        /> :
+        <>
+          <KIcon
+            name="clearAll"
+            size="medium"
+          />
+          <Text style={{ fontSize: 16 }}>Clear all filters</Text>
+        </>
+      }
+    </Pressable>
 
-  const clearFiltersView = () => <Pressable
-    style={[
-      styles.lightCircle,
-      {
-        marginLeft: isMobile ? 8.5 : 10,
-        marginRight: 2.5,
-        backgroundColor: variables.colors.orange,
-        borderColor: variables.colors.orange,
-        // position: !isMobile ? "absolute" : undefined,
-        // right: 50
-      },
-    ]}
-    onPress={clearFilters}>
-    <KIcon
-      name="crossCircle"
-      size="large"
-      style={{
-        transform: "scale(1.5)"
-      }}
+  const filterView = (
+    <FiltersView
+      ffilters={filters}
+      isMobile={isMobile}
+      flatTypeView={flatTypeView}
+      onFilter={onFilter}
+      filterCount={filterCount}
+      brFilterRef={brFilterRef}
+      nbBedroomFilters={nbBedroomFilters}
+      placeTypeFilters={placeTypeFilters}
     />
-  </Pressable>
-
-  const filterView = filtersView(filters)
+  );
 
   return (
-    <SubHeader style={{padding :14}}>
-      <View style={{flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined}}>
-        {!isMobile ? <KTextInput
-              placeholder="Search for a city or country"
-              topStyle={{width: 290, height: !showSearchBar ? 0 : 40, marginRight: 10, flex: 1, opacity: !showSearchBar ? 0 : 1, justifyContent: "center"}}
-              inputStyles={{textAlign: 'left'}}
-              editable={showSearchBar}
-              leftComponent={<KIcon name="search" size="medium" />}
-              value={search}
-              onChangeText={(text) => setSearch(text)}
-              suggestionCallback={(text) => {
-                return autocomplete.zone(text)
+    <SubHeader style={{ padding: 14 }}>
+      <View style={{ flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined }}>
+        {!isMobile ?
+          <KTextInput
+            placeholder="Where would you like to go?"
+            topStyle={{ width: 290, height: !showSearchBar ? 0 : 40, marginRight: 10, flex: 1, opacity: !showSearchBar ? 0 : 1, justifyContent: "center" }}
+            inputStyles={{ textAlign: 'left' }}
+            editable={showSearchBar}
+            leftComponent={<KIcon name="search" size="medium" />}
+            value={search}
+            onChangeText={(text) => setSearch(text)}
+            suggestionCallback={(text) => {
+              return autocomplete.zone(text)
                 .then((res) => {
                   return res.data.results.map((r: any) => r.description)
                 })
-              }}
-              onSuggestionSelected={(text) => {
-                onSearch(text)
-                setSearch(text)
-              }}
-            />
-        : <View style={{
-          display: "flex",
-          flexDirection: "row",
-          flex: 1,
-        }}>
+            }}
+            onSuggestionSelected={(text) => {
+              onSearch(text)
+              setSearch(text)
+            }}
+          />
+          : <View style={{
+            display: "flex",
+            flexDirection: "row",
+            flex: 1,
+          }}>
             <Pressable
               style={[
                 styles.lightCircle,
-                {marginLeft: 2.5, marginRight: 2.5},
-                {backgroundColor: variables.colors.black},
+                { marginLeft: 2.5, marginRight: 2.5 },
+                { backgroundColor: variables.colors.black },
               ]}
               onPress={() => setShowFilterModal(true)}>
               <KIcon
                 name="filters"
                 size="large"
-                style={{stroke: "white"}}
+                style={{ stroke: "white" }}
               />
               <View style={{
                 position: "absolute",
@@ -239,7 +236,7 @@ const Filters = forwardRef<Handle, Props>(({
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-                <KText style={{color: "white", fontSize: 10}}>{filterCount}</KText>
+                <KText style={{ color: "white", fontSize: 10 }}>{filterCount}</KText>
               </View>
             </Pressable>
             {flatTypeView}
@@ -247,67 +244,144 @@ const Filters = forwardRef<Handle, Props>(({
             <KModal
               visible={showFilterModal}
               setVisibility={() => setShowFilterModal(false)}
-              style={{backgroundColor: variables.colors.greenLight, padding: 20}}
-              >
+              style={{ backgroundColor: variables.colors.greenLight, padding: 20 }}
+            >
               {filterView}
             </KModal>
           </View>
-          }
+        }
       </View>
-      {!isMobile ? <View style={{
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center"
-    }}>{filterView}</View> : null}
+      {isMobile ?
+        <>
+          {/* <DatePicker
+            label="Starting date"
+            isRange
+            onDateSelected={(date: any) => {
+              setStartDate(date);
+              // onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
+            }}
+          /> */}
+        </>
+        :
+        <View style={{
+          flex: 1,
+          gap: 10,
+          marginLeft: 18,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+        }}>
+          <DatePicker
+            label="Starting date"
+            onDateSelected={(date: any) => {
+              setStartDate(date);
+              onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
+            }}
+          />
+          <DatePicker
+            label="Ending date"
+            onDateSelected={(date: any) => {
+              setEndDate(date);
+              onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] });
+            }}
+          />
+        </View>}
       <View style={{
         flexDirection: 'row',
         alignItems: "center",
-        width: isMobile ? "auto": 260,
+        width: "auto",
         justifyContent: "flex-end"
       }}>
-        <Pressable
-          style={[
-            styles.lightCircle,
-            {marginLeft: 2.5, marginRight: 2.5},
-            {
-              backgroundColor: !showMap ? variables.colors.black : isMobile ? "white" : "transparent",
-              borderColor: isMobile ? !showMap ? variables.colors.black : "white" : variables.colors.black,
-            },
-          ]}
-          onPress={() => {
-            // setShowMap(false)
-            //@ts-expect-error
-            navigation.navigate(route.name)
-          }}>
-          <KIcon
-            name="cards"
-            size="large"
-            style={!showMap ? {color: variables.colors.white} : {}}
-          />
-        </Pressable>
+        {!isMobile && flatTypeView}
+        {!isMobile && <Dropdown
+          // multiple={true}
+          // selectedIndexes={placeTypeFilters.map(i => filters.placeType.includes(i))}
+          ref={brFilterRef}
+          style={{
+            backgroundColor: variables.colors.blackLight,
+            width: isMobile ? "80%" : "auto",
+            height: 40,
+            zIndex: 1,
+            marginLeft: 5,
+            marginRight: 10,
+          }}
+          dropdownStyle={{
+            width: isMobile ? "100%" : "auto",
+          }}
+          onChange={(values) => onFilter({ type: "bedrooms", filters: values[0] === "any" ? nbBedroomFilters : values })}
+          leftIcon="bed"
+          leftIconStyle={{ stroke: "white" }}
+          items={['any'].concat(nbBedroomFilters)}
+        />}
+        {isMobile ?
+          <Pressable
+            style={[
+              styles.lightCircle,
+              { marginLeft: 2.5, marginRight: 2.5 },
+              {
+                backgroundColor: variables.colors.white,
+                borderColor: variables.colors.white,
+              },
+            ]}
+            onPress={() => setShowDateModal(true)}
+          >
+            <KIcon
+              name="calendar"
+              size="large"
+              style={{ stroke: "white" }}
+            />
+          </Pressable>
+          :
+          <>
+            <Pressable
+              style={[
+                styles.lightCircle,
+                { marginLeft: 2.5, marginRight: 2.5 },
+                {
+                  backgroundColor: variables.colors.black,
+                  borderColor: isMobile ? !showMap ? variables.colors.black : "white" : variables.colors.black,
+                },
+              ]}
+              onPress={() => {
+                setShowFilterModal(true)
+              }}>
+              <KIcon
+                name="filters"
+                size="large"
+                style={{ stroke: "white" }}
+              />
+            </Pressable>
+            {isMobile ?
+              <KModal
+                // showHeader
+                // isMobile={isMobile}
+                showCross={false}
+                visible={showFilterModal}
+                setVisibility={() => setShowFilterModal(false)}
+                style={{ backgroundColor: variables.colors.greenLight, padding: 20, display: 'flex', flexDirection: 'row', gap: 20, minWidth: 550 }}
+              >
+                {filterView}
+              </KModal>
+              :
+              <KModalWeb
+                showCross={false}
+                visible={showFilterModal}
+                clearFiltersView={clearFiltersView}
+                setVisibility={() => setShowFilterModal(false)}
+                style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection:  isMobile ? 'row' : 'column', gap: isMobile? 20 : 0, minWidth: 550 }}
+              >
+                {filterView}
+              </KModalWeb>
+            }
+          </>
+        }
         {/* <View style={{flex: 1}} /> */}
-        <Pressable
-          style={[
-            styles.lightCircle,
-            {marginLeft: 2.5, marginRight: 2.5},
-            {
-              backgroundColor: showMap ? variables.colors.black : isMobile ? "white" : "transparent",
-              borderColor: isMobile ? showMap ? variables.colors.black : "white" : variables.colors.black,
-            },
-          ]}
-          onPress={() => {
-            // setShowMap(true)
-            //@ts-expect-error
-            navigation.navigate(route.name, {map: true})
-          }}>
-          <KIcon
-            name="maps"
-            size="large"
-            style={showMap ? {
-              color: variables.colors.white
-            } : {}}
-          />
-        </Pressable>
+        <MapToggleButton
+          showMap={showMap}
+          isMobile={isMobile}
+          route={route}
+          navigation={navigation}
+        />
         {/* {!isMobile ? <KButton
           color="secondary"
           onPress={() => user ? setShowSwapNow(true) : setShowSignIn(true)}
@@ -316,6 +390,33 @@ const Filters = forwardRef<Handle, Props>(({
           <KText>Swap Now</KText>
         </KButton> : null} */}
       </View>
+      {/* TODO: apply modal for datepicker filters for mobile */}
+      {/* <KModal
+        visible={showDateModal}
+        setVisibility={setShowDateModal}
+        showCross={true}
+        style={{ padding: 20 }}
+      >
+        <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', alignItems: 'center', padding: 10 }}>
+          <Text style={{ fontSize: 18, marginBottom: 10 }}>Select Dates</Text>
+          <DatePicker
+            label="Start Date"
+            onDateSelected={setStartDate}
+          />
+          <View style={{ height: 20 }} />
+          <DatePicker
+            label="End Date"
+            onDateSelected={setEndDate}
+          />
+          <View style={{ height: 30 }} />
+          <Pressable
+            style={{ backgroundColor: variables.colors.black, borderRadius: 8, paddingVertical: 10, paddingHorizontal: 30 }}
+            onPress={() => setShowDateModal(false)}
+          >
+            <Text style={{ color: 'white', fontSize: 16 }}>Apply</Text>
+          </Pressable>
+        </View>
+      </KModal> */}
     </SubHeader>
   );
 });

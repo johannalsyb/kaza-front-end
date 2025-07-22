@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   useColorScheme,
+  Platform,
 } from 'react-native'
 import useAuthentication from './hooks/useAuthentication'
 import ToastManager from './components/Toast/ToastManager'
@@ -21,6 +22,10 @@ import { OnboardingInfo } from './common/types/api/auth'
 import { toastSuccess } from './components/Toast/Toast'
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark'
+  if (Platform.OS === 'web') {
+    require('react-datepicker/dist/react-datepicker.css');
+    require('./components/DatePicker/datepickerOverrides.css');
+  }
 
   const backgroundStyle = {
     // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

@@ -15,6 +15,7 @@ import useConfig from '../hooks/useConfig';
 import {set} from '../utils/Storage/storage';
 import {Handle} from '../components/Filters';
 import Footer from '../components/Footer';
+import KButton from '../components/KButton/KButton';
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Properties'>;
 
@@ -25,6 +26,12 @@ export default ({route, navigation}: Props) => {
   const {config, overlay} = useConfig();
   const [loading, setLoading] = useState(false);
   const propListRef = useRef<Handle>(null);
+  
+  const handleClearFilters = () => {
+    propListRef.current?.clearFilters();
+    //TODO: This is a temp solution.
+    window.location.reload();
+  };
 
   const findProperties = ({
     page = currentPage,
@@ -87,12 +94,13 @@ export default ({route, navigation}: Props) => {
           style={{
             backgroundColor: variables.colors.greenLight,
             flex: 1,
-            display: 'none',
+            display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            paddingTop: 110,
           }}>
           <KIcon
-            name="fav"
+            name="smile"
             size="xxlarge"
             style={{
               stroke: 'black',
@@ -117,8 +125,19 @@ export default ({route, navigation}: Props) => {
               textAlign: 'center',
               lineHeight: 20,
             }}>
-            There are no places for your search request yet.
+            There are no places for your search.
           </KText>
+          <KText
+            style={{
+              maxWidth: isMobile ? '90%' : '25%',
+              textAlign: 'center',
+              lineHeight: 20,
+            }}>
+            Please remove some filters.
+          </KText>
+          <View style={{ marginTop: 30}}>
+            <KButton text='Clear Search' onPress={handleClearFilters} />
+          </View>
         </View>
       }
     />
