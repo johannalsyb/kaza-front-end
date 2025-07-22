@@ -40,6 +40,9 @@ const LeftSide = (props: LeftSideProps) => {
         <KIcon
           name="backArrow"
           size={'large'}
+          style={
+            { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+          }
         />
       </Link>}
       {isMobile ? (

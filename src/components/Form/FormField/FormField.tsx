@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, ViewStyle } from 'react-native'
 import Gap from '../../Gap/Gap'
+import useIsMobile from '../../../hooks/useIsMobile'
 
 type Props = {
   style?: ViewStyle
@@ -19,8 +20,9 @@ const FormField = (props: Props) => {
     children,
     gapBeforeChildren = true,
     gapAfterChildren = true } = props
+  const { isMobile } = useIsMobile()
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style, isMobile && { marginBottom: 15 }]}>
       {label && <View style={styles.labelContainer}>
         {typeof label === "string" ? <Text style={[styles.label, { textAlign: labelAlign }]}>{label}</Text> : label}
       </View>}

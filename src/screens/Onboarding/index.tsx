@@ -321,7 +321,14 @@ export default (props: Props) => {
         }}>
         {isMobile &&
           <View style={styles.iconBack}>
-            <KIcon name="backArrow" size={40} onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')} />
+            <KIcon
+              name="backArrow"
+              size={40}
+              onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')}
+              style={
+                { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+              }
+            />
           </View>
         }
         <View

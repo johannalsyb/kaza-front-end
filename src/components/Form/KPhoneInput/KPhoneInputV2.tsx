@@ -9,8 +9,10 @@ import KModal from "../../KModal/KModal"
 import { Phone } from "../../forms/auth/Register"
 import { Countries, getCountries, isPhoneValid } from "../../../utils/phone"
 import useIsMobile from "../../../hooks/useIsMobile"
-import Dropdown from "../../Dropdown/Dropdown"
+import Dropdown from "./Dropdown"
 import { useCloseFromOutside } from '../../../hooks/useCloseFromOutside'
+import { back } from '../../KIcon/icons'
+import ModalList from './ModalList'
 
 const inputStyles: TextStyle = {
     textAlign: "left",
@@ -28,9 +30,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: variables.colors.xLightGray,
-        borderRadius: 23,
+        gap: 9,
         height: 44,
         position: 'relative',
         zIndex: 1,
@@ -41,8 +41,9 @@ const styles = StyleSheet.create({
         left: 0,
         backgroundColor: variables.colors.white,
         width: 'auto',
+        minWidth: '100%',
         paddingVertical: 15,
-        paddingLeft: 15,
+        paddingHorizontal: 15,
         borderRadius: 15,
         zIndex: 1,
         boxShadow: '15px 15px 55px 0px rgba(77, 75, 63, 0.25)',
@@ -66,18 +67,45 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         left: 55
     },
+    containerCode: {
+        paddingLeft: 20,
+        paddingRight: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderWidth: 1,
+        borderColor: variables.colors.xLightGray,
+        borderRadius: 23,
+        height: 44,
+        minWidth: 105
+    },
+    input: {
+        color: variables.colors.black,
+        opacity: 0.6,
+        fontSize: 16,
+        height: 44,
+        textAlign: 'left',
+        paddingVertical: 0,
+        paddingLeft: 20
+    },
+    containerPhone: {
+        flex: 1, paddingLeft: 10, paddingRight: 20, borderWidth: 1,
+        borderColor: variables.colors.xLightGray,
+        borderRadius: 23,
+        height: 44,
+    }
 })
 
 
 export default (props: Props) => {
     const { isMobile } = useIsMobile()
-    const [modalVisible, setModalVisible] = useState(false)
     const [code, setCode] = useState("+1")
     const [number, setNumber] = useState(props.phone || "")
     const [countries, setCountries] = useState<Countries>({})
     const [countrySearch, setCountrySearch] = useState("")
     const [selectedIndex, setSelectedIndex] = useState(-1)
-
+    const [allCountries, setAllCountries] = useState<Countries>({})
     const modalSearchInput = useRef<TextInput>(null)
     const modalRef = useRef<View>(null)
     const [isOpenDropdown, setIsOpenDropdown] = useState(false)
@@ -92,6 +120,7 @@ export default (props: Props) => {
             getCountries()
                 .then(c => {
                     setCountries(c)
+                    setAllCountries(c)
                     const index = Object.keys(c).findIndex(c => c === code)
                     setSelectedIndex(index)
                 })
@@ -109,16 +138,48 @@ export default (props: Props) => {
     useEffect(() => {
         if (code !== undefined && number !== undefined) props.onChange(`${code}${number}`)
     }, [code, number])
-    console.log(props.phone)
+
+    const searchCountriesFromCodeOrName = (search: string) => {
+        const searchLower = search.toLowerCase().trim()
+
+        // Якщо пошук порожній - повертаємо всі країни
+        if (!searchLower) {
+            return allCountries
+        }
+
+        return Object.entries(allCountries).reduce((acc, [countryCode, countryNames]) => {
+            // Пошук по коду
+            if (countryCode.toLowerCase().includes(searchLower)) {
+                acc[countryCode] = countryNames
+                return acc
+            }
+
+            // Пошук по назві
+            const filteredNames = countryNames.filter(name =>
+                name.toLowerCase().includes(searchLower)
+            )
+
+            if (filteredNames.length > 0) {
+                acc[countryCode] = filteredNames
+            }
+
+            return acc
+        }, {} as Countries)
+    }
+
+    useEffect(() => {
+        const filteredCountries = searchCountriesFromCodeOrName(countrySearch)
+        setCountries(filteredCountries)
+    }, [countrySearch, allCountries])
     return <View>
 
         <Pressable
-            ref={closeSuggestionRef}
+            ref={!isMobile ? closeSuggestionRef : undefined}
             style={[styles.container]}
         >
             <Pressable
                 onPress={() => setIsOpenDropdown(!isOpenDropdown)}
-                style={{ paddingLeft: 20, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                style={styles.containerCode}>
                 <KText>
                     {code}
                 </KText>
@@ -141,31 +202,15 @@ export default (props: Props) => {
                     />
                 </Animated.View>
             </Pressable>
-            <View
-                style={{
-                    width: 1,
-                    height: '60%',
-                    backgroundColor: '#ccc',
-                    marginHorizontal: 5,
-                }}
-            />
-            <View style={{ flex: 1, paddingLeft: 10, paddingRight: 20 }}>
+
+            <View style={styles.containerPhone}>
                 <TextInput
                     value={number}
-                    onChangeText={(e) => setNumber(e)
-
-                    }
+                    onChangeText={(e) => setNumber(e)}
                     placeholder='Phone number'
-                    style={[{
-                        color: variables.colors.black,
-                        opacity: 0.6,
-                        fontSize: 16,
-                        height: 44,
-                        textAlign: 'left',
-                        paddingVertical: 0,
-                    },
+                    style={[styles.input,
                     //@ts-ignore
-                    Platform.OS === 'web' ? { outlineWidth: 0 } : {}, // тільки для web
+                    Platform.OS === 'web' ? { outlineWidth: 0 } : {},
                     !!props.error ? styles.formError : {},
                     ]} />
                 {!!props.error ? (
@@ -174,37 +219,34 @@ export default (props: Props) => {
                     </View>
                 ) : null}
             </View>
-            {isOpenDropdown && <View style={[
+            {isOpenDropdown && (isMobile ? <ModalList
+                countries={countries}
+                code={code}
+                setCode={setCode}
+                countrySearch={countrySearch}
+                error={Boolean(props.error)}
+                setCountrySearch={setCountrySearch}
+                isHovered={isHovered}
+                setSelectedIndex={setSelectedIndex}
+                isOpenDropdown={isOpenDropdown}
+                setIsOpenDropdown={setIsOpenDropdown}
+                setIsHovered={setIsHovered}
+            /> : <View style={[
                 styles.dropdown,
             ]}>
-                <ScrollView style={{ maxHeight: 300 }}>
-                    {Object.entries(countries).map(([c, countries], index) => (
-                        <Pressable
-                            key={'drop-down-item-' + index}
-                            style={{
-                                borderRadius: 10,
-                                padding: 10,
-                                backgroundColor:
-                                    isHovered !== index && code === c ? variables.colors.xLightGray : isHovered === index
-                                        ? variables.colors.yellow
-                                        : 'transparent',
-                            }}
-                            onPress={() => {
-                                setCode(c)
-                                setSelectedIndex(index)
-                                setIsOpenDropdown(false)
-                            }}
-                            onHoverIn={() => setIsHovered(index)}
-                            onHoverOut={() => setIsHovered(-1)}>
-                            <KText>
-                                {countries.join(", ")}({c})
-                            </KText>
-                        </Pressable>
-
-                    ))}
-                </ScrollView>
-
-            </View>}
+                <Dropdown
+                    countries={countries}
+                    code={code}
+                    setCode={setCode}
+                    countrySearch={countrySearch}
+                    error={Boolean(props.error)}
+                    setCountrySearch={setCountrySearch}
+                    isHovered={isHovered}
+                    setSelectedIndex={setSelectedIndex}
+                    setIsOpenDropdown={setIsOpenDropdown}
+                    setIsHovered={setIsHovered}
+                />
+            </View>)}
         </Pressable>
     </View>
 

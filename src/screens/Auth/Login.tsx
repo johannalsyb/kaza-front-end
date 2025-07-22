@@ -90,9 +90,7 @@ export default ({ navigation }: Props) => {
           </View>
         )
       }
-      {
-        !isMobile && (<KText style={styles.iconHeart}> ♥️ </KText>)
-      }
+
     </ScrollView >
   )
 }
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    gap: 16,
+    // gap: 16,
     flex: 1,
     maxWidth: 400,
     width: '100%',
@@ -138,6 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     color: '#C6C5BA',
+    marginVertical: 16
   },
   divider: {
     flex: 1,
@@ -151,7 +150,8 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     color: variables.colors.grey,
-    fontSize: 13
+    fontSize: 13,
+    marginTop: 16,
   },
   iconRegister: {
     marginLeft: 10,
