@@ -30,3 +30,4 @@ export const showModalRegisterPlaceAtom = atom<boolean>(false)
 export const showAlert = atom<IKAlert>({} as IKAlert)
 
 export const avilebleDatesAtom = atom<any>([])
+

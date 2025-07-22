@@ -1,4 +1,4 @@
-import { View } from "react-native"
+import { Platform, StyleSheet, View } from "react-native"
 import KButton from "../../components/KButton/KButton"
 import { useEffect, useState } from "react"
 import User1, { Preferences } from "../../components/forms/user/User1"
@@ -14,6 +14,7 @@ import { avilebleDatesAtom } from '../../atoms'
 import { Property } from '../../components/forms/property'
 import properties from "../../api/properties"
 import { Api } from '../../common'
+import useIsMobile from '../../hooks/useIsMobile'
 
 type Props = {
     onPrev: () => void,
@@ -98,10 +99,23 @@ export default (props: Props) => {
                 setLoading(false)
             })
     }
-
+    const { isMobile } = useIsMobile()
     return <>
         {/* <User1 onChange={setPrefs} preferences={prefs}/> */}
-        <CalendarComponent />
+        <View
+            style={[
+                { width: '100%' },
+                Platform.OS === 'web'
+                    ? { height: isMobile ? `calc(100% - 60px)` : 'auto' } as any
+                    : {}
+            ]}
+        >
+            {isMobile && <KText style={styles.label}>
+                When is your place free?
+                <View style={styles.divider} />
+            </KText>}
+            <CalendarComponent />
+        </View>
         <View style={{
             display: "flex",
             flexDirection: "row",
@@ -112,20 +126,39 @@ export default (props: Props) => {
         }}>
             <KButton
                 text="Back"
-                loading={loading}
-                disabled={loading}
                 onPress={(props.onPrev)}
                 color="greenLight"
                 style={{ width: "48%" }} />
 
             <KButton
-                text="Next"
+                text="Next Step"
                 loading={loading}
                 disabled={loading || availableDates.length < 1}
                 onPress={createOrUpdate}
                 color="primary"
                 style={{ width: "48%" }} />
         </View>
-        <View style={{ height: 10 }} />
     </>
 }
+
+const styles = StyleSheet.create({
+    label: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        flex: 1,
+        fontSize: 16,
+        lineHeight: 13,
+        maxHeight: 13,
+        marginBottom: 14
+    },
+    divider: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#EFEFEF',
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 18
+    }
+})

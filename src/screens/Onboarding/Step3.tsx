@@ -87,7 +87,7 @@ export default (props: Props) => {
                 style={{ width: "48%" }} />
 
             <KButton
-                text="Next"
+                text="Next Step"
                 loading={loading}
                 disabled={loading || !isValid(props.property)}
                 onPress={createOrUpdate}

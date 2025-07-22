@@ -51,7 +51,7 @@ export default (props: Props) => {
                     borderWidth: 0,
                 }} />
             <KButton
-                text="Next"
+                text="Next Step"
                 loading={loading}
                 disabled={Object.keys(isValid(props.property)).length > 0}
                 onPress={() => {

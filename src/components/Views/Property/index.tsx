@@ -156,8 +156,7 @@ export default (props: Props) => {
             justifyContent: 'space-between',
             paddingVertical: isMobile ? 16 : 0
           }}>
-            {/* <KIcon name="chat" style={{ stroke: variables.colors.black, height: "100%", width: 30 }} />
-            <SwapRequestButton property={property} hideIcon={true} /> */}
+
             <View style={{
               display: 'flex',
               flexDirection: 'row',
@@ -268,7 +267,7 @@ export default (props: Props) => {
             circles={[{ lat: approxLat, lng: approxLon, radius: 1000 }]}
           />
         </View>
-        {isMobile && <PlaceOwner key="owner" property={property} hideSwapRequestButton={true} />}
+        {isMobile && <PlaceOwner key="owner" property={property} hideSwapRequestButton={!isMobile} />}
       </View>
       {isMobile && <View style={{ height: 100, width: '100%' }} />}
     </ScrollView>

@@ -28,6 +28,7 @@ import KIcon from '../../components/KIcon/KIcon'
 import users from '../../api/users'
 import { OnboardingInfo } from '../../common/types/api/auth'
 import KAlert from '../../components/KAlert'
+import Notification from '../../components/Screens/Onboarding/CalendarComponent/Notification'
 // import Step6 from "./Step6";
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>
@@ -318,6 +319,11 @@ export default (props: Props) => {
           backgroundColor: 'white',
           flexDirection: isMobile ? 'column' : 'row',
         }}>
+        {isMobile &&
+          <View style={styles.iconBack}>
+            <KIcon name="backArrow" size={40} onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')} />
+          </View>
+        }
         <View
           style={{
             display: 'flex',
@@ -418,7 +424,7 @@ export default (props: Props) => {
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
             ...(Platform.OS === 'web' && typeof height === 'number'
-              ? { minHeight: height - 60 }
+              ? { minHeight: isMobile ? 'auto' : height - 60, height: isMobile && currentStep === 4 ? 'calc(100% - 60px)' : 'auto' } as any
               : {}),
           }}
           style={{
@@ -440,6 +446,9 @@ export default (props: Props) => {
         </ScrollView>
       </Comp>
       <KAlert />
+
+      <Notification countCredits={5} />
+
     </>
   )
 }
@@ -475,5 +484,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 13,
     letterSpacing: -0.5
+  },
+  iconBack: {
+    position: 'absolute',
+    top: 40,
+    left: 17,
+    zIndex: 1000
   }
 })
