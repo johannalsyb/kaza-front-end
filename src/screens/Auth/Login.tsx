@@ -31,19 +31,30 @@ export default ({ navigation }: Props) => {
   return (
     <ScrollView
       contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-      <LeftSide />
+      <LeftSide title='Sign In' />
       <View
         style={[styles.containerLogin,
         isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: 60 }]}>
-        <KText style={[styles.title, isMobile && { fontSize: 25 }]}>
-          Sign In
-        </KText>
 
-        <FormField labelAlign="center" label="Email">
-          <KTextInput placeholder="Email" value={creds.email} onChangeText={email => setCreds({ ...creds, email })} />
+        <FormField
+          labelAlign="center"
+          label="Email"
+          gapAfterChildren={false}
+          gapBeforeChildren={false}
+        >
+          <KTextInput
+            placeholder="Email"
+            value={creds.email}
+            onChangeText={email => setCreds({ ...creds, email })}
+            inputStyles={{ paddingVertical: 13 }}
+          />
         </FormField>
 
-        <FormField labelAlign="center" label="Password">
+        <FormField
+          labelAlign="center"
+          label="Password"
+          gapAfterChildren={false}
+          gapBeforeChildren={false}>
           <KTextInput
             placeholder="Password"
             secureTextEntry={!showPassword}
@@ -61,7 +72,7 @@ export default ({ navigation }: Props) => {
         </FormField>
 
         <KText
-          style={[styles.forgotPassword, isMobile && { margin: 0 }]}
+          style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
           onPress={() => navigation.navigate('ForgotPassword')}>
           <KIcon name="password" size={'medium'} style={{ marginRight: 10, opacity: 0.5 }} />
           Forgot Password?

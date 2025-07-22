@@ -28,7 +28,6 @@ const LeftSide = (props: LeftSideProps) => {
           position: 'relative',
           top: 0,
           left: isMobile ? -15 : 0,
-          // right: 0,
           zIndex: -1,
           marginBottom: isMobile ? 24 : 0,
           borderTopRightRadius: isMobile ? 0 : 30,
