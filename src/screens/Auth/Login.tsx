@@ -91,7 +91,7 @@ export default ({ navigation }: Props) => {
           onPress={() => navigation.navigate('SignUp')}>
           Don't have an account yet?
           <KIcon name="register" size={'medium'} style={styles.iconRegister} />
-          <KText style={{ fontWeight: 'bold', color: 'black' }}>Register</KText>
+          <KText style={{ fontWeight: '500', color: 'black' }}>Register</KText>
         </KText>
       </View>
       {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: variables.colors.grey,
     fontSize: 13,
-    marginTop: 16,
+    marginTop: 53,
   },
   iconRegister: {
     marginLeft: 10,

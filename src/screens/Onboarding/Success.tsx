@@ -53,16 +53,16 @@ export default (props: Props) => {
             </KText>
             <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 95, marginBottom: 65 }}>
                 {!Boolean(user?.emailVerified) && <View style={[styles.contaiterNotification, { marginBottom: isMobile ? 26 : 34 }]}>
-                    <KIcon name="email" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon), stroke: '#000' }} />
+                    <KIcon name="email" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         Please cjheck your mailbox to validate your email now
                     </KText>
                 </View>}
                 <View style={styles.contaiterNotification}>
-                    <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon), stroke: 'rgba(0, 0, 0, 0.5)' }} />
+                    <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         For registering you get {' '}
-                        <KText style={{ fontWeight: "bold" }}>
+                        <KText style={{ fontWeight: "bold", color: variables.colors.yellow }}>
                             5 credits
                         </KText>
                         , which is equal to 5 nights at someone else place.

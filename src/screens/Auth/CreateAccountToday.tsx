@@ -71,12 +71,11 @@ export default (props: any) => {
       }
       const response = await auth.signup(signupBody)
       await login(response.data.email, body.password)
-      // 
-      //       setShowModalComponent(<VerifyPhone onVerified={() => {
-      //         toastSuccess("Phone verified successfully")
-      //         setShowModalComponent(null)
-      //       }} />)
-      //       await users.me.requestVerify('phone')
+
+      setShowModalComponent(<VerifyPhone onVerified={() => {
+        toastSuccess("Phone verified successfully")
+        setShowModalComponent(null)
+      }} />)
     } catch (err: any) {
       const error = err.json
       if (error?.data?.error && error?.data?.error.indexOf("User already exists") >= 0) {
@@ -114,7 +113,6 @@ export default (props: any) => {
             justifyContent: isMobile ? 'flex-start' : 'space-between',
             alignItems: 'center',
             margin: 'auto',
-            // gap: isMobile ? 15 : 21,
             flex: 1,
             width: '100%',
             maxWidth: isMobile ? '100%' : 400,
