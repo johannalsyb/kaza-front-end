@@ -81,7 +81,7 @@ export const PropertyCard = ({
       style={[
         styles.container,
         {
-          width: isMobile ? '100%' : variables.propertyCardWidth,
+          width: '100%',
           aspectRatio: bottomComponent ? 'auto' : 1,
           marginBottom: 18
         },
