@@ -259,10 +259,13 @@ export default forwardRef<Handle, Props>(
                       <View
                         style={[
                           {
+                            flexGrow: 1,
+                            flexShrink: 1,
                             padding: isMobile ? 0 : 20,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            // backgroundColor: 'pink',
                           },
                           isMobile && {
                             width: '100%',
