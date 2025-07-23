@@ -106,7 +106,7 @@ export default (
   }
 
   if (!title) {
-    if (isExplore) headerText = 'Explore';
+    if (isExplore) headerText = '';
     title = <KText>{headerText}</KText>;
   }
 
@@ -199,14 +199,14 @@ export default (
       bubble: 0,
       hidden: false
     },
-    {
-      onPress: () => props.navigation.navigate('Matching'),
-      selected: route.name === 'Matching',
-      icon: "matching",
-      text: "Matches",
-      bubble: bubbles.matches,
-      hidden: user?.role.includes("admin")
-    },
+    // {
+    //   onPress: () => props.navigation.navigate('Matching'),
+    //   selected: route.name === 'Matching',
+    //   icon: "matching",
+    //   text: "Matches",
+    //   bubble: bubbles.matches,
+    //   hidden: user?.role.includes("admin")
+    // },
     {
       onPress: () => props.navigation.navigate('Chats'),
       selected: route.name === 'Chats' || route.name === 'Chat',
@@ -435,11 +435,12 @@ export default (
                 ) : (
                   <>
                     <KButton
-                      text="Register"
+                      text="Register your place"
                       icon="register"
-                      color="primary"
-                      textStyle={{ fontSize: 12 }}
-                      style={{ width: "auto" }}
+                      iconSize='medium'
+                      color="secondary"
+                      textStyle={{ fontSize: 12, color: variables.colors.black }}
+                      style={{ width: "auto", backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
                       onPress={() => {
                         props.navigation.navigate('SignUp');
                       }}

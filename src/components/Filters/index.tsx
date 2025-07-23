@@ -96,22 +96,29 @@ const Filters = forwardRef<Handle, Props>(({
   }
 
   const clearFilters = () => {
-    setSearch('')
-    onSearch('')
-    setStartDate(null)
-    setEndDate(null)
+    console.log("clearFilters runs");
+
+    const clearedStart = null;
+    const clearedEnd = null;
+
+    setSearch('');
+    onSearch('');
+    setStartDate(clearedStart);
+    setEndDate(clearedEnd);
+
     onFilter(
       { type: "placeType", filters: placeTypeFilters },
       { type: "petsFriendlyOnly", filters: ["false"] },
       { type: "kidsFriendlyOnly", filters: ["false"] },
       { type: "swapWithWomen", filters: ["false"] },
       { type: "bedrooms", filters: nbBedroomFilters },
-      { type: "startDate", filters: startDate ? [startDate.toISOString()] : [] },
-      { type: "endDate", filters: endDate ? [endDate.toISOString()] : [] },
-    )
-    flatFilterRef.current && flatFilterRef.current.setSelectedItems(["any"])
-    brFilterRef.current && brFilterRef.current.setSelectedItems(["any"])
-  }
+      { type: "startDate", filters: [] },
+      { type: "endDate", filters: [] },
+    );
+
+    flatFilterRef.current?.setSelectedItems(["any"]);
+    brFilterRef.current?.setSelectedItems(["any"]);
+  };
 
   const filterCount = nbFilters(filters);
 
@@ -139,7 +146,7 @@ const Filters = forwardRef<Handle, Props>(({
 
   const clearFiltersView = () =>
     <Pressable
-      style={isMobile ? [
+      style={[
         styles.lightCircle,
         {
           marginLeft: isMobile ? 8.5 : 10,
@@ -149,26 +156,30 @@ const Filters = forwardRef<Handle, Props>(({
           // position: !isMobile ? "absolute" : undefined,
           // right: 50
         },
-      ] : { display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      ]}
       onPress={clearFilters}
       disabled={filterCount === 0}
     >
-      {isMobile ?
-        <KIcon
-          name="crossCircle"
-          size="large"
-          style={{
-            transform: "scale(1.5)"
-          }}
-        /> :
-        <>
-          <KIcon
-            name="clearAll"
-            size="medium"
-          />
-          <Text style={{ fontSize: 16 }}>Clear all filters</Text>
-        </>
-      }
+      <KIcon
+        name="crossCircle"
+        size="large"
+        style={{
+          transform: "scale(1.5)"
+        }}
+      />
+    </Pressable>
+
+  const modalClearFiltersView = () =>
+    <Pressable
+      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      onPress={clearFilters}
+      disabled={filterCount === 0}
+    >
+      <KIcon
+        name="clearAll"
+        size="medium"
+      />
+      <Text style={{ fontSize: 16 }}>Clear all filters</Text>
     </Pressable>
 
   const filterView = (
@@ -185,7 +196,7 @@ const Filters = forwardRef<Handle, Props>(({
   );
 
   return (
-    <SubHeader style={{ padding: 14 }}>
+    <SubHeader style={{ paddingVertical: 14, paddingHorizontal: isMobile ? 14 : 30 }}>
       <View style={{ flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined }}>
         {!isMobile ?
           <KTextInput
@@ -207,7 +218,8 @@ const Filters = forwardRef<Handle, Props>(({
               setSearch(text)
             }}
           />
-          : <View style={{
+          :
+          <View style={{
             display: "flex",
             flexDirection: "row",
             flex: 1,
@@ -240,58 +252,51 @@ const Filters = forwardRef<Handle, Props>(({
               </View>
             </Pressable>
             {flatTypeView}
-            {filterCount > 0 && isMobile ? clearFiltersView() : null}
-            <KModal
+            {filterCount > 0 && !isMobile ? clearFiltersView() : null}
+            <KModalWeb
+              isMobile={isMobile}
+              clearFilters={clearFilters}
               visible={showFilterModal}
               setVisibility={() => setShowFilterModal(false)}
-              style={{ backgroundColor: variables.colors.greenLight, padding: 20 }}
+              style={{ backgroundColor: variables.colors.white, padding: 20 }}
             >
               {filterView}
-            </KModal>
+            </KModalWeb>
           </View>
         }
       </View>
-      {isMobile ?
-        <>
-          {/* <DatePicker
-            label="Starting date"
-            isRange
-            onDateSelected={(date: any) => {
-              setStartDate(date);
-              // onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
-            }}
-          /> */}
-        </>
-        :
-        <View style={{
-          flex: 1,
-          gap: 10,
-          marginLeft: 18,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-        }}>
-          <DatePicker
-            label="Starting date"
-            onDateSelected={(date: any) => {
-              setStartDate(date);
-              onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
-            }}
-          />
-          <DatePicker
-            label="Ending date"
-            onDateSelected={(date: any) => {
-              setEndDate(date);
-              onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] });
-            }}
-          />
-        </View>}
+      {!isMobile && <View style={{
+        flex: 1,
+        gap: 10,
+        marginLeft: 18,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+      }}>
+        <DatePicker
+          label="Starting date"
+          date={startDate}
+          onDateSelected={(date: Date | null) => {
+            setStartDate(date);
+            onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
+          }}
+        />
+        <DatePicker
+          label="Ending date"
+          date={endDate}
+          onDateSelected={(date: Date | null) => {
+            setEndDate(date);
+            onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] });
+          }}
+        />
+      </View>}
       <View style={{
         flexDirection: 'row',
         alignItems: "center",
         width: "auto",
         justifyContent: "flex-end"
       }}>
+        {!isMobile && filterCount > 0 && clearFiltersView()}
         {!isMobile && flatTypeView}
         {!isMobile && <Dropdown
           // multiple={true}
@@ -319,17 +324,70 @@ const Filters = forwardRef<Handle, Props>(({
               styles.lightCircle,
               { marginLeft: 2.5, marginRight: 2.5 },
               {
-                backgroundColor: variables.colors.white,
+                backgroundColor: variables.colors.black,
                 borderColor: variables.colors.white,
               },
             ]}
             onPress={() => setShowDateModal(true)}
           >
             <KIcon
-              name="calendar"
+              name="calendarWhite"
               size="large"
               style={{ stroke: "white" }}
             />
+            <KModalWeb
+              isMobile
+              title={"Dates"}
+              showCross={false}
+              visible={showDateModal}
+              setVisibility={() => setShowDateModal(false)}
+              clearFilters={clearFilters}
+              style={{ backgroundColor: variables.colors.white }}
+            >
+              <View style={{ flex: 1, width: '100%' }}>
+                <Text style={{paddingHorizontal: 24, marginBottom: 4, fontSize: 13, fontWeight: '500', fontFamily: 'Plus Jakarta Sans', color: variables.colors.black }}>Select the dates</Text>
+                <View
+                  style={{
+                    borderWidth: 1,
+                    borderColor: variables.colors.borderGray,
+                    borderRadius: 30,
+                    width: '90%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    marginBottom: 16,
+                    alignSelf: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 14 }}>
+                    {startDate
+                      ? startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                      : 'Start Date'} -{' '}
+                    {endDate
+                      ? endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                      : 'End Date'}
+                  </Text>
+                </View>
+
+                <DatePicker
+                  isOpen
+                  isRange
+                  startDate={startDate}
+                  endDate={endDate}
+                  onRangeSelected={(startDate: Date | null, endDate: Date | null) => {
+                    setStartDate(startDate);
+                    setEndDate(endDate);
+                    if (startDate) {
+                      onFilter({ type: 'startDate', filters: [startDate.toISOString()] });
+                    }
+                    if (endDate) {
+                      onFilter({ type: 'endDate', filters: [endDate.toISOString()] });
+                    }
+                  }}
+                />
+              </View>
+            </KModalWeb>
           </Pressable>
           :
           <>
@@ -351,28 +409,17 @@ const Filters = forwardRef<Handle, Props>(({
                 style={{ stroke: "white" }}
               />
             </Pressable>
-            {isMobile ?
-              <KModal
-                // showHeader
-                // isMobile={isMobile}
-                showCross={false}
-                visible={showFilterModal}
-                setVisibility={() => setShowFilterModal(false)}
-                style={{ backgroundColor: variables.colors.greenLight, padding: 20, display: 'flex', flexDirection: 'row', gap: 20, minWidth: 550 }}
-              >
-                {filterView}
-              </KModal>
-              :
-              <KModalWeb
-                showCross={false}
-                visible={showFilterModal}
-                clearFiltersView={clearFiltersView}
-                setVisibility={() => setShowFilterModal(false)}
-                style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection:  isMobile ? 'row' : 'column', gap: isMobile? 20 : 0, minWidth: 550 }}
-              >
-                {filterView}
-              </KModalWeb>
-            }
+            <KModalWeb
+              isMobile={isMobile}
+              showCross={false}
+              visible={showFilterModal}
+              clearFilters={clearFilters}
+              clearFiltersView={modalClearFiltersView}
+              setVisibility={() => setShowFilterModal(false)}
+              style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? 20 : 0, minWidth: 562 }}
+            >
+              {filterView}
+            </KModalWeb>
           </>
         }
         {/* <View style={{flex: 1}} /> */}
