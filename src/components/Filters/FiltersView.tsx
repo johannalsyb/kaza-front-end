@@ -72,7 +72,6 @@ const FiltersView: React.FC<FiltersViewProps> = ({
           height: 40,
           zIndex: 1,
           marginLeft: 5,
-          marginRight: 10,
         }}
         dropdownStyle={{
           width: isMobile ? '100%' : 'auto',
