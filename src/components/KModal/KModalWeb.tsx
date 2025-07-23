@@ -12,16 +12,20 @@ import {
 } from 'react-native';
 import variables from '../../styles/variables';
 import KIcon from '../KIcon/KIcon';
+import KButton from '../KButton/KButton';
 
 type Props = {
+  isMobile?: boolean;
   visible: boolean;
   setVisibility: (visible: boolean) => void;
   children: React.ReactNode;
-  clearFiltersView: () => React.ReactNode;
+  clearFilters: () => void;
+  clearFiltersView?: () => React.ReactNode;
   showCross?: boolean;
   crossStyle?: CSSProperties
   style?: ViewStyle
-  onLayout?: (event: any) => void
+  onLayout?: (event: any) => void,
+  title?: string
 };
 
 const KModal = ({
@@ -29,10 +33,13 @@ const KModal = ({
   setVisibility,
   children,
   showCross = true,
+  isMobile = false,
   style = {},
   crossStyle = {},
   onLayout,
-  clearFiltersView
+  clearFilters,
+  clearFiltersView,
+  title = 'Filters'
 }: Props, ref: any) => {
   const { height } = useWindowDimensions();
 
@@ -61,23 +68,61 @@ const KModal = ({
         <Animated.View
           // ref={ref}
           style={[
-            styles.modalView,
+            isMobile ? styles.modalViewMobile : styles.modalView,
             {
               maxHeight: height - 80,
               transform: [{ translateY }],
             },
             style
           ]}>
-          <View style={styles.header}>
-            <Text style={{ color: closeButton, fontSize: 16, fontFamily: variables.font.family.regular }}>Filters</Text>
-            {clearFiltersView()}
+          <View style={{ width: 30, height: 2, backgroundColor: variables.colors.yellow, marginBottom: 5 }} />
+          <View style={[styles.header, { justifyContent: isMobile ? 'center' : 'space-between' }]}>
+            {isMobile ?
+              <Text
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: '600',
+                  fontSize: 25,
+                  lineHeight: 25,
+                  letterSpacing: -0.5,
+                  textAlign: 'center'
+                }}
+              >
+                {title}
+              </Text> : <Text style={{ color: closeButton, fontSize: 16, fontFamily: variables.font.family.regular }}>{title}</Text>}
+            {clearFiltersView && clearFiltersView()}
           </View>
-          <View style={{ display: 'flex', flexDirection: 'row', gap: 20 }}>
+          <View
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              flexDirection: isMobile ? 'column-reverse' : 'row',
+              alignItems: 'center',
+              gap: isMobile ? 0 : 20,
+              width: '100%',
+              minHeight: isMobile ? 320 : 100
+            }}>
             {children && children}
           </View>
-          {showCross && <Pressable style={styles.close} onPress={() => setVisibility(false)}>
+          {showCross && !isMobile && <Pressable style={styles.close} onPress={() => setVisibility(false)}>
             <KIcon name="crossCircle" size="medium" style={{ stroke: variables.colors.grey, ...crossStyle }} />
           </Pressable>}
+          {isMobile &&
+            <View style={styles.bottomButtons}>
+              <KButton
+                onPress={() => {
+                  clearFilters()
+                  setVisibility(false)
+                }}
+                color={'greenLight'}
+                iconSize='medium'
+                text='Cancel'
+              />
+              <KButton
+                onPress={() => setVisibility(false)}
+                text='Confirm'
+              />
+            </View>}
         </Animated.View>
       </>
     </Modal>
@@ -113,12 +158,24 @@ const styles = StyleSheet.create({
     right: 14,
     width: '90%',
     maxWidth: 480,
-  },  
+  },
+  modalViewMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: yellow,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    alignItems: 'center',
+    padding: 16,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    maxWidth: 480,
+  },
   header: {
     flex: 1,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 14,
     width: '100%',
@@ -135,4 +192,9 @@ const styles = StyleSheet.create({
   xButton: {
     color: closeButton,
   },
+  bottomButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 20,
+  }
 });

@@ -239,9 +239,8 @@ export default forwardRef<Handle, Props>(
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 alignItems: 'flex-start',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 padding: variables.spacing.xsmall,
-                // flex: 1,
                 display: 'flex',
                 width: '100%',
               }}>
