@@ -1,5 +1,6 @@
 export {ReactComponent as defaultIcon} from './defaultIcon.svg';
 export {ReactComponent as calendar} from './calendar.svg';
+export {ReactComponent as calendarWhite} from './calendarWhite.svg';
 export {ReactComponent as calendarEdit} from './calendarEdit.svg';
 export {ReactComponent as calendarNew} from './calendarNew.svg';
 export {ReactComponent as calendar27} from './calendar27.svg';
@@ -14,6 +15,7 @@ export {ReactComponent as preferences} from './preferences.svg';
 export {ReactComponent as email} from './email.svg';
 
 export {ReactComponent as logo} from './logo.svg';
+export {ReactComponent as logoBlack} from './logoBlack.svg';
 export {ReactComponent as logoCircle} from './logoCircle.svg';
 export {ReactComponent as logoText} from './logoText.svg';
 export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by default

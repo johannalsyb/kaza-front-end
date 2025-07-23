@@ -1,78 +1,77 @@
-import { Pressable, StyleSheet, View, Text } from 'react-native';
-import useAuthentication from '../../hooks/useAuthentication';
-import KIcon from '../KIcon/KIcon';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { NavStackParamList, isHeaderHidden } from '../../navigation/screens';
-import variables from '../../styles/variables';
-import KText from '../KText';
-import useIsMobile from '../../hooks/useIsMobile';
-import KButton from '../KButton/KButton';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { CircleImage } from '../CircleImage/CircleImage';
-import React, { useEffect, useState } from 'react';
-import { useCloseFromOutside } from '../../hooks/useCloseFromOutside';
-import Notifications from '../Views/Notifications';
-import UserEvent from '../../events/UserEvent';
-import KSideModal from '../KModal/KSideModal';
-import KTextInput from '../Form/KTextInput/KTextInput';
-import autocomplete from '../../api/autocomplete';
-import PropertySearchEvent from '../../events/PropertySearchEvent';
-import useConfig from '../../hooks/useConfig';
-import MenuIcon from './MenuIcon';
-import HeaderEvent from '../../events/HeaderEvent';
-import MenuItem from './MenuItem';
-import { shareProperty } from '../../utils/Share';
+import { Pressable, StyleSheet, View, Text } from 'react-native'
+import useAuthentication from '../../hooks/useAuthentication'
+import KIcon from '../KIcon/KIcon'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack'
+import { NavStackParamList, isHeaderHidden } from '../../navigation/screens'
+import variables from '../../styles/variables'
+import KText from '../KText'
+import useIsMobile from '../../hooks/useIsMobile'
+import KButton from '../KButton/KButton'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { CircleImage } from '../CircleImage/CircleImage'
+import React, { useEffect, useState } from 'react'
+import { useCloseFromOutside } from '../../hooks/useCloseFromOutside'
+import Notifications from '../Views/Notifications'
+import UserEvent from '../../events/UserEvent'
+import KSideModal from '../KModal/KSideModal'
+import KTextInput from '../Form/KTextInput/KTextInput'
+import autocomplete from '../../api/autocomplete'
+import PropertySearchEvent from '../../events/PropertySearchEvent'
+import useConfig from '../../hooks/useConfig'
+import MenuIcon from './MenuIcon'
+import HeaderEvent from '../../events/HeaderEvent'
+import MenuItem from './MenuItem'
 
 
 let ueNotificationListenerId: string | undefined = undefined
 let ueNewMatchListenerId: string | undefined = undefined
 export default (
   props: NativeStackHeaderProps & {
-    force?: boolean;
-    title?: string | React.ReactNode;
-    leftComponent?: React.ReactNode;
-    rightComponent?: React.ReactNode;
+    force?: boolean
+    title?: string | React.ReactNode
+    leftComponent?: React.ReactNode
+    rightComponent?: React.ReactNode
   },
 ) => {
-  const auth = useAuthentication();
-  const user = auth.user;
+  const auth = useAuthentication()
+  const user = auth.user
   const isAdmin = auth.isAdmin
-  const { isMobile } = useIsMobile();
-  const { overlay } = useConfig();
+  const { isMobile } = useIsMobile()
+  const { overlay } = useConfig()
   const hidden = props.force
     ? false
-    : isHeaderHidden(props.route.name as any, isMobile);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const popupMenuRef = useCloseFromOutside(menuVisible, setMenuVisible);
+    : isHeaderHidden(props.route.name as any, isMobile)
+  const [menuVisible, setMenuVisible] = useState(false)
+  const popupMenuRef = useCloseFromOutside(menuVisible, setMenuVisible)
 
-  const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [notificationsVisible, setNotificationsVisible] = useState(false)
   const popupNotificationsRef = useCloseFromOutside(
     notificationsVisible,
     setNotificationsVisible,
-  );
+  )
   const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
   const nm = parseInt(localStorage.getItem("newMatches") || "0")
-  const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm });
+  const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
   const [showMobileSearchBar, setShowMobileSearchBar] =
-    useState<boolean>(false);
-  const [search, setSearch] = useState<string>('');
+    useState<boolean>(false)
+  const [search, setSearch] = useState<string>('')
 
-  const route = useRoute<RouteProp<NavStackParamList>>();
-  const isExplore = route.name === 'Home' || route.name === 'Property';
-  const isChat = route.name === 'Chats' || route.name === 'Chat';
-  const isFavourites = route.name === 'Favourites';
+  const route = useRoute<RouteProp<NavStackParamList>>()
+  const isExplore = route.name === 'Home' || route.name === 'Property'
+  const isChat = route.name === 'Chats' || route.name === 'Chat'
+  const isFavourites = route.name === 'Favourites'
 
-  const searchAvailable = !isFavourites;
+  const searchAvailable = !isFavourites
 
   let title: React.ReactNode =
     typeof props.title === 'string' ? (
       <KText>{props.title}</KText>
     ) : (
       props.title
-    );
-  let leftButton: "search" | "back" | "none" = "search";
-  let rightButton: "notifications" | "edit" | "none" | "share" = "notifications";
-  let headerText = 'Swap Your Place';
+    )
+  let leftButton: "search" | "back" | "none" = "search"
+  let rightButton: "notifications" | "edit" | "none" | "share" = "notifications"
+  let headerText = 'Swap Your Place'
   let editFn = () => { }
 
   if (route.name === "Home") {
@@ -86,7 +85,7 @@ export default (
     editFn = () => HeaderEvent.emit("edit", "user")
   } else if (route.name === "Myplace") {
     leftButton = "back"
-    const isPreview = !!((route.params as {preview?: boolean})?.preview ?? false)
+    const isPreview = !!((route.params as { preview?: boolean })?.preview ?? false)
     rightButton = isPreview ? "share" : "edit"
     headerText = 'My Place'
     editFn = () => {
@@ -106,34 +105,34 @@ export default (
   }
 
   if (!title) {
-    if (isExplore) headerText = 'Explore';
-    title = <KText>{headerText}</KText>;
+    if (isExplore) headerText = ''
+    title = <KText>{headerText}</KText>
   }
 
   useEffect(() => {
-    if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId);
+    if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId)
     ueNotificationListenerId = UserEvent.addListener('notification', u => {
       localStorage.setItem("unreadNotifications", `${u.unreadNotifications || 0}`)
-      setBubbles({ ...bubbles, notifications: u.unreadNotifications || 0 });
+      setBubbles({ ...bubbles, notifications: u.unreadNotifications || 0 })
     })
 
 
-    if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId);
+    if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
     ueNewMatchListenerId = UserEvent.addListener('match', u => {
       localStorage.setItem("newMatches", `${u.newMatches || 0}`)
-      setBubbles({ ...bubbles, matches: u.newMatches || 0 });
+      setBubbles({ ...bubbles, matches: u.newMatches || 0 })
     })
 
     return () => {
-      if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId);
-      if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId);
-    };
-  }, []);
+      if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId)
+      if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
+    }
+  }, [])
 
   const searchIcon = () => <MenuIcon icon="search"
     onPress={() => {
-      if (!searchAvailable) return;
-      setShowMobileSearchBar(true);
+      if (!searchAvailable) return
+      setShowMobileSearchBar(true)
     }}
     style={{
       opacity: !searchAvailable ? 0 : 1,
@@ -151,17 +150,17 @@ export default (
   const emptyIcon = () => <View style={{ width: 30, height: 30 }} />
 
   const notificationsView = () => {
-    if (!user) return null;
+    if (!user) return null
     if (isMobile)
       return (
         <KSideModal
           visible={notificationsVisible}
           onClose={visible => {
-            setNotificationsVisible(false);
+            setNotificationsVisible(false)
           }}>
           <Notifications unreadNotifications={bubbles.notifications || 0} />
         </KSideModal>
-      );
+      )
     return (
       <View
         ref={popupNotificationsRef}
@@ -179,8 +178,8 @@ export default (
         )}
         <Notifications unreadNotifications={bubbles.notifications || 0} />
       </View>
-    );
-  };
+    )
+  }
 
   const topMenu = [
     {
@@ -198,14 +197,6 @@ export default (
       text: "Favourites",
       bubble: 0,
       hidden: false
-    },
-    {
-      onPress: () => props.navigation.navigate('Matching'),
-      selected: route.name === 'Matching',
-      icon: "matching",
-      text: "Matches",
-      bubble: bubbles.matches,
-      hidden: user?.role.includes("admin")
     },
     {
       onPress: () => props.navigation.navigate('Chats'),
@@ -261,7 +252,7 @@ export default (
     {text}
   </KText>
 
-  if (hidden) return null;
+  if (hidden) return null
 
   return (
     <View
@@ -301,21 +292,21 @@ export default (
             autoFocus={true}
             suggestionCallback={text => {
               return autocomplete.zone(text).then(res => {
-                return res.data.results.map((r: any) => r.description);
-              });
+                return res.data.results.map((r: any) => r.description)
+              })
             }}
             onSuggestionSelected={text => {
               // onSearch(text)
-              setSearch(text);
-              new PropertySearchEvent().emit(text);
+              setSearch(text)
+              new PropertySearchEvent().emit(text)
             }}
           />
           <KIcon
             name="crossCircle"
             size="medium"
             onPress={() => {
-              setSearch('');
-              setShowMobileSearchBar(false);
+              setSearch('')
+              setShowMobileSearchBar(false)
             }}
             style={{
               backgroundColor: 'black',
@@ -340,7 +331,7 @@ export default (
                 width={130}
                 height={40}
                 onPress={() => {
-                  props.navigation.navigate('Home');
+                  props.navigation.navigate('Home')
                 }}
                 style={{
                   fill: 'white',
@@ -384,7 +375,7 @@ export default (
                     {notificationsIcon()}
                     <Pressable
                       onPress={() => {
-                        if (!menuVisible) setMenuVisible(true);
+                        if (!menuVisible) setMenuVisible(true)
                       }}>
                       <CircleImage
                         thumbnail={true}
@@ -435,13 +426,14 @@ export default (
                 ) : (
                   <>
                     <KButton
-                      text="Register"
+                      text="Register your place"
                       icon="register"
-                      color="primary"
-                      textStyle={{ fontSize: 12 }}
-                      style={{ width: "auto" }}
+                      iconSize='medium'
+                      color="secondary"
+                      textStyle={{ fontSize: 12, color: variables.colors.black }}
+                      style={{ width: "auto", backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
                       onPress={() => {
-                        props.navigation.navigate('SignUp');
+                        props.navigation.navigate('SignUp')
                       }}
                     />
                     <KButton
@@ -452,7 +444,7 @@ export default (
                       style={{ backgroundColor: "transparent" }}
                       textStyle={{ fontSize: 12 }}
                       onPress={() => {
-                        props.navigation.navigate('Login');
+                        props.navigation.navigate('Login')
                       }}
                     />
                   </>
@@ -478,8 +470,8 @@ export default (
         </>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   popupmenu: {
@@ -521,4 +513,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 100,
   }
-});
+})
