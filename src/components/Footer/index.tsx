@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 75,
     paddingVertical: 16,
     paddingHorizontal: 30,
     borderTopLeftRadius: 23,

@@ -404,6 +404,20 @@ const Filters = forwardRef<Handle, Props>(({
                 size="large"
                 style={{ stroke: "white" }}
               />
+              <View style={{
+                position: "absolute",
+                top: -8,
+                right: -8,
+                width: 20,
+                height: 20,
+                borderRadius: 50,
+                backgroundColor: variables.colors.orange,
+                display: filterCount ? "flex" : "none",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+                <KText style={{ color: "white", fontSize: 10 }}>{filterCount}</KText>
+              </View>
             </Pressable>
             <KModalWeb
               isMobile={isMobile}
