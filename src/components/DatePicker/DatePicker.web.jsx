@@ -84,21 +84,24 @@ const CustomDatePicker = ({
         style={[
           styles.button,
           {
+            gap: 16,
+            display: 'flex',
+            alignItems: 'center',
             position: 'relative',
-            backgroundColor: form.colors.background.default,
-            borderRadius: form.input.borderRadius,
-            borderWidth: form.input.borderWidth,
-            borderColor: form.colors.border.default,
+            justifyContent: 'center',
             display: isRange ? 'none' : 'flex',
+            borderWidth: form.input.borderWidth,
+            borderRadius: form.input.borderRadius,
+            borderColor: form.colors.border.default,
+            backgroundColor: form.colors.background.default,
           },
         ]}
         onPress={() => setOpen((prevState) => !prevState)}
         activeOpacity={0.7}
       >
         <Text style={styles.buttonText}>{displayLabel}</Text>
-        <KIcon name="down" size="large" style={{ stroke: 'gray' }} />
+        <KIcon name="down" size="large" style={{ opacity: 0.5 }} />
       </TouchableOpacity>
-
       {open && (
         <View
           style={[
@@ -154,6 +157,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 15,
+    marginLeft: 10,
     color: 'gray',
     fontFamily: variables.font.family?.regular ?? 'System',
     flex: 1,
