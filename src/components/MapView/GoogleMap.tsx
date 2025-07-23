@@ -1,10 +1,13 @@
 /// <reference types="@types/google.maps" />
 import React, { useEffect, useState, useRef } from 'react'
+import { View, ActivityIndicator } from 'react-native'
 import { MapProps } from '.'
 import useConfig from '../../hooks/useConfig'
 import { useNavigation } from '@react-navigation/native'
 import { NavStackParamList } from '../../navigation/screens'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
+import variables from '../../styles/variables'
 import { Property } from '../../common/types/api/properties'
 import properties from '../../api/properties'
 
@@ -159,7 +162,12 @@ const GoogleMap: React.FC<MapProps> = ({
     if (ref.current) init()
   }, [lat, lng, zoom])
 
-  if (!google.maps) return <div>Loading map...</div>
+  if (!google.maps) return (
+    <View style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator color={variables.colors.borderGray} size={'large'} />
+    </View>
+  )
+
   return (
     <>
       <div style={{ ...(style || {}) }} className="map" ref={ref} />

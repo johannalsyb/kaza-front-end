@@ -192,15 +192,15 @@ const Filters = forwardRef<Handle, Props>(({
   )
 
   return (
-    <SubHeader style={{ paddingVertical: 14, paddingHorizontal: isMobile ? 14 : 30 }}>
+    <SubHeader style={{ paddingVertical: 18, paddingHorizontal: isMobile ? 14 : 30 }}>
       <View style={{ flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined }}>
         {!isMobile ?
           <KTextInput
             placeholder="Where would you like to go?"
             topStyle={{ width: 290, height: !showSearchBar ? 0 : 40, marginRight: 10, flex: 1, opacity: !showSearchBar ? 0 : 1, justifyContent: "center" }}
-            inputStyles={{ textAlign: 'left' }}
+            inputStyles={{ textAlign: 'left', marginLeft: 6 }}
             editable={showSearchBar}
-            leftComponent={<KIcon name="search" size="medium" />}
+            leftComponent={<KIcon name="search" size="medium" style={{ opacity: 0.5 }} />}
             value={search}
             onChangeText={(text) => setSearch(text)}
             suggestionCallback={(text) => {
@@ -404,6 +404,20 @@ const Filters = forwardRef<Handle, Props>(({
                 size="large"
                 style={{ stroke: "white" }}
               />
+              <View style={{
+                position: "absolute",
+                top: -8,
+                right: -8,
+                width: 20,
+                height: 20,
+                borderRadius: 50,
+                backgroundColor: variables.colors.orange,
+                display: filterCount ? "flex" : "none",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+                <KText style={{ color: "white", fontSize: 10 }}>{filterCount}</KText>
+              </View>
             </Pressable>
             <KModalWeb
               isMobile={isMobile}

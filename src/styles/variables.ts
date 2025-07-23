@@ -24,6 +24,7 @@ const variables = {
     darkYellow: '#EBE9D8',
     green: '#84B975',
     orange: '#FF784E',
+    lightGrey: '#F0EEE0'
   },
   font: {
     size: {

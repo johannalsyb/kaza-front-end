@@ -311,6 +311,28 @@ export default forwardRef<Handle, Props>(
                       </View>
                     )
                   })}
+                  {(() => {
+                    const remainder = propertiesFiltered.length % columns
+                    const placeholders = remainder === 0 ? 0 : columns - remainder
+
+                    return Array.from({ length: placeholders }).map((_, i) => (
+                      <View
+                        key={`shimmer-${i}`}
+                        style={{ paddingVertical: 20 }}
+                      >
+                        <View
+                          style={{
+                            width: variables.propertyCardWidth,
+                            height: 294,
+                            borderRadius: 10,
+                            paddingVertical: 20,
+                            backgroundColor: variables.colors.lightGrey,
+                            marginHorizontal: isMobile ? 0 : 20,
+                          }}
+                        />
+                      </View>
+                    ))
+                  })()}
                   {onShowMore && (
                     <View
                       style={{
@@ -326,7 +348,8 @@ export default forwardRef<Handle, Props>(
                           width: isMobile ? '100%' : 'auto',
                           paddingHorizontal: 10,
                           display: 'flex',
-                          marginTop: isMobile ? 10 : 0,
+                          marginTop: isMobile ? 10 : 71,
+                          marginBottom: isMobile ? 0 : 55,
                         }}
                         icon="arrowDown"
                         iconStyle={{ stroke: 'white' }}
