@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import ReactDatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import KIcon from '../KIcon/KIcon';
-import variables from '../../styles/variables';
+import React, { useState, useEffect } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import ReactDatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import KIcon from '../KIcon/KIcon'
+import variables from '../../styles/variables'
 
 const CustomContainer = ({ className, children, isRange }) => {
-  const containerStyle = isRange ? styles.customRangeContainer : styles.customContainer;
+  const containerStyle = isRange ? styles.customRangeContainer : styles.customContainer
   return (
     <div style={containerStyle} className={className}>
       {children}
     </div>
-  );
-};
+  )
+}
 
 const CustomDatePicker = ({
   onDateSelected,
@@ -24,57 +24,57 @@ const CustomDatePicker = ({
   startDate: externalStartDate,
   endDate: externalEndDate
 }) => {
-  const [date, setDate] = useState(null);
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [open, setOpen] = useState(isOpen);
-  const { form } = variables;
-  const [startDate, endDate] = dateRange;
+  const [date, setDate] = useState(null)
+  const [dateRange, setDateRange] = useState([null, null])
+  const [open, setOpen] = useState(isOpen)
+  const { form } = variables
+  const [startDate, endDate] = dateRange
 
   useEffect(() => {
-    setOpen(isOpen);
-  }, [isOpen]);
+    setOpen(isOpen)
+  }, [isOpen])
 
   useEffect(() => {
     if (!isRange && externalDate !== date) {
-      setDate(externalDate);
+      setDate(externalDate)
     }
-  }, [externalDate]);
+  }, [externalDate])
 
   useEffect(() => {
     if (isRange && (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1])) {
-      setDateRange([externalStartDate, externalEndDate]);
+      setDateRange([externalStartDate, externalEndDate])
     }
-  }, [externalStartDate, externalEndDate]);
+  }, [externalStartDate, externalEndDate])
 
   const formatDate = (date) => {
-    if (!date) return '';
-    const month = date.toLocaleString('en-US', { month: 'short' });
-    const day = date.toLocaleString('en-US', { day: '2-digit' });
-    const year = date.getFullYear();
-    return `${month} ${day}, ${year}`;
-  };
+    if (!date) return ''
+    const month = date.toLocaleString('en-US', { month: 'short' })
+    const day = date.toLocaleString('en-US', { day: '2-digit' })
+    const year = date.getFullYear()
+    return `${month} ${day}, ${year}`
+  }
 
   // Handlers
   const handleSingleDateChange = (newDate) => {
-    setDate(newDate);
-    onDateSelected?.(newDate);
-  };
+    setDate(newDate)
+    onDateSelected?.(newDate)
+  }
   const handleRangeDateChange = (range) => {
-    const [start, end] = range;
-    setDateRange(range);
-    onRangeSelected?.(start, end);
-  };
+    const [start, end] = range
+    setDateRange(range)
+    onRangeSelected?.(start, end)
+  }
 
 
   // Display label
-  let displayLabel = label;
+  let displayLabel = label
   if (isRange) {
     if (startDate && endDate) {
-      displayLabel = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+      displayLabel = `${formatDate(startDate)} - ${formatDate(endDate)}`
     }
   } else {
     if (date) {
-      displayLabel = formatDate(date);
+      displayLabel = formatDate(date)
     }
   }
 
@@ -112,7 +112,7 @@ const CustomDatePicker = ({
               startDate={startDate}
               endDate={endDate}
               onChange={(update) => {
-                handleRangeDateChange(update);
+                handleRangeDateChange(update)
               }}
               inline
               dateFormat="dd/MM/yyyy"
@@ -125,8 +125,8 @@ const CustomDatePicker = ({
             <ReactDatePicker
               selected={date}
               onChange={(d) => {
-                handleSingleDateChange(d);
-                setOpen(false);
+                handleSingleDateChange(d)
+                setOpen(false)
               }}
               inline
               dateFormat="dd/MM/yyyy"
@@ -139,8 +139,8 @@ const CustomDatePicker = ({
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -177,6 +177,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     border: 'none',
   },
-});
+})
 
-export default CustomDatePicker;
+export default CustomDatePicker

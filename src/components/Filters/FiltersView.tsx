@@ -1,30 +1,27 @@
-import React from 'react';
-import KButton from '../KButton/KButton';
-import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown';
-import variables from '../../styles/variables';
-import { View } from 'react-native';
-import { PropertyFilter } from '../Views/Properties/PropertyList';
+import React from 'react'
+import KButton from '../KButton/KButton'
+import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown'
+import variables from '../../styles/variables'
+import { View } from 'react-native'
+import { PropertyFilter } from '../Views/Properties/PropertyList'
 
 interface FiltersViewProps {
-  ffilters: any;
-  isMobile: boolean;
-  flatTypeView: React.ReactNode;
-  onFilter: (...filters: { type: keyof PropertyFilter, filters: string[] }[]) => void;
-  filterCount: number;
-  brFilterRef: React.RefObject<DropdownHandle>;
-  nbBedroomFilters: string[];
-  placeTypeFilters: string[];
+  ffilters: any
+  isMobile: boolean
+  flatTypeView: React.ReactNode
+  onFilter: (...filters: { type: keyof PropertyFilter, filters: string[] }[]) => void
+  filterCount: number
+  brFilterRef: React.RefObject<DropdownHandle>
+  nbBedroomFilters: string[]
+  placeTypeFilters: string[]
 }
 
 const FiltersView: React.FC<FiltersViewProps> = ({
   ffilters,
   isMobile,
-  flatTypeView,
   onFilter,
-  filterCount,
   brFilterRef,
   nbBedroomFilters,
-  placeTypeFilters,
 }) => (
   <>
     <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
@@ -82,8 +79,7 @@ const FiltersView: React.FC<FiltersViewProps> = ({
         items={['any'].concat(nbBedroomFilters)}
       />
     }
-    {/* {filterCount > 0 && !isMobile ? clearFiltersView() : null} */}
   </>
-);
+)
 
-export default FiltersView;
+export default FiltersView

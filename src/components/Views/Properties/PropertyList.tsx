@@ -1,16 +1,16 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native'
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
-import { Property } from '../../../common/types/api/properties';
-import { NavStackParamList } from '../../../navigation/screens';
-import useAuthentication from '../../../hooks/useAuthentication';
-import useIsMobile from '../../../hooks/useIsMobile';
+} from 'react'
+import { Property } from '../../../common/types/api/properties'
+import { NavStackParamList } from '../../../navigation/screens'
+import useAuthentication from '../../../hooks/useAuthentication'
+import useIsMobile from '../../../hooks/useIsMobile'
 import Filters, {
   placeTypeFilters,
   nbBedroomFilters,
@@ -18,7 +18,7 @@ import Filters, {
 } from '../../Filters'
 import MapView from '../../MapView'
 import variables from '../../../styles/variables'
-import {  PropertyCard  } from '../../PropertyCard/PropertyCard'
+import { PropertyCard } from '../../PropertyCard/PropertyCard'
 import Menu from '../../Menu'
 import useConfig from '../../../hooks/useConfig'
 import KText from '../../KText'
@@ -28,7 +28,7 @@ import Modal from '../../Modal'
 import { useAtom } from 'jotai'
 import { showModalRegisterPlaceAtom } from '../../../atoms'
 
-type PProperty = Property & { bubble?: string };
+type PProperty = Property & { bubble?: string }
 
 type Props = {
   properties: PProperty[]
@@ -45,14 +45,14 @@ type Props = {
 }
 
 export type PropertyFilter = {
-  placeType: string[];
-  bedrooms: string[];
-  petsFriendlyOnly: string[];
-  kidsFriendlyOnly: string[];
-  swapWithWomen: string[];
-  startDate: string[];
-  endDate: string[];
-};
+  placeType: string[]
+  bedrooms: string[]
+  petsFriendlyOnly: string[]
+  kidsFriendlyOnly: string[]
+  swapWithWomen: string[]
+  startDate: string[]
+  endDate: string[]
+}
 
 const defaultFilters: PropertyFilter = {
   bedrooms: nbBedroomFilters,
@@ -62,7 +62,7 @@ const defaultFilters: PropertyFilter = {
   placeType: placeTypeFilters,
   startDate: [''],
   endDate: ['']
-};
+}
 
 export default forwardRef<Handle, Props>(
   (
@@ -83,10 +83,10 @@ export default forwardRef<Handle, Props>(
     const [contentHeight, setContentHeight] = useState(-1)
     const [scrollViewHeight, setScrollViewHeight] = useState(-1)
     const [showModalAuthCreateAccount, setShowModalAuthCreateAccount] = useAtom(showModalRegisterPlaceAtom)
-    const {  isMobile  } = useIsMobile()
-    const {  user, isAdmin  } = useAuthentication()
+    const { isMobile } = useIsMobile()
+    const { user, isAdmin } = useAuthentication()
 
-    const { config, overlay } = useConfig();
+    const { config, overlay } = useConfig()
 
     const filtersRef = useRef<Handle>(null)
     useImperativeHandle(ref, () => ({
@@ -94,9 +94,9 @@ export default forwardRef<Handle, Props>(
         filtersRef.current?.setSearch(search)
       },
       clearFilters: () => {
-        setFilters(defaultFilters);
-        filtersRef.current?.setSearch('');
-        onSearch('');
+        setFilters(defaultFilters)
+        filtersRef.current?.setSearch('')
+        onSearch('')
       },
     }))
 
@@ -123,38 +123,38 @@ export default forwardRef<Handle, Props>(
         )
           visible = false
         if (filters['petsFriendlyOnly'][0] === 'true' && !p.pets)
-          visible = false;
+          visible = false
         if (filters['kidsFriendlyOnly'][0] === 'true' && !p.childrenAllowed)
           visible = false
         if (
           filters['swapWithWomen'][0] === 'true' &&
           !(p.owner.gender === 'female')
         )
-          visible = false;
+          visible = false
 
         // --- DATE FILTERS ---
-        const propertyStart = p.owner.dateFrom ? new Date(p.owner.dateFrom) : null;
-        const propertyEnd = p.owner.dateTo ? new Date(p.owner.dateTo) : null;
-        const filterStart = filters['startDate'][0] ? new Date(filters['startDate'][0]) : null;
-        const filterEnd = filters['endDate'][0] ? new Date(filters['endDate'][0]) : null;
+        const propertyStart = p.owner.dateFrom ? new Date(p.owner.dateFrom) : null
+        const propertyEnd = p.owner.dateTo ? new Date(p.owner.dateTo) : null
+        const filterStart = filters['startDate'][0] ? new Date(filters['startDate'][0]) : null
+        const filterEnd = filters['endDate'][0] ? new Date(filters['endDate'][0]) : null
 
         // If both startDate and endDate are set, check for overlap
         if (filterStart && filterEnd) {
           if (!propertyStart && !propertyEnd) {
-            visible = false;
+            visible = false
           } else if (propertyStart && propertyEnd) {
             // No overlap
-            if (propertyEnd < filterStart || propertyStart > filterEnd) visible = false;
+            if (propertyEnd < filterStart || propertyStart > filterEnd) visible = false
           } else if (propertyStart && propertyStart > filterEnd) {
-            visible = false;
+            visible = false
           } else if (propertyEnd && propertyEnd < filterStart) {
-            visible = false;
+            visible = false
           }
         }
         // --- END DATE FILTERS ---
 
-        return visible;
-      }) || [];
+        return visible
+      }) || []
 
     const isContentSmallerThanScreen = () => {
       if (contentHeight === -1 || scrollViewHeight === -1) return false
@@ -179,17 +179,17 @@ export default forwardRef<Handle, Props>(
             filters={filters}
             onShowMap={setShowMap}
             onFilter={(...nfilters) => {
-              const ufilters = { ...filters };
+              const ufilters = { ...filters }
               nfilters.forEach(({ type, filters }) => {
-                ufilters[type] = filters;
-              });
-              setFilters(ufilters);
+                ufilters[type] = filters
+              })
+              setFilters(ufilters)
             }}
             onSearch={onSearch}
             onClearFilters={() => {
               setFilters(defaultFilters)
-              filtersRef.current?.setSearch('');
-              filtersRef.current?.clearFilters();
+              filtersRef.current?.setSearch('')
+              filtersRef.current?.clearFilters()
             }}
           />
         </View>
@@ -253,8 +253,8 @@ export default forwardRef<Handle, Props>(
               ) : propertiesFiltered.length ? (
                 <>
                   {propertiesFiltered.map((property, i) => {
-                    let { images, owner, city, country, id } = property;
-                    images = Array.isArray(images) ? images.join(',') : images;
+                    let { images, owner, city, country, id } = property
+                    images = Array.isArray(images) ? images.join(',') : images
                     return (
                       <View
                         style={[

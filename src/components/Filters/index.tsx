@@ -1,44 +1,40 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import variables from '../../styles/variables';
-import KTextInput from '../Form/KTextInput/KTextInput';
-import KIcon from '../KIcon/KIcon';
-import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown';
-import SubHeader from '../SubHeader/SubHeader';
-import useIsMobile from '../../hooks/useIsMobile';
-import { Pressable, StyleSheet, View, ViewStyle, Text } from 'react-native';
-import KText from '../KText';
-import KButton from '../KButton/KButton';
-import { useSetAtom } from 'jotai';
-import { showSignInAtom, showSwapNowAtom } from '../../atoms';
-import useAuthentication from '../../hooks/useAuthentication';
-import { PropertyFilter } from '../Views/Properties/PropertyList';
-import KModal from '../KModal/KModal';
-import KModalWeb from '../KModal/KModalWeb';
-import properties from '../../api/properties';
-import autocomplete from '../../api/autocomplete';
-import { set } from '../../utils/Storage/storage';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { NavStackParamList } from '../../navigation/screens';
-import DatePicker from '../DatePicker';
-import MapToggleButton from './MapToggleButton';
-import FiltersView from './FiltersView';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import variables from '../../styles/variables'
+import KTextInput from '../Form/KTextInput/KTextInput'
+import KIcon from '../KIcon/KIcon'
+import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown'
+import SubHeader from '../SubHeader/SubHeader'
+import useIsMobile from '../../hooks/useIsMobile'
+import { Pressable, StyleSheet, View, ViewStyle, Text } from 'react-native'
+import KText from '../KText'
+import { useSetAtom } from 'jotai'
+import { showSignInAtom, showSwapNowAtom } from '../../atoms'
+import useAuthentication from '../../hooks/useAuthentication'
+import { PropertyFilter } from '../Views/Properties/PropertyList'
+import KModalWeb from '../KModal/KModalWeb'
+import autocomplete from '../../api/autocomplete'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { NavStackParamList } from '../../navigation/screens'
+import DatePicker from '../DatePicker'
+import MapToggleButton from './MapToggleButton'
+import FiltersView from './FiltersView'
 
 type Props = {
-  onShowMap: (show: boolean) => void;
-  onFilter: (...filters: { type: keyof PropertyFilter, filters: string[] }[]) => void;
-  onClearFilters: () => void;
-  onSearch: (search: string) => void;
+  onShowMap: (show: boolean) => void
+  onFilter: (...filters: { type: keyof PropertyFilter, filters: string[] }[]) => void
+  onClearFilters: () => void
+  onSearch: (search: string) => void
   filters: PropertyFilter
-  showSearchBar?: boolean;
-};
-
-export type Handle = {
-  setSearch: (search: string) => void;
-  clearFilters: () => void;
+  showSearchBar?: boolean
 }
 
-export const placeTypeFilters = ['flat', 'house', 'studio', 'room'];
-export const nbBedroomFilters = ['1 BR', '2 BR', '3 BR', '4+'];
+export type Handle = {
+  setSearch: (search: string) => void
+  clearFilters: () => void
+}
+
+export const placeTypeFilters = ['flat', 'house', 'studio', 'room']
+export const nbBedroomFilters = ['1 BR', '2 BR', '3 BR', '4+']
 
 const Filters = forwardRef<Handle, Props>(({
   onShowMap,
@@ -52,24 +48,24 @@ const Filters = forwardRef<Handle, Props>(({
   const navigation = useNavigation()
 
   //@ts-expect-error
-  const [showMap, setShowMap] = useState(route.params?.map || false);
-  const { isMobile } = useIsMobile();
-  const setShowSwapNow = useSetAtom(showSwapNowAtom);
-  const setShowSignIn = useSetAtom(showSignInAtom);
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  const [search, setSearch] = useState<string>("");
-  const { user } = useAuthentication();
+  const [showMap, setShowMap] = useState(route.params?.map || false)
+  const { isMobile } = useIsMobile()
+  const setShowSwapNow = useSetAtom(showSwapNowAtom)
+  const setShowSignIn = useSetAtom(showSignInAtom)
+  const [showFilterModal, setShowFilterModal] = useState(false)
+  const [search, setSearch] = useState<string>("")
+  const { user } = useAuthentication()
   const isFavourites = route.name === "Favourites"
 
   const flatFilterRef = React.createRef<DropdownHandle>()
   const brFilterRef = React.createRef<DropdownHandle>()
-  const [showDateModal, setShowDateModal] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [showDateModal, setShowDateModal] = useState(false)
+  const [startDate, setStartDate] = useState<Date | null>(null)
+  const [endDate, setEndDate] = useState<Date | null>(null)
 
   useEffect(() => {
-    onShowMap?.(showMap);
-  }, [showMap]);
+    onShowMap?.(showMap)
+  }, [showMap])
 
   useEffect(() => {
     if (!route) return
@@ -80,7 +76,7 @@ const Filters = forwardRef<Handle, Props>(({
   useImperativeHandle(ref, () => ({
     setSearch,
     clearFilters,
-  }));
+  }))
 
   const nbFilters = (ffilters: PropertyFilter) => {
     let nb = 0
@@ -96,15 +92,15 @@ const Filters = forwardRef<Handle, Props>(({
   }
 
   const clearFilters = () => {
-    console.log("clearFilters runs");
+    console.log("clearFilters runs")
 
-    const clearedStart = null;
-    const clearedEnd = null;
+    const clearedStart = null
+    const clearedEnd = null
 
-    setSearch('');
-    onSearch('');
-    setStartDate(clearedStart);
-    setEndDate(clearedEnd);
+    setSearch('')
+    onSearch('')
+    setStartDate(clearedStart)
+    setEndDate(clearedEnd)
 
     onFilter(
       { type: "placeType", filters: placeTypeFilters },
@@ -114,13 +110,13 @@ const Filters = forwardRef<Handle, Props>(({
       { type: "bedrooms", filters: nbBedroomFilters },
       { type: "startDate", filters: [] },
       { type: "endDate", filters: [] },
-    );
+    )
 
-    flatFilterRef.current?.setSelectedItems(["any"]);
-    brFilterRef.current?.setSelectedItems(["any"]);
-  };
+    flatFilterRef.current?.setSelectedItems(["any"])
+    brFilterRef.current?.setSelectedItems(["any"])
+  }
 
-  const filterCount = nbFilters(filters);
+  const filterCount = nbFilters(filters)
 
   const flatTypeView = <Dropdown
     ref={flatFilterRef}
@@ -193,7 +189,7 @@ const Filters = forwardRef<Handle, Props>(({
       nbBedroomFilters={nbBedroomFilters}
       placeTypeFilters={placeTypeFilters}
     />
-  );
+  )
 
   return (
     <SubHeader style={{ paddingVertical: 14, paddingHorizontal: isMobile ? 14 : 30 }}>
@@ -277,16 +273,16 @@ const Filters = forwardRef<Handle, Props>(({
           label="Starting date"
           date={startDate}
           onDateSelected={(date: Date | null) => {
-            setStartDate(date);
-            onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] });
+            setStartDate(date)
+            onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] })
           }}
         />
         <DatePicker
           label="Ending date"
           date={endDate}
           onDateSelected={(date: Date | null) => {
-            setEndDate(date);
-            onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] });
+            setEndDate(date)
+            onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] })
           }}
         />
       </View>}
@@ -345,7 +341,7 @@ const Filters = forwardRef<Handle, Props>(({
               style={{ backgroundColor: variables.colors.white }}
             >
               <View style={{ flex: 1, width: '100%' }}>
-                <Text style={{paddingHorizontal: 24, marginBottom: 4, fontSize: 13, fontWeight: '500', fontFamily: 'Plus Jakarta Sans', color: variables.colors.black }}>Select the dates</Text>
+                <Text style={{ paddingHorizontal: 24, marginBottom: 4, fontSize: 13, fontWeight: '500', fontFamily: 'Plus Jakarta Sans', color: variables.colors.black }}>Select the dates</Text>
                 <View
                   style={{
                     borderWidth: 1,
@@ -376,13 +372,13 @@ const Filters = forwardRef<Handle, Props>(({
                   startDate={startDate}
                   endDate={endDate}
                   onRangeSelected={(startDate: Date | null, endDate: Date | null) => {
-                    setStartDate(startDate);
-                    setEndDate(endDate);
+                    setStartDate(startDate)
+                    setEndDate(endDate)
                     if (startDate) {
-                      onFilter({ type: 'startDate', filters: [startDate.toISOString()] });
+                      onFilter({ type: 'startDate', filters: [startDate.toISOString()] })
                     }
                     if (endDate) {
-                      onFilter({ type: 'endDate', filters: [endDate.toISOString()] });
+                      onFilter({ type: 'endDate', filters: [endDate.toISOString()] })
                     }
                   }}
                 />
@@ -465,10 +461,10 @@ const Filters = forwardRef<Handle, Props>(({
         </View>
       </KModal> */}
     </SubHeader>
-  );
-});
+  )
+})
 
-export default Filters;
+export default Filters
 
 const styles = StyleSheet.create({
   lightCircle: {
@@ -480,4 +476,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
+})

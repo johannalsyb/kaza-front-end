@@ -1,4 +1,4 @@
-import React, { CSSProperties, forwardRef, useEffect, useRef } from 'react';
+import React, { CSSProperties, forwardRef, useEffect, useRef } from 'react'
 import {
   StyleSheet,
   Modal,
@@ -9,24 +9,24 @@ import {
   View,
   Text,
   ViewStyle,
-} from 'react-native';
-import variables from '../../styles/variables';
-import KIcon from '../KIcon/KIcon';
-import KButton from '../KButton/KButton';
+} from 'react-native'
+import variables from '../../styles/variables'
+import KIcon from '../KIcon/KIcon'
+import KButton from '../KButton/KButton'
 
 type Props = {
-  isMobile?: boolean;
-  visible: boolean;
-  setVisibility: (visible: boolean) => void;
-  children: React.ReactNode;
-  clearFilters: () => void;
-  clearFiltersView?: () => React.ReactNode;
-  showCross?: boolean;
+  isMobile?: boolean
+  visible: boolean
+  setVisibility: (visible: boolean) => void
+  children: React.ReactNode
+  clearFilters: () => void
+  clearFiltersView?: () => React.ReactNode
+  showCross?: boolean
   crossStyle?: CSSProperties
   style?: ViewStyle
   onLayout?: (event: any) => void,
   title?: string
-};
+}
 
 const KModal = ({
   visible,
@@ -41,18 +41,18 @@ const KModal = ({
   clearFiltersView,
   title = 'Filters'
 }: Props, ref: any) => {
-  const { height } = useWindowDimensions();
+  const { height } = useWindowDimensions()
 
-  const translateY = useRef(new Animated.Value(height)).current;
+  const translateY = useRef(new Animated.Value(height)).current
   useEffect(() => {
     Animated.timing(translateY, {
       toValue: visible ? 0 : height,
       duration: 300,
       useNativeDriver: true,
-    }).start();
-  }, [visible, height]);
+    }).start()
+  }, [visible, height])
 
-  if (!visible) return null;
+  if (!visible) return null
   return (
     <Modal
       ref={ref}
@@ -126,14 +126,14 @@ const KModal = ({
         </Animated.View>
       </>
     </Modal>
-  );
-};
+  )
+}
 
-export default forwardRef(KModal);
+export default forwardRef(KModal)
 
 const {
   colors: { closeButton, yellow },
-} = variables;
+} = variables
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -197,4 +197,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
   }
-});
+})

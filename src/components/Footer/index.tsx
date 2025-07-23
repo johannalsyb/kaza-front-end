@@ -1,11 +1,11 @@
-import { Linking, Pressable, View, Text, StyleSheet } from "react-native";
-import KIcon from "../KIcon/KIcon";
+import { Linking, Pressable, View, Text, StyleSheet } from "react-native"
+import KIcon from "../KIcon/KIcon"
 
-import { NavStackParamList, isFooterHidden } from "../../navigation/screens";
-import variables from "../../styles/variables";
-import KText from "../KText";
-import useIsMobile from "../../hooks/useIsMobile";
-import useConfig from "../../hooks/useConfig";
+import { NavStackParamList, isFooterHidden } from "../../navigation/screens"
+import variables from "../../styles/variables"
+import KText from "../KText"
+import useIsMobile from "../../hooks/useIsMobile"
+import useConfig from "../../hooks/useConfig"
 
 type Props = {
   route?: string
