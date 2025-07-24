@@ -51,13 +51,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 42px;
+  height: 34px;
   width: 42px;
   border-radius: 50%;
   margin: 0;
   font-size: 14px;
   font-weight: 400;
   font-family: 'Plus Jakarta Sans';
+}
+
+@media (max-width: 768px) {
+  .react-datepicker__day {
+    height: 42px !important;
+    width: 42px !important;
+  }
 }
 
 .react-datepicker__header {
@@ -124,7 +131,7 @@
 .react-datepicker__day--range-start:not(.react-datepicker__day--range-end) {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
-  height: 42px;
+  height: 34px;
   border-radius: 50%;
 }
 
@@ -139,7 +146,7 @@
   color: black !important;
   border-radius: 50% !important;
   width: 42px !important;
-  height: 42px !important;
+  height: 34px !important;
   display: flex;
   justify-content: center;
   align-items: center;

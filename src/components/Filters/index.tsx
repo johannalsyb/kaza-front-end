@@ -5,7 +5,7 @@ import KIcon from '../KIcon/KIcon'
 import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown'
 import SubHeader from '../SubHeader/SubHeader'
 import useIsMobile from '../../hooks/useIsMobile'
-import { Pressable, StyleSheet, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
+import { Pressable, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import KText from '../KText'
 import { useSetAtom } from 'jotai'
 import { showSignInAtom, showSwapNowAtom } from '../../atoms'
@@ -19,6 +19,7 @@ import DatePicker from '../DatePicker'
 import MapToggleButton from './MapToggleButton'
 import FiltersView from './FiltersView'
 import DesktopDatePicker from './DesktopDatePicker'
+import KFiltersModal from '../KModal/KFiltersModal'
 
 type Props = {
   onShowMap: (show: boolean) => void
@@ -61,6 +62,7 @@ const Filters = forwardRef<Handle, Props>(({
   const flatFilterRef = React.createRef<DropdownHandle>()
   const brFilterRef = React.createRef<DropdownHandle>()
   const [showDateModal, setShowDateModal] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
@@ -169,15 +171,16 @@ const Filters = forwardRef<Handle, Props>(({
 
   const modalClearFiltersView = () =>
     <Pressable
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}
       onPress={clearFilters}
       disabled={filterCount === 0}
     >
       <KIcon
         name="clearAll"
-        size="medium"
+        size="small"
+        // style={{opacity: 0.5 }}
       />
-      <Text style={{ fontSize: 16 }}>Clear all filters</Text>
+      <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 12, fontWeight: '500' }}>Clear all filters</Text>
     </Pressable>
 
   const filterView = (
@@ -402,7 +405,7 @@ const Filters = forwardRef<Handle, Props>(({
                 },
               ]}
               onPress={() => {
-                setShowFilterModal(true)
+                setModalVisible(true)
               }}>
               <KIcon
                 name="filters"
@@ -424,20 +427,14 @@ const Filters = forwardRef<Handle, Props>(({
                 <KText style={{ color: "white", fontSize: 10 }}>{filterCount}</KText>
               </View>
             </Pressable>
-            <KModalWeb
-              isMobile={isMobile}
-              showCross={false}
-              visible={showFilterModal}
-              clearFilters={clearFilters}
-              clearFiltersView={modalClearFiltersView}
-              setVisibility={() => setShowFilterModal(false)}
-              style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? 20 : 0, minWidth: 562 }}
-            >
-              {filterView}
-            </KModalWeb>
+            <KFiltersModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              clearButton={modalClearFiltersView()}
+              filterView={filterView}
+            />
           </>
         }
-        {/* <View style={{flex: 1}} /> */}
         <MapToggleButton
           showMap={showMap}
           isMobile={isMobile}

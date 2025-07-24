@@ -7,7 +7,6 @@ import variables from '../../styles/variables'
 
 const CustomContainer = ({ className, children, isMobile }) => {
   const containerStyle = isMobile ? styles.customContainerMobile : styles.customContainer
-  console.log("isMobile: ", isMobile)
   return (
     <div style={containerStyle} className={className}>
       {children}
@@ -110,7 +109,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#fff',
     border: 'none',
-    minWidth: 350,
+    maxWidth: 290,
     boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.3)',
   },
   customContainerMobile: {

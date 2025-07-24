@@ -35,10 +35,10 @@ const DesktopDatePicker = ({
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 4.5,
+          paddingVertical: 4.2,
           paddingHorizontal: 20,
           alignSelf: 'center',
-          minWidth: 350
+          minWidth: 290
         }}
       >
         <View
