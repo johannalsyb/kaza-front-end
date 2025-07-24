@@ -280,13 +280,13 @@ export default (
         webkitBackdropFilter: "blur(3px)"
       }} />}
 
-      {isMobile && showMobileSearchBar ? (
+      {isMobile ? (
         <>
           <KTextInput
-            placeholder="Search for a city or country"
+            placeholder="Where would you like to go?"
             topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: "center" }}
             inputStyles={{ textAlign: 'left' }}
-            leftComponent={<KIcon name="search" size="medium" />}
+            leftComponent={<KIcon name="search" size="small" />}
             value={search}
             onChangeText={text => setSearch(text)}
             autoFocus={true}
@@ -301,20 +301,20 @@ export default (
               new PropertySearchEvent().emit(text)
             }}
           />
-          <KIcon
-            name="crossCircle"
-            size="medium"
-            onPress={() => {
-              setSearch('')
-              setShowMobileSearchBar(false)
-            }}
-            style={{
-              backgroundColor: 'black',
-              borderRadius: 50,
-              padding: 5,
-              stroke: 'white',
-            }}
-          />
+          {user && <Pressable
+            onPress={() => { console.log("credits pressed") }}
+            style={styles.creditsContainerMobile}
+          >
+            <KIcon
+              name={"credits"}
+              size="small"
+              style={{
+                marginRight: 5,
+                stroke: variables.colors.blackLight,
+              }}
+            />
+            <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{5}</Text>
+          </Pressable>}
         </>
       ) : (
         <>
@@ -512,5 +512,18 @@ const styles = StyleSheet.create({
     gap: 10,
     marginLeft: 10,
     borderRadius: 100,
+  },
+  creditsContainerMobile: {
+    backgroundColor: variables.colors.yellow,
+    height: 'auto',
+    width: 'auto',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    borderRadius: 20,
   }
 })
