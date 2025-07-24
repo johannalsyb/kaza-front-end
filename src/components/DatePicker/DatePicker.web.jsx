@@ -5,8 +5,9 @@ import 'react-datepicker/dist/react-datepicker.css'
 import KIcon from '../KIcon/KIcon'
 import variables from '../../styles/variables'
 
-const CustomContainer = ({ className, children, isRange }) => {
-  const containerStyle = isRange ? styles.customRangeContainer : styles.customContainer
+const CustomContainer = ({ className, children, isMobile }) => {
+  const containerStyle = isMobile ? styles.customContainerMobile : styles.customContainer
+  console.log("isMobile: ", isMobile)
   return (
     <div style={containerStyle} className={className}>
       {children}
@@ -15,10 +16,8 @@ const CustomContainer = ({ className, children, isRange }) => {
 }
 
 const CustomDatePicker = ({
-  onDateSelected,
   onRangeSelected,
-  label,
-  isRange = false,
+  isMobile = false,
   isOpen = false,
   date: externalDate,
   startDate: externalStartDate,
@@ -35,13 +34,7 @@ const CustomDatePicker = ({
   }, [isOpen])
 
   useEffect(() => {
-    if (!isRange && externalDate !== date) {
-      setDate(externalDate)
-    }
-  }, [externalDate])
-
-  useEffect(() => {
-    if (isRange && (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1])) {
+    if (isMobile && (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1])) {
       setDateRange([externalStartDate, externalEndDate])
     }
   }, [externalStartDate, externalEndDate])
@@ -55,62 +48,22 @@ const CustomDatePicker = ({
   }
 
   // Handlers
-  const handleSingleDateChange = (newDate) => {
-    setDate(newDate)
-    onDateSelected?.(newDate)
-  }
   const handleRangeDateChange = (range) => {
     const [start, end] = range
     setDateRange(range)
     onRangeSelected?.(start, end)
   }
 
-
-  // Display label
-  let displayLabel = label
-  if (isRange) {
-    if (startDate && endDate) {
-      displayLabel = `${formatDate(startDate)} - ${formatDate(endDate)}`
-    }
-  } else {
-    if (date) {
-      displayLabel = formatDate(date)
-    }
-  }
-
   return (
     <View>
-      <TouchableOpacity
-        style={[
-          styles.button,
-          {
-            gap: 16,
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative',
-            justifyContent: 'center',
-            display: isRange ? 'none' : 'flex',
-            borderWidth: form.input.borderWidth,
-            borderRadius: form.input.borderRadius,
-            borderColor: form.colors.border.default,
-            backgroundColor: form.colors.background.default,
-          },
-        ]}
-        onPress={() => setOpen((prevState) => !prevState)}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.buttonText}>{displayLabel}</Text>
-        <KIcon name="down" size="large" style={{ opacity: 0.5 }} />
-      </TouchableOpacity>
       {open && (
         <View
           style={[
             styles.webPickerContainer,
-            isRange && { position: 'relative', width: '100%' }
+            isMobile && { position: 'relative', width: '100%' }
           ]}
         >
-          {isRange ? (
-            <ReactDatePicker
+          <ReactDatePicker
               selectsRange
               startDate={startDate}
               endDate={endDate}
@@ -121,24 +74,9 @@ const CustomDatePicker = ({
               dateFormat="dd/MM/yyyy"
               calendarClassName="my-custom-calendar"
               dayClassName={(d) => d.getDay() === 0 ? 'sunday' : undefined}
-              calendarContainer={(props) => <CustomContainer {...props} isRange={true} />}
+              calendarContainer={(props) => <CustomContainer {...props} isMobile={isMobile} />}
               minDate={new Date()}
             />
-          ) : (
-            <ReactDatePicker
-              selected={date}
-              onChange={(d) => {
-                handleSingleDateChange(d)
-                setOpen(false)
-              }}
-              inline
-              dateFormat="dd/MM/yyyy"
-              calendarClassName="my-custom-calendar"
-              dayClassName={(d) => d.getDay() === 0 ? 'sunday' : undefined}
-              calendarContainer={(props) => <CustomContainer {...props} isRange={false} />}
-              minDate={new Date()}
-            />
-          )}
         </View>
       )}
     </View>
@@ -168,17 +106,14 @@ const styles = StyleSheet.create({
   },
   customContainer: {
     position: 'absolute',
-    top: 42,
-    marginLeft: 4,
     borderRadius: 20,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
     border: 'none',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)',
+    minWidth: 350,
+    boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.3)',
   },
-  customRangeContainer: {
-    position: 'relative',
-    backgroundColor: '#fff',
+  customContainerMobile: {
     border: 'none',
   },
 })

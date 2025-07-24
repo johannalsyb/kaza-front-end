@@ -75,7 +75,7 @@ const KModal = ({
             },
             style
           ]}>
-          <View style={{ width: 30, height: 2, backgroundColor: variables.colors.yellow, marginBottom: 5 }} />
+          {title === 'Dates' && <View style={{ width: 30, height: 2, backgroundColor: variables.colors.yellow, marginBottom: 5 }} />}
           <View style={[styles.header, { justifyContent: isMobile ? 'center' : 'space-between' }]}>
             {isMobile ?
               <Text
@@ -170,10 +170,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    height: '80%',
     maxWidth: 480,
   },
   header: {
-    flex: 1,
+    // flex: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

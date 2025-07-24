@@ -265,7 +265,6 @@ export default forwardRef<Handle, Props>(
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            // backgroundColor: 'pink',
                           },
                           isMobile && {
                             width: '100%',
