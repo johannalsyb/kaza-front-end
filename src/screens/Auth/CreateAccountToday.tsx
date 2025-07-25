@@ -1,94 +1,111 @@
-import { useEffect, useState } from 'react'
-import { Button, Image, ImageBackground, ScrollView, StyleSheet, TextInput, View } from 'react-native'
-import useAuthentication from '../../hooks/useAuthentication'
-import KTextInput from '../../components/Form/KTextInput/KTextInput'
-import KButton from '../../components/KButton/KButton'
-import KText from '../../components/KText'
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { NavStackParamList } from '../../navigation/screens'
-import FormField from '../../components/Form/FormField/FormField'
-import variables from '../../styles/variables'
-import useIsMobile from '../../hooks/useIsMobile'
-import KIcon from '../../components/KIcon/KIcon'
-import auth from '../../api/auth'
-import { RegisterFormError } from '../../components/forms/auth/Register'
-import KPhoneInputV2 from '../../components/Form/KPhoneInput/KPhoneInputV2'
-import { isValidPhoneNumber } from 'libphonenumber-js'
-import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
-import LeftSide from '../../components/Screens/Auth/LeftSide'
-import VerifyPhone from '../../components/VerifyPhone'
-import { toastSuccess } from '../../components/Toast/Toast'
-import { useSetAtom } from 'jotai'
-import { showComponentAtom } from '../../atoms'
-import users from '../../api/users'
-import { Controller, FieldValues, useForm } from 'react-hook-form'
+import {useEffect, useState} from 'react';
+import {
+  Button,
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import useAuthentication from '../../hooks/useAuthentication';
+import KTextInput from '../../components/Form/KTextInput/KTextInput';
+import KButton from '../../components/KButton/KButton';
+import KText from '../../components/KText';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NavStackParamList} from '../../navigation/screens';
+import FormField from '../../components/Form/FormField/FormField';
+import variables from '../../styles/variables';
+import useIsMobile from '../../hooks/useIsMobile';
+import KIcon from '../../components/KIcon/KIcon';
+import auth from '../../api/auth';
+import {RegisterFormError} from '../../components/forms/auth/Register';
+import KPhoneInputV2 from '../../components/Form/KPhoneInput/KPhoneInputV2';
+import {isValidPhoneNumber} from 'libphonenumber-js';
+import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton';
+import LeftSide from '../../components/Screens/Auth/LeftSide';
+import VerifyPhone from '../../components/VerifyPhone';
+import {toastSuccess} from '../../components/Toast/Toast';
+import {useSetAtom} from 'jotai';
+import {showComponentAtom} from '../../atoms';
+import users from '../../api/users';
+import {Controller, FieldValues, useForm} from 'react-hook-form';
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
+type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
 
 export default (props: any) => {
-  const { isMobile } = useIsMobile()
-  const authentication = useAuthentication()
-  const { isAuthLoading } = authentication
+  const {isMobile} = useIsMobile();
+  const authentication = useAuthentication();
+  const {isAuthLoading} = authentication;
   const [body, setBody] = useState({
     firstName: '',
+    surname: '',
     phone: '',
     email: '',
     password: '',
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   // const [error, setError] = useState<RegisterFormError>({})
   useEffect(() => {
-    authentication.check()
-  }, [])
+    authentication.check();
+  }, []);
 
   const {
     handleSubmit,
     control,
-    formState: { errors },
-    setError
+    formState: {errors},
+    setError,
   } = useForm<FieldValues>({
     defaultValues: {
       firstName: '',
+      surname: '',
       phone: '',
       email: '',
-      password: ''
-    }
-  })
+      password: '',
+    },
+  });
 
-
-  const [setShowModalComponent] = [useSetAtom(showComponentAtom)]
+  const [setShowModalComponent] = [useSetAtom(showComponentAtom)];
 
   const createAccount = async (body: FieldValues) => {
-
-    setLoading(true)
+    setLoading(true);
     try {
       const signupBody = {
         email: body.email as string,
         password: body.password as string,
         firstName: body.firstName as string,
-        phone: body.phone as string,
-      }
-      const response = await auth.signup(signupBody)
-      await login(response.data.email, body.password)
+        surname: body.surname as string,
 
-      setShowModalComponent(<VerifyPhone onVerified={() => {
-        toastSuccess("Phone verified successfully")
-        setShowModalComponent(null)
-      }} />)
+        phone: body.phone as string,
+      };
+      const response = await auth.signup(signupBody);
+      await login(response.data.email, body.password);
+
+      setShowModalComponent(
+        <VerifyPhone
+          onVerified={() => {
+            toastSuccess('Phone verified successfully');
+            setShowModalComponent(null);
+          }}
+        />,
+      );
     } catch (err: any) {
-      const error = err.json
-      if (error?.data?.error && error?.data?.error.indexOf("User already exists") >= 0) {
-        setError('email', { type: 'manual', message: "Email already exists" })
+      const error = err.json;
+      if (
+        error?.data?.error &&
+        error?.data?.error.indexOf('User already exists') >= 0
+      ) {
+        setError('email', {type: 'manual', message: 'Email already exists'});
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
   const login = async (email: string, password: string) => {
-    await auth.login(email, password)
-    window.location.href = '/'
-  }
+    await auth.login(email, password);
+    window.location.href = '/';
+  };
   return (
     <View
       style={{
@@ -98,111 +115,185 @@ export default (props: any) => {
         height: '100%',
         flex: 1,
         position: 'relative',
+
         paddingHorizontal: isMobile ? 0 : 0,
       }}>
-      <LeftSide style={styles.leftSide} title="Join now!" />
+      {/* title="Join now!" */}
+      <LeftSide style={styles.leftSide} />
+
+      {isMobile ? (
+        <View style={styles.containerLogin}>
+          <KText
+            style={{
+              fontSize: 31,
+              fontWeight: '600',
+              lineHeight: 31,
+              textAlign: 'center',
+              color: 'black',
+              letterSpacing: -0.5,
+              marginTop: -30,
+            }}>
+            Join now!
+          </KText>
+        </View>
+      ) : null}
 
       <ScrollView
-        contentContainerStyle={{ padding: 0 }}
-        style={{ width: '100%', marginBottom: isMobile ? 30 : 0 }}>
-
+        contentContainerStyle={{padding: 0}}
+        style={{
+          width: '100%',
+          marginBottom: isMobile ? 30 : 40,
+          marginTop: 20,
+        }}>
         <View
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: isMobile ? 'flex-start' : 'space-between',
             alignItems: 'center',
+            height: 900,
             margin: 'auto',
             flex: 1,
             width: '100%',
-            maxWidth: isMobile ? '100%' : 400,
-            paddingHorizontal: isMobile ? 20 : 0,
-            paddingTop: isMobile ? 18 : 0
+            maxWidth: isMobile ? '100%' : 410,
+            paddingHorizontal: isMobile ? 20 : 10,
+            paddingTop: isMobile ? 18 : 0,
           }}>
-          {isMobile ? <KText
+          {!isMobile && (
+            <>
+              <KText
+                style={{
+                  fontSize: 35,
+                  fontWeight: '600',
+                  marginBottom: 56,
+                  lineHeight: 36,
+                  textAlign: 'center',
+                  maxWidth: 320,
+                  letterSpacing: -0.5,
+                }}>
+                Create your account today!
+              </KText>
+            </>
+          )}
+          <View
             style={{
-              fontSize: 13,
-              fontWeight: '500',
-              marginBottom: 7,
-              textAlign: 'center',
-              maxWidth: '100%',
+              flexDirection: isMobile ? 'row' : 'row',
+              justifyContent: 'space-between',
+              width: '100%',
+              gap: isMobile ? 10 : 20,
             }}>
-            Please fill your details
-          </KText> : (
-            <KText style={{
-              fontSize: 35,
-              fontWeight: '600',
-              marginBottom: 56,
-              lineHeight: 30,
-              textAlign: 'center',
-              maxWidth: 320,
-              letterSpacing: -0.5
-            }}>
-              Create your account today!
-            </KText>)}
+            <FormField
+              labelAlign="left"
+              label={isMobile ? undefined : 'Name'}
+              gapBeforeChildren={false}
+              gapAfterChildren={false}
+              style={{flex: 1, marginBottom: isMobile ? 0 : 20}}>
+              <Controller
+                control={control}
+                name="firstName"
+                rules={{
+                  required: 'First name is required',
+                  minLength: {
+                    value: 2,
+                    message: 'First name must be at least 2 characters',
+                  },
+                }}
+                render={({field: {onChange, value}}) => (
+                  <KTextInput
+                    placeholder="First name"
+                    value={value}
+                    onChangeText={firstName => onChange(firstName)}
+                    inputStyles={{
+                      textAlign: 'left',
+                      paddingLeft: 20,
+                      height: isMobile ? 45 : 40,
+                      paddingVertical: 12,
+                    }}
+                    error={
+                      errors.firstName
+                        ? (errors.firstName.message as string)
+                        : undefined
+                    }
+                  />
+                )}
+              />
+            </FormField>
+            <FormField
+              labelAlign="left"
+              label={isMobile ? undefined : 'Surname'}
+              gapBeforeChildren={false}
+              gapAfterChildren={false}
+              style={{flex: 1, marginBottom: isMobile ? 0 : 20}}>
+              <Controller
+                control={control}
+                name="surname"
+                rules={{
+                  required: 'First surname is required',
+                  minLength: {
+                    value: 2,
+                    message: 'First surname must be at least 2 characters',
+                  },
+                }}
+                render={({field: {onChange, value}}) => (
+                  <KTextInput
+                    placeholder="Surname"
+                    value={value}
+                    onChangeText={surname => onChange(surname)}
+                    inputStyles={{
+                      textAlign: 'left',
+                      paddingLeft: 20,
+                      paddingVertical: 12,
+                      height: isMobile ? 45 : 40,
+                    }}
+                    error={
+                      errors.surname
+                        ? (errors.surname.message as string)
+                        : undefined
+                    }
+                  />
+                )}
+              />
+            </FormField>
+          </View>
 
           <FormField
             labelAlign="left"
-            label={isMobile ? undefined : "Name"}
+            label={isMobile ? undefined : 'Phone'}
+            style={{
+              zIndex: 5,
+              marginBottom: isMobile ? 0 : 20,
+            }}
             gapBeforeChildren={false}
             gapAfterChildren={false}>
-            <Controller
-              control={control}
-              name="firstName"
-              rules={{
-                required: 'First name is required',
-                minLength: { value: 2, message: 'First name must be at least 2 characters' }
-              }}
-              render={({ field: { onChange, value } }) => (
-                <KTextInput
-                  placeholder="Name"
-                  value={value}
-                  onChangeText={firstName => onChange(firstName)}
-                  inputStyles={{
-                    textAlign: 'left',
-                    paddingLeft: 20,
-                    paddingVertical: 12,
-                  }}
-                  error={errors.firstName ? errors.firstName.message as string : undefined}
-                />
-              )}
-
-            />
-
-          </FormField>
-
-          <FormField
-            labelAlign="left"
-            label={isMobile ? undefined : "Phone"}
-            style={{ zIndex: 5 }}
-            gapBeforeChildren={false}
-            gapAfterChildren={false}
-          >
             <Controller
               control={control}
               name="phone"
               rules={{
                 required: 'Phone number is required',
                 validate: (value: string) => {
-                  if (!value) return 'Phone number is required'
-                  if (!isValidPhoneNumber(value)) return 'Invalid phone number'
-                  return true
-                }
+                  if (!value) return 'Phone number is required';
+                  if (!isValidPhoneNumber(value)) return 'Invalid phone number';
+                  return true;
+                },
               }}
-              render={({ field: { onChange, value } }) => (
+              render={({field: {onChange, value}}) => (
                 <KPhoneInputV2
                   phone={value}
-
-                  onChange={(phone) => onChange(phone)}
-                  error={errors.phone ? errors.phone.message as string : undefined}
-                />)} />
+                  onChange={phone => onChange(phone)}
+                  error={
+                    errors.phone ? (errors.phone.message as string) : undefined
+                  }
+                />
+              )}
+            />
           </FormField>
 
           <FormField
             labelAlign="left"
-            label={isMobile ? undefined : "Email"}
+            label={isMobile ? undefined : 'Email'}
             gapBeforeChildren={false}
-            gapAfterChildren={false}>
+            gapAfterChildren={false}
+            style={{zIndex: 4, marginBottom: isMobile ? 0 : 20}}>
             <Controller
               control={control}
               name="email"
@@ -210,33 +301,34 @@ export default (props: any) => {
                 required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: 'Invalid email address'
-                }
+                  message: 'Invalid email address',
+                },
               }}
-              render={({ field: { onChange, value } }) => (
+              render={({field: {onChange, value}}) => (
                 <KTextInput
-                  placeholder={isMobile ? 'E-mail' : "Add your email"}
+                  placeholder={isMobile ? 'E-mail' : 'Add your email'}
                   value={value}
                   onChangeText={email => onChange(email)}
                   inputStyles={{
                     textAlign: 'left',
                     paddingLeft: 20,
                     paddingVertical: 12,
+                    height: isMobile ? 45 : 40,
                   }}
-                  error={errors.email ? errors.email.message as string : undefined}
+                  error={
+                    errors.email ? (errors.email.message as string) : undefined
+                  }
                 />
               )}
             />
-
           </FormField>
 
           <FormField
             labelAlign="left"
-            label={isMobile ? undefined : "Choose password"}
+            label={isMobile ? undefined : 'Choose password'}
             gapBeforeChildren={false}
             gapAfterChildren={false}
-          >
-
+            style={{zIndex: 3, marginBottom: isMobile ? 0 : 20}}>
             <Controller
               control={control}
               name="password"
@@ -244,10 +336,10 @@ export default (props: any) => {
                 required: 'Password is required',
                 minLength: {
                   value: 6,
-                  message: 'Password must be at least 6 characters'
-                }
+                  message: 'Password must be at least 6 characters',
+                },
               }}
-              render={({ field: { onChange, value } }) => (
+              render={({field: {onChange, value}}) => (
                 <KTextInput
                   placeholder="Password"
                   secureTextEntry={!showPassword}
@@ -257,7 +349,11 @@ export default (props: any) => {
                     <KIcon
                       name={showPassword ? 'eyeOpen' : 'eyeClose'}
                       size={'medium'}
-                      style={{ marginRight: 10, opacity: 0.5 }}
+                      style={{
+                        marginRight: isMobile ? 10 : 0,
+                        opacity: 0.5,
+                        height: isMobile ? 45 : 40,
+                      }}
                     />
                   }
                   inputStyles={{
@@ -265,11 +361,15 @@ export default (props: any) => {
                     paddingLeft: 20,
                     paddingVertical: 12,
                   }}
-                  error={errors.password ? errors.password.message as string : undefined}
+                  error={
+                    errors.password
+                      ? (errors.password.message as string)
+                      : undefined
+                  }
                   onRightComponentPress={() => setShowPassword(!showPassword)}
-                />)} />
-
-
+                />
+              )}
+            />
           </FormField>
           <View
             style={{
@@ -277,46 +377,44 @@ export default (props: any) => {
               flexDirection: 'column',
               alignItems: 'center',
               width: '100%',
-              maxWidth: isMobile ? '100%' : 274,
+              maxWidth: isMobile ? '85%' : 274,
               gap: isMobile ? 18 : 32,
             }}>
             <KButton
               text="Create account"
               style={{
                 width: '100%',
-                marginTop: isMobile ? 9 : 40,
+
+                marginTop: isMobile ? 9 : 10,
+                borderColor: `1px solid ${variables.colors.borderGray}`,
               }}
               onPress={handleSubmit(createAccount)}
               disabled={loading}
               loading={loading}
-
             />
             <KText style={styles.dividerContainer}>
               <View style={styles.divider} />
-              <span>or</span>
+              <span style={{padding: '0 22px'}}>or</span>
               <View style={styles.divider} />
             </KText>
             <GoogleLoginButton />
-
           </View>
         </View>
       </ScrollView>
-      {
-        !isMobile && (
-          <View style={{ position: 'absolute', top: 20, right: 20 }}>
-            <KIcon
-              name="closeWithBorder"
-              size={'large'}
-              onPress={() => {
-                props.navigation.navigate('Home')
-              }}
-            />
-          </View>
-        )
-      }
-    </View >
-  )
-}
+      {!isMobile && (
+        <View style={{position: 'absolute', top: 20, right: 20}}>
+          <KIcon
+            name="closeWithBorder"
+            size={'large'}
+            onPress={() => {
+              props.navigation.navigate('Home');
+            }}
+          />
+        </View>
+      )}
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
@@ -334,7 +432,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    // gap: 16,
+    
     flex: 1,
     maxWidth: 400,
     width: '100%',
@@ -370,7 +468,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     color: variables.colors.grey,
-    fontSize: 13
+    fontSize: 13,
   },
   iconRegister: {
     marginLeft: 10,
@@ -386,7 +484,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   leftSide: {
-    height: 261
+    height: 135,
   },
   containerModal: {
     position: 'absolute',
@@ -399,7 +497,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 1000,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
-  }
-}
-)
+  },
+  phoneNoInputFieldsMobileView: {
+    borderRadius: 28,
+  },
+  phoneNoInputFieldsDesktopeView: {
+    borderRadius: 0,
+  },
+});
