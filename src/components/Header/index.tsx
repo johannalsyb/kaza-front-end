@@ -371,7 +371,7 @@ export default (
             }}>
               {!isMobile ? (
                 user ? (
-                  <>
+                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     {notificationsIcon()}
                     <Pressable
                       onPress={() => {
@@ -390,13 +390,12 @@ export default (
                     >
                       <KIcon
                         name={"credits"}
-                        size="medium"
+                        size="small"
                         style={{
-                          marginRight: 5,
                           stroke: variables.colors.blackLight,
                         }}
                       />
-                      <Text>{5}</Text>
+                      <Text style={{ fontSize: 16, marginLeft: -2 }}>{5}</Text>
                     </Pressable>
                     <View
                       ref={popupMenuRef}
@@ -422,7 +421,7 @@ export default (
                         }}></View>
                       {menuItemView("logout", "Logout", () => auth.logout())}
                     </View>
-                  </>
+                  </View>
                 ) : (
                   <>
                     <KButton
@@ -502,7 +501,7 @@ const styles = StyleSheet.create({
   },
   creditsContainer: {
     backgroundColor: variables.colors.yellow,
-    height: 'auto',
+    height: 40,
     width: 'auto',
     paddingHorizontal: 14,
     display: 'flex',
