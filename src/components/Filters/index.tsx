@@ -5,7 +5,7 @@ import KIcon from '../KIcon/KIcon'
 import Dropdown, { DropdownHandle } from '../Dropdown/Dropdown'
 import SubHeader from '../SubHeader/SubHeader'
 import useIsMobile from '../../hooks/useIsMobile'
-import { Pressable, StyleSheet, View, ViewStyle, Text } from 'react-native'
+import { Pressable, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import KText from '../KText'
 import { useSetAtom } from 'jotai'
 import { showSignInAtom, showSwapNowAtom } from '../../atoms'
@@ -18,6 +18,8 @@ import { NavStackParamList } from '../../navigation/screens'
 import DatePicker from '../DatePicker'
 import MapToggleButton from './MapToggleButton'
 import FiltersView from './FiltersView'
+import DesktopDatePicker from './DesktopDatePicker'
+import KFiltersModal from '../KModal/KFiltersModal'
 
 type Props = {
   onShowMap: (show: boolean) => void
@@ -60,6 +62,8 @@ const Filters = forwardRef<Handle, Props>(({
   const flatFilterRef = React.createRef<DropdownHandle>()
   const brFilterRef = React.createRef<DropdownHandle>()
   const [showDateModal, setShowDateModal] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
 
@@ -78,22 +82,25 @@ const Filters = forwardRef<Handle, Props>(({
     clearFilters,
   }))
 
-  const nbFilters = (ffilters: PropertyFilter) => {
+  const nbFilters = (ffilters: PropertyFilter, isMobile: boolean) => {
     let nb = 0
-    if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
+    // if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
     if (ffilters["petsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["kidsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["swapWithWomen"][0] !== "false") nb++
-    if (ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
-    if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
-    if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
-    if (search.length) nb++
+    if (isMobile) {
+      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length) && isMobile) {
+        nb += ffilters["bedrooms"].length
+      }
+    }
+    // if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
+    // if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
+    // if (search.length) nb++
     return nb
   }
 
   const clearFilters = () => {
-    console.log("clearFilters runs")
-
+    setModalVisible(false)
     const clearedStart = null
     const clearedEnd = null
 
@@ -116,7 +123,7 @@ const Filters = forwardRef<Handle, Props>(({
     brFilterRef.current?.setSelectedItems(["any"])
   }
 
-  const filterCount = nbFilters(filters)
+  const filterCount = nbFilters(filters, isMobile)
 
   const flatTypeView = <Dropdown
     ref={flatFilterRef}
@@ -149,8 +156,6 @@ const Filters = forwardRef<Handle, Props>(({
           marginRight: 2.5,
           backgroundColor: variables.colors.orange,
           borderColor: variables.colors.orange,
-          // position: !isMobile ? "absolute" : undefined,
-          // right: 50
         },
       ]}
       onPress={clearFilters}
@@ -167,15 +172,16 @@ const Filters = forwardRef<Handle, Props>(({
 
   const modalClearFiltersView = () =>
     <Pressable
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}
       onPress={clearFilters}
       disabled={filterCount === 0}
     >
       <KIcon
         name="clearAll"
-        size="medium"
+        size="small"
+      // style={{opacity: 0.5 }}
       />
-      <Text style={{ fontSize: 16 }}>Clear all filters</Text>
+      <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 12, fontWeight: '500' }}>Clear all filters</Text>
     </Pressable>
 
   const filterView = (
@@ -190,6 +196,33 @@ const Filters = forwardRef<Handle, Props>(({
       placeTypeFilters={placeTypeFilters}
     />
   )
+
+  interface Props {
+    date: Date | null
+    placeholder?: string
+    fontSize?: number
+  }
+
+  const FormattedDateWithFadedYear: React.FC<Props> = ({
+    date,
+    placeholder = 'Select Date',
+    fontSize = 14,
+  }) => {
+    if (!date) {
+      return <Text style={{ fontSize, opacity: 0.5 }}>{placeholder}</Text>
+    }
+
+    const month = date.toLocaleDateString('en-US', { month: 'short' })
+    const day = date.toLocaleDateString('en-US', { day: 'numeric' })
+    const year = date.getFullYear()
+
+    return (
+      <Text style={{ fontSize }}>
+        {month} {day},{' '}
+        <Text style={{ opacity: 0.5 }}>{year}</Text>
+      </Text>
+    )
+  }
 
   return (
     <SubHeader style={{ paddingVertical: 18, paddingHorizontal: isMobile ? 14 : 30 }}>
@@ -248,7 +281,7 @@ const Filters = forwardRef<Handle, Props>(({
               </View>
             </Pressable>
             {flatTypeView}
-            {filterCount > 0 && !isMobile ? clearFiltersView() : null}
+            {filterCount > 0 ? clearFiltersView() : null}
             <KModalWeb
               isMobile={isMobile}
               clearFilters={clearFilters}
@@ -261,31 +294,18 @@ const Filters = forwardRef<Handle, Props>(({
           </View>
         }
       </View>
-      {!isMobile && <View style={{
-        flex: 1,
-        gap: 10,
-        marginLeft: 18,
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-      }}>
-        <DatePicker
-          label="Starting date"
-          date={startDate}
-          onDateSelected={(date: Date | null) => {
-            setStartDate(date)
-            onFilter({ type: "startDate", filters: date ? [date.toISOString()] : [] })
-          }}
+      {!isMobile && (
+        <DesktopDatePicker
+          isMobile={isMobile}
+          isCalendarOpen={isCalendarOpen}
+          setIsCalendarOpen={setIsCalendarOpen}
+          startDate={startDate}
+          endDate={endDate}
+          setStartDate={setStartDate}
+          setEndDate={setEndDate}
+          onFilter={onFilter}
         />
-        <DatePicker
-          label="Ending date"
-          date={endDate}
-          onDateSelected={(date: Date | null) => {
-            setEndDate(date)
-            onFilter({ type: "endDate", filters: date ? [date.toISOString()] : [] })
-          }}
-        />
-      </View>}
+      )}
       <View style={{
         flexDirection: 'row',
         alignItems: "center",
@@ -320,14 +340,14 @@ const Filters = forwardRef<Handle, Props>(({
               styles.lightCircle,
               { marginLeft: 2.5, marginRight: 2.5 },
               {
-                backgroundColor: variables.colors.black,
+                backgroundColor: showDateModal ? variables.colors.black : variables.colors.white,
                 borderColor: variables.colors.white,
               },
             ]}
             onPress={() => setShowDateModal(true)}
           >
             <KIcon
-              name="calendarWhite"
+              name={showDateModal ? "calendarWhite" : "calendar"}
               size="large"
               style={{ stroke: "white" }}
             />
@@ -341,34 +361,55 @@ const Filters = forwardRef<Handle, Props>(({
               style={{ backgroundColor: variables.colors.white }}
             >
               <View style={{ flex: 1, width: '100%' }}>
-                <Text style={{ paddingHorizontal: 24, marginBottom: 4, fontSize: 13, fontWeight: '500', fontFamily: 'Plus Jakarta Sans', color: variables.colors.black }}>Select the dates</Text>
-                <View
+                <Text
                   style={{
-                    borderWidth: 1,
-                    borderColor: variables.colors.borderGray,
-                    borderRadius: 30,
-                    width: '90%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    marginBottom: 16,
-                    alignSelf: 'center',
+                    paddingHorizontal: 24,
+                    marginBottom: 4,
+                    fontSize: 13,
+                    fontWeight: '500',
+                    fontFamily: 'Plus Jakarta Sans',
+                    color: variables.colors.black,
+                    opacity: 0.5
                   }}
                 >
-                  <Text style={{ fontSize: 14 }}>
-                    {startDate
-                      ? startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                      : 'Start Date'} -{' '}
-                    {endDate
-                      ? endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                      : 'End Date'}
-                  </Text>
-                </View>
-
+                  Select the dates
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    borderWidth: 1,
+                    borderRadius: 30,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 4.5,
+                    paddingHorizontal: 20,
+                    alignSelf: 'center',
+                    minWidth: '90%',
+                    justifyContent: 'center',
+                    borderColor: variables.colors.borderGray,
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      gap: 10,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      paddingLeft: 20,
+                    }}
+                  >
+                    <FormattedDateWithFadedYear date={startDate} placeholder="Start Date" fontSize={16} />
+                    <Text style={{ fontSize: 14, opacity: 0.5 }}>-</Text>
+                    <FormattedDateWithFadedYear date={endDate} placeholder="End Date" fontSize={16} />
+                  </View>
+                  <KIcon name={'down'} size={30} style={{ opacity: 0.5 }} />
+                </TouchableOpacity>
                 <DatePicker
                   isOpen
                   isRange
+                  isMobile={isMobile}
                   startDate={startDate}
                   endDate={endDate}
                   onRangeSelected={(startDate: Date | null, endDate: Date | null) => {
@@ -397,7 +438,7 @@ const Filters = forwardRef<Handle, Props>(({
                 },
               ]}
               onPress={() => {
-                setShowFilterModal(true)
+                setModalVisible(true)
               }}>
               <KIcon
                 name="filters"
@@ -419,61 +460,21 @@ const Filters = forwardRef<Handle, Props>(({
                 <KText style={{ color: "white", fontSize: 10 }}>{filterCount}</KText>
               </View>
             </Pressable>
-            <KModalWeb
-              isMobile={isMobile}
-              showCross={false}
-              visible={showFilterModal}
-              clearFilters={clearFilters}
-              clearFiltersView={modalClearFiltersView}
-              setVisibility={() => setShowFilterModal(false)}
-              style={{ backgroundColor: variables.colors.white, padding: 20, display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: isMobile ? 20 : 0, minWidth: 562 }}
-            >
-              {filterView}
-            </KModalWeb>
+            <KFiltersModal
+              visible={modalVisible}
+              onClose={() => setModalVisible(false)}
+              clearButton={modalClearFiltersView()}
+              filterView={filterView}
+            />
           </>
         }
-        {/* <View style={{flex: 1}} /> */}
         <MapToggleButton
           showMap={showMap}
           isMobile={isMobile}
           route={route}
           navigation={navigation}
         />
-        {/* {!isMobile ? <KButton
-          color="secondary"
-          onPress={() => user ? setShowSwapNow(true) : setShowSignIn(true)}
-          style={{flexDirection: 'row', marginLeft: 10}}>
-          <KIcon name="logo" size="medium" style={{stroke: 'black'}} />
-          <KText>Swap Now</KText>
-        </KButton> : null} */}
       </View>
-      {/* TODO: apply modal for datepicker filters for mobile */}
-      {/* <KModal
-        visible={showDateModal}
-        setVisibility={setShowDateModal}
-        showCross={true}
-        style={{ padding: 20 }}
-      >
-        <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', alignItems: 'center', padding: 10 }}>
-          <Text style={{ fontSize: 18, marginBottom: 10 }}>Select Dates</Text>
-          <DatePicker
-            label="Start Date"
-            onDateSelected={setStartDate}
-          />
-          <View style={{ height: 20 }} />
-          <DatePicker
-            label="End Date"
-            onDateSelected={setEndDate}
-          />
-          <View style={{ height: 30 }} />
-          <Pressable
-            style={{ backgroundColor: variables.colors.black, borderRadius: 8, paddingVertical: 10, paddingHorizontal: 30 }}
-            onPress={() => setShowDateModal(false)}
-          >
-            <Text style={{ color: 'white', fontSize: 16 }}>Apply</Text>
-          </Pressable>
-        </View>
-      </KModal> */}
     </SubHeader>
   )
 })

@@ -44,7 +44,7 @@ export default (props:Props) => {
             name={props.icon as any}
             size="medium"
             style={{
-              backgroundColor: isMobile ? 'white' : 'transparent',
+              backgroundColor: isMobile ? 'white' : variables.colors.blackLight,
               borderRadius: 50,
               padding: 10,
               stroke: isMobile ? 'black' : 'white',

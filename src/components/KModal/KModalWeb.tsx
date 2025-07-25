@@ -66,16 +66,14 @@ const KModal = ({
           style={[styles.modalOverlay]}
           onPress={() => setVisibility(false)}></TouchableOpacity>
         <Animated.View
-          // ref={ref}
           style={[
             isMobile ? styles.modalViewMobile : styles.modalView,
             {
-              maxHeight: height - 80,
               transform: [{ translateY }],
             },
             style
           ]}>
-          <View style={{ width: 30, height: 2, backgroundColor: variables.colors.yellow, marginBottom: 5 }} />
+          {title === 'Dates' && <View style={{ width: 30, height: 2, backgroundColor: variables.colors.yellow, marginBottom: 5 }} />}
           <View style={[styles.header, { justifyContent: isMobile ? 'center' : 'space-between' }]}>
             {isMobile ?
               <Text
@@ -120,7 +118,7 @@ const KModal = ({
               />
               <KButton
                 onPress={() => setVisibility(false)}
-                text='Confirm'
+                text={title === 'Filters' ? 'Apply' : 'Confirm'}
               />
             </View>}
         </Animated.View>
@@ -173,7 +171,6 @@ const styles = StyleSheet.create({
     maxWidth: 480,
   },
   header: {
-    flex: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -196,5 +193,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 20,
+    marginTop: 30,
+    marginBottom: 10,
   }
 })

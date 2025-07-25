@@ -280,13 +280,13 @@ export default (
         webkitBackdropFilter: "blur(3px)"
       }} />}
 
-      {isMobile && showMobileSearchBar ? (
+      {isMobile ? (
         <>
           <KTextInput
-            placeholder="Search for a city or country"
+            placeholder="Where would you like to go?"
             topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: "center" }}
             inputStyles={{ textAlign: 'left' }}
-            leftComponent={<KIcon name="search" size="medium" />}
+            leftComponent={<KIcon name="search" size="small" />}
             value={search}
             onChangeText={text => setSearch(text)}
             autoFocus={true}
@@ -301,20 +301,20 @@ export default (
               new PropertySearchEvent().emit(text)
             }}
           />
-          <KIcon
-            name="crossCircle"
-            size="medium"
-            onPress={() => {
-              setSearch('')
-              setShowMobileSearchBar(false)
-            }}
-            style={{
-              backgroundColor: 'black',
-              borderRadius: 50,
-              padding: 5,
-              stroke: 'white',
-            }}
-          />
+          {user && <Pressable
+            onPress={() => { console.log("credits pressed") }}
+            style={styles.creditsContainerMobile}
+          >
+            <KIcon
+              name={"credits"}
+              size="small"
+              style={{
+                marginRight: 5,
+                stroke: variables.colors.blackLight,
+              }}
+            />
+            <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{5}</Text>
+          </Pressable>}
         </>
       ) : (
         <>
@@ -371,7 +371,7 @@ export default (
             }}>
               {!isMobile ? (
                 user ? (
-                  <>
+                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     {notificationsIcon()}
                     <Pressable
                       onPress={() => {
@@ -390,13 +390,12 @@ export default (
                     >
                       <KIcon
                         name={"credits"}
-                        size="medium"
+                        size="small"
                         style={{
-                          marginRight: 5,
                           stroke: variables.colors.blackLight,
                         }}
                       />
-                      <Text>{5}</Text>
+                      <Text style={{ fontSize: 16, marginLeft: -2 }}>{5}</Text>
                     </Pressable>
                     <View
                       ref={popupMenuRef}
@@ -422,7 +421,7 @@ export default (
                         }}></View>
                       {menuItemView("logout", "Logout", () => auth.logout())}
                     </View>
-                  </>
+                  </View>
                 ) : (
                   <>
                     <KButton
@@ -502,7 +501,7 @@ const styles = StyleSheet.create({
   },
   creditsContainer: {
     backgroundColor: variables.colors.yellow,
-    height: 'auto',
+    height: 40,
     width: 'auto',
     paddingHorizontal: 14,
     display: 'flex',
@@ -512,5 +511,18 @@ const styles = StyleSheet.create({
     gap: 10,
     marginLeft: 10,
     borderRadius: 100,
+  },
+  creditsContainerMobile: {
+    backgroundColor: variables.colors.yellow,
+    height: 'auto',
+    width: 'auto',
+    paddingVertical: 8.5,
+    paddingHorizontal: 11,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 14,
+    borderRadius: 20,
   }
 })
