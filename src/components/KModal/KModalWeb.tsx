@@ -118,7 +118,7 @@ const KModal = ({
               />
               <KButton
                 onPress={() => setVisibility(false)}
-                text={title === 'Filters' ? 'Cancel' : 'Confirm'}
+                text={title === 'Filters' ? 'Apply' : 'Confirm'}
               />
             </View>}
         </Animated.View>

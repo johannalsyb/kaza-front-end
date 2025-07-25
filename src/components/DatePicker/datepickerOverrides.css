@@ -43,7 +43,7 @@
 .react-datepicker__week {
   display: flex;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: space-between;
   gap: 0;
 }
 
@@ -55,6 +55,7 @@
   justify-content: center;
   height: 34px;
   width: 42px;
+  min-width: 34px;
   border-radius: 50%;
   margin: 0;
   font-size: 14px;
@@ -88,10 +89,14 @@
 }
 
 .react-datepicker__day--in-range {
-  background-color: #fff3a3 !important;
+  background-color: #f7f6e9 !important;
   color: black;
   border-radius: 0 !important;
   z-index: 1;
+  padding-right: 7px;
+  margin-right: -7px;
+  padding-left: 7px;
+  margin-left: -7px;
 }
 
 .react-datepicker__day--range-start,
@@ -109,14 +114,12 @@
 }
 
 .react-datepicker__day--range-start:not(.react-datepicker__day--range-end) {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-  border-radius: 50%;
+  padding: 0px !important;
+  padding-right: 5px;
 }
 
 .react-datepicker__day--range-end:not(.react-datepicker__day--range-start) {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
+  padding: 0px !important;
 }
 
 .react-datepicker__day--range-start,
@@ -126,7 +129,6 @@
   border-radius: 50% !important;
   width: 42px !important;
   display: flex;
-  justify-content: center;
   align-items: center;
   z-index: 2;
   position: relative;
@@ -157,21 +159,3 @@
   background-color: #ffe361 !important;
   border-radius: 50% !important;
 }
-
-/* .react-datepicker__day:hover {
-  background-color: #ffe361 !important;
-  border-radius: 50% !important;
-  color: black;
-} */
-
-/* .react-datepicker__day--range-start,
-.react-datepicker__day--range-end {
-  background-color: #ffe361 !important;
-  border-radius: 50% !important;
-} */
-
-/* .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end),
-.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
-  background-color: #fff3a3 !important;
-  border-radius: 0 !important;
-} */

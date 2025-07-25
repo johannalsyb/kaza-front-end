@@ -82,16 +82,20 @@ const Filters = forwardRef<Handle, Props>(({
     clearFilters,
   }))
 
-  const nbFilters = (ffilters: PropertyFilter) => {
+  const nbFilters = (ffilters: PropertyFilter, isMobile: boolean) => {
     let nb = 0
     // if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
     if (ffilters["petsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["kidsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["swapWithWomen"][0] !== "false") nb++
-    // if (ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
+    if (isMobile) {
+      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length) && isMobile) {
+        nb += ffilters["bedrooms"].length
+      }
+    }
     // if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
     // if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
-    if (search.length) nb++
+    // if (search.length) nb++
     return nb
   }
 
@@ -119,7 +123,7 @@ const Filters = forwardRef<Handle, Props>(({
     brFilterRef.current?.setSelectedItems(["any"])
   }
 
-  const filterCount = nbFilters(filters)
+  const filterCount = nbFilters(filters, isMobile)
 
   const flatTypeView = <Dropdown
     ref={flatFilterRef}
@@ -152,8 +156,6 @@ const Filters = forwardRef<Handle, Props>(({
           marginRight: 2.5,
           backgroundColor: variables.colors.orange,
           borderColor: variables.colors.orange,
-          // position: !isMobile ? "absolute" : undefined,
-          // right: 50
         },
       ]}
       onPress={clearFilters}
@@ -200,7 +202,7 @@ const Filters = forwardRef<Handle, Props>(({
     placeholder?: string
     fontSize?: number
   }
-  
+
   const FormattedDateWithFadedYear: React.FC<Props> = ({
     date,
     placeholder = 'Select Date',
@@ -209,11 +211,11 @@ const Filters = forwardRef<Handle, Props>(({
     if (!date) {
       return <Text style={{ fontSize, opacity: 0.5 }}>{placeholder}</Text>
     }
-  
+
     const month = date.toLocaleDateString('en-US', { month: 'short' })
     const day = date.toLocaleDateString('en-US', { day: 'numeric' })
     const year = date.getFullYear()
-  
+
     return (
       <Text style={{ fontSize }}>
         {month} {day},{' '}
@@ -279,7 +281,7 @@ const Filters = forwardRef<Handle, Props>(({
               </View>
             </Pressable>
             {flatTypeView}
-            {filterCount > 0 && !isMobile ? clearFiltersView() : null}
+            {filterCount > 0 ? clearFiltersView() : null}
             <KModalWeb
               isMobile={isMobile}
               clearFilters={clearFilters}
@@ -366,7 +368,7 @@ const Filters = forwardRef<Handle, Props>(({
                     fontSize: 13,
                     fontWeight: '500',
                     fontFamily: 'Plus Jakarta Sans',
-                    color: variables.colors.black, 
+                    color: variables.colors.black,
                     opacity: 0.5
                   }}
                 >

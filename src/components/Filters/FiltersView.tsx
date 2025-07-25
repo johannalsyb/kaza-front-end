@@ -16,6 +16,13 @@ interface FiltersViewProps {
   placeTypeFilters: string[]
 }
 
+const bedroomLabelMap: Record<string, string> = {
+  '1 BR': '1 Bed Room',
+  '2 BR': '2 Bed Rooms',
+  '3 BR': '3 Bed Rooms',
+  '4+': '4+ Bed Rooms',
+}
+
 const FiltersView: React.FC<FiltersViewProps> = ({
   ffilters,
   isMobile,
@@ -24,6 +31,47 @@ const FiltersView: React.FC<FiltersViewProps> = ({
   nbBedroomFilters,
 }) => (
   <>
+    {isMobile &&
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+        {nbBedroomFilters.map((label) => {
+          const isSelected = ffilters.bedrooms.includes(label)
+          return (
+            <KButton
+              key={label}
+              text={bedroomLabelMap[label] || label}
+              color={isSelected ? 'tertiary' : 'light'}
+              onPress={() => {
+                const newFilters = isSelected
+                  ? ffilters.bedrooms.filter((br: string) => br !== label)
+                  : [...ffilters.bedrooms, label]
+
+                onFilter({ type: 'bedrooms', filters: newFilters })
+              }}
+              style={{
+                height: 40,
+                paddingHorizontal: 10,
+                width: '80%',
+                borderWidth: 1,
+                borderColor: variables.colors.blackLight,
+              }}
+            />
+          )
+        })}
+      </View>
+    }
+    <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
+    <KButton
+      color={ffilters.swapWithWomen[0] === 'true' ? 'tertiary' : 'light'}
+      onPress={() => onFilter({ type: 'swapWithWomen' as keyof PropertyFilter, filters: ffilters.swapWithWomen[0] === 'false' ? ['true'] : ['false'] })}
+      style={{
+        flexDirection: 'row', width: isMobile ? '80%' : 'auto', paddingLeft: 5,
+        paddingRight: 5, height: 40, borderWidth: 1,
+        borderColor: variables.colors.blackLight
+      }}
+      {...(!isMobile && { icon: 'woman', iconSize: 'medium' })}
+      iconSize='medium'
+      text='Swap with women'
+    />
     <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
     <KButton
       color={ffilters.petsFriendlyOnly[0] === 'true' ? 'tertiary' : 'light'}
@@ -33,24 +81,12 @@ const FiltersView: React.FC<FiltersViewProps> = ({
         paddingRight: 5, height: 40, borderWidth: 1,
         borderColor: variables.colors.blackLight,
       }}
-      icon='pet'
+      {...(!isMobile && { icon: 'pet', iconSize: 'medium' })}
       iconSize='medium'
       text='Pet Friendly'
     />
     <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
-    <KButton
-      color={ffilters.swapWithWomen[0] === 'true' ? 'tertiary' : 'light'}
-      onPress={() => onFilter({ type: 'swapWithWomen' as keyof PropertyFilter, filters: ffilters.swapWithWomen[0] === 'false' ? ['true'] : ['false'] })}
-      style={{ 
-        flexDirection: 'row', width: isMobile ? '80%' : 'auto', paddingLeft: 5, 
-        paddingRight: 5, height: 40, borderWidth: 1, 
-        borderColor: variables.colors.blackLight }}
-      icon='woman'
-      iconSize='medium'
-      text='Swap with women'
-    />
-    <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
-    <KButton
+    {!isMobile && <KButton
       color={ffilters.kidsFriendlyOnly[0] === 'true' ? 'tertiary' : 'light'}
       onPress={() => onFilter({ type: 'kidsFriendlyOnly' as keyof PropertyFilter, filters: ffilters.kidsFriendlyOnly[0] === 'false' ? ['true'] : ['false'] })}
       style={{
@@ -58,30 +94,11 @@ const FiltersView: React.FC<FiltersViewProps> = ({
         paddingRight: 5, height: 40, borderWidth: 1,
         borderColor: variables.colors.blackLight,
       }}
-      icon='kids'
+      {...(!isMobile && { icon: 'kids', iconSize: 'medium' })}
       iconSize='medium'
       text='Suitable for children'
-    />
-    <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
-    {isMobile &&
-      <Dropdown
-        ref={brFilterRef}
-        style={{
-          backgroundColor: variables.colors.blackLight,
-          width: isMobile ? '80%' : 'auto',
-          height: 40,
-          zIndex: 1,
-          marginLeft: 5,
-        }}
-        dropdownStyle={{
-          width: isMobile ? '100%' : 'auto',
-        }}
-        onChange={(values) => onFilter({ type: 'bedrooms' as keyof PropertyFilter, filters: values[0] === 'any' ? nbBedroomFilters : values })}
-        leftIcon='bed'
-        leftIconStyle={{ stroke: 'white' }}
-        items={['any'].concat(nbBedroomFilters)}
-      />
-    }
+    />}
+    {/* <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} /> */}
   </>
 )
 
