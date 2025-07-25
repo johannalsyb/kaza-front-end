@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react'
 import useAuthentication from '../../hooks/useAuthentication'
 import { StyleSheet, View } from 'react-native'
 import KButton from '../KButton/KButton'
-
+import useIsMobile from '../../hooks/useIsMobile';
 export default () => {
-
+const {isMobile} = useIsMobile();
   const authInstance = useRef(window.google?.accounts.id || null)
   useEffect(() => {
     const initializeGoogle = () => {
@@ -57,6 +57,7 @@ export default () => {
       display: 'flex',
       gap: 10,
       flexDirection: 'row',
+      fontSize:14,
       alignItems: 'center',
 
 
@@ -67,7 +68,7 @@ export default () => {
   return (
     <KButton
       text='Sign in with Google'
-      textStyle={{ color: 'black' }}
+      textStyle={{ color: isMobile? '#808080':'black',fontWeight:'600'}}
       icon='Google'
       iconStyle={{ stroke: 'transparent' }}
       onPress={() => handleClickGoogleAuth()} style={styles.button} />

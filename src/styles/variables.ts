@@ -18,7 +18,7 @@ const variables = {
     closeButton: '#7f7230',
     borderGray: '#C6C5BA',
     lightGray: '#aaaaaa',
-    xLightGray: '#cccccc',
+    xLightGray: '#c6c5ba',
     xxLightGray: '#eeeeee',
     grey: '#999',
     darkYellow: '#EBE9D8',
@@ -28,7 +28,7 @@ const variables = {
   },
   font: {
     size: {
-      normal: 14
+      normal: 14,
     },
     weight: {},
     colors: {},

@@ -1,55 +1,64 @@
-import { Button, Image, ImageBackground, TextInput, View } from 'react-native'
-import useIsMobile from '../../../hooks/useIsMobile'
-import variables from '../../../styles/variables'
-import { Link } from '@react-navigation/native'
-import KIcon from '../../KIcon/KIcon'
-import KText from '../../KText'
-import useResizeImage from '../../../hooks/useResizeImage'
+import {
+  Button,
+  Image,
+  Dimensions,
+  ImageBackground,
+  TextInput,
+  View,
+} from 'react-native';
+import useIsMobile from '../../../hooks/useIsMobile';
+import variables from '../../../styles/variables';
+import {Link} from '@react-navigation/native';
+import KIcon from '../../KIcon/KIcon';
+import KText from '../../KText';
+import useResizeImage from '../../../hooks/useResizeImage';
 
-const TopImg = require('../../../assets/Auth/top2.webp')
-const LeftImg = require('../../../assets/Auth/left_1920_x2.webp')
+const TopImg = require('../../../assets/Auth/top2.webp');
+const LeftImg = require('../../../assets/Auth/left_1920_x2.webp');
 
 interface LeftSideProps {
-  style?: object
-  title?: string
+  style?: object;
+  title?: string;
 }
 
 const LeftSide = (props: LeftSideProps) => {
-  const { isMobile } = useIsMobile()
-  const { style, title } = props
+  const {isMobile} = useIsMobile();
+  const {style, title} = props;
+  const {width, height} = Dimensions.get('window');
   return (
     <>
       <Image
         source={isMobile ? TopImg : LeftImg}
-        resizeMode={isMobile ? 'contain' : 'cover'}
+        resizeMode={isMobile ? 'contain' : 'stretch'}
         style={{
-          width: isMobile ? '100%' : '50%',
-          height: isMobile ? 250 : '100%',
+          width: isMobile ? '100%' : width * 0.5,
+          height: isMobile ? 250 : height,
           position: 'relative',
-          top: 0,
+
+          top: isMobile ? 10 : 0,
           left: isMobile ? -15 : 0,
           zIndex: -1,
           marginBottom: isMobile ? 24 : 0,
           borderTopRightRadius: isMobile ? 0 : 30,
           borderBottomRightRadius: isMobile ? 0 : 30,
+          
         }}
       />
-      {isMobile && <Link to={'/'}
-        style={{ position: 'absolute', top: 20, left: 20 }}>
-        <KIcon
-          name="backArrow"
-          size={'large'}
-          style={
-            { backgroundColor: 'white', borderRadius: 50, padding: 5 }
-          }
-        />
-      </Link>}
+
+      {isMobile && (
+        <Link to={'/'} style={{position: 'absolute', top: 20, left: 20}}>
+          <KIcon
+            name="backArrow"
+            size={'large'}
+            style={{backgroundColor: 'white', borderRadius: 50, padding: 5}}
+          />
+        </Link>
+      )}
       {isMobile ? (
         <>
-
           <View
             style={{
-              height: 150,
+              height: 100,
               width: '100%',
               position: 'absolute',
               top: 0,
@@ -60,22 +69,11 @@ const LeftSide = (props: LeftSideProps) => {
               borderBottomLeftRadius: 20,
               borderBottomRightRadius: 20,
               display: isMobile ? 'flex' : 'none',
-              ...style
+              ...style,
             }}
           />
-          <KText
-            style={{
-              position: 'absolute',
-              top: 200,
-              left: 0,
-              right: 0,
-              fontSize: 31,
-              fontWeight: '600',
-              lineHeight: 31,
-              textAlign: 'center',
-              color: 'black',
-              letterSpacing: -0.5,
-            }}> {title}</KText>
+
+        
         </>
       ) : (
         <>
@@ -90,7 +88,10 @@ const LeftSide = (props: LeftSideProps) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <KIcon name="KazaSwapBlackYellow" style={{ width: 200, height: 150 }} />
+            <KIcon
+              name="KazaSwapBlackYellow"
+              style={{width: 70, height: 104, paddingTop: 20}}
+            />
           </Link>
           <View
             style={{
@@ -102,16 +103,21 @@ const LeftSide = (props: LeftSideProps) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-
-            <KText style={{ fontSize: 30, fontWeight: '600', lineHeight: 35, textAlign: 'center' }}>
+            <KText
+              style={{
+                fontSize: 30,
+                fontWeight: '600',
+                lineHeight: 35,
+                textAlign: 'center',
+              }}>
               Swap your place, explore the world
             </KText>
-
           </View>
         </>
       )}
     </>
-  )
-}
+  );
+};
 
-export default LeftSide
+export default LeftSide;
+

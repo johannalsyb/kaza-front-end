@@ -20,7 +20,7 @@ export {ReactComponent as logoCircle} from './logoCircle.svg';
 export {ReactComponent as logoText} from './logoText.svg';
 export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by default
 export {ReactComponent as KazaSwap} from './KazaSwap.svg'; // => Beta by default
-export {ReactComponent as KazaSwapBlackYellow} from './KazaSwap_black_and_yellow.svg'; // => Beta by default
+export {ReactComponent as KazaSwapBlackYellow} from './KazaSwap_logo_black and yellow_new.svg'; // => Beta by default
 export {ReactComponent as KazaSwapBlackWhiteYellow} from './KazaSwap_black_and_white_and_yellow.svg'; // => Beta by default
 export {ReactComponent as KazaSwapLogoBlackYellow} from './KazaSwap_logo_black_and_yellow.svg'; // => Beta by default
 // export {ReactComponent as logoText2Beta} from './logoText2Beta.svg';
