@@ -214,7 +214,7 @@ export default forwardRef<Handle, Props>(
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{
-              backgroundColor: variables.colors.greenLight,
+              backgroundColor: isMobile ? variables.colors.greenLight : variables.colors.white,
               borderTopLeftRadius: isMobile ? 0 : 20,
               borderTopRightRadius: isMobile ? 0 : 20,
             }}
@@ -325,7 +325,7 @@ export default forwardRef<Handle, Props>(
                         <View
                           style={{
                             width: variables.propertyCardWidth,
-                            height: 294,
+                            height: 325,
                             borderRadius: 10,
                             paddingVertical: 20,
                             backgroundColor: variables.colors.lightGrey,

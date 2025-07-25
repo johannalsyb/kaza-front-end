@@ -61,19 +61,6 @@ const FiltersView: React.FC<FiltersViewProps> = ({
     }
     <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
     <KButton
-      color={ffilters.swapWithWomen[0] === 'true' ? 'tertiary' : 'light'}
-      onPress={() => onFilter({ type: 'swapWithWomen' as keyof PropertyFilter, filters: ffilters.swapWithWomen[0] === 'false' ? ['true'] : ['false'] })}
-      style={{
-        flexDirection: 'row', width: isMobile ? '80%' : 'auto', paddingLeft: 5,
-        paddingRight: 5, height: 40, borderWidth: 1,
-        borderColor: variables.colors.blackLight
-      }}
-      {...(!isMobile && { icon: 'woman', iconSize: 'medium' })}
-      iconSize='medium'
-      text='Swap with women'
-    />
-    <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
-    <KButton
       color={ffilters.petsFriendlyOnly[0] === 'true' ? 'tertiary' : 'light'}
       onPress={() => onFilter({ type: 'petsFriendlyOnly' as keyof PropertyFilter, filters: ffilters.petsFriendlyOnly[0] === 'false' ? ['true'] : ['false'] })}
       style={{
@@ -84,6 +71,19 @@ const FiltersView: React.FC<FiltersViewProps> = ({
       {...(!isMobile && { icon: 'pet', iconSize: 'medium' })}
       iconSize='medium'
       text='Pet Friendly'
+    />
+    <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
+    <KButton
+      color={ffilters.swapWithWomen[0] === 'true' ? 'tertiary' : 'light'}
+      onPress={() => onFilter({ type: 'swapWithWomen' as keyof PropertyFilter, filters: ffilters.swapWithWomen[0] === 'false' ? ['true'] : ['false'] })}
+      style={{
+        flexDirection: 'row', width: isMobile ? '80%' : 'auto', paddingLeft: 5,
+        paddingRight: 5, height: 40, borderWidth: 1,
+        borderColor: variables.colors.blackLight
+      }}
+      {...(!isMobile && { icon: 'woman', iconSize: 'medium' })}
+      iconSize='medium'
+      text='Swap with women'
     />
     <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} />
     {!isMobile && <KButton
@@ -98,7 +98,6 @@ const FiltersView: React.FC<FiltersViewProps> = ({
       iconSize='medium'
       text='Suitable for children'
     />}
-    {/* <View style={{ margin: 5, display: isMobile ? 'flex' : 'none' }} /> */}
   </>
 )
 
