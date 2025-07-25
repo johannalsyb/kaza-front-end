@@ -28,17 +28,18 @@ const DesktopDatePicker = ({
       <TouchableOpacity
         onPress={() => setIsCalendarOpen(prev => !prev)}
         style={{
+          minWidth: 290,
           borderWidth: 1,
-          borderColor: variables.colors.borderGray,
-          borderRadius: 30,
           display: 'flex',
+          borderRadius: 30,
+          alignSelf: 'center',
           flexDirection: 'row',
-          justifyContent: 'center',
           alignItems: 'center',
           paddingVertical: 4.2,
           paddingHorizontal: 20,
-          alignSelf: 'center',
-          minWidth: 290
+          justifyContent: 'center',
+          backgroundColor: variables.colors.white,
+          borderColor: variables.colors.borderGray,
         }}
       >
         <View
