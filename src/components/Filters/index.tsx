@@ -84,20 +84,19 @@ const Filters = forwardRef<Handle, Props>(({
 
   const nbFilters = (ffilters: PropertyFilter) => {
     let nb = 0
-    if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
+    // if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
     if (ffilters["petsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["kidsFriendlyOnly"][0] !== "false") nb++
     if (ffilters["swapWithWomen"][0] !== "false") nb++
-    if (ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
-    if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
-    if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
+    // if (ffilters["bedrooms"].length !== nbBedroomFilters.length) nb++
+    // if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
+    // if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
     if (search.length) nb++
     return nb
   }
 
   const clearFilters = () => {
-    console.log("clearFilters runs")
-
+    setModalVisible(false)
     const clearedStart = null
     const clearedEnd = null
 
@@ -178,7 +177,7 @@ const Filters = forwardRef<Handle, Props>(({
       <KIcon
         name="clearAll"
         size="small"
-        // style={{opacity: 0.5 }}
+      // style={{opacity: 0.5 }}
       />
       <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 12, fontWeight: '500' }}>Clear all filters</Text>
     </Pressable>

@@ -517,13 +517,13 @@ const styles = StyleSheet.create({
     backgroundColor: variables.colors.yellow,
     height: 'auto',
     width: 'auto',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 8.5,
+    paddingHorizontal: 11,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 10,
+    marginLeft: 14,
     borderRadius: 20,
   }
 })
