@@ -195,6 +195,33 @@ const Filters = forwardRef<Handle, Props>(({
     />
   )
 
+  interface Props {
+    date: Date | null
+    placeholder?: string
+    fontSize?: number
+  }
+  
+  const FormattedDateWithFadedYear: React.FC<Props> = ({
+    date,
+    placeholder = 'Select Date',
+    fontSize = 14,
+  }) => {
+    if (!date) {
+      return <Text style={{ fontSize, opacity: 0.5 }}>{placeholder}</Text>
+    }
+  
+    const month = date.toLocaleDateString('en-US', { month: 'short' })
+    const day = date.toLocaleDateString('en-US', { day: 'numeric' })
+    const year = date.getFullYear()
+  
+    return (
+      <Text style={{ fontSize }}>
+        {month} {day},{' '}
+        <Text style={{ opacity: 0.5 }}>{year}</Text>
+      </Text>
+    )
+  }
+
   return (
     <SubHeader style={{ paddingVertical: 18, paddingHorizontal: isMobile ? 14 : 30 }}>
       <View style={{ flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined }}>
@@ -311,14 +338,14 @@ const Filters = forwardRef<Handle, Props>(({
               styles.lightCircle,
               { marginLeft: 2.5, marginRight: 2.5 },
               {
-                backgroundColor: variables.colors.black,
+                backgroundColor: showDateModal ? variables.colors.black : variables.colors.white,
                 borderColor: variables.colors.white,
               },
             ]}
             onPress={() => setShowDateModal(true)}
           >
             <KIcon
-              name="calendarWhite"
+              name={showDateModal ? "calendarWhite" : "calendar"}
               size="large"
               style={{ stroke: "white" }}
             />
@@ -332,7 +359,19 @@ const Filters = forwardRef<Handle, Props>(({
               style={{ backgroundColor: variables.colors.white }}
             >
               <View style={{ flex: 1, width: '100%' }}>
-                <Text style={{ paddingHorizontal: 24, marginBottom: 4, fontSize: 13, fontWeight: '500', fontFamily: 'Plus Jakarta Sans', color: variables.colors.black }}>Select the dates</Text>
+                <Text
+                  style={{
+                    paddingHorizontal: 24,
+                    marginBottom: 4,
+                    fontSize: 13,
+                    fontWeight: '500',
+                    fontFamily: 'Plus Jakarta Sans',
+                    color: variables.colors.black, 
+                    opacity: 0.5
+                  }}
+                >
+                  Select the dates
+                </Text>
                 <TouchableOpacity
                   style={{
                     borderWidth: 1,
@@ -350,25 +389,18 @@ const Filters = forwardRef<Handle, Props>(({
                 >
                   <View
                     style={{
-                      display: 'flex',
                       flex: 1,
+                      gap: 10,
+                      display: 'flex',
                       flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      justifyContent: 'flex-start',
                       alignItems: 'center',
                       paddingLeft: 20,
                     }}
                   >
-                    <Text style={{ fontSize: 14, opacity: 0.5 }}>
-                      {startDate
-                        ? startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                        : 'Start Date'}
-                    </Text>
+                    <FormattedDateWithFadedYear date={startDate} placeholder="Start Date" fontSize={16} />
                     <Text style={{ fontSize: 14, opacity: 0.5 }}>-</Text>
-                    <Text style={{ fontSize: 14, opacity: 0.5 }}>
-                      {endDate
-                        ? endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                        : 'End Date'}
-                    </Text>
+                    <FormattedDateWithFadedYear date={endDate} placeholder="End Date" fontSize={16} />
                   </View>
                   <KIcon name={'down'} size={30} style={{ opacity: 0.5 }} />
                 </TouchableOpacity>

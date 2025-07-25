@@ -66,11 +66,9 @@ const KModal = ({
           style={[styles.modalOverlay]}
           onPress={() => setVisibility(false)}></TouchableOpacity>
         <Animated.View
-          // ref={ref}
           style={[
             isMobile ? styles.modalViewMobile : styles.modalView,
             {
-              maxHeight: height - 80,
               transform: [{ translateY }],
             },
             style
@@ -120,7 +118,7 @@ const KModal = ({
               />
               <KButton
                 onPress={() => setVisibility(false)}
-                text='Confirm'
+                text={title === 'Filters' ? 'Cancel' : 'Confirm'}
               />
             </View>}
         </Animated.View>
@@ -170,11 +168,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: '80%',
     maxWidth: 480,
   },
   header: {
-    // flex: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -197,5 +193,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 20,
+    marginTop: 30,
+    marginBottom: 10,
   }
 })

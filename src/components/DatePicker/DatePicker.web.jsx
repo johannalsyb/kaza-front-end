@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import KIcon from '../KIcon/KIcon'
@@ -28,58 +28,78 @@ const CustomDatePicker = ({
   const { form } = variables
   const [startDate, endDate] = dateRange
 
-  useEffect(() => {
-    setOpen(isOpen)
-  }, [isOpen])
+useEffect(() => {
+  setOpen(isOpen)
+}, [isOpen])
 
-  useEffect(() => {
-    if (isMobile && (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1])) {
-      setDateRange([externalStartDate, externalEndDate])
-    }
-  }, [externalStartDate, externalEndDate])
-
-  const formatDate = (date) => {
-    if (!date) return ''
-    const month = date.toLocaleString('en-US', { month: 'short' })
-    const day = date.toLocaleString('en-US', { day: '2-digit' })
-    const year = date.getFullYear()
-    return `${month} ${day}, ${year}`
+useEffect(() => {
+  if (isMobile && (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1])) {
+    setDateRange([externalStartDate, externalEndDate])
   }
+}, [externalStartDate, externalEndDate])
 
-  // Handlers
-  const handleRangeDateChange = (range) => {
-    const [start, end] = range
-    setDateRange(range)
-    onRangeSelected?.(start, end)
-  }
+const formatDate = (date) => {
+  if (!date) return ''
+  const month = date.toLocaleString('en-US', { month: 'short' })
+  const day = date.toLocaleString('en-US', { day: '2-digit' })
+  const year = date.getFullYear()
+  return `${month} ${day}, ${year}`
+}
 
-  return (
-    <View>
-      {open && (
-        <View
-          style={[
-            styles.webPickerContainer,
-            isMobile && { position: 'relative', width: '100%' }
-          ]}
-        >
-          <ReactDatePicker
-              selectsRange
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(update) => {
-                handleRangeDateChange(update)
-              }}
-              inline
-              dateFormat="dd/MM/yyyy"
-              calendarClassName="my-custom-calendar"
-              dayClassName={(d) => d.getDay() === 0 ? 'sunday' : undefined}
-              calendarContainer={(props) => <CustomContainer {...props} isMobile={isMobile} />}
-              minDate={new Date()}
-            />
-        </View>
-      )}
-    </View>
-  )
+// Handlers
+const handleRangeDateChange = (range) => {
+  const [start, end] = range
+  setDateRange(range)
+  onRangeSelected?.(start, end)
+}
+
+return (
+  <View>
+    {open && (
+      <View
+        style={[
+          styles.webPickerContainer,
+          isMobile && { position: 'relative', width: '100%' }
+        ]}
+      >
+        <ReactDatePicker
+          selectsRange
+          startDate={startDate}
+          endDate={endDate}
+          onChange={(update) => {
+            handleRangeDateChange(update)
+          }}
+          inline
+          dateFormat="dd/MM/yyyy"
+          showOutsideDays={false}
+          calendarClassName="my-custom-calendar"
+          dayClassName={(d) => d.getDay() === 0 ? 'sunday' : undefined}
+          calendarContainer={(props) => <CustomContainer {...props} isMobile={isMobile} />}
+          minDate={new Date()}
+          renderCustomHeader={({
+            date,
+            decreaseMonth,
+            increaseMonth,
+            prevMonthButtonDisabled,
+            nextMonthButtonDisabled,
+          }) => (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+              <TouchableOpacity onPress={decreaseMonth} disabled={prevMonthButtonDisabled} style={styles.navButton}>
+                <KIcon name="chevronLeft" size="large" />
+              </TouchableOpacity>
+              <span style={styles.monthText}>
+                {date.toLocaleString('default', { month: 'long' })} {date.getFullYear()}
+              </span>
+              <TouchableOpacity onPress={increaseMonth} disabled={nextMonthButtonDisabled} style={styles.navButton}>
+                <KIcon name="chevronRight" size="large" />
+              </TouchableOpacity>
+            </div>
+          )}
+        />
+      </View>
+    )}
+  </View>
+)
 }
 
 const styles = StyleSheet.create({
@@ -114,6 +134,13 @@ const styles = StyleSheet.create({
   },
   customContainerMobile: {
     border: 'none',
+  },
+  navButton: {
+    backgroundColor: variables.colors.greenLight,
+    border: 'none',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    padding: 4,
   },
 })
 
