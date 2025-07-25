@@ -84,19 +84,33 @@ const Filters = forwardRef<Handle, Props>(({
 
   const nbFilters = (ffilters: PropertyFilter, isMobile: boolean) => {
     let nb = 0
-    // if (ffilters["placeType"].length !== placeTypeFilters.length) nb++
-    if (ffilters["petsFriendlyOnly"][0] !== "false") nb++
-    if (ffilters["kidsFriendlyOnly"][0] !== "false") nb++
-    if (ffilters["swapWithWomen"][0] !== "false") nb++
-    if (isMobile) {
-      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length) && isMobile) {
-        nb += ffilters["bedrooms"].length
-      }
+    let showClearButton = false
+    if (ffilters["placeType"].length !== placeTypeFilters.length) {
+      showClearButton = true
     }
-    // if (ffilters["startDate"] && ffilters["startDate"][0]) nb++
-    // if (ffilters["endDate"] && ffilters["endDate"][0]) nb++
-    // if (search.length) nb++
-    return nb
+    if (ffilters["petsFriendlyOnly"][0] !== "false") {
+      nb++
+      showClearButton = true
+    }
+    if (ffilters["kidsFriendlyOnly"][0] !== "false") {
+      nb++
+      showClearButton = true
+    }
+    if (ffilters["swapWithWomen"][0] !== "false") {
+      nb++
+      showClearButton = true
+    }
+    
+      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length)) {
+        if (isMobile) {
+          nb += ffilters["bedrooms"].length
+        }
+        if(ffilters["bedrooms"].length) showClearButton = true
+    }
+    if (ffilters["startDate"] && ffilters["startDate"][0]) showClearButton = true
+    if (ffilters["endDate"] && ffilters["endDate"][0]) showClearButton = true
+    if (search.length) showClearButton = true
+    return { nb, showClearButton }
   }
 
   const clearFilters = () => {
@@ -123,7 +137,8 @@ const Filters = forwardRef<Handle, Props>(({
     brFilterRef.current?.setSelectedItems(["any"])
   }
 
-  const filterCount = nbFilters(filters, isMobile)
+  const { nb, showClearButton } = nbFilters(filters, isMobile)
+  const filterCount = nb
 
   const flatTypeView = <Dropdown
     ref={flatFilterRef}
@@ -159,7 +174,7 @@ const Filters = forwardRef<Handle, Props>(({
         },
       ]}
       onPress={clearFilters}
-      disabled={filterCount === 0}
+      disabled={!showClearButton}
     >
       <KIcon
         name="crossCircle"
@@ -174,7 +189,7 @@ const Filters = forwardRef<Handle, Props>(({
     <Pressable
       style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}
       onPress={clearFilters}
-      disabled={filterCount === 0}
+      disabled={!showClearButton}
     >
       <KIcon
         name="clearAll"
@@ -281,7 +296,7 @@ const Filters = forwardRef<Handle, Props>(({
               </View>
             </Pressable>
             {flatTypeView}
-            {filterCount > 0 ? clearFiltersView() : null}
+            {showClearButton ? clearFiltersView() : null}
             <KModalWeb
               isMobile={isMobile}
               clearFilters={clearFilters}
@@ -312,7 +327,7 @@ const Filters = forwardRef<Handle, Props>(({
         width: "auto",
         justifyContent: "flex-end"
       }}>
-        {!isMobile && filterCount > 0 && clearFiltersView()}
+        {!isMobile && showClearButton && clearFiltersView()}
         {!isMobile && flatTypeView}
         {!isMobile && <Dropdown
           // multiple={true}
