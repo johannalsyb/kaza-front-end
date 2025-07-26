@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     paddingVertical: 0,
     paddingLeft: 20,
+    color:'#808080'
   },
   containerPhone: {
     flex: 1,

@@ -62,6 +62,7 @@ const variables = {
       paddingLeft: 35,
       fontSize: 15,
       lineHeight: 15,
+      
     },
   },
   button: {

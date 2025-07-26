@@ -281,6 +281,7 @@ export default (props: Props) => {
             flex: isMobile ? undefined : 1,
             backgroundColor: variables.colors.greenLight,
           }}>
+            
           {isMobile && (
             <StepView
               number={onboardingSteps.length}
@@ -344,7 +345,7 @@ export default (props: Props) => {
                 onPress={() => {
                   Linking.openURL('/')
                 }}>
-                <KIcon name="KazaSwapLogoBlackYellow" size={120} />
+                <KIcon name="KazaSwapLogoBlackYellowNew" size={120} />
               </Pressable>
               <KText
                 style={{
@@ -359,10 +360,11 @@ export default (props: Props) => {
             </>
           )}
         </View>
+        
         <ScrollView
           contentContainerStyle={{
             marginHorizontal: 'auto',
-            marginVertical: 30,
+            marginVertical: 40,
             width: isMobile ? '100%' : 400,
             paddingHorizontal: isMobile ? 30 : 0,
             ...(Platform.OS === 'web' && typeof height === 'number'

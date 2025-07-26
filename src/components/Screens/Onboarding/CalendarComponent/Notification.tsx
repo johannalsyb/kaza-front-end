@@ -24,12 +24,12 @@ const Notification = (props: NotificationProps) => {
   const showAnimation = Animated.parallel([
     Animated.timing(translateY, {
       toValue: 0, // Піднімаємо до потрібної позиції
-      duration: 500, // 0.5 секунди на появу
+      duration: 1000, // 0.5 секунди на появу
       useNativeDriver: true,
     }),
     Animated.timing(opacity, {
       toValue: 1, // Робимо видимим
-      duration: 300,
+      duration: 1000,
       useNativeDriver: true,
     }),
     Animated.timing(zIndex, {
@@ -61,7 +61,7 @@ const Notification = (props: NotificationProps) => {
   // Запускаємо послідовність анімацій
   const sequence = Animated.sequence([
     showAnimation,
-    Animated.delay(2000), // Тримаємо 2 секунди
+    Animated.delay(7000), // Тримаємо 2 секунди
     hideAnimation,
   ])
   // useEffect(() => {
@@ -92,7 +92,8 @@ const Notification = (props: NotificationProps) => {
       position: 'absolute',
       bottom: 82,
       width: isMobile ? '100%' : 393,
-      transform: [{ translateY }],
+      transform: [{ translateY ,}],
+      
       opacity,
       left: isMobile ? 0 : '50%',
       zIndex
@@ -106,7 +107,7 @@ const Notification = (props: NotificationProps) => {
           <KText style={styles.text}>
             You will get
             <KText style={styles.credits}> {culculatedCredits} credits</KText> if someone stays at your
-            place for the whole time. Which is equal to {culculatedCredits} nights somewhere else!
+            place for the whole time. 
           </KText>
         </View>
       </View>

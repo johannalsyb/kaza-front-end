@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     width: '100%',
-    marginBottom: 15
+    marginBottom: 15,
   },
   label: {
     color: '#000',
     fontFamily: "Plus Jakarta Sans",
-    fontSize: 16,
+    fontSize: 12,
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: 13,
