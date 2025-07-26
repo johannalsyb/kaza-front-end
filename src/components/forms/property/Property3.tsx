@@ -202,7 +202,12 @@ export default (props: Props) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-        }}>
+            
+            
+        }}
+        
+        >
+            
             <KDragAndDropZone
                 onPress={() => iuRef.current?.open()}
                 style={{
@@ -210,6 +215,7 @@ export default (props: Props) => {
                     height: isMobile ? 130 : 200,
                     borderWidth: 1,
                     borderColor: variables.colors.grey,
+                    backgroundColor: variables.colors.greenLight,
                     borderStyle: "dashed",
                     borderRadius: 20,
                     display: "flex",
@@ -283,8 +289,8 @@ export default (props: Props) => {
                             width: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
                             height: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
                             borderWidth: 1,
-                            borderColor: variables.colors.greenLight,
-                            backgroundColor: variables.colors.greenLight,
+                            borderColor: variables.colors.borderGray,
+                            backgroundColor: variables.colors.white,
                             borderRadius: 20,
                             marginTop: 10,
                             display: "flex",

@@ -13,7 +13,7 @@ import KIcon from '../../KIcon/KIcon';
 import KText from '../../KText';
 import useResizeImage from '../../../hooks/useResizeImage';
 
-const TopImg = require('../../../assets/Auth/top2.webp');
+const TopImg = require('../../../assets/Auth/top.webp');
 const LeftImg = require('../../../assets/Auth/left_1920_x2.webp');
 
 interface LeftSideProps {
@@ -32,11 +32,11 @@ const LeftSide = (props: LeftSideProps) => {
         resizeMode={isMobile ? 'contain' : 'stretch'}
         style={{
           width: isMobile ? '100%' : width * 0.5,
-          height: isMobile ? 250 : height,
+          height: isMobile ? 240 : height,
           position: 'relative',
 
-          top: isMobile ? 10 : 0,
-          left: isMobile ? -15 : 0,
+          top:  isMobile ? -5:0,
+          left:  0,
           zIndex: -1,
           marginBottom: isMobile ? 24 : 0,
           borderTopRightRadius: isMobile ? 0 : 30,

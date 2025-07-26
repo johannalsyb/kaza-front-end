@@ -25,6 +25,7 @@ export default (props: Props) => {
         <FormField label="How big is your space?"
             gapAfterChildren={false}
             gapBeforeChildren={false}
+        
         >
             <KTextInput
                 leftComponent={<KIcon name="sqm2" size="medium" />}
@@ -47,6 +48,7 @@ export default (props: Props) => {
         <FormField
             labelAlign="left"
             label="How many bedroom(s)?"
+            style={{marginTop:20}}
             gapAfterChildren={false}
             gapBeforeChildren={false}
         >
@@ -62,6 +64,7 @@ export default (props: Props) => {
         <FormField
             labelAlign="left"
             label="How many beds?"
+                  style={{marginTop:20}}
             gapAfterChildren={false}
             gapBeforeChildren={false}
         >
@@ -137,7 +140,9 @@ export default (props: Props) => {
             })}
         </FormField>
 
-        <FormField labelAlign="left" label="How many bathroom(s)?">
+        <FormField labelAlign="left" label="How many bathroom(s)?"
+              style={{marginTop:20}}
+        >
             <KNumberInput
                 inputStyles={inputStyles}
                 topStyle={inputStyles}

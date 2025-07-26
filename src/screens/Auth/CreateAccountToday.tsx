@@ -28,6 +28,7 @@ import VerifyPhone from '../../components/VerifyPhone';
 import {toastSuccess} from '../../components/Toast/Toast';
 import {useSetAtom} from 'jotai';
 import {showComponentAtom} from '../../atoms';
+
 import users from '../../api/users';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 
@@ -46,7 +47,7 @@ export default (props: any) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<RegisterFormError>({})
+  
   useEffect(() => {
     authentication.check();
   }, []);
@@ -180,7 +181,7 @@ export default (props: any) => {
               flexDirection: isMobile ? 'row' : 'row',
               justifyContent: 'space-between',
               width: '100%',
-              gap: isMobile ? 10 : 20,
+              gap: isMobile ? 14 : 40,
             }}>
             <FormField
               labelAlign="left"
@@ -220,6 +221,7 @@ export default (props: any) => {
             </FormField>
             <FormField
               labelAlign="left"
+              
               label={isMobile ? undefined : 'Surname'}
               gapBeforeChildren={false}
               gapAfterChildren={false}
@@ -378,7 +380,7 @@ export default (props: any) => {
               alignItems: 'center',
               width: '100%',
               maxWidth: isMobile ? '85%' : 274,
-              gap: isMobile ? 18 : 32,
+              gap: isMobile ? 26 : 38,
             }}>
             <KButton
               text="Create account"
@@ -387,6 +389,9 @@ export default (props: any) => {
 
                 marginTop: isMobile ? 9 : 10,
                 borderColor: `1px solid ${variables.colors.borderGray}`,
+              }}
+              textStyle={{
+                fontWeight: '600',
               }}
               onPress={handleSubmit(createAccount)}
               disabled={loading}
@@ -432,7 +437,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    
+
     flex: 1,
     maxWidth: 400,
     width: '100%',
