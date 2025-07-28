@@ -41,10 +41,7 @@ const photoStyle: CSSProperties = {
   objectFit: 'cover',
 }
 
-// const cardWidth = 466
 const cardHeight = 466
-// const imageHeight = 300
-// const avatarHeight = 50
 
 export const PropertyCard = ({
   avatar = '',
@@ -236,19 +233,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     maxHeight: 250,
+    // maxWidth: 290,
     height: '100%',
   },
   infoContainer: {
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
     paddingHorizontal: 10,
-    position: 'absolute',
+    // position: 'absolute',
     marginBottom: 10,
-    bottom: 0,
+    // bottom: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     width: '100%',
-
   },
   infoTopContainer: {
     display: 'flex',
@@ -265,6 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     paddingTop: 0,
+    minHeight:'auto'
   },
   avatarContainer: {
     position: 'absolute',

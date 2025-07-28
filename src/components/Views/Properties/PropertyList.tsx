@@ -331,15 +331,16 @@ export default forwardRef<Handle, Props>(
                     return Array.from({ length: placeholders }).map((_, i) => (
                       <View
                         key={`shimmer-${i}`}
-                        style={{ paddingVertical: 20 }}
+                        style={{ padding: 20 }}
                       >
                         <View
                           style={{
                             width: variables.propertyCardWidth,
-                            height: 325,
+                            height: 308,
+                            maxWidth: 315,
                             borderRadius: 10,
                             paddingVertical: 20,
-                            backgroundColor: variables.colors.lightGrey,
+                            backgroundColor: variables.colors.white,
                             marginHorizontal: isMobile ? 0 : 20,
                           }}
                         />

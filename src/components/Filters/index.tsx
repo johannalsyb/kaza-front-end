@@ -279,7 +279,7 @@ const Filters = forwardRef<Handle, Props>(({
               onPress={() => setShowFilterModal(true)}>
               <KIcon
                 name="filters"
-                size="xxlarge"
+                size="large"
                 style={{ stroke: showFilterModal || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
@@ -451,7 +451,7 @@ const Filters = forwardRef<Handle, Props>(({
                 { height: isMobile ? 45 : 40, width: isMobile ? 45 : 40 }, 
                 { marginLeft: 2.5, marginRight: 2.5 },
                 {
-                  backgroundColor: variables.colors.black,
+                  backgroundColor: modalVisible || filterCount ? variables.colors.black : variables.colors.white,
                   borderColor: isMobile ? !showMap ? variables.colors.black : "white" : variables.colors.black,
                 },
               ]}
@@ -461,7 +461,7 @@ const Filters = forwardRef<Handle, Props>(({
               <KIcon
                 name="filters"
                 size="large"
-                style={{ stroke: "white" }}
+                style={{ stroke: modalVisible || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
                 position: "absolute",
