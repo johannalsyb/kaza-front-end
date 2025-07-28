@@ -55,7 +55,7 @@ export type PropertyFilter = {
 }
 
 const defaultFilters: PropertyFilter = {
-  bedrooms: nbBedroomFilters,
+  bedrooms: [],
   petsFriendlyOnly: ['false'],
   kidsFriendlyOnly: ['false'],
   swapWithWomen: ['false'],
@@ -88,6 +88,8 @@ export default forwardRef<Handle, Props>(
 
     const { config, overlay } = useConfig()
 
+    const isInFavourites = navigation.getState().routes[navigation.getState().index].name === 'Favourites'
+
     const filtersRef = useRef<Handle>(null)
     useImperativeHandle(ref, () => ({
       setSearch: (search: string) => {
@@ -112,6 +114,15 @@ export default forwardRef<Handle, Props>(
         setTimeout(() => setShowMap(true), 0)
       }
     }, [filters])
+
+    useEffect(() => {
+      if (isMobile) {
+        setFilters(prev => ({
+          ...prev,
+          bedrooms: [],
+        }))
+      }
+    }, [isMobile])
 
     const propertiesFiltered =
       properties?.filter(p => {
@@ -173,7 +184,7 @@ export default forwardRef<Handle, Props>(
     return (
       <>
         <View style={{ backgroundColor: 'black', zIndex: 1 }}>
-          <Filters
+          {!isInFavourites && <Filters
             ref={filtersRef}
             showSearchBar={showSearchBar}
             filters={filters}
@@ -191,7 +202,7 @@ export default forwardRef<Handle, Props>(
               filtersRef.current?.setSearch('')
               filtersRef.current?.clearFilters()
             }}
-          />
+          />}
         </View>
         {showMap ? (
           <MapView
@@ -320,15 +331,16 @@ export default forwardRef<Handle, Props>(
                     return Array.from({ length: placeholders }).map((_, i) => (
                       <View
                         key={`shimmer-${i}`}
-                        style={{ paddingVertical: 20 }}
+                        style={{ padding: 20 }}
                       >
                         <View
                           style={{
                             width: variables.propertyCardWidth,
-                            height: 325,
+                            height: 308,
+                            maxWidth: 315,
                             borderRadius: 10,
                             paddingVertical: 20,
-                            backgroundColor: variables.colors.lightGrey,
+                            backgroundColor: variables.colors.white,
                             marginHorizontal: isMobile ? 0 : 20,
                           }}
                         />
@@ -362,7 +374,7 @@ export default forwardRef<Handle, Props>(
                   )}
                 </>
               ) : (
-                <View style={{ width: '100%' }}>{emptyListView}</View>
+                <View style={{ width: '100%', }}>{emptyListView}</View>
               )}
               {Array.from(
                 {

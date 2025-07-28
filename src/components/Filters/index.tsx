@@ -100,12 +100,12 @@ const Filters = forwardRef<Handle, Props>(({
       nb++
       showClearButton = true
     }
-    
-      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length)) {
-        if (isMobile) {
-          nb += ffilters["bedrooms"].length
-        }
-        if(ffilters["bedrooms"].length) showClearButton = true
+
+    if ((ffilters["bedrooms"].length !== nbBedroomFilters.length)) {
+      if (isMobile) {
+        nb += ffilters["bedrooms"].length
+      }
+      if (ffilters["bedrooms"].length) showClearButton = true
     }
     if (ffilters["startDate"] && ffilters["startDate"][0]) showClearButton = true
     if (ffilters["endDate"] && ffilters["endDate"][0]) showClearButton = true
@@ -149,7 +149,7 @@ const Filters = forwardRef<Handle, Props>(({
       // width: isMobile ? "50%" : "auto",
       // width: "100%",
       flex: 1,
-      height: 40,
+      height: isMobile ? 45 : 40,
       zIndex: 2,
       marginLeft: isMobile ? 10 : 0,
     }}
@@ -167,6 +167,8 @@ const Filters = forwardRef<Handle, Props>(({
       style={[
         styles.lightCircle,
         {
+          height: isMobile ? 45 : 40, 
+          width: isMobile ? 45 : 40,
           marginLeft: isMobile ? 8.5 : 10,
           marginRight: 2.5,
           backgroundColor: variables.colors.orange,
@@ -271,14 +273,14 @@ const Filters = forwardRef<Handle, Props>(({
             <Pressable
               style={[
                 styles.lightCircle,
-                { marginLeft: 2.5, marginRight: 2.5 },
-                { backgroundColor: variables.colors.black },
+                { marginLeft: 2.5, marginRight: 2.5, borderWidth: 0, height: isMobile ? 45 : 40, width: isMobile ? 45 : 40 },
+                { backgroundColor: showFilterModal || filterCount ? variables.colors.black : variables.colors.white },
               ]}
               onPress={() => setShowFilterModal(true)}>
               <KIcon
                 name="filters"
                 size="large"
-                style={{ stroke: "white" }}
+                style={{ stroke: showFilterModal || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
                 position: "absolute",
@@ -353,7 +355,7 @@ const Filters = forwardRef<Handle, Props>(({
           <Pressable
             style={[
               styles.lightCircle,
-              { marginLeft: 2.5, marginRight: 2.5 },
+              { marginLeft: 2.5, marginRight: 2.5, height: 45, width: 45 },
               {
                 backgroundColor: showDateModal ? variables.colors.black : variables.colors.white,
                 borderColor: variables.colors.white,
@@ -363,7 +365,7 @@ const Filters = forwardRef<Handle, Props>(({
           >
             <KIcon
               name={showDateModal ? "calendarWhite" : "calendar"}
-              size="large"
+              size="xxlarge"
               style={{ stroke: "white" }}
             />
             <KModalWeb
@@ -446,9 +448,10 @@ const Filters = forwardRef<Handle, Props>(({
             <Pressable
               style={[
                 styles.lightCircle,
+                { height: isMobile ? 45 : 40, width: isMobile ? 45 : 40 }, 
                 { marginLeft: 2.5, marginRight: 2.5 },
                 {
-                  backgroundColor: variables.colors.black,
+                  backgroundColor: modalVisible || filterCount ? variables.colors.black : variables.colors.white,
                   borderColor: isMobile ? !showMap ? variables.colors.black : "white" : variables.colors.black,
                 },
               ]}
@@ -458,7 +461,7 @@ const Filters = forwardRef<Handle, Props>(({
               <KIcon
                 name="filters"
                 size="large"
-                style={{ stroke: "white" }}
+                style={{ stroke: modalVisible || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
                 position: "absolute",
@@ -501,8 +504,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 50,
     padding: 10,
-    height: 40,
-    width: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },

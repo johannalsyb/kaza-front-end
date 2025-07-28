@@ -41,10 +41,7 @@ const photoStyle: CSSProperties = {
   objectFit: 'cover',
 }
 
-// const cardWidth = 466
 const cardHeight = 466
-// const imageHeight = 300
-// const avatarHeight = 50
 
 export const PropertyCard = ({
   avatar = '',
@@ -87,7 +84,7 @@ export const PropertyCard = ({
           marginBottom: 18
         },
         // @ts-ignore
-        isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
+        // isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
         !isDetails && { maxHeight: 325, height: '100%' }
       ]}>
@@ -118,7 +115,7 @@ export const PropertyCard = ({
       <View style={[styles.infoContainer]}>
         <View style={styles.infoTopContainer}>
           <KText style={{ fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
-          <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color='greenLight' style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10 }} />
+          <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
         </View>
         <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
           <KText
@@ -134,27 +131,13 @@ export const PropertyCard = ({
               size="medium"
               style={{ opacity: 0.5 }}
             />
-
-            {swapFor ? (
-              swapForText?.map((s, i) => (
-                <KText
-                  style={{
-                    paddingHorizontal: variables.spacing.xxsmall,
-                    fontSize: 13,
-                  }}
-                  key={`swap-for-${i}`}>
-                  {s}
-                </KText>
-              ))
-            ) : (
-              <KText
-                style={{
-                  paddingHorizontal: variables.spacing.xxsmall,
-                  fontSize: 13,
-                }}>
-                Anywhere
-              </KText>
-            )}
+            <KText
+              style={{
+                paddingHorizontal: variables.spacing.xxsmall,
+                fontSize: 13,
+              }}>
+              {property?.city}, {property?.country}
+            </KText>
           </KText>
           {!isDetails &&
             <KText
@@ -250,19 +233,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
     maxHeight: 250,
+    // maxWidth: 290,
     height: '100%',
   },
   infoContainer: {
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
     paddingHorizontal: 10,
-    position: 'absolute',
+    // position: 'absolute',
     marginBottom: 10,
-    bottom: 0,
+    // bottom: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     width: '100%',
-
   },
   infoTopContainer: {
     display: 'flex',
@@ -279,6 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     paddingTop: 0,
+    minHeight:'auto'
   },
   avatarContainer: {
     position: 'absolute',

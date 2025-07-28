@@ -26,6 +26,7 @@ import useConfig from "../hooks/useConfig";
 import { useCloseFromOutside } from "../hooks/useCloseFromOutside";
 import ChatMenu from "../components/Views/Chats/ChatMenu";
 import MenuIcon from "../components/Header/MenuIcon";
+import Footer from "../components/Footer";
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Chats' | 'Chat'>;
 export type SwapRequestChat = {
@@ -533,6 +534,7 @@ export default ({
 
                 </>}
             </View>
+            <Footer route={navigation.getState().routes[0].name} />
             {/* } */}
         {isMobile && !request ? <Menu navigate={navigation.navigate}/> : null}
         {isMobile && user && request ? <KSideModal visible={showContractModal} onClose={() => setShowContractModal(false)}>

@@ -22,7 +22,6 @@ const FiltersModal = ({ visible, onClose, filterView, clearButton }) => {
         style={styles.overlay}
         onPress={onClose}
       />
-
       <View
         style={[
           styles.container,
@@ -88,5 +87,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     zIndex: 11,
   }
-  
+
 })

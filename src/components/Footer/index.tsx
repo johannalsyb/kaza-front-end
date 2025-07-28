@@ -18,7 +18,7 @@ export default ({ route }: Props) => {
   return (
 
     <View style={styles.container}>
-      <View style={[styles.upperContainer, { paddingHorizontal: isMobile ? 5 : 20 }]}>
+      {/* <View style={[styles.upperContainer, { paddingHorizontal: isMobile ? 5 : 20 }]}>
         <View style={{ flex: 1 }}>
           <KIcon
             name="logoBlack"
@@ -37,7 +37,7 @@ export default ({ route }: Props) => {
         <View style={styles.communityEmailText}>
           <KText onPress={() => Linking.openURL(`mailto:${config?.emails.community}`)}>{config?.emails.community || ""}</KText>
         </View>
-      </View>
+      </View> */}
       <View style={styles.bottomContainer}>
         <KText style={styles.bottomText}>© 2023 Kaza Swap LLC. All rights reserved.</KText>
         <KText style={styles.bottomText}>30 N Gould St, Sheridan, WY 82801</KText>
@@ -48,12 +48,12 @@ export default ({ route }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    // display: 'flex',
+    // flexDirection: 'column',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
     width: '100%',
-    backgroundColor: variables.colors.greenLight,
+    // backgroundColor: variables.colors.greenLight,
   },
   upperContainer: {
     display: 'flex',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 75,
+    // marginTop: 75,
     paddingVertical: 16,
     paddingHorizontal: 30,
     borderTopLeftRadius: 23,
