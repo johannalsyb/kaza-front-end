@@ -54,6 +54,7 @@ export default ({ route, navigation }: Props) => {
         display: 'flex',
         justifyContent: "center",
         alignItems: "center",
+        padding: 110,
       }}>
         <KIcon name="fav" size="xxlarge" style={{
           stroke: "black",

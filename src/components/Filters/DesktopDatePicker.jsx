@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import KIcon from '../KIcon/KIcon'
 import DatePicker from '../DatePicker'
@@ -14,6 +14,29 @@ const DesktopDatePicker = ({
   setEndDate,
   onFilter
 }) => {
+  const calendarRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target)
+      ) {
+        setIsCalendarOpen(false)
+      }
+    }
+
+    if (isCalendarOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isCalendarOpen])
+
   return (
     <View
       style={{
@@ -66,25 +89,28 @@ const DesktopDatePicker = ({
         </View>
         <KIcon name={'down'} size={30} style={{ opacity: 0.5 }} />
       </TouchableOpacity>
-      <View style={{ position: 'absolute', top: 42, left: 0, zIndex: 100 }}>
-        <DatePicker
-          isOpen={isCalendarOpen}
-          isMobile={isMobile}
-          startDate={startDate}
-          endDate={endDate}
-          onRangeSelected={(start, end) => {
-            setStartDate(start)
-            setEndDate(end)
-            if (start) {
-              onFilter({ type: 'startDate', filters: [start.toISOString()] })
-            }
-            if (end) {
-              onFilter({ type: 'endDate', filters: [end.toISOString()] })
-              setIsCalendarOpen(false)
-            }
-          }}
-        />
-      </View>
+
+      {isCalendarOpen && (
+        <View ref={calendarRef} style={{ position: 'absolute', top: 42, left: 0, zIndex: 100 }}>
+          <DatePicker
+            isOpen={isCalendarOpen}
+            isMobile={isMobile}
+            startDate={startDate}
+            endDate={endDate}
+            onRangeSelected={(start, end) => {
+              setStartDate(start)
+              setEndDate(end)
+              if (start) {
+                onFilter({ type: 'startDate', filters: [start.toISOString()] })
+              }
+              if (end) {
+                onFilter({ type: 'endDate', filters: [end.toISOString()] })
+                setIsCalendarOpen(false)
+              }
+            }}
+          />
+        </View>
+      )}
     </View>
   )
 }

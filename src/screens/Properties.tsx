@@ -93,7 +93,6 @@ export default ({ route, navigation }: Props) => {
         emptyListView={
           <View
             style={{
-              backgroundColor: variables.colors.greenLight,
               flex: 1,
               display: 'flex',
               justifyContent: 'center',

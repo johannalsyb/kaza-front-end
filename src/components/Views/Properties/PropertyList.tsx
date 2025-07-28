@@ -373,7 +373,7 @@ export default forwardRef<Handle, Props>(
                   )}
                 </>
               ) : (
-                <View style={{ width: '100%', paddingVertical: '10%' }}>{emptyListView}</View>
+                <View style={{ width: '100%', }}>{emptyListView}</View>
               )}
               {Array.from(
                 {
