@@ -115,7 +115,7 @@ export const PropertyCard = ({
       <View style={[styles.infoContainer]}>
         <View style={styles.infoTopContainer}>
           <KText style={{ fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
-          <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color='greenLight' style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10 }} />
+          <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
         </View>
         <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
           <KText

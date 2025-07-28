@@ -169,7 +169,8 @@ export default (
           {
             width: isMobile ? '100%' : 400,
             maxHeight: isMobile ? 'auto' : 400,
-            top: isMobile ? 0 : 65,
+            top: isMobile ? 0 : 75,
+            right: isMobile ? 0 : 72,
           },
           { display: notificationsVisible ? undefined : 'none' },
         ]}>
@@ -406,7 +407,7 @@ export default (
                       <View
                         style={[
                           styles.triangle,
-                          { right: 15, position: 'absolute' },
+                          { right: 30, position: 'absolute' },
                         ]}
                       />
                       {menu.map(m => menuItemView(m.icon, m.text, m.onPress))}
@@ -483,7 +484,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     width: 200,
-    right: 0,
+    right: 58,
     boxShadow: '15px 15px 55px 0px rgba(77, 75, 63, 0.25)',
   },
   triangle: {
