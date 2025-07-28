@@ -134,27 +134,13 @@ export const PropertyCard = ({
               size="medium"
               style={{ opacity: 0.5 }}
             />
-
-            {swapFor ? (
-              swapForText?.map((s, i) => (
-                <KText
-                  style={{
-                    paddingHorizontal: variables.spacing.xxsmall,
-                    fontSize: 13,
-                  }}
-                  key={`swap-for-${i}`}>
-                  {s}
-                </KText>
-              ))
-            ) : (
-              <KText
-                style={{
-                  paddingHorizontal: variables.spacing.xxsmall,
-                  fontSize: 13,
-                }}>
-                Anywhere
-              </KText>
-            )}
+            <KText
+              style={{
+                paddingHorizontal: variables.spacing.xxsmall,
+                fontSize: 13,
+              }}>
+              {property?.city}, {property?.country}
+            </KText>
           </KText>
           {!isDetails &&
             <KText
