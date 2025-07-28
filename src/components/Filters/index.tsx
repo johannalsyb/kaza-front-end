@@ -100,12 +100,12 @@ const Filters = forwardRef<Handle, Props>(({
       nb++
       showClearButton = true
     }
-    
-      if ((ffilters["bedrooms"].length !== nbBedroomFilters.length)) {
-        if (isMobile) {
-          nb += ffilters["bedrooms"].length
-        }
-        if(ffilters["bedrooms"].length) showClearButton = true
+
+    if ((ffilters["bedrooms"].length !== nbBedroomFilters.length)) {
+      if (isMobile) {
+        nb += ffilters["bedrooms"].length
+      }
+      if (ffilters["bedrooms"].length) showClearButton = true
     }
     if (ffilters["startDate"] && ffilters["startDate"][0]) showClearButton = true
     if (ffilters["endDate"] && ffilters["endDate"][0]) showClearButton = true
@@ -271,14 +271,14 @@ const Filters = forwardRef<Handle, Props>(({
             <Pressable
               style={[
                 styles.lightCircle,
-                { marginLeft: 2.5, marginRight: 2.5 },
-                { backgroundColor: variables.colors.black },
+                { marginLeft: 2.5, marginRight: 2.5, borderWidth: 0 },
+                { backgroundColor: showFilterModal || filterCount ? variables.colors.black : variables.colors.white },
               ]}
               onPress={() => setShowFilterModal(true)}>
               <KIcon
                 name="filters"
                 size="large"
-                style={{ stroke: "white" }}
+                style={{ stroke: showFilterModal || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
                 position: "absolute",
