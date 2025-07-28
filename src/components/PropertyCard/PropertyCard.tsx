@@ -87,7 +87,7 @@ export const PropertyCard = ({
           marginBottom: 18
         },
         // @ts-ignore
-        isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
+        // isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
         !isDetails && { maxHeight: 325, height: '100%' }
       ]}>

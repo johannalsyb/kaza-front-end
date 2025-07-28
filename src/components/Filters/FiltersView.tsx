@@ -44,7 +44,6 @@ const FiltersView: React.FC<FiltersViewProps> = ({
                 const newFilters = isSelected
                   ? ffilters.bedrooms.filter((br: string) => br !== label)
                   : [...ffilters.bedrooms, label]
-
                 onFilter({ type: 'bedrooms', filters: newFilters })
               }}
               style={{
