@@ -25,6 +25,7 @@ import Dropdown from './Dropdown';
 import {useCloseFromOutside} from '../../../hooks/useCloseFromOutside';
 import {back} from '../../KIcon/icons';
 import ModalList from './ModalList';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const inputStyles: TextStyle = {
   textAlign: 'left',
@@ -131,18 +132,18 @@ const styles = StyleSheet.create({
   },
   input: {
    
-    opacity: 0.6,
+    borderRadius:20,
     fontSize: 16,
     height: 44,
     textAlign: 'left',
     paddingVertical: 0,
     paddingLeft: 20,
-    color:'#808080'
+    color:variables.colors.black
   },
   containerPhone: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: 20,
+    paddingRight: 0,
     
     borderColor: 'none',
 
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   containerPhoneMobileView: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: 20,
+    paddingRight: 0,
     borderWidth: 1,
     borderColor: variables.colors.xLightGray,
     borderRadius: 23,
@@ -279,7 +280,7 @@ export default (props: Props) => {
             placeholder="Phone number"
             style={[
               styles.input,
-
+ 
               //@ts-ignore
               Platform.OS === 'web' ? {outlineWidth: 0} : {},
               !!props.error ? styles.formError : {},

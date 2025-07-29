@@ -61,7 +61,7 @@ const Notification = (props: NotificationProps) => {
   // Запускаємо послідовність анімацій
   const sequence = Animated.sequence([
     showAnimation,
-    Animated.delay(7000), // Тримаємо 2 секунди
+    Animated.delay(7000), // Тримаємо 7 секунди
     hideAnimation,
   ])
   // useEffect(() => {
@@ -89,13 +89,13 @@ const Notification = (props: NotificationProps) => {
 
   return (
     <Animated.View style={{
-      position: 'absolute',
-      bottom: 82,
-      width: isMobile ? '100%' : 393,
-      transform: [{ translateY ,}],
+      position: 'relative',
       
+      width:  '100%',
+      transform: [{ translateY ,}],
+      top:0,
       opacity,
-      left: isMobile ? 0 : '50%',
+      left: 0,
       zIndex
     }}>
       <View style={styles.container}>
@@ -128,8 +128,8 @@ const styles = StyleSheet.create({
     backgroundColor: variables.colors.yellow,
     paddingHorizontal: 21,
     borderRadius: 25,
-    paddingTop: 6,
-    paddingBottom: 3,
+    paddingTop: 8,
+    paddingBottom: 5,
   },
   icon: {
     borderRadius: 36,

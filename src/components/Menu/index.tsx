@@ -28,7 +28,7 @@ export default ({
     const user = auth.user;
     const route = useRoute()
     const setShowSwapNow = useSetAtom(showSwapNowAtom);
-
+ const isDefaultImage = !user?.id || user.primaryImage === user.primaryImage;
 
     if(!isMobile) return <></>
     return <View style={{
@@ -108,13 +108,17 @@ export default ({
                         thumbnail={true}
                         imageId={`${user.id}/${user.primaryImage}`}
                         type="users"
+                      source={user.primaryImage}
                         style={{
                             width: size+13,
                             height: size+13,
-                            borderWidth: 2,
-                            borderColor: 'white',
-                            borderStyle: 'solid',
+                           borderColor:isDefaultImage? variables.colors.orange:'white',
+       borderStyle: 'solid',
+        borderWidth: 2,
+                          
+                           
                         }}/>
+                        
                 </Pressable>
             </View>
                 

@@ -33,7 +33,7 @@ const ListAvailbleDates = (props: any) => {
         </KText>}
         {
           items?.length ?
-            <View style={[styles.container, { rowGap: 10, marginTop: isMobile ? 15 : 34, marginBottom: isMobile ? 20 : 160 }]}>
+            <View style={[styles.container, { rowGap: 10, marginTop: isMobile ? 15 : 34, marginBottom: isMobile?0:14 }]}>
               {items.map((item: any) => (
                 <AvalibleSlot
                   key={item?.id}
@@ -44,7 +44,7 @@ const ListAvailbleDates = (props: any) => {
                 />
 
               ))}
-            </View> : !isMobile ?
+            </View> : 
               <View style={styles.containerNotResults}>
                 <View style={styles.containerIcon}>
                   <KIcon name="smile" style={styles.icon} />
@@ -52,8 +52,9 @@ const ListAvailbleDates = (props: any) => {
                 <KText style={styles.labelNotResults}>
                   Add your available dates now!
                 </KText>
-              </View> : null
+              </View> 
         }
+      <Notification/>
       </View>
     </View>
   )

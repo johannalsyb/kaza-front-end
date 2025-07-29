@@ -106,7 +106,7 @@ export default (props: Props) => {
             style={[
                 { width: '100%' },
                 Platform.OS === 'web'
-                    ? { height: isMobile ? `calc(100% - 60px)` : 'auto' } as any
+                    ? { height: `auto`  } as any
                     : {}
             ]}
         >

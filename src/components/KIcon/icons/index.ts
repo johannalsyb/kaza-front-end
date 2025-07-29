@@ -29,6 +29,8 @@ export {ReactComponent as smile} from './smile.svg';
 export {ReactComponent as search} from './search.svg';
 export {ReactComponent as close} from './close.svg';
 export {ReactComponent as closeWithBorder} from './closeWithBorder.svg';
+export {ReactComponent as closeBtn} from './closeBtn.svg';
+
 export {ReactComponent as back} from './back.svg';
 export {ReactComponent as down} from './down.svg';
 export {ReactComponent as emptyPic} from './emptyuserpic.svg';

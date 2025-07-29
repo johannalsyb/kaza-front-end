@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
+    
   },
   label: {
     color: "#000",
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
+
     borderRadius: 30,
     height: 50,
     width: "100%",

@@ -10,7 +10,8 @@ type Value = ValuePiece | [ValuePiece, ValuePiece]
 
 interface KCalendarProps extends React.ComponentPropsWithoutRef<typeof Calendar> {
   onChange: (value: Value) => void
-  value: Value
+  value: Value,
+
 }
 
 const KCalendar = (props: KCalendarProps) => {
@@ -24,6 +25,7 @@ const KCalendar = (props: KCalendarProps) => {
       next2Label={null}
       locale='en-US'
       calendarType="iso8601"
+    
       prevLabel={<KIcon name='chevronLeft' size={'large'} style={styles.button} />}
       nextLabel={<KIcon name='chevronRight' size={'large'} style={styles.button} />}
       prev2Label={null} />

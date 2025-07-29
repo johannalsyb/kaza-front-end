@@ -102,7 +102,8 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
           try {
             const suggestions = await suggestionCallback(text)
             setSuggestionList(
-              suggestions.length ? suggestions : ['No place found!'],
+              // suggestions.length ? suggestions : ['No place found!'],
+              suggestions
             )
           } catch (err) {
             console.log(err)
@@ -204,11 +205,12 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
-        {showSuggestions && (
+        {showSuggestions && suggestionList.length > 0 &&  (
           <View style={styles.suggestion}>
             {suggestionList.map((suggestion, index) => (
+              
               <Pressable
-                disabled={suggestion === 'No place found!'}
+                // disabled={suggestion === 'No place found!'}
                 key={`suggestion_${index}`}
                 onPress={() => {
                   onChangeText && onChangeText(suggestion)
@@ -223,9 +225,12 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
                     backgroundColor: variables.colors.yellow,
                   },
                 ]}>
+                 
+
                 <Text style={styles.textSuggestion} key={index}>
-                  {suggestion}
+                  {suggestion} 
                 </Text>
+                  
               </Pressable>
             ))}
           </View>

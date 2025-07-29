@@ -26,6 +26,7 @@ export const CircleImage = ({
   type,
 }: CircleImageProps) => {
   const {config} = useConfig();
+   const isDefaultImage = !imageId || source === defaultCircleImage;
   if (imageId && config && type) {
     const cfg = config.images[type];
     source = `${cfg.url}${imageId}${
@@ -34,16 +35,23 @@ export const CircleImage = ({
   }
 
   return (
+    <>
     <KImage
       source={source}
       style={{
         ...circleImageSize[size],
+       borderColor:isDefaultImage? variables.colors.orange:'white',
+       borderStyle: 'solid',
+        borderWidth: 2,
         ...styles.circleImage,
         borderRadius: circleImageSize[size].width / 2,
         ...style,
       }}
       defaultSource={defaultCircleImage}
     />
+   
+    </>
+    
   );
 };
 
@@ -51,5 +59,6 @@ const styles = StyleSheet.create({
   circleImage: {
     objectFit: 'cover',
     backgroundColor: variables.colors.darkYellow,
+    
   },
 });

@@ -59,7 +59,7 @@ export default (props: Props) => {
                     checkAddress(props.property.location)
                         .then(result => {
                             if (!result) {
-                                setError({ ...error, location: "Please enter a valid address" })
+                                setError({ ...error, location: "Please enter your exact address" })
                                 return
                             }
                             props.onNext()
