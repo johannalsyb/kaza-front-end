@@ -161,21 +161,23 @@ export default (
           <Notifications unreadNotifications={bubbles.notifications || 0} />
         </KSideModal>
       )
+
     return (
       <View
         ref={popupNotificationsRef}
         style={[
           styles.popupmenu,
           {
-            width: isMobile ? '100%' : 400,
+            width: 'auto',
             maxHeight: isMobile ? 'auto' : 400,
             top: isMobile ? 0 : 75,
-            right: isMobile ? 0 : 72,
+            right: isMobile ? 0 : 132,
+            borderRadius: 15,
           },
           { display: notificationsVisible ? undefined : 'none' },
         ]}>
         {isMobile ? null : (
-          <View style={[styles.triangle, { right: 92, position: 'absolute' }]} />
+          <View style={[styles.triangle, { right: 32, position: 'absolute' }]} />
         )}
         <Notifications unreadNotifications={bubbles.notifications || 0} />
       </View>
@@ -382,11 +384,11 @@ export default (
                         thumbnail={true}
                         imageId={`${user.id}/${user.primaryImage}`}
                         type="users"
-                        style={{ 
-                          width: user.primaryImage ? 44 : 28, 
-                          height: user.primaryImage ? 44 : 28, 
-                          marginLeft: 10, 
-                          padding: user.primaryImage ? 0 : 6, 
+                        style={{
+                          width: user.primaryImage ? 44 : 28,
+                          height: user.primaryImage ? 44 : 28,
+                          marginLeft: 10,
+                          padding: user.primaryImage ? 0 : 6,
                           borderColor: user.primaryImage ? variables.colors.orange : variables.colors.orange,
                           borderWidth: user.primaryImage ? 0 : 2
                         }}
