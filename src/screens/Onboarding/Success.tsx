@@ -62,10 +62,10 @@ export default (props: Props) => {
                     <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
                         For registering you get {' '}
-                        <KText style={{ fontWeight: "bold", color: variables.colors.yellow }}>
+                        <KText style={{ fontWeight: "bold", color: variables.colors.black }}>
                             5 credits
                         </KText>
-                        , which is equal to 5 nights at someone else place.
+                        , which is equal to 5 nights at someone else place.1 credit : 1 night
                     </KText>
                 </View>
             </View>

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#000',
     fontFamily: "Plus Jakarta Sans",
-    fontSize: 12,
+    fontSize: 15,
     fontStyle: 'normal',
     fontWeight: '600',
     lineHeight: 13,

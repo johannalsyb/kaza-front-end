@@ -76,6 +76,7 @@ const CalendarComponent = () => {
     }
     onChange(val)
   }
+
   const [itemEdit, setItemEdit] = useState<any>(undefined)
   const handleClickEdit = (item: any) => {
     console.log('availableDates', availableDates, item)
@@ -126,10 +127,12 @@ const CalendarComponent = () => {
           position: 'absolute',
           bottom: 0,
           width: '100%',
+          
           paddingTop: 23,
           paddingBottom: 50,
           borderTopLeftRadius: 28,
           borderTopRightRadius: 28,
+          
         } : {
           // maxWidth: 500,
           // left: '81%'
@@ -137,7 +140,7 @@ const CalendarComponent = () => {
       >
         <View style={[styles.container, styles.calendarContainer]}>
           <SelectDates
-            style={{ marginBottom: 46 }}
+            style={{ marginBottom: 46, }}
             startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
             endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
           />
@@ -148,6 +151,7 @@ const CalendarComponent = () => {
             tileDisabled={({ date, view }) =>
               view === 'month' && isDateInRanges(date)
             }
+         
           />
           <View style={styles.containerButtons}>
             <KButton
@@ -181,6 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
+  
   },
   label: {
     color: "#000",
@@ -213,6 +218,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 50,
     height: '100%',
+    
   },
   containerButtons: {
     display: 'flex',

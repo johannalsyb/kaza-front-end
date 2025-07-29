@@ -150,15 +150,17 @@ export default (props: Props) => {
       </FormField>
 
       {showIncorrectAddress && (
-        <View style={styles.incorrectAddressBox}>
-          <KText style={styles.incorectaddressMessage}>
-            Please need to put the exact address of your place
+        <View style={[styles.incorrectAddressBox,{  width: isMobile? '105%':'105%',  }]}>
+          <KText style={[styles.incorectaddressMessage , {fontSize: isMobile ? 13 : 15,} ]}
+      numberOfLines={1}
+          >
+            You need to put the exact address of your place
           </KText>
           <Pressable
             onPress={() => setShowIncorrectAddress(false)}
             style={{zIndex: 232}}>
             <KIcon
-              name="closeWithBorder"
+              name="closeBtn"
               size={'large'}
               style={{color: 'black'}}
             />
@@ -282,15 +284,27 @@ export default (props: Props) => {
             );
           })}
         </View>
-        {!isMobile && (
-          <Pressable
-            onPress={() => setShowAllAmenities(!showAllAmenities)}
-            style={styles.showMoreButton}>
-            <KText style={styles.showMoreText}>
-              {showAllAmenities ? 'Show Less  ▲' : 'Show More  ▼'}
-            </KText>
-          </Pressable>
-        )}
+      {!isMobile && (
+  <Pressable
+    onPress={() => setShowAllAmenities(!showAllAmenities)}
+    style={styles.showMoreButton}>
+    <KText style={styles.showMoreText}>
+      {showAllAmenities ? 'Show less' : 'Show more'}
+    </KText>
+    <Animated.View style={{
+      transform: [{
+        rotate: showAllAmenities ? '180deg' : '0deg'
+      }],
+      opacity: 0.7 
+    }}>
+      <KIcon
+        name="down"
+        size={'large'}
+        style={{ color: 'black' }}
+      />
+    </Animated.View>
+  </Pressable>
+)}
       </FormField>
 
       <KModal
@@ -351,16 +365,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF784E',
     position: 'relative',
     flexDirection: 'row',
-    marginTop: -10,
-    gap: 10,
+    marginTop: -12,
+    
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: 28,
-    padding: 10,
+  paddingTop:10,
+  paddingBottom:10,
+  paddingLeft:8,
+  paddingRight:5,
+    
   },
   incorectaddressMessage: {
-    fontSize: 14,
-    color: 'black',
+textAlign:'center',
+fontWeight:'400',
+lineHeight:16,
+letterSpacing: -0.4,
+    color: '#18181DF5',
   },
   icon: {
     borderRadius: 36,
@@ -380,13 +401,19 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
   showMoreButton: {
+
     marginTop: 10,
-    padding: 8,
-    alignSelf: 'flex-start',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  alignSelf: 'flex-start',
+  gap: 4, 
   },
   showMoreText: {
-    color: variables.colors.black,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+   
+      color: variables.colors.black,
+  fontWeight: '500',
+  textDecorationLine: 'underline',
+  textDecorationColor: '#979090ff',
   },
 });

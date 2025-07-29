@@ -28,7 +28,7 @@ import KIcon from '../../components/KIcon/KIcon'
 import users from '../../api/users'
 import { OnboardingInfo } from '../../common/types/api/auth'
 import KAlert from '../../components/KAlert'
-import Notification from '../../components/Screens/Onboarding/CalendarComponent/Notification'
+// import Notification from '../../components/Screens/Onboarding/CalendarComponent/Notification'
 // import Step6 from "./Step6";
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>
@@ -391,7 +391,7 @@ export default (props: Props) => {
       </Comp>
       <KAlert />
 
-      <Notification countCredits={5} />
+      {/* <Notification countCredits={5} /> */}
 
     </>
   )
