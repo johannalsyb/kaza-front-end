@@ -167,7 +167,7 @@ const Filters = forwardRef<Handle, Props>(({
       style={[
         styles.lightCircle,
         {
-          height: isMobile ? 45 : 40, 
+          height: isMobile ? 45 : 40,
           width: isMobile ? 45 : 40,
           marginLeft: isMobile ? 8.5 : 10,
           marginRight: 2.5,
@@ -392,6 +392,7 @@ const Filters = forwardRef<Handle, Props>(({
                   Select the dates
                 </Text>
                 <TouchableOpacity
+                  activeOpacity={0.8}
                   style={{
                     borderWidth: 1,
                     borderRadius: 30,
@@ -448,7 +449,7 @@ const Filters = forwardRef<Handle, Props>(({
             <Pressable
               style={[
                 styles.lightCircle,
-                { height: isMobile ? 45 : 40, width: isMobile ? 45 : 40 }, 
+                { height: isMobile ? 45 : 40, width: isMobile ? 45 : 40 },
                 { marginLeft: 2.5, marginRight: 2.5 },
                 {
                   backgroundColor: modalVisible || filterCount ? variables.colors.black : variables.colors.white,
