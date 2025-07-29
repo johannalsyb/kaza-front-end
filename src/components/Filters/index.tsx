@@ -365,7 +365,7 @@ const Filters = forwardRef<Handle, Props>(({
           >
             <KIcon
               name={showDateModal ? "calendarWhite" : "calendar"}
-              size="xxlarge"
+              size="medium"
               style={{ stroke: "white" }}
             />
             <KModalWeb
@@ -461,7 +461,7 @@ const Filters = forwardRef<Handle, Props>(({
               }}>
               <KIcon
                 name="filters"
-                size="large"
+                size="medium"
                 style={{ stroke: modalVisible || filterCount ? variables.colors.white : variables.colors.black }}
               />
               <View style={{
