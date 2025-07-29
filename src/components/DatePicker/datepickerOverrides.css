@@ -175,3 +175,7 @@
   background-color: #ffe361 !important;
   border-radius: 50% !important;
 }
+
+.no-today-highlight {
+  background-color: transparent !important;
+}

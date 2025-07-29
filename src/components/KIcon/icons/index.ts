@@ -45,12 +45,14 @@ export {ReactComponent as sqm2} from './sqm2.svg';
 export {ReactComponent as delete} from './delete.svg';
 
 export {ReactComponent as bell} from './bell.svg';
+export {ReactComponent as bellNew} from './bellNew.svg';
 export {ReactComponent as bomb} from './bomb.svg';
 export {ReactComponent as matching} from './matching.svg';
 export {ReactComponent as fav} from './fav.svg';
 
 export {ReactComponent as edit} from './edit.svg';
 export {ReactComponent as history} from './history.svg';
+export {ReactComponent as home} from './home.svg';
 export {ReactComponent as user} from './user.svg';
 export {ReactComponent as login} from './login.svg';
 export {ReactComponent as logout} from './logout.svg';

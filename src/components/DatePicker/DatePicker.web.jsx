@@ -70,13 +70,9 @@ const CustomDatePicker = ({
             showOutsideDays={false}
             calendarClassName="my-custom-calendar"
             dayClassName={(date) => {
-              // remove today highlight completely
               const today = new Date()
-              const isToday =
-                date.getDate() === today.getDate() &&
-                date.getMonth() === today.getMonth() &&
-                date.getFullYear() === today.getFullYear()
-              return isToday ? 'no-today-highlight' : undefined
+              const isSameDay = date.getDate() === today.getDate()
+              return isSameDay ? 'no-today-highlight' : undefined
             }}
             calendarContainer={(props) => <CustomContainer {...props} isMobile={isMobile} />}
             minDate={new Date()}

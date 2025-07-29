@@ -62,7 +62,7 @@ const variables = {
       paddingLeft: 35,
       fontSize: 15,
       lineHeight: 15,
-      
+
     },
   },
   button: {
@@ -121,6 +121,7 @@ const variables = {
   },
   images: {
     defaultPics: '/defaultPics.svg',
+    emptyUserPic: '/emptyuserpic.svg',
     defaultImage: '/defaultImage.svg',
   },
   icon: {

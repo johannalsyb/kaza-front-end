@@ -382,7 +382,14 @@ export default (
                         thumbnail={true}
                         imageId={`${user.id}/${user.primaryImage}`}
                         type="users"
-                        style={{ width: 45, height: 45, marginLeft: 10 }}
+                        style={{ 
+                          width: user.primaryImage ? 44 : 28, 
+                          height: user.primaryImage ? 44 : 28, 
+                          marginLeft: 10, 
+                          padding: user.primaryImage ? 0 : 6, 
+                          borderColor: user.primaryImage ? variables.colors.orange : variables.colors.orange,
+                          borderWidth: user.primaryImage ? 0 : 2
+                        }}
                       />
                     </Pressable>
                     <Pressable
