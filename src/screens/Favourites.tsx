@@ -81,12 +81,19 @@ export default ({ route, navigation }: Props) => {
             width: "30%",
             marginTop: 20,
           }}>
-            <KButton text="Sign in" color="light" onPress={() => {
-              navigation.navigate('Login')
-            }} style={{ borderColor: "white" }} />
-            <KButton text="Register" color="primary" onPress={() => {
-              navigation.navigate('SignUp')
-            }} />
+            <KButton
+              text="Sign in"
+              color="light"
+              onPress={() => {
+                navigation.navigate('Login')
+              }}
+            />
+            <KButton
+              text="Register"
+              color="primary"
+              onPress={() => {
+                navigation.navigate('SignUp')
+              }} />
           </View>}
       </View>
     } />

@@ -50,6 +50,7 @@ const DesktopDatePicker = ({
     >
       <TouchableOpacity
         onPress={() => setIsCalendarOpen(prev => !prev)}
+        activeOpacity={0.8}
         style={{
           minWidth: 290,
           borderWidth: 1,
@@ -75,13 +76,22 @@ const DesktopDatePicker = ({
             paddingLeft: 20,
           }}
         >
-          <Text style={{ fontSize: 14, opacity: 0.5 }}>
+          <Text
+            style={[
+              { fontSize: 14, opacity: 0.5, paddingVertical: 4, paddingHorizontal: 6, },
+              (startDate || isCalendarOpen) &&
+              { backgroundColor: variables.colors.greenLight, borderRadius: 14 }
+            ]}>
             {startDate
               ? startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
               : 'Start Date'}
           </Text>
           <Text style={{ fontSize: 14, opacity: 0.5 }}>-</Text>
-          <Text style={{ fontSize: 14, opacity: 0.5 }}>
+          <Text style={[
+            { fontSize: 14, opacity: 0.5, paddingVertical: 4, paddingHorizontal: 6, },
+            (startDate || endDate) &&
+            { backgroundColor: variables.colors.greenLight, paddingVertical: 4, paddingHorizontal: 6, borderRadius: 14 }
+          ]}>
             {endDate
               ? endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
               : 'End Date'}

@@ -205,22 +205,28 @@ export default forwardRef<Handle, Props>(
           />}
         </View>
         {showMap ? (
-          <MapView
-            lat={30}
-            lng={20}
-            points={propertiesFiltered?.map(p => ({
-              lat: p.approxLat || 0,
-              lng: p.approxLon || 0,
-              property: p,
-            }))}
-            zoom={2.5}
-            style={{
-              width: '100%',
-              height: '100%',
-              borderTopRightRadius: 20,
-              borderTopLeftRadius: 20,
-            }}
-          />
+          <View style={{ display: 'flex', flex: 1}}>
+            <MapView
+              lat={30}
+              lng={20}
+              points={propertiesFiltered?.map(p => ({
+                lat: p.approxLat || 0,
+                lng: p.approxLon || 0,
+                property: p,
+              }))}
+              zoom={2.5}
+              style={{
+                width: '100%',
+                height: '100%',
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+                marginBottom: 125,
+              }}
+            />
+            <View style={{ position: 'absolute', bottom: 0, right: 0, left: 0 }}>
+              <Footer />
+            </View>
+          </View>
         ) : (
           <ScrollView
             showsVerticalScrollIndicator={false}
