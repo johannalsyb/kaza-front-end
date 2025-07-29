@@ -1,4 +1,5 @@
-import { Pressable, View, ViewStyle } from "react-native"
+import { useRef } from 'react'
+import { Pressable, View, ViewStyle, Animated } from "react-native"
 import useAuthentication from "../../hooks/useAuthentication";
 import { CircleImage } from "../CircleImage/CircleImage";
 import { useNavigationContainerRef, useRoute } from "@react-navigation/native";
@@ -30,20 +31,32 @@ export default ({
   const setShowSwapNow = useSetAtom(showSwapNowAtom);
   const isDefaultImage = !user?.id || user.primaryImage === user.primaryImage;
 
+  const translateY = useRef(new Animated.Value(100)).current;
+
+  useEffect(() => {
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   if (!isMobile) return <></>
   return (
-    <View style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 101,
-      ...style
-    }}>
+    <Animated.View
+      style={{
+        transform: [{ translateY }],
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 101,
+        ...style
+      }}>
       <View style={{
         width: '100%',
         display: 'flex',
@@ -132,31 +145,25 @@ export default ({
                 />
               </Pressable>
             </View>
-            {/* <KIcon
-              name="logo"
-              size="large"
-              style={{
-                stroke: 'black',
-                backgroundColor: variables.colors.yellow,
-                width: size + 5,
-                height: size + 5,
-                padding: 10,
-                borderRadius: size + 5,
-                marginLeft: 5,
-                borderWidth: 0,
-                borderColor: 'black',
-                borderStyle: 'solid',
-                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.4)',
-              }}
-              onPress={() => setShowSwapNow(true)}
-            /> */}
           </>
           :
-          <>
-            <KButton text="Sign In" icon="login" color="light" onPress={() => navigate('Login')} style={{ marginRight: 5 }} />
-            <KButton text="Register" icon="register" onPress={() => navigate('SignUp')} />
-          </>}
+          <View style={{
+            gap: 10,
+            width: '100%',
+            display: 'flex',
+            paddingVertical: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderTopRightRadius: 40,
+            borderTopLeftRadius: 40,
+            backgroundColor: 'black',
+          }}>
+            <KButton text="Sign In" icon="login" color="light" onPress={() => navigate('Login')} />
+            <KButton text="Register your place" icon="register" color="secondary" onPress={() => navigate('SignUp')} style={{ width: 'auto', paddingHorizontal: 4 }} />
+          </View>
+        }
       </View>
-    </View>
+    </Animated.View>
   )
 }
