@@ -41,10 +41,7 @@ const photoStyle: CSSProperties = {
   objectFit: 'cover',
 }
 
-// const cardWidth = 466
-const cardHeight = 330
-// const imageHeight = 300
-// const avatarHeight = 50
+const cardHeight = 466
 
 export const PropertyCard = ({
   avatar = '',
@@ -56,7 +53,7 @@ export const PropertyCard = ({
   // location,
   style,
   property,
-  // swapButton,
+  swapButton,
   onPress,
   onEditPressed,
   hoverable = true,
@@ -73,6 +70,7 @@ export const PropertyCard = ({
         availableDate?.to,
       )}`
       : 'Flexible'
+
   return (
     <Pressable
       onPress={onPress}
@@ -81,14 +79,14 @@ export const PropertyCard = ({
       style={[
         styles.container,
         {
-          width: isMobile ? '100%' : variables.propertyCardWidth,
+          width: '100%',
           aspectRatio: bottomComponent ? 'auto' : 1,
           marginBottom: 18
         },
         // @ts-ignore
-        isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
+        // isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
-        !isDetails && { maxHeight: 290, height: '100%'}
+        !isDetails && { maxHeight: 325, height: '100%' }
       ]}>
       <View style={styles.imageContainer}>
         {photo.startsWith('http') ? (
@@ -96,9 +94,16 @@ export const PropertyCard = ({
         ) : (
           <KImage imageId={photo} type="properties" style={photoStyle} />
         )}
+        <View style={[styles.avatarContainer]}>
+          <CircleImage
+            imageId={avatar}
+            thumbnail={true}
+            type="users"
+            size="xsmall"
+          />
+        </View>
       </View>
-
-      {/* {swapButton && property && (
+      {swapButton && property && (
         <View style={{ position: 'absolute', top: 10, left: 10 }}>
           <SwapRequestButton
             property={property}
@@ -106,71 +111,54 @@ export const PropertyCard = ({
             iconStyle={{ color: variables.colors.yellow }}
           />
         </View>
-      )} */}
+      )}
       <View style={[styles.infoContainer]}>
-        <View style={[styles.infoTopContainer, { paddingTop: 0 }]}>
-          <View style={[styles.avatarContainer]}>
-            <CircleImage
-              imageId={avatar}
-              thumbnail={true}
-              type="users"
-              size="xsmall"
-            />
-          </View>
+        <View style={styles.infoTopContainer}>
+          <KText style={{ fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
+          <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
         </View>
-        <View style={[styles.infoBottomContainer, !isDetails && { paddingTop:5 }]}>
-          {!isDetails && <KText style={{
-            fontSize: 13,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginRight: 20
-          }}
-            numberOfLines={1}>
-            <KIcon name='calendar' size='medium' />
-            <KText
-              style={{
-                paddingHorizontal: variables.spacing.xxsmall,
-                fontSize: 13
-              }}>
-              {availableDateText}
-            </KText>
-          </KText>}
+        <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
           <KText
             style={{
               fontSize: 13,
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-
             }}
             numberOfLines={1}>
             <KIcon
               name="location"
               size="medium"
+              style={{ opacity: 0.5 }}
             />
-
-            {swapFor ? (
-              swapForText?.map((s, i) => (
-                <KText
-                  style={{
-                    paddingHorizontal: variables.spacing.xxsmall,
-                    fontSize: 13,
-                  }}
-                  key={`swap-for-${i}`}>
-                  {s}
-                </KText>
-              ))
-            ) : (
+            <KText
+              style={{
+                paddingHorizontal: variables.spacing.xxsmall,
+                fontSize: 13,
+              }}>
+              {property?.city}, {property?.country}
+            </KText>
+          </KText>
+          {!isDetails &&
+            <KText
+              style={{
+                fontSize: 13,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              numberOfLines={1}
+            >
+              <KIcon name='calendar' size='medium' />
               <KText
                 style={{
                   paddingHorizontal: variables.spacing.xxsmall,
-                  fontSize: 13,
+                  fontSize: 13
                 }}>
-                Anywhere
+                {availableDateText}
               </KText>
-            )}
-          </KText>
+            </KText>
+          }
         </View>
         {isDetails && <View style={styles.infoTopContainer}>
           <IconText
@@ -228,14 +216,13 @@ export const PropertyCard = ({
   )
 }
 
-const { white, greenLight, yellow } = variables.colors
+const { white, yellow } = variables.colors
 
 
 // padding fix on the design
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: white,
     borderRadius: 20,
     display: 'flex',
     maxHeight: cardHeight,
@@ -243,28 +230,27 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   imageContainer: {
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
+    borderRadius: 20,
     overflow: 'hidden',
-    maxHeight: 214,
+    maxHeight: 250,
+    // maxWidth: 290,
     height: '100%',
   },
   infoContainer: {
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
     paddingHorizontal: 10,
-    position: 'absolute',
+    // position: 'absolute',
     marginBottom: 10,
-    bottom: 0,
+    // bottom: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     width: '100%',
-
   },
   infoTopContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     flex: 2,
     paddingTop: 7
@@ -273,11 +259,15 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     flex: 1,
     paddingTop: 0,
+    minHeight:'auto'
   },
   avatarContainer: {
+    position: 'absolute',
+    right: 16,
+    bottom: 14,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 3,

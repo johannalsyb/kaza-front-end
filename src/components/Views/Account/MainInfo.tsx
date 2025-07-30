@@ -120,8 +120,8 @@ export default (props: Props) => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: isMobile ? 0 : 20,
-        paddingRight: isMobile ? 0 : 20,
+        paddingLeft: 0,
+        paddingRight: 0,
       }}>
       <View
         style={{
@@ -290,34 +290,7 @@ export default (props: Props) => {
             size={'small'}>
             <KIcon name="search" size="large" />
           </KButton>}
-
         </View>
-        {/* <View style={[{
-          paddingHorizontal: isMobile ? PADDING_H_MOBILE : 0,
-          width: isMobile ? '100%' : 'auto',
-        },
-        !isMobile ? {maxHeight: 294} : {marginBottom: 20}
-        ]}>
-          <PropertyCard
-            // style={!isMobile ? {maxHeight: 294} : {marginBottom: 20}}
-            favourite={false}
-            photo={propImage}
-            avatar={img}
-            swapFor={user?.swapLocations}
-            location={
-              props.property
-                ? `${props.property?.city}, ${props.property.country}`
-                : '?'
-            }
-            userId={user?.id}
-            availableDate={
-              user && user.dateFrom && user.dateTo
-                ? {from: new Date(user.dateFrom), to: new Date(user.dateTo)}
-                : undefined
-            }
-            onEditPressed={props.onEditPropertyPressed}
-          />
-        </View> */}
       </View>
       <View
         style={{
@@ -325,6 +298,7 @@ export default (props: Props) => {
           flex: 1,
           width: '100%',
           justifyContent: 'flex-end',
+          marginTop: 75,
         }}>
         <Footer route={route.name} />
       </View>

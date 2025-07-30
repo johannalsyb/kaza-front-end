@@ -1,112 +1,133 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import ReactDatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import KIcon from '../KIcon/KIcon';
-import variables from '../../styles/variables';
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import ReactDatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import KIcon from '../KIcon/KIcon'
+import variables from '../../styles/variables'
 
-const MyContainer = ({ className, children }) => {
+const CustomContainer = ({ className, children, isMobile }) => {
+  const containerStyle = isMobile ? styles.customContainerMobile : styles.customContainer
   return (
-    <div style={styles.customContainer} className={className}>
+    <div style={containerStyle} className={className}>
       {children}
     </div>
-  );
-};
+  )
+}
 
-const CustomDatePicker = ({ onDateSelected, label, isRange = false }) => {
-  const [date, setDate] = useState(null);
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [open, setOpen] = useState(false);
-  const { form } = variables;
-  const [startDate, endDate] = dateRange;
+const CustomDatePicker = ({
+  onRangeSelected,
+  isMobile = false,
+  isOpen = false,
+  startDate: externalStartDate,
+  endDate: externalEndDate
+}) => {
+  const [dateRange, setDateRange] = useState([null, null])
+  const [open, setOpen] = useState(isOpen)
+  const [startDate, endDate] = dateRange
+
+  useEffect(() => {
+    setOpen(isOpen)
+  }, [isOpen])
+
+  useEffect(() => {
+    if (externalStartDate !== dateRange[0] || externalEndDate !== dateRange[1]) {
+      setDateRange([externalStartDate, externalEndDate])
+    }
+  }, [externalStartDate, externalEndDate])
 
   const formatDate = (date) => {
-    if (!date) return '';
-    const month = date.toLocaleString('en-US', { month: 'short' });
-    const day = date.toLocaleString('en-US', { day: '2-digit' });
-    const year = date.getFullYear();
-    return `${month} ${day}, ${year}`;
-  };
+    if (!date) return ''
+    const month = date.toLocaleString('en-US', { month: 'short' })
+    const day = date.toLocaleString('en-US', { day: '2-digit' })
+    const year = date.getFullYear()
+    return `${month} ${day}, ${year}`
+  }
 
-  // Handlers
-  const handleSingleDateChange = (newDate) => {
-    setDate(newDate);
-    onDateSelected?.(newDate);
-  };
   const handleRangeDateChange = (range) => {
-    setDateRange(range);
-    onDateSelected?.(range);
-  };
-
-  // Display label
-  let displayLabel = label;
-  if (isRange) {
-    if (startDate && endDate) {
-      displayLabel = `${formatDate(startDate)} - ${formatDate(endDate)}`;
-    }
-  } else {
-    if (date) {
-      displayLabel = formatDate(date);
-    }
+    const [start, end] = range
+    setDateRange(range)
+    onRangeSelected?.(start, end)
   }
 
   return (
     <View>
-      <TouchableOpacity
-        style={[
-          styles.button,
-          {
-            position: 'relative',
-            backgroundColor: form.colors.background.default,
-            borderRadius: form.input.borderRadius,
-            borderWidth: form.input.borderWidth,
-            borderColor: form.colors.border.default,
-          },
-        ]}
-        onPress={() => setOpen((prevState) => !prevState)}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.buttonText}>{displayLabel}</Text>
-        <KIcon name="down" size="large" style={{ stroke: 'gray' }} />
-      </TouchableOpacity>
       {open && (
-        <View style={styles.webPickerContainer}>
-          {isRange ? (
-            <ReactDatePicker
-              selectsRange
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(update) => {
-                handleRangeDateChange(update);
-                if (update[0] && update[1]) setOpen(false);
-              }}
-              inline
-              dateFormat="dd/MM/yyyy"
-              calendarClassName="my-custom-calendar"
-              dayClassName={d => d.getDay() === 0 ? 'sunday' : undefined}
-              calendarContainer={MyContainer}
-              minDate={new Date()}
-            />
-          ) : (
-            <ReactDatePicker
-              selected={date}
-              onChange={(d) => {
-                handleSingleDateChange(d);
-                setOpen(false);
-              }}
-              inline
-              dateFormat="dd/MM/yyyy"
-              calendarClassName="my-custom-calendar"
-              dayClassName={d => d.getDay() === 0 ? 'sunday' : undefined}
-              calendarContainer={MyContainer}
-              minDate={new Date()}
-            />
-          )}
+        <View
+          style={[
+            styles.webPickerContainer,
+            isMobile && { position: 'relative', width: '100%' }
+          ]}
+        >
+          <ReactDatePicker
+            selectsRange
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(update) => {
+              handleRangeDateChange(update)
+            }}
+            inline
+            dateFormat="dd/MM/yyyy"
+            showOutsideDays={false}
+            calendarClassName="my-custom-calendar"
+            dayClassName={(date) => {
+              const today = new Date()
+              const isSameDay = date.getDate() === today.getDate()
+              return isSameDay ? 'no-today-highlight' : undefined
+            }}
+            calendarContainer={(props) => <CustomContainer {...props} isMobile={isMobile} />}
+            minDate={new Date()}
+            renderCustomHeader={({
+              date,
+              decreaseMonth,
+              increaseMonth,
+              prevMonthButtonDisabled,
+              nextMonthButtonDisabled,
+            }) => {
+              const today = new Date()
+              const isCurrentMonth =
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear()
+
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '8px 0'
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={decreaseMonth}
+                    disabled={prevMonthButtonDisabled || isCurrentMonth}
+                    style={[
+                      styles.navButton,
+                      isCurrentMonth && { opacity: 0, pointerEvents: 'none' }
+                    ]}
+                  >
+                    <KIcon name="chevronLeft" size="large" />
+                  </TouchableOpacity>
+
+                  <span style={styles.monthText}>
+                    {date.toLocaleString('default', { month: 'long' })} {date.getFullYear()}
+                  </span>
+
+                  <TouchableOpacity
+                    onPress={increaseMonth}
+                    disabled={nextMonthButtonDisabled}
+                    style={styles.navButton}
+                  >
+                    <KIcon name="chevronRight" size="large" />
+                  </TouchableOpacity>
+                </div>
+              )
+            }}
+          />
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -120,24 +141,34 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 15,
+    marginLeft: 10,
     color: 'gray',
     fontFamily: variables.font.family?.regular ?? 'System',
     flex: 1,
   },
   webPickerContainer: {
-    zIndex: 2200, // increased zIndex for calendar
+    zIndex: 2200,
     position: 'absolute',
   },
   customContainer: {
     position: 'absolute',
-    top: 42,
-    marginLeft: 4,
     borderRadius: 20,
-    paddingHorizontal: 16, 
-    background: "#fff", 
-    border: "none",
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.3)'
-  }
-});
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    border: 'none',
+    maxWidth: 290,
+    boxShadow: '8px 8px 16px rgba(0, 0, 0, 0.3)',
+  },
+  customContainerMobile: {
+    border: 'none',
+  },
+  navButton: {
+    backgroundColor: variables.colors.greenLight,
+    border: 'none',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    padding: 4,
+  },
+})
 
-export default CustomDatePicker; 
+export default CustomDatePicker

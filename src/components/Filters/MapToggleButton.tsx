@@ -16,13 +16,13 @@ const MapToggleButton: React.FC<MapToggleButtonProps> = ({ showMap, isMobile, ro
       borderWidth: 1,
       borderRadius: 50,
       padding: 10,
-      height: 40,
-      width: 40,
+      height: isMobile ? 45 : 40,
+      width: isMobile ? 45 : 40,
       justifyContent: 'center',
       alignItems: 'center',
       marginLeft: 2.5,
       marginRight: 2.5,
-      backgroundColor: showMap ? variables.colors.black : isMobile ? 'white' : 'transparent',
+      backgroundColor: showMap ? variables.colors.black : 'white',
       borderColor: isMobile ? showMap ? variables.colors.black : 'white' : variables.colors.black,
     }]}
     onPress={() => {

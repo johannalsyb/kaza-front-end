@@ -1,16 +1,16 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native'
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
-import { Property } from '../../../common/types/api/properties';
-import { NavStackParamList } from '../../../navigation/screens';
-import useAuthentication from '../../../hooks/useAuthentication';
-import useIsMobile from '../../../hooks/useIsMobile';
+} from 'react'
+import { Property } from '../../../common/types/api/properties'
+import { NavStackParamList } from '../../../navigation/screens'
+import useAuthentication from '../../../hooks/useAuthentication'
+import useIsMobile from '../../../hooks/useIsMobile'
 import Filters, {
   placeTypeFilters,
   nbBedroomFilters,
@@ -18,7 +18,7 @@ import Filters, {
 } from '../../Filters'
 import MapView from '../../MapView'
 import variables from '../../../styles/variables'
-import {  PropertyCard  } from '../../PropertyCard/PropertyCard'
+import { PropertyCard } from '../../PropertyCard/PropertyCard'
 import Menu from '../../Menu'
 import useConfig from '../../../hooks/useConfig'
 import KText from '../../KText'
@@ -28,7 +28,7 @@ import Modal from '../../Modal'
 import { useAtom } from 'jotai'
 import { showModalRegisterPlaceAtom } from '../../../atoms'
 
-type PProperty = Property & { bubble?: string };
+type PProperty = Property & { bubble?: string }
 
 type Props = {
   properties: PProperty[]
@@ -45,24 +45,24 @@ type Props = {
 }
 
 export type PropertyFilter = {
-  placeType: string[];
-  bedrooms: string[];
-  petsFriendlyOnly: string[];
-  kidsFriendlyOnly: string[];
-  swapWithWomen: string[];
-  startDate: string[];
-  endDate: string[];
-};
+  placeType: string[]
+  bedrooms: string[]
+  petsFriendlyOnly: string[]
+  kidsFriendlyOnly: string[]
+  swapWithWomen: string[]
+  startDate: string[]
+  endDate: string[]
+}
 
 const defaultFilters: PropertyFilter = {
-  bedrooms: nbBedroomFilters,
+  bedrooms: [],
   petsFriendlyOnly: ['false'],
   kidsFriendlyOnly: ['false'],
   swapWithWomen: ['false'],
   placeType: placeTypeFilters,
   startDate: [''],
   endDate: ['']
-};
+}
 
 export default forwardRef<Handle, Props>(
   (
@@ -83,10 +83,12 @@ export default forwardRef<Handle, Props>(
     const [contentHeight, setContentHeight] = useState(-1)
     const [scrollViewHeight, setScrollViewHeight] = useState(-1)
     const [showModalAuthCreateAccount, setShowModalAuthCreateAccount] = useAtom(showModalRegisterPlaceAtom)
-    const {  isMobile  } = useIsMobile()
-    const {  user, isAdmin  } = useAuthentication()
+    const { isMobile } = useIsMobile()
+    const { user, isAdmin } = useAuthentication()
 
-    const { config, overlay } = useConfig();
+    const { config, overlay } = useConfig()
+
+    const isInFavourites = navigation.getState().routes[navigation.getState().index].name === 'Favourites'
 
     const filtersRef = useRef<Handle>(null)
     useImperativeHandle(ref, () => ({
@@ -94,9 +96,9 @@ export default forwardRef<Handle, Props>(
         filtersRef.current?.setSearch(search)
       },
       clearFilters: () => {
-        setFilters(defaultFilters);
-        filtersRef.current?.setSearch('');
-        onSearch('');
+        setFilters(defaultFilters)
+        filtersRef.current?.setSearch('')
+        onSearch('')
       },
     }))
 
@@ -113,6 +115,15 @@ export default forwardRef<Handle, Props>(
       }
     }, [filters])
 
+    useEffect(() => {
+      if (isMobile) {
+        setFilters(prev => ({
+          ...prev,
+          bedrooms: [],
+        }))
+      }
+    }, [isMobile])
+
     const propertiesFiltered =
       properties?.filter(p => {
         let visible = true
@@ -123,38 +134,38 @@ export default forwardRef<Handle, Props>(
         )
           visible = false
         if (filters['petsFriendlyOnly'][0] === 'true' && !p.pets)
-          visible = false;
+          visible = false
         if (filters['kidsFriendlyOnly'][0] === 'true' && !p.childrenAllowed)
           visible = false
         if (
           filters['swapWithWomen'][0] === 'true' &&
           !(p.owner.gender === 'female')
         )
-          visible = false;
+          visible = false
 
         // --- DATE FILTERS ---
-        const propertyStart = p.owner.dateFrom ? new Date(p.owner.dateFrom) : null;
-        const propertyEnd = p.owner.dateTo ? new Date(p.owner.dateTo) : null;
-        const filterStart = filters['startDate'][0] ? new Date(filters['startDate'][0]) : null;
-        const filterEnd = filters['endDate'][0] ? new Date(filters['endDate'][0]) : null;
+        const propertyStart = p.owner.dateFrom ? new Date(p.owner.dateFrom) : null
+        const propertyEnd = p.owner.dateTo ? new Date(p.owner.dateTo) : null
+        const filterStart = filters['startDate'][0] ? new Date(filters['startDate'][0]) : null
+        const filterEnd = filters['endDate'][0] ? new Date(filters['endDate'][0]) : null
 
         // If both startDate and endDate are set, check for overlap
         if (filterStart && filterEnd) {
           if (!propertyStart && !propertyEnd) {
-            visible = false;
+            visible = false
           } else if (propertyStart && propertyEnd) {
             // No overlap
-            if (propertyEnd < filterStart || propertyStart > filterEnd) visible = false;
+            if (propertyEnd < filterStart || propertyStart > filterEnd) visible = false
           } else if (propertyStart && propertyStart > filterEnd) {
-            visible = false;
+            visible = false
           } else if (propertyEnd && propertyEnd < filterStart) {
-            visible = false;
+            visible = false
           }
         }
         // --- END DATE FILTERS ---
 
-        return visible;
-      }) || [];
+        return visible
+      }) || []
 
     const isContentSmallerThanScreen = () => {
       if (contentHeight === -1 || scrollViewHeight === -1) return false
@@ -173,48 +184,54 @@ export default forwardRef<Handle, Props>(
     return (
       <>
         <View style={{ backgroundColor: 'black', zIndex: 1 }}>
-          <Filters
+          {!isInFavourites && <Filters
             ref={filtersRef}
             showSearchBar={showSearchBar}
             filters={filters}
             onShowMap={setShowMap}
             onFilter={(...nfilters) => {
-              const ufilters = { ...filters };
+              const ufilters = { ...filters }
               nfilters.forEach(({ type, filters }) => {
-                ufilters[type] = filters;
-              });
-              setFilters(ufilters);
+                ufilters[type] = filters
+              })
+              setFilters(ufilters)
             }}
             onSearch={onSearch}
             onClearFilters={() => {
               setFilters(defaultFilters)
-              filtersRef.current?.setSearch('');
-              filtersRef.current?.clearFilters();
+              filtersRef.current?.setSearch('')
+              filtersRef.current?.clearFilters()
             }}
-          />
+          />}
         </View>
         {showMap ? (
-          <MapView
-            lat={30}
-            lng={20}
-            points={propertiesFiltered?.map(p => ({
-              lat: p.approxLat || 0,
-              lng: p.approxLon || 0,
-              property: p,
-            }))}
-            zoom={2.5}
-            style={{
-              width: '100%',
-              height: '100%',
-              borderTopRightRadius: 20,
-              borderTopLeftRadius: 20,
-            }}
-          />
+          <View style={{ display: 'flex', flex: 1}}>
+            <MapView
+              lat={30}
+              lng={20}
+              points={propertiesFiltered?.map(p => ({
+                lat: p.approxLat || 0,
+                lng: p.approxLon || 0,
+                property: p,
+              }))}
+              zoom={2.5}
+              style={{
+                width: '100%',
+                height: '100%',
+                borderTopRightRadius: 20,
+                borderTopLeftRadius: 20,
+                marginBottom: 125,
+              }}
+            />
+            <View style={{ position: 'absolute', bottom: 0, right: 0, left: 0 }}>
+              <Footer />
+            </View>
+          </View>
         ) : (
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{
-              backgroundColor: variables.colors.greenLight,
+              backgroundColor: isMobile ? variables.colors.greenLight : variables.colors.white,
               borderTopLeftRadius: isMobile ? 0 : 20,
               borderTopRightRadius: isMobile ? 0 : 20,
             }}
@@ -239,9 +256,8 @@ export default forwardRef<Handle, Props>(
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 alignItems: 'flex-start',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 padding: variables.spacing.xsmall,
-                // flex: 1,
                 display: 'flex',
                 width: '100%',
               }}>
@@ -254,12 +270,14 @@ export default forwardRef<Handle, Props>(
               ) : propertiesFiltered.length ? (
                 <>
                   {propertiesFiltered.map((property, i) => {
-                    let { images, owner, city, country, id } = property;
-                    images = Array.isArray(images) ? images.join(',') : images;
+                    let { images, owner, city, country, id } = property
+                    images = Array.isArray(images) ? images.join(',') : images
                     return (
                       <View
                         style={[
                           {
+                            flexGrow: 1,
+                            flexShrink: 1,
                             padding: isMobile ? 0 : 20,
                             display: 'flex',
                             justifyContent: 'center',
@@ -312,6 +330,29 @@ export default forwardRef<Handle, Props>(
                       </View>
                     )
                   })}
+                  {(() => {
+                    const remainder = propertiesFiltered.length % columns
+                    const placeholders = remainder === 0 ? 0 : columns - remainder
+
+                    return Array.from({ length: placeholders }).map((_, i) => (
+                      <View
+                        key={`shimmer-${i}`}
+                        style={{ padding: 20 }}
+                      >
+                        <View
+                          style={{
+                            width: variables.propertyCardWidth,
+                            height: 308,
+                            maxWidth: 315,
+                            borderRadius: 10,
+                            paddingVertical: 20,
+                            backgroundColor: variables.colors.white,
+                            marginHorizontal: isMobile ? 0 : 20,
+                          }}
+                        />
+                      </View>
+                    ))
+                  })()}
                   {onShowMore && (
                     <View
                       style={{
@@ -327,7 +368,8 @@ export default forwardRef<Handle, Props>(
                           width: isMobile ? '100%' : 'auto',
                           paddingHorizontal: 10,
                           display: 'flex',
-                          marginTop: isMobile ? 10 : 0,
+                          marginTop: isMobile ? 10 : 71,
+                          marginBottom: isMobile ? 0 : 55,
                         }}
                         icon="arrowDown"
                         iconStyle={{ stroke: 'white' }}
@@ -338,7 +380,7 @@ export default forwardRef<Handle, Props>(
                   )}
                 </>
               ) : (
-                <View style={{ width: '100%' }}>{emptyListView}</View>
+                <View style={{ width: '100%', }}>{emptyListView}</View>
               )}
               {Array.from(
                 {

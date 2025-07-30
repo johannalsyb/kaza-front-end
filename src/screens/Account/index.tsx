@@ -282,7 +282,7 @@ export default (props: Props) => {
           setScrollViewHeight(e.nativeEvent.layout.height)
         }}
         contentContainerStyle={{
-          paddingTop: isMobile ? 0 : 10,
+          paddingTop: isMobile ? 0 : 20,
           // flex: 1,
           flex: isContentSmallerThanScreen() ? 1 : undefined, // This is what should change based on the size of the view
           width: '100%',
@@ -292,18 +292,19 @@ export default (props: Props) => {
           flex: 1,
           backgroundColor: variables.colors.greenLight,
         }}>
-        {route.name === 'Account' && (<>
-          <MainInfo
-            onLayout={e => {
-              setContentHeight(e.nativeEvent.layout.height)
-            }}
-            property={prop}
-            creds={user}
-            onEditPropertyPressed={() => setModal('property')}
-            onEditProfilePressed={() => setModal('user')}
-            onHomePressed={() => props.navigation.navigate('Home')}
-          />
-          {/* <KButton
+        {route.name === 'Account' && (
+          <>
+            <MainInfo
+              onLayout={e => {
+                setContentHeight(e.nativeEvent.layout.height)
+              }}
+              property={prop}
+              creds={user}
+              onEditPropertyPressed={() => setModal('property')}
+              onEditProfilePressed={() => setModal('user')}
+              onHomePressed={() => props.navigation.navigate('Home')}
+            />
+            {/* <KButton
             icon="support"
             text={config?.emails.support || 'Contact support'}
             onPress={() => {
@@ -320,7 +321,7 @@ export default (props: Props) => {
             }}
             color="greenLight" /> */}
 
-        </>
+          </>
         )}
         {route.name === "Myplace" && <MyPlace
           onEditPropertyPressed={onEditPropertyPressed}
@@ -331,10 +332,7 @@ export default (props: Props) => {
           navigation={props.navigation}
         />}
         {isHistory && <History />}
-
-
       </ScrollView>
-
       {isMobile && route.name === "Account" && (
         <View
           style={{
@@ -345,7 +343,6 @@ export default (props: Props) => {
             backgroundColor: variables.colors.greenLight,
             paddingHorizontal: isMobile ? 10 : "5%"
           }}>
-
 
           {/* #TODO Check how it work  */}
 
@@ -360,7 +357,6 @@ export default (props: Props) => {
                 width: '100%',
                 display: m.active ? 'none' : 'flex',
                 borderWidth: 0,
-                // height set :53px
                 height: 53,
                 alignItems: 'center',
                 justifyContent: 'flex-start',
@@ -439,9 +435,8 @@ export default (props: Props) => {
         <View
           style={{
             width: '100%',
-            display: isMobile && route.name !== "Account" ? "none" : 'flex',
+            display: isMobile && route.name !== "Account" ? "none" : 'none',
             flexDirection: isMobile ? 'column' : 'row',
-            // height set :53px
             height: 53,
             alignItems: 'center',
             justifyContent: 'space-between',

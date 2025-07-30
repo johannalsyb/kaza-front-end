@@ -1,5 +1,6 @@
 export {ReactComponent as defaultIcon} from './defaultIcon.svg';
 export {ReactComponent as calendar} from './calendar.svg';
+export {ReactComponent as calendarWhite} from './calendarWhite.svg';
 export {ReactComponent as calendarEdit} from './calendarEdit.svg';
 export {ReactComponent as calendarNew} from './calendarNew.svg';
 export {ReactComponent as calendar27} from './calendar27.svg';
@@ -14,6 +15,7 @@ export {ReactComponent as preferences} from './preferences.svg';
 export {ReactComponent as email} from './email.svg';
 
 export {ReactComponent as logo} from './logo.svg';
+export {ReactComponent as logoBlack} from './logoBlack.svg';
 export {ReactComponent as logoCircle} from './logoCircle.svg';
 export {ReactComponent as logoText} from './logoText.svg';
 export {ReactComponent as logoText2} from './logoText2Beta.svg'; // => Beta by default
@@ -43,12 +45,14 @@ export {ReactComponent as sqm2} from './sqm2.svg';
 export {ReactComponent as delete} from './delete.svg';
 
 export {ReactComponent as bell} from './bell.svg';
+export {ReactComponent as bellNew} from './bellNew.svg';
 export {ReactComponent as bomb} from './bomb.svg';
 export {ReactComponent as matching} from './matching.svg';
 export {ReactComponent as fav} from './fav.svg';
 
 export {ReactComponent as edit} from './edit.svg';
 export {ReactComponent as history} from './history.svg';
+export {ReactComponent as home} from './home.svg';
 export {ReactComponent as user} from './user.svg';
 export {ReactComponent as login} from './login.svg';
 export {ReactComponent as logout} from './logout.svg';

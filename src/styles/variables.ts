@@ -24,6 +24,7 @@ const variables = {
     darkYellow: '#EBE9D8',
     green: '#84B975',
     orange: '#FF784E',
+    lightGrey: '#F0EEE0'
   },
   font: {
     size: {
@@ -61,7 +62,7 @@ const variables = {
       paddingLeft: 35,
       fontSize: 15,
       lineHeight: 15,
-      
+
     },
   },
   button: {
@@ -120,6 +121,7 @@ const variables = {
   },
   images: {
     defaultPics: '/defaultPics.svg',
+    emptyUserPic: '/emptyuserpic.svg',
     defaultImage: '/defaultImage.svg',
   },
   icon: {
