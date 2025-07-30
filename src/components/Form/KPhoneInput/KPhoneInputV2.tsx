@@ -131,8 +131,7 @@ const styles = StyleSheet.create({
     minWidth: 125,
   },
   input: {
-   
-    borderRadius:20,
+       borderRadius:20,
     fontSize: 16,
     height: 44,
     textAlign: 'left',
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 0,
-    
+    paddingTop:1,
     borderColor: 'none',
 
     height: 40,
@@ -153,6 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 0,
+    paddingTop:4,
     borderWidth: 1,
     borderColor: variables.colors.xLightGray,
     borderRadius: 23,
@@ -285,6 +285,8 @@ export default (props: Props) => {
               Platform.OS === 'web' ? {outlineWidth: 0} : {},
               !!props.error ? styles.formError : {},
             ]}
+            
+                  
           />
           {!!props.error ? (
             <View style={styles.errorContainer}>

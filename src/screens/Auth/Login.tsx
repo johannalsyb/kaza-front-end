@@ -12,11 +12,12 @@ import useIsMobile from '../../hooks/useIsMobile'
 import KIcon from '../../components/KIcon/KIcon'
 import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
 import LeftSide from '../../components/Screens/Auth/LeftSide'
-
+import { showModalRegisterPlaceAtom } from '../../atoms'
+import { useSetAtom } from 'jotai'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
-
 export default ({ navigation }: Props) => {
+  
   const { isMobile } = useIsMobile()
   const authentication = useAuthentication()
 
@@ -25,8 +26,8 @@ export default ({ navigation }: Props) => {
 
   const login = () => {
     authentication.login(creds.email, creds.password)
+  
   }
-
 
   return (
     <ScrollView
@@ -46,7 +47,7 @@ export default ({ navigation }: Props) => {
             placeholder="Email"
             value={creds.email}
             onChangeText={email => setCreds({ ...creds, email })}
-            inputStyles={{ paddingVertical: 13 }}
+            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
           />
         </FormField>
 
@@ -67,6 +68,7 @@ export default ({ navigation }: Props) => {
                 style={{ marginRight: 10, opacity: 0.5 }}
               />
             }
+            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
             onRightComponentPress={() => setShowPassword(!showPassword)}
           />
         </FormField>

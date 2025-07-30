@@ -2,17 +2,13 @@ import { useRef } from 'react'
 import { Pressable, View, ViewStyle, Animated } from "react-native"
 import useAuthentication from "../../hooks/useAuthentication";
 import { CircleImage } from "../CircleImage/CircleImage";
-import { useNavigationContainerRef, useRoute } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useRoute } from "@react-navigation/native";
 import { NavStackParamList } from "../../navigation/screens";
 import KButton from "../KButton/KButton";
 import useIsMobile from "../../hooks/useIsMobile";
 import KIcon from "../KIcon/KIcon";
 import variables from "../../styles/variables";
-import { useEffect, useState } from "react";
-import KText from "../KText";
-import { useSetAtom } from "jotai";
-import { showSwapNowAtom } from "../../atoms";
+import { useEffect } from "react";
 
 const size = 30
 
@@ -28,8 +24,6 @@ export default ({
   const auth = useAuthentication();
   const user = auth.user;
   const route = useRoute()
-  const setShowSwapNow = useSetAtom(showSwapNowAtom);
-  const isDefaultImage = !user?.id || user.primaryImage === user.primaryImage;
 
   const translateY = useRef(new Animated.Value(100)).current;
 
@@ -55,6 +49,7 @@ export default ({
         left: 0,
         right: 0,
         zIndex: 101,
+      
         ...style
       }}>
       <View style={{

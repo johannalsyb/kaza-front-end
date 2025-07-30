@@ -1,9 +1,8 @@
-import { StyleSheet } from 'react-native'
-import variables from '../../styles/variables'
-import KImage from '../KImage/KImage'
-import useConfig from '../../hooks/useConfig'
-
-type CircleImageSize = keyof typeof variables.circleImage.size
+import {StyleSheet} from 'react-native';
+import variables from '../../styles/variables';
+import KImage from '../KImage/KImage';
+import useConfig from '../../hooks/useConfig';
+type CircleImageSize = keyof typeof variables.circleImage.size;
 
 type CircleImageProps = {
   source?: string
@@ -31,7 +30,7 @@ export const CircleImage = ({
     source = `${cfg.url}${imageId}${thumbnail ? cfg.thumbnailSuffix : cfg.suffix
       }`
   }
-
+ console.log('defualt img:-',defaultCircleImage)
   return (
     <>
       <KImage
@@ -57,6 +56,5 @@ const styles = StyleSheet.create({
   circleImage: {
     objectFit: 'cover',
     backgroundColor: variables.colors.darkYellow,
-
   },
 })
