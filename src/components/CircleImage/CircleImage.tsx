@@ -2,7 +2,6 @@ import {StyleSheet} from 'react-native';
 import variables from '../../styles/variables';
 import KImage from '../KImage/KImage';
 import useConfig from '../../hooks/useConfig';
-import userdefultImage from '../KIcon/icons/Userpick.svg'
 type CircleImageSize = keyof typeof variables.circleImage.size;
 
 type CircleImageProps = {
