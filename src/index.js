@@ -24,7 +24,7 @@ const firebaseConfig = {
 // Initialize Firebase
 // const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
-/* =========================== */
+/* ============== */
 
 AppRegistry.registerComponent("App", () => App);
 AppRegistry.runApplication("App", {
