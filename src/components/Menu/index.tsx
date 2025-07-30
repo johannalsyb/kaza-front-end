@@ -110,15 +110,15 @@ export default ({
                   backgroundColor: route.name === "Favourites" ? "white" : variables.colors.blackLight
                 }} />
               <KIcon
-                onPress={() => navigate('Chats')}
+                onPress={() => navigate('Chat')}
                 name="chat" size="xlarge" style={{
                   marginRight: 5,
                   width: size,
                   height: size,
                   padding: 11,
                   borderRadius: size,
-                  stroke: route.name === "Chats" ? "black" : "white",
-                  backgroundColor: route.name === "Chats" ? "white" : variables.colors.blackLight
+                  stroke: route.name === "Chat" ? "black" : "white",
+                  backgroundColor: route.name === "Chat" ? "white" : variables.colors.blackLight
                 }} />
               <Pressable onPress={() => { navigate('Account') }}>
                 <CircleImage
