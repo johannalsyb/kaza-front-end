@@ -2,7 +2,8 @@ import {StyleSheet} from 'react-native';
 import variables from '../../styles/variables';
 import KImage from '../KImage/KImage';
 import useConfig from '../../hooks/useConfig';
-
+import KText from '../KText';
+import userdefultImage from '../KIcon/icons/Userpick.svg'
 type CircleImageSize = keyof typeof variables.circleImage.size;
 
 type CircleImageProps = {
@@ -14,7 +15,7 @@ type CircleImageProps = {
   style?: React.CSSProperties;
 };
 
-const defaultCircleImage = variables.images.defaultPics;
+const defaultCircleImage = userdefultImage;
 const circleImageSize = variables.circleImage.size;
 
 export const CircleImage = ({
@@ -33,23 +34,24 @@ export const CircleImage = ({
       thumbnail ? cfg.thumbnailSuffix : cfg.suffix
     }`;
   }
-
+ console.log('defualt img:-',defaultCircleImage)
   return (
     <>
+    
     <KImage
       source={source}
       style={{
         ...circleImageSize[size],
-       borderColor:isDefaultImage? variables.colors.orange:'white',
-       borderStyle: 'solid',
-        borderWidth: 2,
         ...styles.circleImage,
         borderRadius: circleImageSize[size].width / 2,
+    
         ...style,
+       
       }}
       defaultSource={defaultCircleImage}
     />
    
+ 
     </>
     
   );
@@ -59,6 +61,7 @@ const styles = StyleSheet.create({
   circleImage: {
     objectFit: 'cover',
     backgroundColor: variables.colors.darkYellow,
+    
     
   },
 });

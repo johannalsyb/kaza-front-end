@@ -26,6 +26,7 @@ const codeLength = 6
 
 export default (props:{
     onVerified: () => void
+     onClose: () => void;
 }) => {
 
     const [state, setState] = React.useState<{

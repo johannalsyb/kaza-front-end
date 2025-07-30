@@ -28,7 +28,7 @@ export default ({
     const user = auth.user;
     const route = useRoute()
     const setShowSwapNow = useSetAtom(showSwapNowAtom);
- const isDefaultImage = !user?.id || user.primaryImage === user.primaryImage;
+
 
     if(!isMobile) return <></>
     return <View style={{
@@ -37,16 +37,21 @@ export default ({
         alignItems: 'center',
         width: '100%',
         position: 'absolute',
-        bottom: 10,
+        bottom: 0,
         zIndex: 101,
+      
         ...style
     }}>
         <View style={{
-            // width: '90%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
+            width: '100%',
+           
+            justifyContent: 'space-between',
             alignItems: 'center',
+            
+            backgroundColor: 'black',
+                borderTopLeftRadius: 40,
+                borderTopRightRadius:40,
+                
         }}>
             {user ?
             <>
@@ -54,15 +59,17 @@ export default ({
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                borderRadius: size*2,
+              
                 padding: 10,
-                backgroundColor: 'black',
+                justifyContent: 'space-around',
+                width:'100%',
+            
             }}>
                 
                 <KIcon
                     onPress={() => navigate('Home')}
                     name="search" size="xlarge" style={{
-                    marginRight: 5,
+                   
                     width: size,
                     height: size,
                     // padding: 10,
@@ -84,7 +91,7 @@ export default ({
                 <KIcon
                     onPress={() => navigate('Favourites')}
                     name="fav" size="xlarge" style={{
-                    marginRight: 5,
+                   
                     width: size,
                     height: size,
                     padding: 10,
@@ -95,7 +102,7 @@ export default ({
                 <KIcon
                     onPress={() => navigate('Chats')}
                     name="chat" size="xlarge" style={{
-                    marginRight: 5,
+                
                     width: size,
                     height: size,
                     padding: 10,
@@ -112,12 +119,11 @@ export default ({
                         style={{
                             width: size+13,
                             height: size+13,
-                           borderColor:isDefaultImage? variables.colors.orange:'white',
-       borderStyle: 'solid',
-        borderWidth: 2,
+                       
                           
                            
                         }}/>
+                      
                         
                 </Pressable>
             </View>

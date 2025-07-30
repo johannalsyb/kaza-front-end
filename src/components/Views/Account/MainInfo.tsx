@@ -233,7 +233,12 @@ export default (props: Props) => {
                         auth.check(true)
                         .catch(err => console.error(err))
                         .finally(() => setShowModalComponent(null))
-                      }} />)
+                      }}
+                        onClose={() => {
+          setShowModalComponent(null);
+          
+        }}
+                      />)
                     }}/> : null}
                     </>
                   ) : (

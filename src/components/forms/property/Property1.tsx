@@ -150,7 +150,7 @@ export default (props: Props) => {
       </FormField>
 
       {showIncorrectAddress && (
-        <View style={[styles.incorrectAddressBox,{  width: isMobile? '105%':'105%',  }]}>
+        <View style={[styles.incorrectAddressBox,{  width: isMobile? '108%':'105%',  marginTop: isMobile?-14:-25,  }]}>
           <KText style={[styles.incorectaddressMessage , {fontSize: isMobile ? 13 : 15,} ]}
       numberOfLines={1}
           >
@@ -401,11 +401,12 @@ letterSpacing: -0.4,
     maxWidth: 300,
   },
   showMoreButton: {
-
+width:'100%',
+maxWidth:115,
     marginTop: 10,
   flexDirection: 'row',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   alignSelf: 'flex-start',
   gap: 4, 
   },

@@ -96,7 +96,8 @@ const Notification = (props: NotificationProps) => {
       top:0,
       opacity,
       left: 0,
-      zIndex
+      zIndex,
+      marginBottom:isMobile?20:60
     }}>
       <View style={styles.container}>
         <KIcon name="bell" size={29} style={styles.icon} />

@@ -26,15 +26,21 @@ import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButt
 import LeftSide from '../../components/Screens/Auth/LeftSide';
 import VerifyPhone from '../../components/VerifyPhone';
 import {toastSuccess} from '../../components/Toast/Toast';
-import {useSetAtom} from 'jotai';
-import {showComponentAtom} from '../../atoms';
 
+import {showComponentAtom,showModalRegisterPlaceAtom} from '../../atoms';
+import React from 'react'
+import { useSetAtom } from 'jotai'
+import {  } from '../../atoms'
+
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+
+import { useNavigation } from '@react-navigation/native'
 import users from '../../api/users';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
-
+import Modal from '../../components/Modal';
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
-
 export default (props: any) => {
+  const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
   const {isMobile} = useIsMobile();
   const authentication = useAuthentication();
   const {isAuthLoading} = authentication;
@@ -83,14 +89,20 @@ export default (props: any) => {
       const response = await auth.signup(signupBody);
       await login(response.data.email, body.password);
 
-      setShowModalComponent(
-        <VerifyPhone
-          onVerified={() => {
-            toastSuccess('Phone verified successfully');
-            setShowModalComponent(null);
-          }}
-        />,
-      );
+     setShowModalComponent(
+      <VerifyPhone
+        onVerified={() => {
+          toastSuccess('Phone verified successfully');
+          setShowModalComponent(null);
+        
+          setShowModalRegisterPlace(true);
+        }}
+        onClose={() => {
+          setShowModalComponent(null);
+          
+        }}
+      />
+    );
     } catch (err: any) {
       const error = err.json;
       if (
@@ -101,8 +113,10 @@ export default (props: any) => {
       }
     } finally {
       setLoading(false);
+
     }
   };
+  
   const login = async (email: string, password: string) => {
     await auth.login(email, password);
     window.location.href = '/';
@@ -208,7 +222,8 @@ export default (props: any) => {
                       textAlign: 'left',
                       paddingLeft: 20,
                       height: isMobile ? 45 : 40,
-                      paddingVertical: 12,
+                      paddingVertical:5,
+                      marginBottom:isMobile? 4.5:3.5
                     }}
                     error={
                       errors.firstName
@@ -219,6 +234,7 @@ export default (props: any) => {
                 )}
               />
             </FormField>
+
             <FormField
               labelAlign="left"
               
@@ -244,7 +260,8 @@ export default (props: any) => {
                     inputStyles={{
                       textAlign: 'left',
                       paddingLeft: 20,
-                      paddingVertical: 12,
+                      paddingVertical: 6,
+                  marginBottom:isMobile? 4.5:3.5,
                       height: isMobile ? 45 : 40,
                     }}
                     error={
@@ -315,7 +332,8 @@ export default (props: any) => {
                   inputStyles={{
                     textAlign: 'left',
                     paddingLeft: 20,
-                    paddingVertical: 12,
+                    paddingVertical: 8,
+                    marginBottom:3,
                     height: isMobile ? 45 : 40,
                   }}
                   error={
@@ -362,7 +380,7 @@ export default (props: any) => {
                   inputStyles={{
                     textAlign: 'left',
                     paddingLeft: 20,
-                    paddingVertical: 12,
+                    paddingVertical: 8,
                   }}
                   error={
                     errors.password
@@ -398,6 +416,7 @@ export default (props: any) => {
               disabled={loading}
               loading={loading}
             />
+            
             <KText style={styles.dividerContainer}>
               <View style={styles.divider} />
               <span style={{padding: '0 22px'}}>or</span>
@@ -418,6 +437,7 @@ export default (props: any) => {
           />
         </View>
       )}
+  
     </View>
   );
 };
