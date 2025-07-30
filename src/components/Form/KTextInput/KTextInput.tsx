@@ -134,7 +134,7 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
           borderRadius: form.input.borderRadius,
           borderWidth: form.input.borderWidth,
           borderColor: form.colors.border.default,
-          height: 40,
+          height: 'auto',
           ...topStyle,
         }}>
         {leftComponent && (

@@ -18,6 +18,7 @@ const inputStyles: TextStyle = {
   textAlign: 'left',
   height: variables.button.size.medium.height,
   padding: 10,
+  marginBottom: 3,
   marginLeft: 30,
 };
 
@@ -137,7 +138,7 @@ export default (props: Props) => {
             <KIcon
               name="location"
               size="medium"
-              style={{opacity: 0.5, marginTop: 2}}
+              style={{opacity: 0.5, }}
             />
           }
           placeholder="42 Elm Road, New York, NY 10001, USA"

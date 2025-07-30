@@ -47,7 +47,7 @@ export default ({ navigation }: Props) => {
             placeholder="Email"
             value={creds.email}
             onChangeText={email => setCreds({ ...creds, email })}
-            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
+            inputStyles={{ paddingVertical: isMobile?13:10.5 , textAlign:'center'}}
           />
         </FormField>
 
@@ -60,7 +60,9 @@ export default ({ navigation }: Props) => {
             placeholder="Password"
             secureTextEntry={!showPassword}
             value={creds.password}
+         
             onChangeText={password => setCreds({ ...creds, password })}
+            inputStyles={{ paddingVertical: isMobile?13:10.5, textAlign:'center',}}
             rightComponent={
               <KIcon
                 name={showPassword ? 'eyeOpen' : 'eyeClose'}
@@ -68,7 +70,6 @@ export default ({ navigation }: Props) => {
                 style={{ marginRight: 10, opacity: 0.5 }}
               />
             }
-            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
             onRightComponentPress={() => setShowPassword(!showPassword)}
           />
         </FormField>
@@ -83,7 +84,7 @@ export default ({ navigation }: Props) => {
         <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40 }} onPress={login} />
         <KText style={styles.dividerContainer}>
           <View style={styles.divider} />
-          <span>or</span>
+          <span style={{padding: '0 22px'}}>or</span>
           <View style={styles.divider} />
         </KText>
         <GoogleLoginButton />

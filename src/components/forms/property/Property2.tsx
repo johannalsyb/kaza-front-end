@@ -12,7 +12,8 @@ import KNumberInput from "../../Form/KNumberInput/KNumberInput"
 
 const inputStyles: TextStyle = {
     textAlign: "left",
-    height: variables.button.size.medium.height
+    height: variables.button.size.medium.height,
+
 }
 
 type Props = {
@@ -42,7 +43,9 @@ export default (props: Props) => {
                     if (nb > 10000) return
                     props.onChange({ ...props.property, size: nb })
                 }}
+              
                 inputStyles={inputStyles} />
+                
         </FormField>
 
         <FormField
