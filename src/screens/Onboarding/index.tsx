@@ -2,68 +2,64 @@ import {
   ActivityIndicator,
   Button,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   TextInput,
   View,
-} from 'react-native';
-import KText from '../../components/KText';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {NavStackParamList} from '../../navigation/screens';
-import StepView from '../../components/StepView';
-import React, {useEffect, useState} from 'react';
-import {clamp} from '../../utils/math';
-import Step2 from './Step2';
-import Step3 from './Step3';
-import Step4 from './Step4';
-import Step5 from './Step5';
-import variables from '../../styles/variables';
-import {Property} from '../../components/forms/property';
-import properties from '../../api/properties';
-import useAuthentication from '../../hooks/useAuthentication';
-import useIsMobile from '../../hooks/useIsMobile';
-import KIcon from '../../components/KIcon/KIcon';
-import users from '../../api/users';
-import {OnboardingInfo} from '../../common/types/api/auth';
+} from 'react-native'
+import KText from '../../components/KText'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../navigation/screens'
+import StepView from '../../components/StepView'
+import React, { useEffect, useState } from 'react'
+import { clamp } from '../../utils/math'
+import Step2 from './Step2'
+import Step3 from './Step3'
+import Step4 from './Step4'
+import Step5 from './Step5'
+import variables from '../../styles/variables'
+import { Property } from '../../components/forms/property'
+import properties from '../../api/properties'
+import useAuthentication from '../../hooks/useAuthentication'
+import useIsMobile from '../../hooks/useIsMobile'
+import KIcon from '../../components/KIcon/KIcon'
+import users from '../../api/users'
+import { OnboardingInfo } from '../../common/types/api/auth'
+import KAlert from '../../components/KAlert'
+// import Notification from '../../components/Screens/Onboarding/CalendarComponent/Notification'
 // import Step6 from "./Step6";
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>;
+type Props = NativeStackScreenProps<NavStackParamList, 'Onboarding'>
 // & {
 //   step: number,
 // };
 
 export const onboardingSteps: {
-  icon: string;
-  title: string;
-  subtitle?: string;
-  content?: JSX.Element;
+  icon: string
+  title: string
+  subtitle?: string
+  content?: JSX.Element
 }[] = [
-  {
-    icon: '✋',
-    title: 'Tell us more about you',
-  },
-  {
-    icon: '🏡',
-    title: 'About your place',
-  },
-  {
-    icon: '🤓',
-    title: 'A bit more details',
-  },
-  {
-    icon: '📷',
-    title: 'Time to show off',
-    subtitle: 'Minimum 3 pictures',
-  },
-  {
-    icon: '✈️',
-    title: 'Finally, tell us about your trip!',
-  },
-  // {
-  //   icon: '💸',
-  //   title: 'Registration fee',
-  // },
-];
+    {
+      icon: '🏡',
+      title: 'About your place',
+    },
+    {
+      icon: '🤓',
+      title: 'A bit more details',
+    },
+    {
+      icon: '📷',
+      title: 'Time to show off',
+      subtitle: 'Minimum 4 pictures',
+    },
+    {
+      icon: 'calendarNew',
+      title: 'What’s the availabilities of your place?',
+    },
+  ]
 
 export const defaultProperty: Property = {
   location: '',
@@ -74,31 +70,31 @@ export const defaultProperty: Property = {
   bedrooms: 1,
   beds: 1,
   bathrooms: 1,
-  bedroomsBeds: [{single: 0, double: 1}],
+  bedroomsBeds: [{ single: 0, double: 1 }],
   pics: [],
-};
+}
 
-let callback: (() => void) | undefined;
+let callback: (() => void) | undefined
 
 export default (props: Props) => {
-  const [currentStep, setCurrentStep] = useState<number | undefined>();
-  const [property, setProperty] = useState<Property>();
-  const {user} = useAuthentication();
-  const {isMobile, height} = useIsMobile();
+  const [currentStep, setCurrentStep] = useState<number | undefined>()
+  const [property, setProperty] = useState<Property>()
+  const { user } = useAuthentication()
+  const { isMobile, height } = useIsMobile()
 
   const navigationListenerFn = (e: any) => {
-    if (currentStep === 1) return props.navigation.push('Login');
-    if (!props.route?.params) return;
+    if (currentStep === 1) return props.navigation.push('Login')
+    if (!props.route?.params) return
     if (
       currentStep === undefined &&
       props.route.params.step === onboardingSteps.length
     ) {
-      callback && callback();
-      return; // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
+      callback && callback()
+      return // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
     }
-    e.preventDefault();
-    stepDown();
-  };
+    e.preventDefault()
+    stepDown()
+  }
 
   useEffect(() => {
     if (!callback) {
@@ -106,94 +102,58 @@ export default (props: Props) => {
       callback = props.navigation.addListener(
         'beforeRemove',
         navigationListenerFn,
-      );
+      )
     }
     return () => {
       // console.log("UNMOUNTING calling callback...")
-      callback && callback();
-    };
-  }, [props.navigation]);
+      callback && callback()
+    }
+  }, [props.navigation])
 
   useEffect(() => {
     Promise.all([users.me.get(), properties.ofUser('me')])
       .then(([me, properties]) => {
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
-        let onboarding: OnboardingInfo;
+        let onboarding: OnboardingInfo
         if (me.data.onboarding) {
-          onboarding = JSON.parse(me.data.onboarding);
+          onboarding = JSON.parse(me.data.onboarding)
         } else {
-          let step = 1;
-          let completed = false;
-          let data: any = defaultProperty;
+          let step = 1
+          let completed = false
+          let data: any = defaultProperty
           if (properties.data.length) {
-            data = {};
-            step = 5;
+            data = {}
+            step = 5
             if (me.data.payment) {
-              step = 6; // If the user has already paid, skip to the end
-              completed = true;
+              step = 6 // If the user has already paid, skip to the end
+              completed = true
             }
           }
-          onboarding = {step, data, completed};
+          onboarding = { step, data, completed }
         }
 
-        if (onboarding.completed) return props.navigation.navigate('Success');
+        if (onboarding.completed) return props.navigation.navigate('Success')
 
         const propData =
           onboarding.data && Object.keys(onboarding.data).length
             ? onboarding.data
-            : defaultProperty;
+            : defaultProperty
 
         if (properties.data.length) {
-          setProperty({...propData, id: properties.data[0].id});
+          setProperty({ ...propData, id: properties.data[0].id })
         } else {
-          setProperty(propData);
+          setProperty(propData)
         }
-        setCurrentStep(onboarding.step);
-        // if(currentStep === 1) {
-        //   if(user) setCurrentStep(2)
-        // } else {
-        //   if(!property || !property.id) {
-        //     properties.ofUser("me")
-        //     .then(({data}) => {
-        //       if(!data[0]) return;
-        //       return properties.get(data[0].id)
-        //     })
-        //     .then(r => {
-        //       if(!r || !r?.data) return;
-        //       const pics = typeof r.data.images === "string" ? (r.data.images.length ? r.data.images.split(",") : []) : r.data.images
-        //       const p:Property = {
-        //         id: r.data.id,
-        //         location: r.data.address,
-        //         type: r.data.type,
-        //         amenities: r.data.amenities.split(","),
-        //         petFriendly: !!r.data.pets,
-        //         size: r.data.sizeM2,
-        //         bedrooms: r.data.bedrooms,
-        //         beds: r.data.beds,
-        //         bathrooms: r.data.bathrooms,
-        //         bedroomsBeds: new Array(r.data.bedrooms).fill(null).map(b => ({single: 1, double: 0})),
-        //         pics,
-        //       }
-        //       setProperty(p)
-        //     })
-        //     .catch(err => setProperty(defaultProperty))
-        //   } else {
-        //     setProperty(defaultProperty)
-        //   }
-        // }
+        setCurrentStep(onboarding.step)
       })
       .catch(err => {
         // We're most likely not logged in
-        setCurrentStep(1);
-      });
-  }, []);
-
-  // useEffect(() => {
-  //   console.log("property", property)
-  // }, [property])
+        setCurrentStep(1)
+      })
+  }, [])
 
   const stepUp = (v = (currentStep || 1) + 1) => {
-    const vv = clamp(v, 1, onboardingSteps.length);
+    const vv = clamp(v, 1, onboardingSteps.length)
     return users.me
       .update({
         onboarding: JSON.stringify({
@@ -203,13 +163,13 @@ export default (props: Props) => {
         }),
       })
       .then(() => {
-        setCurrentStep(vv);
-        props.navigation.push('Onboarding', {step: vv});
-      });
-  };
+        setCurrentStep(vv)
+        props.navigation.push('Onboarding', { step: vv })
+      })
+  }
 
   const stepDown = (v = (currentStep || 2) - 1) => {
-    const vv = clamp(v, 1, onboardingSteps.length);
+    const vv = clamp(v, 1, onboardingSteps.length)
     return users.me
       .update({
         onboarding: JSON.stringify({
@@ -219,14 +179,14 @@ export default (props: Props) => {
         }),
       })
       .then(() => {
-        setCurrentStep(vv);
-        props.navigation.push('Onboarding', {step: vv});
+        setCurrentStep(vv)
+        props.navigation.push('Onboarding', { step: vv })
       })
       .catch(err => {
-        console.log(err);
-        props.navigation.push('Login');
-      });
-  };
+        console.log(err)
+        props.navigation.push('Login')
+      })
+  }
 
   const finish = () => {
     return users.me
@@ -239,223 +199,241 @@ export default (props: Props) => {
       })
       .then(() => {
         // console.log("FINISHED, calling callback to unsubscribe...")
-        callback && callback();
-        props.navigation.navigate('Success');
-      });
-  };
+        callback && callback()
+        props.navigation.navigate('Success')
+      })
+  }
 
-  // if(user && !property) {
-  //   return <Pressable onPress={() => {
-  //     // alert(currentStep)
-  //     // setCurrentStep(2)
-  //     finish()
-  //   }}>
-  //     {user.id}
-  //     <ActivityIndicator />
-  //   </Pressable>
-  // }
-
-  // if(property) {
-  onboardingSteps[1].content = (
+  onboardingSteps[0].content = (
     <Step2
       property={property || defaultProperty}
       onChange={setProperty}
-      onNext={() => stepUp(3)}
+      onNext={() => stepUp(2)}
     />
-  );
-  onboardingSteps[2].content = (
+  )
+  onboardingSteps[1].content = (
     <Step3
+      property={property || defaultProperty}
+      onChange={setProperty}
+      onNext={() => stepUp(3)}
+      onPrev={() => stepDown(1)}
+    />
+  )
+  onboardingSteps[2].content = (
+    <Step4
       property={property || defaultProperty}
       onChange={setProperty}
       onNext={() => stepUp(4)}
       onPrev={() => stepDown(2)}
     />
-  );
+  )
   onboardingSteps[3].content = (
-    <Step4
-      property={property || defaultProperty}
+    <Step5
       onChange={setProperty}
-      onNext={() => stepUp(5)}
-      onPrev={() => stepDown(3)}
-    />
-  );
-  onboardingSteps[4].content = (
-    <Step5 onChange={p => {}} onNext={finish} onPrev={() => stepDown(4)} />
-  );
-  // onboardingSteps[5].content = (
-  //   <Step6 onNext={finish} onPrev={() => stepDown(5)} />
-  // );
-  // }
+      property={property || defaultProperty}
+      onNext={finish} onPrev={() => stepDown(3)} />
+  )
 
-  const currentStepObject = onboardingSteps[(currentStep || 1) - 1];
-  const Comp = isMobile ? ScrollView : View;
+  const currentStepObject = onboardingSteps[(currentStep || 1) - 1]
+  const Comp = isMobile ? ScrollView : View
 
-  const ContentView = () => (
-    <View
-      style={{
-        width: isMobile ? '90%' : '70%',
-        zIndex: 10,
-        flex: 1,
-        marginTop: 20,
-        justifyContent: isMobile ? 'flex-start' : 'center',
-        alignItems: isMobile ? 'flex-start' : 'center',
-      }}>
-      {currentStepObject.content}
-    </View>
-  );
 
   return (
-    <Comp
-      style={{
-        display: 'flex',
-        flex: 1,
-        backgroundColor: 'white',
-        flexDirection: isMobile ? 'column' : 'row',
-      }}
-      contentContainerStyle={{
-        display: 'flex',
-        alignItems: 'center',
-        flex: 1,
-        backgroundColor: 'white',
-        flexDirection: isMobile ? 'column' : 'row',
-      }}>
-      <View
+    <>
+      <Comp
         style={{
           display: 'flex',
-          justifyContent: 'center',
+          flex: 1,
+          backgroundColor: 'white',
+          flexDirection: isMobile ? 'column' : 'row',
+        }}
+        contentContainerStyle={{
+          display: 'flex',
           alignItems: 'center',
-          flexDirection: 'column',
-          paddingBottom: 30,
-          paddingTop: 20,
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-          zIndex: 1,
-          width: isMobile ? '100%' : undefined,
-          // height: isMobile ? "auto" : '100%',
-          flex: isMobile ? undefined : 1,
-          backgroundColor: variables.colors.greenLight,
+          flex: 1,
+          backgroundColor: 'white',
+          flexDirection: isMobile ? 'column' : 'row',
         }}>
-        {isMobile && (
-          <StepView
-            number={onboardingSteps.length}
-            current={currentStep || 1}
-            style={{
-              height: 3,
-              width: '90%',
-              flex: 1,
-              opacity: !currentStep ? 0 : 1,
-            }}
-          />
-        )}
-        <KText
+        {isMobile &&
+          <View style={styles.iconBack}>
+            <KIcon
+              name="backArrow"
+              size={40}
+              onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')}
+              style={
+                { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+              }
+            />
+          </View>
+        }
+        <View
           style={{
-            fontSize: isMobile ? 40 : 70,
-            backgroundColor: isMobile ? 'transparent' : 'white',
-            padding: isMobile ? 0 : 10,
-            borderRadius: isMobile ? 0 : 60,
-            width: isMobile ? 'auto' : 120,
-            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            paddingBottom: 30,
+            paddingTop: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            zIndex: 1,
+            width: isMobile ? '100%' : undefined,
+            flex: isMobile ? undefined : 1,
+            backgroundColor: variables.colors.greenLight,
           }}>
-          {currentStepObject.icon}
-        </KText>
-        <KText
-          style={{
-            fontWeight: 'bold',
-            fontSize: isMobile ? 15 : 20,
-            marginTop: isMobile ? 0 : 20,
-          }}>
-          {currentStepObject.title}
-        </KText>
-        {currentStepObject.subtitle && (
-          <KText
-            style={{
-              fontSize: 10,
-              color: variables.colors.grey,
-              marginTop: 5,
-            }}>
-            {currentStepObject.subtitle}
-          </KText>
-        )}
-
-        {!isMobile && (
-          <>
-            <KText style={{marginTop: 20, opacity: !currentStep ? 0 : 1}}>
-              Step {currentStep} of {onboardingSteps.length}
-            </KText>
+            
+          {isMobile && (
             <StepView
               number={onboardingSteps.length}
               current={currentStep || 1}
               style={{
                 height: 3,
                 width: '90%',
-                marginTop: 30,
+                flex: 1,
                 opacity: !currentStep ? 0 : 1,
               }}
             />
-            <Pressable
-              style={{position: 'absolute', top: 0, left: 40}}
-              onPress={() => {
-                Linking.openURL('https://www.kazaswap.co');
-              }}>
-              <KIcon name="logoText2" size={120} />
-            </Pressable>
-            <KText
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                left: 10,
-                fontSize: 10,
-                color: variables.colors.grey,
-              }}>
-              © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-            </KText>
-            <KText
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                right: 20,
-                fontSize: 10,
-                color: variables.colors.grey,
-              }}>
-              ♥️ Made by friends
-            </KText>
-          </>
-        )}
-      </View>
-      <ScrollView
-        contentContainerStyle={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          // paddingBottom: 30,
-          flex: 1,
-          backgroundColor: 'white',
-          // width: '100%',
-          // justifyContent: isMobile ? "flex-start" : "center"
-        }}
-        style={{
-          flex: 1,
-          width: '100%',
-        }}>
-        {!currentStep ? (
-          <ActivityIndicator
-            color={variables.colors.yellow}
-            size="large"
-            style={{marginTop: 20}}
-          />
-        ) : (
-          <View
+          )}
+          {Boolean(currentStep) && <KText
             style={{
-              width: '90%',
-              zIndex: 10,
-              flex: 1,
-              marginTop: 20,
-              // justifyContent: isMobile ? "flex-start" : "center"
+              fontSize: isMobile ? 40 : 70,
+              backgroundColor: isMobile ? 'transparent' : 'white',
+              padding: isMobile ? 0 : 10,
+              borderRadius: isMobile ? 0 : 60,
+              width: isMobile ? 'auto' : 120,
+              textAlign: 'center',
+              marginTop: isMobile ? 44 : 0
             }}>
-            {currentStepObject.content}
-          </View>
-        )}
-      </ScrollView>
-    </Comp>
-  );
-};
+            {currentStepObject.icon === 'calendarNew' ? <KIcon
+              name={currentStepObject.icon as 'calendarNew'}
+              size={isMobile ? 40 : 70}
+              style={{
+                color: variables.colors.yellow,
+                // marginTop: isMobile ? 44 : 10,
+
+              }} /> :
+              currentStepObject.icon}
+          </KText>}
+          {Boolean(currentStep) && <KText
+            style={styles.title}>
+            {currentStepObject.title}
+          </KText>}
+          {currentStepObject.subtitle && (
+            <KText
+              style={styles.subtitle}>
+              {currentStepObject.subtitle}
+            </KText>
+          )}
+
+          {!isMobile && (
+            <>
+              <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1 }}>
+                Step {currentStep} of {onboardingSteps.length}
+              </KText>
+              <StepView
+                number={onboardingSteps.length}
+                current={currentStep || 1}
+                style={{
+                  height: 3,
+                  width: '90%',
+                  marginTop: 30,
+                  opacity: !currentStep ? 0 : 1,
+                }}
+              />
+              <Pressable
+                style={{ position: 'absolute', top: 0, left: 40 }}
+                onPress={() => {
+                  Linking.openURL('/')
+                }}>
+                <KIcon name="KazaSwapLogoBlackYellowNew" size={120} />
+              </Pressable>
+              <KText
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  left: 10,
+                  fontSize: 10,
+                  color: variables.colors.grey,
+                }}>
+                © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
+              </KText>
+            </>
+          )}
+        </View>
+        
+        <ScrollView
+          contentContainerStyle={{
+            marginHorizontal: 'auto',
+            marginVertical: 40,
+            width: isMobile ? '100%' : 400,
+            paddingHorizontal: isMobile ? 30 : 0,
+            ...(Platform.OS === 'web' && typeof height === 'number'
+              ? { minHeight: isMobile ? 'auto' : height - 60, height: isMobile && currentStep === 4 ? 'calc(100% - 60px)' : 'auto' } as any
+              : {}),
+          }}
+          style={{
+            flex: 1,
+            width: '100%',
+          }}>
+          {!currentStep ? (
+            <ActivityIndicator
+              color={variables.colors.yellow}
+              size="large"
+              style={{ marginTop: 20 }}
+            />
+          ) : (
+            <View
+              style={styles.containerRightSide}>
+              {currentStepObject.content}
+            </View>
+          )}
+        </ScrollView>
+      </Comp>
+      <KAlert />
+
+      {/* <Notification countCredits={5} /> */}
+
+    </>
+  )
+}
+
+const styles = StyleSheet.create({
+  containerRightSide: {
+    zIndex: 10,
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  title: {
+    color: '#000',
+    textAlign: 'center',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 20,
+    fontStyle: 'normal',
+    fontWeight: '700',
+    lineHeight: 23,
+    letterSpacing: -0.5,
+    maxWidth: 243
+  },
+  subtitle: {
+    marginTop: 5,
+    opacity: 0.5,
+    textAlign: 'center',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 13,
+    fontStyle: 'normal',
+    fontWeight: '500',
+    lineHeight: 13,
+    letterSpacing: -0.5
+  },
+  iconBack: {
+    position: 'absolute',
+    top: 40,
+    left: 17,
+    zIndex: 1000
+  }
+})

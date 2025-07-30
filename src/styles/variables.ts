@@ -13,19 +13,23 @@ const variables = {
     black: '#000000',
     blackLight: '#1E1E1E',
     yellow: '#ffe361',
+    lightCream: '#FAF9E7',
     greenLight: '#f7f6e9',
     closeButton: '#7f7230',
     borderGray: '#C6C5BA',
     lightGray: '#aaaaaa',
-    xLightGray: '#cccccc',
+    xLightGray: '#c6c5ba',
     xxLightGray: '#eeeeee',
     grey: '#999',
     darkYellow: '#EBE9D8',
     green: '#84B975',
     orange: '#FF784E',
+    lightGrey: '#F0EEE0'
   },
   font: {
-    size: {},
+    size: {
+      normal: 14,
+    },
     weight: {},
     colors: {},
     family: {
@@ -52,12 +56,13 @@ const variables = {
       placeholder: '#808080',
     },
     input: {
-      borderRadius: 30,
+      borderRadius: 28,
       borderWidth: 1,
       padding: 15,
       paddingLeft: 35,
       fontSize: 15,
-      lineHeight: 20,
+      lineHeight: 15,
+
     },
   },
   button: {
@@ -116,6 +121,7 @@ const variables = {
   },
   images: {
     defaultPics: '/defaultPics.svg',
+    emptyUserPic: '/emptyuserpic.svg',
     defaultImage: '/defaultImage.svg',
   },
   icon: {

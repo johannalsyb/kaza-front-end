@@ -1,12 +1,13 @@
 import { ActivityIndicator, Pressable, View } from "react-native"
 import { CSSProperties, RefObject, createRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
-import KFileUpload, {Handle as KFileUploadHandle} from "../Form/KFileUpload"
+import KFileUpload, { Handle as KFileUploadHandle } from "../Form/KFileUpload"
 import variables from "../../styles/variables"
 import KImage from "../KImage/KImage"
 import KIcon from "../KIcon/KIcon"
-import { toastError } from "../Toast/Toast"
+import { toastError, } from "../Toast/Toast"
 import useConfig from "../../hooks/useConfig"
 import useResizeImage, { resizeImage } from "../../hooks/useResizeImage"
+import useIsMobile from '../../hooks/useIsMobile'
 
 type Props = {
     src?: string | null,
@@ -30,7 +31,8 @@ export type Handle = {
     open: () => void,
 }
 
-export const KImageUploadWidth = 155
+export const KImageUploadWidthMobile = 159
+export const KImageUploadWidthDesktop = 120
 
 export default forwardRef<Handle, Props>(({
     src,
@@ -46,40 +48,41 @@ export default forwardRef<Handle, Props>(({
     onLoaded,
     uploadFn,
     deleteFn
-}:Props, ref) => {
+}: Props, ref) => {
     const furef = useRef<KFileUploadHandle>(null)
     const [loading, setLoading] = useState(false)
-    const {config} = useConfig()
+    const { config } = useConfig()
 
     let source = src
-    if(imageId && config) {
+    if (imageId && config) {
         const cfg = config.images[type]
         source = `${cfg.url}${imageId}${thumbnail ? cfg.thumbnailSuffix : cfg.suffix}`
     }
 
     const onFiles = (b64s: string[]) => {
-        if(!b64s.length) return;
+        if (!b64s.length) return
         // if(!img) return;
-        if(!uploadFn) return onLoaded(b64s)
+        if (!uploadFn) return onLoaded(b64s)
 
         console.log("resizing", b64s.length)
         setLoading(true)
         Promise.all(b64s.map(b64 => resizeImage(b64, resizeMaxSize)))
-        .then(resizedB64s => {
-            console.log("uploading", b64s.length)
-            return uploadFn(resizedB64s)
-        })
-        .then(ids => {
-            ids && ids.length && onLoaded(ids)
-        })
-        .catch(e => {
-            console.error(e)
-            toastError("Error uploading image(s)")
-        })
-        .finally(() => {
-            setLoading(false)
-        })
+            .then(resizedB64s => {
+                console.log("uploading", b64s.length)
+                return uploadFn(resizedB64s)
+            })
+            .then(ids => {
+                ids && ids.length && onLoaded(ids)
+            })
+            .catch(e => {
+                console.error(e)
+                toastError("Error uploading image(s)")
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }
+    
 
     useImperativeHandle(ref, () => ({
         onFiles,
@@ -89,19 +92,19 @@ export default forwardRef<Handle, Props>(({
     useEffect(() => {
         onLoading && onLoading(loading)
     }, [loading])
-
+    const { isMobile } = useIsMobile()
     const view = <View
-    style={{
-        width: KImageUploadWidth,
-        height: KImageUploadWidth,
-        borderWidth: 1,
-        borderColor: variables.colors.borderGray,
-        borderRadius: 20, 
-        marginTop: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-    }}>
+        style={{
+            width: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
+            height: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
+            borderWidth: 1,
+            borderColor: variables.colors.borderGray,
+            borderRadius: 20,
+            marginTop: 10,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+        }}>
         {loading ?
             <View style={{
                 position: "absolute",
@@ -127,7 +130,7 @@ export default forwardRef<Handle, Props>(({
                             objectFit: "cover",
                             borderRadius: 20,
                             ...imageStyle
-                        }}/>
+                        }} />
                     <View style={{
                         position: "absolute",
                         top: -5,
@@ -137,38 +140,40 @@ export default forwardRef<Handle, Props>(({
                             name="crossCircle"
                             size="medium"
                             style={{
-                                backgroundColor: variables.colors.closeButton,
+                                backgroundColor: variables.colors.orange,
                                 borderRadius: 100,
                                 padding: 5,
                             }}
                             onPress={() => {
                                 setLoading(true)
-                                if(!imageId || !deleteFn) return onDeleted()
+                                if (!imageId || !deleteFn) return onDeleted()
                                 deleteFn(imageId)
-                                .then(() => {
-                                    onDeleted && onDeleted()
-                                })
-                                .catch(e => {
-                                    console.error(e)
-                                    toastError("Error deleting image")
-                                })
-                                .finally(() => {
-                                    setLoading(false)
-                                })
-                            
+                                    .then(() => {
+                                        onDeleted && onDeleted()
+                                    })
+                                    .catch(e => {
+                                        console.error(e)
+                                        toastError("Error deleting image")
+                                    })
+                                    .finally(() => {
+                                        setLoading(false)
+                                    })
+
                             }}
-                            />
+                        />
+                    
                     </View>
                 </>
-            :
-            <KIcon name="addPicture" size="large" />}
+                :
+                <KIcon name="addPicture" size="large" />}
         <KFileUpload
             onFiles={f => {
                 // console.log(f)
                 onFiles(f)
             }}
             multiple={multiple}
-            ref={furef}/>
+            ref={furef} />
+            
     </View>
 
     return pressable ? <Pressable onPress={e => {

@@ -2,7 +2,7 @@ name: Deploy Frontend to Staging
 on:
   push:
     branches:
-      - staging  # This triggers deployment on push to 'staging' branch
+      - stg  # This triggers deployment on push to 'staging' branch
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest

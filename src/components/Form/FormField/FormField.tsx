@@ -1,38 +1,57 @@
-import React from 'react';
-import {StyleSheet, Text, View, ViewStyle} from 'react-native';
-import Gap from '../../Gap/Gap';
+import React from 'react'
+import { StyleSheet, Text, View, ViewStyle } from 'react-native'
+import Gap from '../../Gap/Gap'
+import useIsMobile from '../../../hooks/useIsMobile'
 
 type Props = {
-  style?: ViewStyle;
-  label: string | React.ReactNode;
-  labelAlign?: 'left' | 'center' | 'right';
-  children: React.ReactNode;
-};
+  style?: ViewStyle
+  label?: string | React.ReactNode
+  labelAlign?: 'left' | 'center' | 'right'
+  children: React.ReactNode
+  gapBeforeChildren?: boolean
+  gapAfterChildren?: boolean
+}
 
-const FormField = ({style, label, labelAlign = 'left', children}: Props) => {
+const FormField = (props: Props) => {
+  const {
+    style,
+    label,
+    labelAlign = 'left',
+    children,
+    gapBeforeChildren = true,
+    gapAfterChildren = true } = props
+  const { isMobile } = useIsMobile()
   return (
-    <View style={[styles.container, style]}>
-      <View style={styles.labelContainer}>
-        {typeof label === "string" ? <Text style={[styles.label, {textAlign: labelAlign}]}>{label}</Text> : label}
-      </View>
-      <Gap vertical size="xsmall" />
+    <View style={[styles.container, style, isMobile && { marginBottom: 15 }]}>
+      {label && <View style={styles.labelContainer}>
+        {typeof label === "string" ? <Text style={[styles.label, { textAlign: labelAlign }]}>{label}</Text> : label}
+      </View>}
+      {gapBeforeChildren && <Gap vertical size="xsmall" />}
       {children}
-      <Gap vertical size="xsmall" />
+      {gapAfterChildren && <Gap vertical size="xsmall" />}
     </View>
-  );
-};
+  )
+}
 
-export default FormField;
+export default FormField
 
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
     width: '100%',
+    marginBottom: 25
   },
   labelContainer: {
     width: '100%',
+    marginBottom: 15,
   },
   label: {
-    opacity: 0.5,
+    color: '#000',
+    fontFamily: "Plus Jakarta Sans",
+    fontSize: 15,
+    fontStyle: 'normal',
+    fontWeight: '600',
+    lineHeight: 13,
+    letterSpacing: -0.5
   },
-});
+})

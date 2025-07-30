@@ -1,8 +1,16 @@
-import React, { CSSProperties } from 'react';
-import {StyleSheet, Pressable, ViewStyle, Text, ActivityIndicator, View, TextStyle} from 'react-native';
+import React, {CSSProperties} from 'react';
+import {
+  StyleSheet,
+  Pressable,
+  ViewStyle,
+  Text,
+  ActivityIndicator,
+  View,
+  TextStyle,
+} from 'react-native';
 import variables from '../../styles/variables';
 import KText from '../KText';
-import KIcon, { IconName, IconSize } from '../KIcon/KIcon';
+import KIcon, {IconName, IconSize} from '../KIcon/KIcon';
 import useIsMobile from '../../hooks/useIsMobile';
 
 export type KButtonSize = keyof typeof variables.button.size;
@@ -15,9 +23,9 @@ export type KButtonProps = {
   text?: string;
   textStyle?: TextStyle;
   style?: ViewStyle;
-  loading?:boolean;
-  icon?:IconName;
-  iconPosition?:'left' | 'right';
+  loading?: boolean;
+  icon?: IconName;
+  iconPosition?: 'left' | 'right';
   iconSize?: IconSize;
   iconStyle?: CSSProperties;
   onPress: () => void;
@@ -33,8 +41,8 @@ export default function KButton(props: KButtonProps) {
     children,
     style,
     icon,
-    iconPosition = "left",
-    iconSize = "large",
+    iconPosition = 'left',
+    iconSize = 'large',
     textStyle = {},
     iconStyle = {},
     onPress,
@@ -42,7 +50,7 @@ export default function KButton(props: KButtonProps) {
     loading = false,
   } = props;
 
-  const {isMobile} = useIsMobile()
+  const {isMobile} = useIsMobile();
 
   return (
     <Pressable
@@ -53,23 +61,57 @@ export default function KButton(props: KButtonProps) {
         style,
       ]}
       onPress={!disabled ? onPress : () => {}}>
-      {disabled && <View style={{
-        position: "absolute",
-        backgroundColor: color === "primary" ? "rgba(150,150,150,0.5)" : "rgba(0,0,0,0.3)",
-        width: "100%",
-        height: "100%",
-        borderRadius: 50,
-      }}/>}
-      {loading ? 
-        <ActivityIndicator color={textStyles[color].color} /> :
-      children ||
-        <View style={{flexDirection: "row", alignItems: "center", marginLeft: 5, marginRight: 5}}>
-          {icon && iconPosition === "left" && <KIcon name={icon} size={iconSize} style={{marginRight: 5, stroke: textStyles[color].color, ...iconStyle}} />}
-          {text && <KText style={[textStyles[color], textStyle]}>{text}</KText>}
-          {icon && iconPosition === "right" && <KIcon name={icon} size={iconSize} style={{marginLeft: 5, stroke: textStyles[color].color, ...iconStyle}} />}
-        
-          </View>}
-        
+      {disabled && (
+        <View
+          style={{
+            position: 'absolute',
+            backgroundColor:
+              color === 'primary' ? 'rgba(150,150,150,0.5)' : 'rgba(0,0,0,0.3)',
+            width: '100%',
+            height: '100%',
+            borderRadius: 50,
+          }}
+        />
+      )}
+      {loading ? (
+        <ActivityIndicator color={textStyles[color].color} />
+      ) : (
+        children || (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 5,
+              marginRight: 5,
+            }}>
+            {icon && iconPosition === 'left' && (
+              <KIcon
+                name={icon}
+                size={iconSize}
+                style={{
+                  marginRight: 5,
+                  stroke: textStyles[color].color,
+                  ...iconStyle,
+                }}
+              />
+            )}
+            {text && (
+              <KText style={[textStyles[color], textStyle]}>{text}</KText>
+            )}
+            {icon && iconPosition === 'right' && (
+              <KIcon
+                name={icon}
+                size={iconSize}
+                style={{
+                  marginLeft: 5,
+                  stroke: textStyles[color].color,
+                  ...iconStyle,
+                }}
+              />
+            )}
+          </View>
+        )
+      )}
     </Pressable>
   );
 }
@@ -81,10 +123,10 @@ const {
 const containerStyles = StyleSheet.create({
   default: {
     borderRadius: 50,
-    height :53,
+    height: 53,
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize : 10
+    fontSize: 10,
   },
   primary: {backgroundColor: black},
   secondary: {backgroundColor: yellow},

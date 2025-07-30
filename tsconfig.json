@@ -6,5 +6,5 @@
     "lib": ["dom"]
   },
   "exclude": ["functions/**/*"],
-  "include": ["src", "declarations.d.ts"]
+  "include": ["src", "src/declarations/*.d.ts"]
 }

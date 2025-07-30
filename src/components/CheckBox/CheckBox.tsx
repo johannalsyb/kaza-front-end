@@ -20,6 +20,7 @@ const CheckBox: React.FC<CheckBoxProps> = ({checked, name = '', onPress, style, 
         styles.checkBox,
         {
           backgroundColor: checked ? (variables.colors.yellow+(disabled ? "55" : "")) : 'transparent',
+          borderColor: checked ? variables.colors.yellow : variables.colors.borderGray,
         }
       ]}>
       {checked && <KIcon name="tick" />}
@@ -37,8 +38,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkBox: {
-    height: 25,
-    width: 25,
+    height: 24,
+    width: 24,
     borderRadius: 7,
     borderWidth: 1,
     borderColor: borderGray,

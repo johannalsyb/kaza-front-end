@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -6,51 +6,54 @@ import {
   StyleSheet,
   View,
   useColorScheme,
-} from 'react-native';
-import useAuthentication from './hooks/useAuthentication';
-import ToastManager from './components/Toast/ToastManager';
-import Navigation, { Handle } from './navigation';
-import './components/KText';
-import KText from './components/KText';
-import {ClickOutsideProvider} from 'react-native-click-outside';
-import useConfig from './hooks/useConfig';
-import './utils/';
-import variables from './styles/variables';
-import KIcon from './components/KIcon/KIcon';
-import { OnboardingInfo } from './common/types/api/auth';
-import { toastSuccess } from './components/Toast/Toast';
-
+  Platform,
+} from 'react-native'
+import useAuthentication from './hooks/useAuthentication'
+import ToastManager from './components/Toast/ToastManager'
+import Navigation, { Handle } from './navigation'
+import './components/KText'
+import KText from './components/KText'
+import { ClickOutsideProvider } from 'react-native-click-outside'
+import useConfig from './hooks/useConfig'
+import './utils/'
+import variables from './styles/variables'
+import KIcon from './components/KIcon/KIcon'
+import { OnboardingInfo } from './common/types/api/auth'
+import { toastSuccess } from './components/Toast/Toast'
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'dark'
+  if (Platform.OS === 'web') {
+    require('react-datepicker/dist/react-datepicker.css');
+    require('./components/DatePicker/datepickerOverrides.css');
+  }
 
   const backgroundStyle = {
     // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     backgroundColor: variables.colors.greenLight,
-  };
+  }
 
-  const authentication = useAuthentication();
-  const config = useConfig();
-  const {isAuthLoading, user} = authentication;
+  const authentication = useAuthentication()
+  const config = useConfig()
+  const { isAuthLoading, user } = authentication
   const navRef = useRef<Handle>(null)
 
   useEffect(() => {
     authentication.check(true)
-    .then(uu => {
-      /* 19/06/2024 - We stop redirecting to onboarding */ 
-      // if(uu && uu.onboarding) {
-      //   const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
-      //   console.log(onboarding)
-      //   if(!onboarding.completed) {
-      //     setTimeout(() => {
-      //       console.log("Navigating to onboarding")
-      //       navRef.current?.navigate("Onboarding", {step: onboarding.step})
-      //     }, 200)
-      //   }
-      // }
-    })
-    config.load();
-  }, []);
-
+      .then(uu => {
+        /* 19/06/2024 - We stop redirecting to onboarding */
+        // if(uu && uu.onboarding) {
+        //   const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
+        //   console.log(onboarding)
+        //   if(!onboarding.completed) {
+        //     setTimeout(() => {
+        //       console.log("Navigating to onboarding")
+        //       navRef.current?.navigate("Onboarding", {step: onboarding.step})
+        //     }, 200)
+        //   }
+        // }
+      })
+    config.load()
+  }, [])
   return (
     <SafeAreaView
       style={[
@@ -73,11 +76,13 @@ function App(): JSX.Element {
           }}>
             <KIcon name="logoText2" size={120} style={{}} />
             <ActivityIndicator color={"black"} />
-          </View> : <Navigation ref={navRef}/>}
+          </View> : <Navigation ref={navRef} />}
         </ToastManager>
       </ClickOutsideProvider>
     </SafeAreaView>
-  );
+
+
+  )
 }
 
 const styles = StyleSheet.create({
@@ -97,6 +102,6 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-});
+})
 
-export default App;
+export default App

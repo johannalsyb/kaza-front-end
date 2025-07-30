@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
+} from 'react'
 import {
   ActivityIndicator,
   Platform,
@@ -19,12 +19,12 @@ import {
   TextStyle,
   View,
   ViewStyle,
-} from 'react-native';
-import Gap from '../../Gap/Gap';
-import variables from '../../../styles/variables';
-import {useCloseFromOutside} from '../../../hooks/useCloseFromOutside';
+} from 'react-native'
+import Gap from '../../Gap/Gap'
+import variables from '../../../styles/variables'
+import { useCloseFromOutside } from '../../../hooks/useCloseFromOutside'
 
-const fetchSuggestionsAfterXSeconds = 1;
+const fetchSuggestionsAfterXSeconds = 1
 
 export type AutocompleteType =
   | 'email'
@@ -33,23 +33,23 @@ export type AutocompleteType =
   | 'name'
   | 'name-given'
   | 'name-family'
-  | 'tel';
+  | 'tel'
 
 export interface KInputProps extends TextInputProps {
-  autoComplete?: AutocompleteType;
-  leftComponent?: React.ReactNode;
-  onLeftComponentPress?: () => void;
-  error?: string | ReactNode;
-  inputStyles?: TextStyle | null;
-  topStyle?: ViewStyle;
-  rightComponent?: React.ReactNode | null;
-  onRightComponentPress?: () => void;
-  onChangeText?: ((text: string) => void) | undefined;
-  setError?: (error: ReactElement | null) => void;
-  editable?: boolean;
-  suggestionCallback?: (text: string) => Promise<string[]>;
-  onSuggestionSelected?: (text: string) => void;
-  attachments?: React.ReactNode[];
+  autoComplete?: AutocompleteType
+  leftComponent?: React.ReactNode
+  onLeftComponentPress?: () => void
+  error?: string | ReactNode
+  inputStyles?: TextStyle | null
+  topStyle?: ViewStyle
+  rightComponent?: React.ReactNode | null
+  onRightComponentPress?: () => void
+  onChangeText?: ((text: string) => void) | undefined
+  setError?: (error: ReactElement | null) => void
+  editable?: boolean
+  suggestionCallback?: (text: string) => Promise<string[]>
+  onSuggestionSelected?: (text: string) => void
+  attachments?: React.ReactNode[]
 }
 
 const KTextInput = forwardRef<TextInput, KInputProps>(
@@ -77,52 +77,53 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
     },
     ref,
   ) => {
-    const timeoutId = useRef<NodeJS.Timeout | null>(null);
-    const [focused, setFocused] = useState(false);
-    const [suggestionList, setSuggestionList] = useState<string[]>([]);
-    const [textIndexHovered, setTextIndexHovered] = useState(-1);
-    const [showSuggestions, setShowSuggestions] = useState(false);
+    const timeoutId = useRef<NodeJS.Timeout | null>(null)
+    const [focused, setFocused] = useState(false)
+    const [suggestionList, setSuggestionList] = useState<string[]>([])
+    const [textIndexHovered, setTextIndexHovered] = useState(-1)
+    const [showSuggestions, setShowSuggestions] = useState(false)
     const closeSuggestionRef = useCloseFromOutside(
       showSuggestions,
       setShowSuggestions,
-    );
-    const [loading, setLoading] = useState(false);
+    )
+    const [loading, setLoading] = useState(false)
 
-    const additional = {} as KInputProps;
+    const additional = {} as KInputProps
     if (Platform.OS === 'android') {
-      additional.autoComplete = autoComplete; // Android specific value. Can extend this for any other platform specific values.
+      additional.autoComplete = autoComplete // Android specific value. Can extend this for any other platform specific values.
     }
 
     const handleSuggestion = async (text: string) => {
-      if (!suggestionCallback) return;
-      clearTimeout(timeoutId.current as NodeJS.Timeout);
+      if (!suggestionCallback) return
+      clearTimeout(timeoutId.current as NodeJS.Timeout)
       if (text.length > 2) {
-        setLoading(true);
+        setLoading(true)
         timeoutId.current = setTimeout(async () => {
           try {
-            const suggestions = await suggestionCallback(text);
+            const suggestions = await suggestionCallback(text)
             setSuggestionList(
-              suggestions.length ? suggestions : ['No place found!'],
-            );
+              // suggestions.length ? suggestions : ['No place found!'],
+              suggestions
+            )
           } catch (err) {
-            console.log(err);
+            console.log(err)
             // setSuggestionList(['testtt']);
           } finally {
-            setLoading(false);
+            setLoading(false)
           }
-        }, fetchSuggestionsAfterXSeconds * 1000);
+        }, fetchSuggestionsAfterXSeconds * 1000)
       } else {
-        setSuggestionList([]);
+        setSuggestionList([])
       }
-    };
+    }
 
     useEffect(() => {
       if (suggestionList.length) {
-        setShowSuggestions(true);
+        setShowSuggestions(true)
       } else {
-        setShowSuggestions(false);
+        setShowSuggestions(false)
       }
-    }, [suggestionList]);
+    }, [suggestionList])
 
     return (
       <SafeAreaView
@@ -133,6 +134,7 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
           borderRadius: form.input.borderRadius,
           borderWidth: form.input.borderWidth,
           borderColor: form.colors.border.default,
+          height: 40,
           ...topStyle,
         }}>
         {leftComponent && (
@@ -147,26 +149,27 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
           ref={ref}
           allowFontScaling={false}
           placeholderTextColor={form.colors.placeholder}
+          maxFontSizeMultiplier={1}
           style={[
             styles.formInput,
             focused ? styles.formFocused : {},
             !!error ? styles.formError : {},
-            leftComponent ? {paddingLeft: form.input.paddingLeft} : {},
+            leftComponent ? { paddingLeft: form.input.paddingLeft } : {},
             inputStyles,
           ]}
           onChangeText={value => {
-            setError && setError(null);
-            onChangeText && onChangeText(value);
-            handleSuggestion(value);
+            setError && setError(null)
+            onChangeText && onChangeText(value)
+            handleSuggestion(value)
           }}
           editable={editable}
           onFocus={e => {
-            setFocused(true);
-            onFocus && onFocus(e);
+            setFocused(true)
+            onFocus && onFocus(e)
           }}
           onBlur={e => {
-            setFocused(false);
-            onBlur && onBlur(e);
+            setFocused(false)
+            onBlur && onBlur(e)
           }}
           autoCapitalize={autoCapitalize}
           selectionColor={form.colors.border.focus}
@@ -202,16 +205,17 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
-        {showSuggestions && (
+        {showSuggestions && suggestionList.length > 0 &&  (
           <View style={styles.suggestion}>
             {suggestionList.map((suggestion, index) => (
+              
               <Pressable
-                disabled={suggestion === 'No place found!'}
+                // disabled={suggestion === 'No place found!'}
                 key={`suggestion_${index}`}
                 onPress={() => {
-                  onChangeText && onChangeText(suggestion);
-                  setSuggestionList([]);
-                  onSuggestionSelected && onSuggestionSelected(suggestion);
+                  onChangeText && onChangeText(suggestion)
+                  setSuggestionList([])
+                  onSuggestionSelected && onSuggestionSelected(suggestion)
                 }}
                 onHoverIn={() => setTextIndexHovered(index)}
                 onHoverOut={() => setTextIndexHovered(-1)}
@@ -221,24 +225,27 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
                     backgroundColor: variables.colors.yellow,
                   },
                 ]}>
+                 
+
                 <Text style={styles.textSuggestion} key={index}>
-                  {suggestion}
+                  {suggestion} 
                 </Text>
+                  
               </Pressable>
             ))}
           </View>
         )}
         {attachments && attachments.length ? (
-          <ScrollView contentContainerStyle={{margin: 1}} horizontal={true}>
+          <ScrollView contentContainerStyle={{ margin: 1 }} horizontal={true}>
             {attachments.map((attachment, index) => attachment)}
           </ScrollView>
         ) : null}
       </SafeAreaView>
-    );
+    )
   },
-);
+)
 
-const {form} = variables;
+const { form } = variables
 
 const styles = StyleSheet.create({
   errorContainer: {
@@ -264,6 +271,9 @@ const styles = StyleSheet.create({
     padding: form.input.padding,
     fontFamily: variables.font.family.regular,
     borderRadius: form.input.borderRadius,
+    maxFontSizeMultiplier: 1,
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
   errorText: {
     color: variables.colors.white,
@@ -301,6 +311,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   textSuggestion: {},
-});
+})
 
-export default KTextInput;
+export default KTextInput

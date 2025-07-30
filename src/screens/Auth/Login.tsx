@@ -1,177 +1,229 @@
-import { useState } from "react";
-import { Button, Image, ImageBackground, TextInput, View } from "react-native";
-import useAuthentication from "../../hooks/useAuthentication";
-import KTextInput from "../../components/Form/KTextInput/KTextInput";
-import KButton from "../../components/KButton/KButton";
-import KText from "../../components/KText";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { NavStackParamList } from "../../navigation/screens";
-import FormField from "../../components/Form/FormField/FormField";
-import variables from "../../styles/variables";
-import useIsMobile from "../../hooks/useIsMobile";
-import KIcon from "../../components/KIcon/KIcon";
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Animated,
+  Easing,
+  Platform
+} from 'react-native'
 
-const TopImg = require("../../assets/Auth/top.webp")
-const LeftImg = require("../../assets/Auth/left_desktop.webp")
+import useAuthentication from '../../hooks/useAuthentication'
+import KTextInput from '../../components/Form/KTextInput/KTextInput'
+import KButton from '../../components/KButton/KButton'
+import KText from '../../components/KText'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../navigation/screens'
+import FormField from '../../components/Form/FormField/FormField'
+import variables from '../../styles/variables'
+import useIsMobile from '../../hooks/useIsMobile'
+import KIcon from '../../components/KIcon/KIcon'
+import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
+import LeftSide from '../../components/Screens/Auth/LeftSide'
+import { showModalRegisterPlaceAtom } from '../../atoms'
+import { useSetAtom } from 'jotai'
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
-
-export default ({
-  route,
-  navigation
-}:Props) => {
-    const {isMobile} = useIsMobile()
-    const authentication = useAuthentication();
-    const {isAuthLoading} = authentication;
-    const [creds, setCreds] = useState({email: '', password: ''});
-    const [showPassword, setShowPassword] = useState(false)
+type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
+export default ({ navigation }: Props) => {
   
-    // useEffect(() => {
-    //   authentication.check();
-    // }, []);
+  const { isMobile } = useIsMobile()
+  const authentication = useAuthentication()
+
+  const [creds, setCreds] = useState({ email: '', password: '' })
+  const [showPassword, setShowPassword] = useState(false)
+
+  // Animations
+  const leftSlideAnim = useRef(new Animated.Value(-700)).current
+
+  const formAnims = [
+    useRef(new Animated.Value(800)).current,
+    useRef(new Animated.Value(800)).current,
+    useRef(new Animated.Value(800)).current,
+    useRef(new Animated.Value(800)).current,
+    useRef(new Animated.Value(800)).current,
+  ]
+
+  useEffect(() => {
+    Animated.timing(leftSlideAnim, {
+      toValue: 0,
+      duration: 700,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start()
+
+    formAnims.forEach((anim, index) => {
+      Animated.timing(anim, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.out(Easing.ease),
+        delay: 100 + index * 100,
+        useNativeDriver: true,
+      }).start()
+    })
+  }, [])
+
+  const login = () => {
+    authentication.login(creds.email, creds.password)
   
-    const login = () => {
-      authentication.login(creds.email, creds.password);
-    };
+  }
 
-    return <View style={{
-      display: 'flex',
-      flexDirection: isMobile ? 'column' : "row",
-      // justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%',
-      // width: "90%",
-      // padding: "15%",
-      flex: 1,
-      position: "relative",
-    }}>
+  return (
+    <ScrollView
+      contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
+      <Animated.View style={{ transform: [{ translateX: leftSlideAnim }], flex: 1, width: '100%' }}>
+        <LeftSide title='Sign In' />
+      </Animated.View>
 
-      <Image
-        source={isMobile ? TopImg : LeftImg}
-        resizeMode={isMobile ? "contain" : "cover"}
-        style={{
-          width: isMobile ? "100%" : "50%",
-          height: isMobile ? 250 : "100%",
-          position: "relative",
-          top: 0,
-          // left: 0,
-          // right: 0,
-          zIndex: -1,
-          borderTopRightRadius: isMobile ? 0 : 30,
-          borderBottomRightRadius: isMobile ? 0 : 30,
-        }}/>
-        {isMobile ?
-          <View style={{
-            height: 150,
-            width: "100%",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: variables.colors.yellow,
-            zIndex: -2,
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            display: isMobile ? "flex" : "none"
-          }}/> : <View style={{
-            position: "absolute",
-            width: "50%",
-            bottom: 50,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}>
-            <KIcon name="logoText2" style={{width: 200, height: 150}} />
-            <KText style={{fontSize: 25, fontWeight: "bold" ,marginBottom: 50}}>Swap your place, explore the world</KText>
-            <KText style={{fontSize: 15, color: variables.colors.grey, width: "90%", textAlign: "left"}}>
-                © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-            </KText>
-          </View>}
+      <View
+        style={[styles.containerLogin,
+        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: 60 }]}>
 
-      <View style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flex: 1,
-        paddingTop: isMobile ? 20 : "15%",
-        paddingBottom: isMobile ? 30 : "15%",
-        paddingLeft: isMobile ? 0 : "15%",
-        paddingRight: isMobile ? 0 : "15%",
-        height: isMobile ? "auto" : "100%",
-      }}>
-        <KText style={{
-          fontSize: isMobile ? 20 : 30,
-          fontWeight: "bold",
-          marginBottom: 20,
-        }}>Sign In</KText>
+        {/* Email */}
+        <Animated.View style={{ transform: [{ translateY: formAnims[0] }], width: '100%', maxWidth: 400 }}>
+          <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
+            <KTextInput
+              placeholder="Email"
+              value={creds.email}
+              onChangeText={email => setCreds({ ...creds, email })}
+              inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
+            />
+          </FormField>
+        </Animated.View>
 
-        <FormField labelAlign="center" label="Email">
-          <KTextInput
-            placeholder="Email"
-            value={creds.email}
-            onChangeText={email => setCreds({...creds, email})}
+        {/* Password */}
+        <Animated.View style={{ transform: [{ translateY: formAnims[1] }], width: '100%', maxWidth: 400 }}>
+          <FormField labelAlign="center" label="Password" gapAfterChildren={false} gapBeforeChildren={false}>
+            <KTextInput
+              placeholder="Password"
+              secureTextEntry={!showPassword}
+              value={creds.password}
+              onChangeText={password => setCreds({ ...creds, password })}
+              rightComponent={
+                <KIcon
+                  name={showPassword ? 'eyeOpen' : 'eyeClose'}
+                  size={'medium'}
+                  style={{ marginRight: 10, opacity: 0.5 }}
+                />
+              }
+            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
+              onRightComponentPress={() => setShowPassword(!showPassword)}
+            />
+          </FormField>
+        </Animated.View>
+
+        {/* Forgot Password */}
+        <Animated.View style={{ transform: [{ translateY: formAnims[2] }], width: '100%', maxWidth: 400 }}>
+          <KText
+            style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
+            onPress={() => navigation.navigate('ForgotPassword')}>
+            <KIcon name="password" size={'medium'} style={{ marginRight: 10, opacity: 0.5 }} />
+            Forgot Password?
+          </KText>
+        </Animated.View>
+
+        {/* Sign In Button */}
+        <Animated.View style={{ transform: [{ translateY: formAnims[3] }], width: '100%', maxWidth: 400 }}>
+          <KButton
+            text="Sign In"
+            style={{ width: '100%', marginTop: isMobile ? 0 : 40 }}
+            onPress={login}
           />
-        </FormField>
+        </Animated.View>
 
-        <FormField labelAlign="center" label="Password">
-          <KTextInput
-            placeholder="Password"
-            secureTextEntry={!showPassword}
-            value={creds.password}
-            onChangeText={password => setCreds({...creds, password})}
-            rightComponent={<KIcon name={showPassword ? "eyeOpen" : "eyeClose"} size={"medium"} style={{marginRight: 10, opacity: .5}}/>}
-            onRightComponentPress={() => setShowPassword(!showPassword)}
-          />
-        </FormField>
+        {/* Divider + Google Login */}
+        <Animated.View style={{ transform: [{ translateY: formAnims[4] }], width: '100%', maxWidth: 400 }}>
+          <KText style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <KText style={{ marginHorizontal: 10, color: '#C6C5BA' }}>or</KText>
+            <View style={styles.divider} />
+          </KText>
+          <GoogleLoginButton />
 
-        <KText
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: "100%",
-            alignItems: "center",
-            marginTop: isMobile ? 0 : 30
-          }}
-          onPress={() => {
-            navigation.navigate('ForgotPassword')
-          }}>
-          <KIcon name="password" size={"medium"} style={{marginRight: 10, opacity: .5}}/>
-          Forgot Password?
-        </KText>
-
-        <KButton
-          text="Sign In"
-          style={{width: "100%", marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 0 : 50}}
-          onPress={login} />
-
-        <KText
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            width: "100%",
-            alignItems: "center",
-            color: variables.colors.grey,
-          }}
-          onPress={() => {
-            navigation.navigate('SignUp')
-          }}>
-          Don't have an account yet?
-          <KIcon name="register" size={"medium"} style={{marginLeft: 20, marginRight: 10, opacity: .5, stroke: "black"}}/>
-          <KText style={{fontWeight: "bold", color: "black"}}>Register</KText>
-        </KText>
-
+          {/* Register */}
+          <KText
+            style={styles.registrationContainer}
+            onPress={() => navigation.navigate('SignUp')}>
+            Don't have an account yet?
+            <KIcon name="register" size={'medium'} style={styles.iconRegister} />
+            <KText style={{ fontWeight: '500', color: 'black' }}>Register</KText>
+          </KText>
+        </Animated.View>
       </View>
-      {!isMobile && <View style={{position: "absolute", top: 20, right: 20}}>
-            <KText onPress={() => {
-                navigation.navigate('Home')
-            }}>{"> Look around"}</KText>
-        </View>}
-      {!isMobile && <KText style={{position: "absolute", bottom: 20, right: 20, fontSize: 13, color: "black"}}>
-        ♥️ Made by friends
-      </KText>}
-    </View>
+
+      {!isMobile && (
+        <View style={{ position: 'absolute', top: 20, right: 20 }}>
+          <KIcon name="closeWithBorder" size={'large'} onPress={() => navigation.navigate('Home')} />
+        </View>
+      )}
+    </ScrollView>
+  )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    height: '100%',
+    flex: 1,
+    position: 'relative',
+    flexDirection: 'row',
+    paddingHorizontal: 0,
+  },
+  containerLogin: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 'auto',
+    flex: 1,
+    width: '100%',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 24,
+  },
+  forgotPassword: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  dividerContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    color: '#C6C5BA',
+    marginVertical: 16
+  },
+  divider: {
+    flex: 1,
+    backgroundColor: '#EFEFEF',
+    height: 1,
+  },
+  registrationContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    alignItems: 'center',
+    color: variables.colors.grey,
+    fontSize: 13,
+    marginTop: 53,
+  },
+  iconRegister: {
+    marginLeft: 10,
+    marginRight: 5,
+    opacity: 0.5,
+    stroke: 'black',
+  },
+  iconHeart: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    fontSize: 13,
+    color: 'black',
+  }
+})

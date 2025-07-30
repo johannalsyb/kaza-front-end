@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import useConfig from '../../hooks/useConfig';
 import variables from '../../styles/variables';
+import { StyleSheet } from 'react-native';
 
 type Props = {
   source?: string;
@@ -45,3 +46,4 @@ const KImage = ({
 };
 
 export default KImage;
+

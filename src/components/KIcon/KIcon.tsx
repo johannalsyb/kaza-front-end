@@ -28,6 +28,7 @@ export default function Icon({name, size = 'small', ...rest}: Props) {
   let sWidth = rest.width ? typeof rest.width === "number" ? rest.width : variables.icon.size[rest.width] : undefined;
   let sHeight = rest.height ? typeof rest.height === "number" ? rest.height : variables.icon.size[rest.height] : undefined;
   let sSize = size ? typeof size === "number" ? size : variables.icon.size[size] : undefined;
+  
   if(sSize) {
     if(!sWidth) sWidth = sSize;
     if(!sHeight) sHeight = sSize;
