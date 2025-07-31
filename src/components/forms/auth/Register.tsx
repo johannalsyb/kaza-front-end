@@ -145,9 +145,11 @@ export default (props:Props) => {
                 setLoading(true);
                 auth.signup({...creds, phone: creds.phone.code+creds.phone.number, onboarding: JSON.stringify({step: 2, data: {}, completed: false}) as any})
                 .then(res => login(creds.email, creds.password))
-                .then(async user => {
-                    props.onCreated && props.onCreated(user!);
-                    if(creds.image) await users.postPictures(user!.id!, [creds.image])
+                .then(async (result) => {
+                    if (result && result.user) {
+                        props.onCreated && props.onCreated(result.user);
+                        if(creds.image) await users.postPictures(result.user.id!, [creds.image])
+                    }
                 })
                 .catch(async (err:ApiResponseError) => {
                     const error = err.json

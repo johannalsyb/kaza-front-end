@@ -43,7 +43,7 @@ export default (props: any) => {
   const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
   const {isMobile} = useIsMobile();
   const authentication = useAuthentication();
-  const {isAuthLoading} = authentication;
+  const {isAuthLoading, user} = authentication;
   const [body, setBody] = useState({
     firstName: '',
     surname: '',
@@ -127,11 +127,18 @@ export default (props: any) => {
   const login = async (email: string, password: string) => {
     const user = await authentication.login(email, password);
     if (user) {
-      if (props.navigation) {
-        props.navigation.navigate('Home');
-      } else {
-        window.location.href = '/';
-      }
+      // Try to navigate to Onboarding after a short delay
+      setTimeout(() => {
+        if (props.navigation) {
+          try {
+            props.navigation.navigate('Onboarding');
+          } catch (error) {
+          }
+        } else {
+          window.location.href = '/';
+        }
+      }); // Delay to ensure authentication state is updated
+    } else {
     }
   };
   return (

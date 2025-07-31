@@ -20,17 +20,20 @@ import useIsMobile from '../../hooks/useIsMobile'
 import KIcon from '../../components/KIcon/KIcon'
 import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
 import LeftSide from '../../components/Screens/Auth/LeftSide'
-import { showModalRegisterPlaceAtom } from '../../atoms'
+import { showModalRegisterPlaceAtom, showComponentAtom } from '../../atoms'
 import { useSetAtom } from 'jotai'
+import VerifyPhone from '../../components/VerifyPhone'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
 export default ({ navigation }: Props) => {
   
   const { isMobile } = useIsMobile()
   const authentication = useAuthentication()
+  const [setShowModalComponent] = [useSetAtom(showComponentAtom)]
 
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
+  const [needsPhoneVerification, setNeedsPhoneVerification] = useState(false)
 
   // Animations
   const leftSlideAnim = useRef(new Animated.Value(-700)).current
@@ -62,9 +65,47 @@ export default ({ navigation }: Props) => {
     })
   }, [])
 
-  const login = () => {
-    authentication.login(creds.email, creds.password)
-  
+  const login = async () => {
+    try {
+      const result = await authentication.login(creds.email, creds.password);
+      if (result.user) {
+        // Login successful - user is verified and logged in
+        // Navigation to Home will be handled automatically by the authentication system
+        // when the user state is set
+      } else if (result.needsVerification) {
+        // Login failed due to unverified phone - show verification modal
+        setNeedsPhoneVerification(true);
+        showPhoneVerificationModal();
+      } else {
+        // Login failed due to invalid credentials
+        // The authentication hook already shows appropriate error messages
+      }
+    } catch (error) {
+      // Handle any other errors
+    }
+  }
+
+  const showPhoneVerificationModal = () => {
+    setShowModalComponent(
+      <VerifyPhone
+        onVerified={async () => {
+          // After verification, try to login again
+          setShowModalComponent(null);
+          setNeedsPhoneVerification(false);
+          
+          // Retry login after verification
+          const result = await authentication.login(creds.email, creds.password);
+          if (result.user) {
+            // Login successful after verification - user state is now set
+            // Navigation to Home will happen automatically via the navigation system
+          }
+        }}
+        onClose={() => {
+          setShowModalComponent(null);
+          setNeedsPhoneVerification(false);
+        }}
+      />
+    );
   }
 
   return (
