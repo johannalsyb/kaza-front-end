@@ -66,3 +66,4 @@ yarn-error.log
 /coverage
 .wrangler/
 .env
+.github/workflows/deploy-staging-frontend.yml
