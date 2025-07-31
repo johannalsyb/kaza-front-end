@@ -190,6 +190,7 @@ export default (props: Props) => {
         style={{
           height: isMobile ? 140 : 'auto',
           paddingTop: isMobile ? 20 : 10,
+          
         }}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
@@ -239,7 +240,7 @@ export default (props: Props) => {
         style={{paddingTop: isMobile ? 20 : 10}}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
-        <View style={[styles.container, {gap: 6}]}>
+        <View style={[styles.container, {gap: 8}]}>
           <KButton
             style={{width: '48%', marginBottom: 10}}
             color={property.petFriendly ? 'primary' : 'light'}
