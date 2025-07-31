@@ -25,4 +25,4 @@ jobs:
         ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
     - name: Deploy to Staging Server
       run: |
-        rsync -avz --delete ./build/ ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:${{ secrets.STAGING_PATH }}
+        rsync -avz --delete ./build/ ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:${{ secrets.PROD_PATH }}
