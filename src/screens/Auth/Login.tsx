@@ -45,7 +45,7 @@ export default ({ navigation }: Props) => {
         style={[styles.containerLogin,
         isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}
         >
-        <View style={{ width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%' }}>
           <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Email"
