@@ -27,6 +27,8 @@ import SlideUpView from '../../../components/SlideUpView'
 
 type PProperty = Property & { bubble?: string }
 
+// this is a test comment for production in main
+
 type Props = {
   properties: PProperty[]
   navigation: NativeStackNavigationProp<
