@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
   View,
   Animated,
-  Easing,
-  Platform
 } from 'react-native'
 
 import useAuthentication from '../../hooks/useAuthentication'
@@ -33,36 +31,6 @@ export default ({ navigation }: Props) => {
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
 
-  // Animations
-  const leftSlideAnim = useRef(new Animated.Value(Platform.OS === 'web' && !isMobile ? -700 : 0)).current
-
-  const formAnims = [
-    useRef(new Animated.Value(800)).current,
-    useRef(new Animated.Value(800)).current,
-    useRef(new Animated.Value(800)).current,
-    useRef(new Animated.Value(800)).current,
-    useRef(new Animated.Value(800)).current,
-  ]
-
-  useEffect(() => {
-    Animated.timing(leftSlideAnim, {
-      toValue: 0,
-      duration: 700,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
-    }).start()
-
-    formAnims.forEach((anim, index) => {
-      Animated.timing(anim, {
-        toValue: 0,
-        duration: 200,
-        easing: Easing.out(Easing.ease),
-        delay: 100 + index * 100,
-        useNativeDriver: true,
-      }).start()
-    })
-  }, [])
-
   const login = () => {
     authentication.login(creds.email, creds.password)
   }
@@ -70,15 +38,15 @@ export default ({ navigation }: Props) => {
   return (
     <ScrollView
       contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-      <Animated.View style={{ transform: [{ translateX: leftSlideAnim }], flex: 1, width: '100%' }}>
+      <View style={{ flex: 1, width: '100%' }}>
         <LeftSide title='Sign In' />
-      </Animated.View>
+      </View>
 
       <View
         style={[styles.containerLogin,
         isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}
         >
-        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[0] : 0 }], width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 400 }}>
           <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Email"
@@ -91,9 +59,9 @@ export default ({ navigation }: Props) => {
               }}
             />
           </FormField>
-        </Animated.View>
+        </View>
 
-        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[1] : 0 }], width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 400 }}>
           <FormField labelAlign="center" label="Password" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Password"
@@ -115,22 +83,22 @@ export default ({ navigation }: Props) => {
               onRightComponentPress={() => setShowPassword(!showPassword)}
             />
           </FormField>
-        </Animated.View>
-        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[2] : 0 }], width: '100%', maxWidth: 400 }}>
+        </View>
+        <View style={{ width: '100%', maxWidth: 400 }}>
           <KText
             style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
             onPress={() => navigation.navigate('ForgotPassword')}>
             <KIcon name="password" size={'medium'} style={{ marginRight: 10, opacity: 0.5 }} />
             Forgot Password?
           </KText>
-        </Animated.View>
+        </View>
         {/* Sign In Button */}
-        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[3] : 0 }], width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 400 }}>
           <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
-        </Animated.View>
+        </View>
 
          {/* Divider + Google Login */}
-        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[4] : 0 }], width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 400 }}>
           {!isMobile && (
               <KText style={styles.dividerContainer}>
                 <View style={styles.divider} />
@@ -150,7 +118,7 @@ export default ({ navigation }: Props) => {
             <KIcon name="register" size={'medium'} style={styles.iconRegister} />
             <KText style={{ fontWeight: '500', color: 'black' }}>Register</KText>
           </KText>
-        </Animated.View>
+        </View>
       </View>
 
       {!isMobile && (
