@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
    
     flex: 1,
-    maxWidth: 410,
+    
     width: '100%',
   },
   title: {
