@@ -230,6 +230,7 @@ export default (props: Props) => {
       contentContainerStyle={{
         flex: isMobile ? undefined : 1,
         width: '100%',
+        height: '100%',
         backgroundColor: isMobile ? variables.colors.greenLight : variables.colors.greenLight,
       }}
       style={{

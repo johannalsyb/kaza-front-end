@@ -40,7 +40,8 @@ export default ({ route, navigation }: Props) => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!properties) return <ActivityIndicator color={variables.colors.yellow} />
+  if (!properties) return null
+  
   return <PropertyList
     loading={loading}
     properties={properties}

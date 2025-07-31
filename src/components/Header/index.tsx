@@ -138,7 +138,7 @@ export default (
       opacity: !searchAvailable ? 0 : 1,
       // flex: 1
     }} />
-  const notificationsIcon = () => <MenuIcon icon="bell" onPress={() => setNotificationsVisible(true)} bubble={bubbles.notifications} />
+  const notificationsIcon = () => <MenuIcon icon="bell" onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
   const editIcon = (fn: () => void) => <MenuIcon icon="edit" onPress={fn} iconStyle={{ stroke: variables.colors.yellow, backgroundColor: "black" }} />
   const shareIcon = (fn: () => void) => <MenuIcon icon="share" onPress={fn} />
   const backIcon = () => <MenuIcon icon="back" onPress={() => {
