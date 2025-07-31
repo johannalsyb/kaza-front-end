@@ -58,8 +58,8 @@ const variables = {
     input: {
       borderRadius: 28,
       borderWidth: 1,
-      padding: 15,
-      paddingLeft: 35,
+      padding: 10.4,
+      paddingLeft: 55,
       fontSize: 15,
       lineHeight: 15,
 

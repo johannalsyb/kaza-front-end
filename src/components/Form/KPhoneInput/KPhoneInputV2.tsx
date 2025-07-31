@@ -25,7 +25,7 @@ import Dropdown from './Dropdown';
 import {useCloseFromOutside} from '../../../hooks/useCloseFromOutside';
 import {back} from '../../KIcon/icons';
 import ModalList from './ModalList';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const inputStyles: TextStyle = {
   textAlign: 'left',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 0,
-    height: 40,
+    height: 'auto',
     position: 'relative',
     zIndex: 1,
     borderWidth: 1,
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
     width: 1,
     height: 28,
     backgroundColor: '#c6c5ba',
-   
   },
   containerCodeMobileView: {
     paddingLeft: 20,
@@ -131,19 +130,20 @@ const styles = StyleSheet.create({
     minWidth: 125,
   },
   input: {
-       borderRadius:20,
+    borderRadius: 20,
     fontSize: 16,
     height: 44,
     textAlign: 'left',
     paddingVertical: 0,
     paddingLeft: 20,
-    color:variables.colors.black
+  
+    // color:variables.colors.black
   },
   containerPhone: {
     flex: 1,
     paddingLeft: 10,
     paddingRight: 0,
-    paddingTop:1,
+    paddingTop: 1,
     borderColor: 'none',
 
     height: 40,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     paddingRight: 0,
-    paddingTop:4,
+    paddingTop: 4,
     borderWidth: 1,
     borderColor: variables.colors.xLightGray,
     borderRadius: 23,
@@ -280,13 +280,16 @@ export default (props: Props) => {
             placeholder="Phone number"
             style={[
               styles.input,
- 
+              {
+                color: number
+                  ? variables.colors.black
+                  : variables.colors.lightGray,
+                 
+              },
               //@ts-ignore
               Platform.OS === 'web' ? {outlineWidth: 0} : {},
               !!props.error ? styles.formError : {},
             ]}
-            
-                  
           />
           {!!props.error ? (
             <View style={styles.errorContainer}>

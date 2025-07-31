@@ -56,7 +56,7 @@ export default ({
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
       }}>
         {user ?
@@ -65,13 +65,15 @@ export default ({
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               borderTopRightRadius: 40,
               borderTopLeftRadius: 40,
-              padding: 16,
-              gap: 10,
+              paddingVertical: 16,
+              paddingHorizontal:20,
+              gap: 2,
               width: '100%',
               backgroundColor: 'black',
+             
             }}>
               <KIcon
                 onPress={() => navigate('Home')}
@@ -79,7 +81,7 @@ export default ({
                   marginRight: 5,
                   width: size,
                   height: size,
-                  padding: 10,
+                  padding: 11,
                   borderRadius: size,
                   stroke: route.name === "Home" ? "black" : "white",
                   backgroundColor: route.name === "Home" ? "white" : variables.colors.blackLight
@@ -90,7 +92,7 @@ export default ({
                   marginRight: 5,
                   width: size,
                   height: size,
-                  padding: 10,
+                  padding: 11,
                   borderRadius: size,
                   stroke: route.name === "Chats" ? "black" : "white",
                   backgroundColor: route.name === "Chats" ? "white" : variables.colors.blackLight
@@ -102,21 +104,21 @@ export default ({
                   marginRight: 5,
                   width: size,
                   height: size,
-                  padding: 10,
+                  padding: 11,
                   borderRadius: size,
                   stroke: route.name === "Favourites" ? "black" : "white",
                   backgroundColor: route.name === "Favourites" ? "white" : variables.colors.blackLight
                 }} />
               <KIcon
-                onPress={() => navigate('Chats')}
+                onPress={() => navigate('Chat')}
                 name="chat" size="xlarge" style={{
                   marginRight: 5,
                   width: size,
                   height: size,
-                  padding: 10,
+                  padding: 11,
                   borderRadius: size,
-                  stroke: route.name === "Chats" ? "black" : "white",
-                  backgroundColor: route.name === "Chats" ? "white" : variables.colors.blackLight
+                  stroke: route.name === "Chat" ? "black" : "white",
+                  backgroundColor: route.name === "Chat" ? "white" : variables.colors.blackLight
                 }} />
               <Pressable onPress={() => { navigate('Account') }}>
                 <CircleImage
@@ -133,7 +135,7 @@ export default ({
                   } : {
                     width: 34,
                     height: 34,
-                    padding: 6,
+                    padding: 7,
                     borderWidth: 2,
                     borderColor: variables.colors.orange,
                   }}

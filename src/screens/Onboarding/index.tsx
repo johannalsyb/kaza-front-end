@@ -365,8 +365,8 @@ export default (props: Props) => {
           contentContainerStyle={{
             marginHorizontal: 'auto',
             marginVertical: 40,
-            width: isMobile ? '100%' : 400,
-            paddingHorizontal: isMobile ? 30 : 0,
+            width: isMobile ? '100%' : 415,
+            paddingHorizontal: isMobile ? 30 : 10,
             ...(Platform.OS === 'web' && typeof height === 'number'
               ? { minHeight: isMobile ? 'auto' : height - 60, height: isMobile && currentStep === 4 ? 'calc(100% - 60px)' : 'auto' } as any
               : {}),

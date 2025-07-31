@@ -179,7 +179,9 @@
   background: none !important;
   z-index: 1;
 }
-
+.react-calendar__tile--range {
+  background-color: #fff4cb !important;
+}
 .react-calendar__tile--rangeStart::before {
   content: '';
   position: absolute;
@@ -187,9 +189,20 @@
   top: 0;
   bottom: 0;
   right: 0;
-  background: #f7f6e9;; /* новий фон */
+  background: #fff4cb; /* новий фон */
   z-index: -1;
+  margin: auto;
+    left: 0 !important;
+  right: 0 !important;
+  background: #fff4cb !important;
+  border-radius: 0 !important;
  
+}
+.react-calendar__tile--rangeEnd::before {
+  left: 0 !important;
+  right: 0 !important;
+  background: #fff4cb !important;
+  border-radius: 0 !important;
 }
 .react-calendar__tile--rangeStart abbr {
   background: #ffd700;
@@ -198,6 +211,23 @@
   color: black;
   /* border-top-left-radius: 50%;
   border-bottom-left-radius: 50%; */
+}
+/* Keep the circular highlight on start/end dates */
+.react-calendar__tile--rangeStart abbr,
+.react-calendar__tile--rangeEnd abbr {
+  background: #ffd700 !important;
+  border-radius: 50% !important;
+}
+
+/* For single day selection (when start = end) */
+.react-calendar__tile--rangeStart.react-calendar__tile--rangeEnd::before {
+  display: none !important;
+}
+
+/* Update the hover styles */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #fff4cb !important;
 }
 .react-calendar__tile--rangeEnd {
   position: relative;
@@ -210,8 +240,8 @@
   left: 0;
   top: 0;
   bottom: 0;
-  right: 50%;
-  background: #f7f6e9; /* новий фон */
+  right: 0%;
+  background: #fff4cb; /* новий фон */
   z-index: -1;
 }
 
@@ -236,7 +266,7 @@
 }
 
 .react-calendar--selectRange .react-calendar__tile--hover {
-  background-color: #fff4cb;
+ background-color: #fff4cb !important;
 }
 
 .react-calendar__year-view__months .react-calendar__tile--hasActive abbr {

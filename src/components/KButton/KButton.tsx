@@ -96,7 +96,7 @@ export default function KButton(props: KButtonProps) {
               />
             )}
             {text && (
-              <KText style={[textStyles[color], textStyle]}>{text}</KText>
+              <KText style={[textStyles[color], textStyle,]}>{text}</KText>
             )}
             {icon && iconPosition === 'right' && (
               <KIcon

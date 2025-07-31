@@ -23,11 +23,10 @@ import LeftSide from '../../components/Screens/Auth/LeftSide'
 import { showModalRegisterPlaceAtom } from '../../atoms'
 import { useSetAtom } from 'jotai'
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
-export default ({ navigation }: Props) => {
-  
-  const { isMobile } = useIsMobile()
-  const authentication = useAuthentication()
+type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
+export default ({navigation}: Props) => {
+  const {isMobile} = useIsMobile();
+  const authentication = useAuthentication();
 
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
@@ -63,9 +62,8 @@ export default ({ navigation }: Props) => {
   }, [])
 
   const login = () => {
-    authentication.login(creds.email, creds.password)
-  
-  }
+    authentication.login(creds.email, creds.password);
+  };
 
   return (
     <ScrollView
@@ -76,7 +74,7 @@ export default ({ navigation }: Props) => {
 
       <View
         style={[styles.containerLogin,
-        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: 60 }]}>
+        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}>
 
         {/* Email */}
         <Animated.View style={{ transform: [{ translateY: formAnims[0] }], width: '100%', maxWidth: 400 }}>
@@ -85,7 +83,11 @@ export default ({ navigation }: Props) => {
               placeholder="Email"
               value={creds.email}
               onChangeText={email => setCreds({ ...creds, email })}
-              inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
+              inputStyles={{
+                paddingTop: isMobile ? 11 : 9,
+                paddingBottom: isMobile ? 15 : 12,
+                textAlign: 'center',
+              }}
             />
           </FormField>
         </Animated.View>
@@ -98,6 +100,11 @@ export default ({ navigation }: Props) => {
               secureTextEntry={!showPassword}
               value={creds.password}
               onChangeText={password => setCreds({ ...creds, password })}
+              inputStyles={{
+                paddingTop: isMobile ? 11 : 9,
+                paddingBottom: isMobile ? 15 : 12,
+                textAlign: 'center',
+              }}
               rightComponent={
                 <KIcon
                   name={showPassword ? 'eyeOpen' : 'eyeClose'}
@@ -105,13 +112,11 @@ export default ({ navigation }: Props) => {
                   style={{ marginRight: 10, opacity: 0.5 }}
                 />
               }
-            inputStyles={{ paddingVertical: 7.5 ,textAlign:'center'}}
               onRightComponentPress={() => setShowPassword(!showPassword)}
             />
           </FormField>
         </Animated.View>
-
-        {/* Forgot Password */}
+        
         <Animated.View style={{ transform: [{ translateY: formAnims[2] }], width: '100%', maxWidth: 400 }}>
           <KText
             style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
@@ -123,27 +128,28 @@ export default ({ navigation }: Props) => {
 
         {/* Sign In Button */}
         <Animated.View style={{ transform: [{ translateY: formAnims[3] }], width: '100%', maxWidth: 400 }}>
-          <KButton
-            text="Sign In"
-            style={{ width: '100%', marginTop: isMobile ? 0 : 40 }}
-            onPress={login}
-          />
+          <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
         </Animated.View>
 
-        {/* Divider + Google Login */}
+         {/* Divider + Google Login */}
         <Animated.View style={{ transform: [{ translateY: formAnims[4] }], width: '100%', maxWidth: 400 }}>
-          <KText style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <KText style={{ marginHorizontal: 10, color: '#C6C5BA' }}>or</KText>
-            <View style={styles.divider} />
-          </KText>
+          {!isMobile && (
+              <KText style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <span style={{padding: '0 22px'}}>or</span>
+                <View style={styles.divider} />
+              </KText>
+            )}
           <GoogleLoginButton />
 
           {/* Register */}
           <KText
-            style={styles.registrationContainer}
+            style={[
+            styles.registrationContainer,
+            {paddingBottom: isMobile ? 31 : 0},
+            ]}
             onPress={() => navigation.navigate('SignUp')}>
-            Don't have an account yet?
+             <KText numberOfLines={1}> Don't have an account yet?</KText>
             <KIcon name="register" size={'medium'} style={styles.iconRegister} />
             <KText style={{ fontWeight: '500', color: 'black' }}>Register</KText>
           </KText>
@@ -172,10 +178,12 @@ const styles = StyleSheet.create({
   containerLogin: {
     display: 'flex',
     justifyContent: 'space-between',
+    paddingHorizontal: 6,
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
     flex: 1,
+    maxWidth: 410,
     width: '100%',
   },
   title: {
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     color: '#C6C5BA',
-    marginVertical: 16
+    marginVertical: 16,
   },
   divider: {
     flex: 1,
@@ -205,13 +213,15 @@ const styles = StyleSheet.create({
   },
   registrationContainer: {
     display: 'flex',
+
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',
     alignItems: 'center',
     color: variables.colors.grey,
+
     fontSize: 13,
-    marginTop: 53,
+    marginTop: 50,
   },
   iconRegister: {
     marginLeft: 10,
