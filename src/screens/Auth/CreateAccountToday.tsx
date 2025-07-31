@@ -143,11 +143,14 @@ export default (props: any) => {
         height: '100%',
         flex: 1,
         position: 'relative',
-
+width:'100%',
         paddingHorizontal: isMobile ? 0 : 0,
       }}>
       {/* title="Join now!" */}
+      <View style={{width: isMobile?'100%':'50%'}}>
+
       <LeftSide style={styles.leftSide} />
+      </View>
 
       {isMobile ? (
         <View style={styles.containerLogin}>
@@ -236,7 +239,7 @@ export default (props: any) => {
                       paddingLeft: 20,
                       height: isMobile ? 45 : 40,
                       paddingVertical:5,
-                      marginBottom:isMobile? 4.5:4.8
+                      marginBottom:isMobile? 4.2:4.8
                     }}
                     error={
                       errors.firstName
@@ -274,7 +277,7 @@ export default (props: any) => {
                       textAlign: 'left',
                       paddingLeft: 20,
                       paddingVertical: 6,
-                  marginBottom:isMobile? 4.5:4.8,
+                  marginBottom:isMobile? 4.2:4.8,
                       height: isMobile ? 45 : 40,
                     }}
                     error={
