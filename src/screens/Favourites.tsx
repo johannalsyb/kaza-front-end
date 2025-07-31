@@ -28,7 +28,7 @@ export default ({ route, navigation }: Props) => {
 
   useEffect(() => {
     if (!user) return setProperties([])
-    setLoading(true);
+    // setLoading(true);
     Properties.favourites.get()
       .then(res => {
         if (!res.data) return;

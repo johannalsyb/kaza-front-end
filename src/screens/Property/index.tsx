@@ -1,33 +1,23 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { NavStackParamList } from '../../navigation/screens'
-import KText from '../../components/KText'
-import { ScrollView, View, StyleSheet } from 'react-native'
-import Menu from '../../components/Menu'
 import { useEffect, useState } from 'react'
-import { Property as PropertyT } from '../../common/types/api/properties'
+import { View, StyleSheet } from 'react-native'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+
+import Menu from '../../components/Menu'
+import KText from '../../components/KText'
 import Properties from '../../api/properties'
-import useIsMobile from '../../hooks/useIsMobile'
-import variables from '../../styles/variables'
-import SubHeader from '../../components/SubHeader/SubHeader'
-import PropertyHead from '../../components/Views/Property/PropertyHead'
-import { PropertyCard } from '../../components/PropertyCard/PropertyCard'
-import SwapAvailabilities from '../../components/Views/Property/SwapAvailabilities'
-import PropertyInfo from '../../components/Views/Property/PropertyInfo'
-import PlaceOwner from '../../components/Views/Property/PlaceOwner'
-import MapView from '../../components/MapView'
-import Gap from '../../components/Gap/Gap'
-import GalleryPhoto from '../../components/Views/Property/GalleryPhoto'
-import useAuthentication from '../../hooks/useAuthentication'
-import useSwapRequest from '../../hooks/useSwapRequest'
-import KButton from '../../components/KButton/KButton'
 import KModal from '../../components/KModal/KModal'
 import Property from '../../components/Views/Property'
+import useSwapRequest from '../../hooks/useSwapRequest'
+import SubHeader from '../../components/SubHeader/SubHeader'
+import { NavStackParamList } from '../../navigation/screens'
+import PropertyHead from '../../components/Views/Property/PropertyHead'
+import { Property as PropertyT } from '../../common/types/api/properties'
+import SlideUpView from '../../components/SlideUpView'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Property'>
 
 export default ({ route, navigation }: Props) => {
   const [property, setProperty] = useState<PropertyT | undefined>()
-  const { isMobile } = useIsMobile()
   const { id } = route.params
   const {
     showModal,
@@ -51,29 +41,31 @@ export default ({ route, navigation }: Props) => {
 
   if (!property?.owner) return <KText>Loading...</KText>
   else {
-    let { images, owner, city, country, approxLat, approxLon } = property
+    let { images } = property
     images = Array.isArray(images) ? images.join(',') : images
     return (
       <>
-        <View style={{ backgroundColor: 'black', zIndex: 1 }}>
-          <SubHeader>
-            <PropertyHead
-              property={property}
-              onBackPress={() =>
-                navigation.canGoBack()
-                  ? navigation.goBack()
-                  : navigation.navigate('Home')
-              }
-            />
-          </SubHeader>
-        </View>
-        <Property property={property} id={property.id} />
-        <Menu navigate={navigation.navigate} />
-        <KModal
-          visible={!!showModal}
-          setVisibility={() => setShowModal(undefined)}>
-          {showModal}
-        </KModal>
+        <SlideUpView delay={0} style={{ flex: 1 }}>
+          <View style={{ backgroundColor: 'black', zIndex: 1 }}>
+            <SubHeader>
+              <PropertyHead
+                property={property}
+                onBackPress={() =>
+                  navigation.canGoBack()
+                    ? navigation.goBack()
+                    : navigation.navigate('Home')
+                }
+              />
+            </SubHeader>
+          </View>
+          <Property property={property} id={property.id} />
+          <Menu navigate={navigation.navigate} />
+          <KModal
+            visible={!!showModal}
+            setVisibility={() => setShowModal(undefined)}>
+            {showModal}
+          </KModal>
+        </SlideUpView>
       </>
     )
   }

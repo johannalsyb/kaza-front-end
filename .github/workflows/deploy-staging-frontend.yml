@@ -26,8 +26,3 @@ jobs:
     - name: Deploy to Staging Server
       run: |
         rsync -avz --delete ./build/ ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}:${{ secrets.STAGING_PATH }}
-
-
-
-
-

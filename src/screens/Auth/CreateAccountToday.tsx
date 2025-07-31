@@ -87,15 +87,22 @@ export default (props: any) => {
         phone: body.phone as string,
       };
       const response = await auth.signup(signupBody);
-      await login(response.data.email, body.password);
+      // Store credentials for later login after verification
+      const storedCredentials = {
+        email: response.data.email,
+        password: body.password
+      };
 
      setShowModalComponent(
       <VerifyPhone
-        onVerified={() => {
+        onVerified={async () => {
           toastSuccess('Phone verified successfully');
           setShowModalComponent(null);
-        
-          setShowModalRegisterPlace(true);
+          try {
+            await login(storedCredentials.email, storedCredentials.password);
+          } catch (error) {
+            console.error('Login failed after verification:', error);
+          }
         }}
         onClose={() => {
           setShowModalComponent(null);
@@ -118,8 +125,14 @@ export default (props: any) => {
   };
   
   const login = async (email: string, password: string) => {
-    await auth.login(email, password);
-    window.location.href = '/';
+    const user = await authentication.login(email, password);
+    if (user) {
+      if (props.navigation) {
+        props.navigation.navigate('Home');
+      } else {
+        window.location.href = '/';
+      }
+    }
   };
   return (
     <View
