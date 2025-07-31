@@ -38,10 +38,9 @@ export default ({ navigation }: Props) => {
   return (
     <ScrollView
       contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-      <View style={{ flex: 1, width: '100%' }}>
+      <View style={{ flex: 1, width: isMobile?'100%':'50%' }}>
         <LeftSide title='Sign In' />
       </View>
-
       <View
         style={[styles.containerLogin,
         isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}
@@ -142,11 +141,13 @@ const styles = StyleSheet.create({
   },
   containerLogin: {
     display: 'flex',
+  
+ margin:'auto',
     justifyContent: 'space-between',
     paddingHorizontal: 6,
     flexDirection: 'column',
     alignItems: 'center',
-    margin: 'auto',
+   
     flex: 1,
     maxWidth: 410,
     width: '100%',
