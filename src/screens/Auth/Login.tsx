@@ -23,16 +23,18 @@ import LeftSide from '../../components/Screens/Auth/LeftSide'
 import { showModalRegisterPlaceAtom } from '../../atoms'
 import { useSetAtom } from 'jotai'
 
-type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
-export default ({navigation}: Props) => {
-  const {isMobile} = useIsMobile();
-  const authentication = useAuthentication();
+type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
+
+export default ({ navigation }: Props) => {
+
+  const { isMobile } = useIsMobile()
+  const authentication = useAuthentication()
 
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
 
   // Animations
-  const leftSlideAnim = useRef(new Animated.Value(-700)).current
+  const leftSlideAnim = useRef(new Animated.Value(Platform.OS === 'web' && !isMobile ? -700 : 0)).current
 
   const formAnims = [
     useRef(new Animated.Value(800)).current,
@@ -62,8 +64,8 @@ export default ({navigation}: Props) => {
   }, [])
 
   const login = () => {
-    authentication.login(creds.email, creds.password);
-  };
+    authentication.login(creds.email, creds.password)
+  }
 
   return (
     <ScrollView
@@ -74,10 +76,9 @@ export default ({navigation}: Props) => {
 
       <View
         style={[styles.containerLogin,
-        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}>
-
-        {/* Email */}
-        <Animated.View style={{ transform: [{ translateY: formAnims[0] }], width: '100%', maxWidth: 400 }}>
+        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}
+        >
+        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[0] : 0 }], width: '100%', maxWidth: 400 }}>
           <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Email"
@@ -92,8 +93,7 @@ export default ({navigation}: Props) => {
           </FormField>
         </Animated.View>
 
-        {/* Password */}
-        <Animated.View style={{ transform: [{ translateY: formAnims[1] }], width: '100%', maxWidth: 400 }}>
+        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[1] : 0 }], width: '100%', maxWidth: 400 }}>
           <FormField labelAlign="center" label="Password" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Password"
@@ -116,8 +116,7 @@ export default ({navigation}: Props) => {
             />
           </FormField>
         </Animated.View>
-        
-        <Animated.View style={{ transform: [{ translateY: formAnims[2] }], width: '100%', maxWidth: 400 }}>
+        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[2] : 0 }], width: '100%', maxWidth: 400 }}>
           <KText
             style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
             onPress={() => navigation.navigate('ForgotPassword')}>
@@ -125,14 +124,13 @@ export default ({navigation}: Props) => {
             Forgot Password?
           </KText>
         </Animated.View>
-
         {/* Sign In Button */}
-        <Animated.View style={{ transform: [{ translateY: formAnims[3] }], width: '100%', maxWidth: 400 }}>
+        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[3] : 0 }], width: '100%', maxWidth: 400 }}>
           <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
         </Animated.View>
 
          {/* Divider + Google Login */}
-        <Animated.View style={{ transform: [{ translateY: formAnims[4] }], width: '100%', maxWidth: 400 }}>
+        <Animated.View style={{ transform: [{ translateY: Platform.OS === 'web' && !isMobile ? formAnims[4] : 0 }], width: '100%', maxWidth: 400 }}>
           {!isMobile && (
               <KText style={styles.dividerContainer}>
                 <View style={styles.divider} />
@@ -142,7 +140,6 @@ export default ({navigation}: Props) => {
             )}
           <GoogleLoginButton />
 
-          {/* Register */}
           <KText
             style={[
             styles.registrationContainer,
