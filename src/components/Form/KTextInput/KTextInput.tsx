@@ -154,7 +154,7 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
             styles.formInput,
             focused ? styles.formFocused : {},
             !!error ? styles.formError : {},
-            leftComponent ? { paddingLeft: form.input.paddingLeft } : {},
+            leftComponent ? { paddingLeft: form.input.paddingLeft,paddingBottom:13 } : {},
             inputStyles,
           ]}
           onChangeText={value => {
@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   rightComponent: {
     position: 'absolute',

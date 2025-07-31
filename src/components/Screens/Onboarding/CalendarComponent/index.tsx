@@ -151,8 +151,8 @@ const CalendarComponent = () => {
             tileDisabled={({ date, view }) =>
               view === 'month' && isDateInRanges(date)
             }
-         
-          />
+            />
+           
           <View style={styles.containerButtons}>
             <KButton
               text='Cancel'
