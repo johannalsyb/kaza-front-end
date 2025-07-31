@@ -98,6 +98,7 @@ export default ({ navigation }: Props) => {
           if (result.user) {
             // Login successful after verification - user state is now set
             // Navigation to Home will happen automatically via the navigation system
+            navigation.navigate('Onboarding',{});
           }
         }}
         onClose={() => {
