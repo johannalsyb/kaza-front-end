@@ -246,7 +246,7 @@ export default forwardRef<Handle, Props>(
               flexWrap: 'wrap',
               alignItems: 'flex-start',
               justifyContent: 'center',
-              padding: isMobile ? variables.spacing.xsmall : 0,
+              paddingHorizontal: isMobile ? variables.spacing.xxsmall : 0,
               flex: isContentSmallerThanScreen() ? 1 : undefined,
               display: 'flex',
             }}>
@@ -288,7 +288,6 @@ export default forwardRef<Handle, Props>(
                             },
                             isMobile && {
                               width: '100%',
-                              marginBottom: 10,
                             },
                           ]}
                           key={`property-${i}`}>

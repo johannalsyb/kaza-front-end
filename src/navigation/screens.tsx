@@ -21,6 +21,7 @@ import Admin from '../screens/Admin'
 import Verify from '../screens/Auth/Verify'
 import Legal from '../screens/Legal'
 import Blog from '../screens/Blog'
+import Notifications from '../screens/Notifications'
 
 export type NavStackParamList = {
   Auth: undefined
@@ -43,6 +44,7 @@ export type NavStackParamList = {
   Favourites: undefined
   Property: { id: string; property?: PP }
   Chats: undefined
+  Notifications: undefined
   Chat: { id: string }
   Swap: { id: string }
   Admin: { tab?: string }
@@ -75,6 +77,7 @@ export const isHeaderHidden = (
     screens.push('Chat')
     screens.push('Swap')
     screens.push('Property')
+    screens.push('Notifications')
   }
   return screens.includes(name)
 }
@@ -141,6 +144,7 @@ export const linking = (loggedIn: boolean) => {
         slug: (slug: string) => slug,
       },
     },
+    Notifications: 'notifications',
   }
 
   return {
@@ -166,6 +170,7 @@ export const openScreens: Screens = {
   Blog: [Blog, "Blog"],
   Article: [Blog, "Blog Article"],
   ResetPassword: [ResetPassword, "Reset Password"],
+  Notifications: [Notifications, "Notifications"],
 }
 
 export const authenticatedScreens: Screens = {
