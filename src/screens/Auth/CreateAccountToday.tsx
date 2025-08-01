@@ -32,10 +32,6 @@ import React from 'react'
 import { useSetAtom } from 'jotai'
 import {  } from '../../atoms'
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-
-import { useNavigation } from '@react-navigation/native'
-import users from '../../api/users';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 import Modal from '../../components/Modal';
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
@@ -43,7 +39,6 @@ export default (props: any) => {
   const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
   const {isMobile} = useIsMobile();
   const authentication = useAuthentication();
-  const {isAuthLoading, user} = authentication;
   const [body, setBody] = useState({
     firstName: '',
     surname: '',
@@ -132,7 +127,6 @@ export default (props: any) => {
   const login = async (email: string, password: string) => {
     const user = await authentication.login(email, password);
     if (user) {
-      // Try to navigate to Onboarding after a short delay
       setTimeout(() => {
         if (props.navigation) {
           try {
@@ -142,7 +136,7 @@ export default (props: any) => {
         } else {
           window.location.href = '/';
         }
-      }); // Delay to ensure authentication state is updated
+      }); 
     } else {
     }
   };
@@ -155,11 +149,14 @@ export default (props: any) => {
         height: '100%',
         flex: 1,
         position: 'relative',
-
+width:'100%',
         paddingHorizontal: isMobile ? 0 : 0,
       }}>
       {/* title="Join now!" */}
+      <View style={{width: isMobile?'100%':'50%'}}>
+
       <LeftSide style={styles.leftSide} />
+      </View>
 
       {isMobile ? (
         <View style={styles.containerLogin}>
@@ -286,7 +283,7 @@ export default (props: any) => {
                       textAlign: 'left',
                       paddingLeft: 20,
                       paddingVertical: 6,
-                      marginBottom:isMobile? 2.2:4.8,
+                  marginBottom:isMobile? 2.2:4.8,
                       height: isMobile ? 45 : 40,
                     }}
                     error={
@@ -405,7 +402,7 @@ export default (props: any) => {
                   inputStyles={{
                     textAlign: 'left',
                     paddingLeft: 20,
-                    paddingVertical: 8,
+                    paddingVertical: isMobile?13:10.5,
                   }}
                   error={
                     errors.password
