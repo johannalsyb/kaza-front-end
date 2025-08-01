@@ -105,6 +105,7 @@ export default forwardRef<Handle, Props>(({
             justifyContent: "center",
             alignItems: "center",
         }}>
+          
         {loading ?
             <View style={{
                 position: "absolute",
@@ -166,6 +167,7 @@ export default forwardRef<Handle, Props>(({
                 </>
                 :
                 <KIcon name="addPicture" size="large" />}
+                
         <KFileUpload
             onFiles={f => {
                 // console.log(f)

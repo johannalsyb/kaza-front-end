@@ -73,7 +73,7 @@ export default ({ navigation }: Props) => {
   return (
     <ScrollView
       contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-      <View style={{ flex: 1, width: isMobile?'100%':'50%' }}>
+      <View style={{  width: isMobile?'100%':'50%' }}>
         <LeftSide title='Sign In' />
       </View>
       <View
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
    
     flex: 1,
-    maxWidth: 410,
+    
     width: '100%',
   },
   title: {

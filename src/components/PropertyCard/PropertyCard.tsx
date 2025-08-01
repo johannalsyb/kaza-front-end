@@ -80,6 +80,7 @@ export const PropertyCard = ({
         styles.container,
         {
           width: '100%',
+          maxWidth: isMobile ? '100%' : 290,
           aspectRatio: bottomComponent ? 'auto' : 1,
           marginBottom: 18
         },
@@ -222,7 +223,6 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 20,
     display: 'flex',
-    maxWidth: 290,
     overflow: 'hidden',
     height: '100%',
     minHeight: cardHeight,

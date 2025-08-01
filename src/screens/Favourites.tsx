@@ -1,20 +1,17 @@
+import { View } from 'react-native';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { NavStackParamList } from '../navigation/screens';
 import KText from '../components/KText';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
-import Menu from '../components/Menu';
-import { useEffect, useState } from 'react';
 import Properties from '../api/properties';
-import { Property } from '../common/types/api/properties';
-import { PropertyCard } from '../components/PropertyCard/PropertyCard';
-import useIsMobile from '../hooks/useIsMobile';
-import Filters from '../components/Filters';
-import variables from '../styles/variables';
-import useAuthentication from '../hooks/useAuthentication';
 import KIcon from '../components/KIcon/KIcon';
+import useIsMobile from '../hooks/useIsMobile';
 import KButton from '../components/KButton/KButton';
+import { Property } from '../common/types/api/properties';
+import useAuthentication from '../hooks/useAuthentication';
 import PropertyList from '../components/Views/Properties/PropertyList';
-import useConfig from '../hooks/useConfig';
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Properties'>;
 
@@ -22,23 +19,26 @@ export default ({ route, navigation }: Props) => {
   const { user } = useAuthentication()
   const [properties, setProperties] = useState<Property[]>();
   const { isMobile } = useIsMobile();
-  const [currentPage, setCurrentPage] = useState(1);
-  const { config } = useConfig()
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!user) return setProperties([])
-    // setLoading(true);
-    Properties.favourites.get()
-      .then(res => {
-        if (!res.data) return;
-        setProperties(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) {
+        setProperties([]);
+        return;
+      }
+      setLoading(true);
+      Properties.favourites.get()
+        .then(res => {
+          if (!res.data) return;
+          setProperties(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => setLoading(false));
+    }, [user])
+  );
 
   if (!properties) return null
   
