@@ -126,8 +126,27 @@ export default (props: Props) => {
       </ScrollView>
     </View>
   } else {
-    return <View style={{ paddingVertical: 5, paddingHorizontal: 15 }}>
-      <KText style={{ fontFamily: 'Plus Jakarta Sans', fontWeight: '500', fontSize: 12 }}>You don't have any notifications</KText>
-    </View>
+    return (
+      <View
+        style={[
+          { paddingVertical: 5, paddingHorizontal: 15 },
+          isMobile && {
+            flex: 1,
+            width: '100%',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }]}
+      >
+        <KText
+          style={{
+            fontFamily: 'Plus Jakarta Sans',
+            fontWeight: '500',
+            fontSize: isMobile ? 18 : 12
+          }}
+        >
+          You don't have any notifications
+        </KText>
+      </View>)
   }
 }
