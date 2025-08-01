@@ -34,7 +34,7 @@ export default (props: Props) => {
                 leftComponent={<KIcon name="sqm2" size="medium" />}
                 rightComponent={<KText>m²</KText>}
                 placeholder="Size"
-                value={props.property.size ? props.property.size + "" : ""}
+                value={(props.property.size === 0 ? "" : props.property.size) + ""}
                 keyboardType="numeric"
                 inputMode="decimal"
                 onChangeText={size => {

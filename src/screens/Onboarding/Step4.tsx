@@ -4,7 +4,7 @@ import {Property} from '../../components/forms/property';
 import Property3 from '../../components/forms/property/Property3';
 import properties from '../../api/properties';
 import {toastError} from '../../components/Toast/Toast';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import KText from '../../components/KText';
 import KIcon from '../../components/KIcon/KIcon';
 
@@ -17,6 +17,15 @@ type Props = {
 
 export default (props: Props) => {
   const [showImageNotification, setShowImageNotification] = useState(false);
+  
+    
+  useEffect(() => {
+    if (props.property.pics.length >= 4 && showImageNotification) {
+      setShowImageNotification(false);
+    }
+  }, [props.property.pics.length, showImageNotification]);
+
+
   const handleNextStep = () => {
     if (props.property.pics.length < 4) {
       setShowImageNotification(true);
@@ -71,7 +80,7 @@ export default (props: Props) => {
         <KButton
           text="Next Step"
           // loading={loading}
-          // disabled={props.property.pics.length < 4}
+          disabled={props.property.pics.length < 4}
           onPress={handleNextStep}
           color="primary"
           style={{width: '48%'}}
