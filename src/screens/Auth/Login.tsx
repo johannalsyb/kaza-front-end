@@ -18,8 +18,9 @@ import useIsMobile from '../../hooks/useIsMobile'
 import KIcon from '../../components/KIcon/KIcon'
 import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButton'
 import LeftSide from '../../components/Screens/Auth/LeftSide'
-import { showModalRegisterPlaceAtom } from '../../atoms'
+import { showComponentAtom } from '../../atoms'
 import { useSetAtom } from 'jotai'
+import VerifyPhone from '../../components/VerifyPhone'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
 
@@ -27,12 +28,46 @@ export default ({ navigation }: Props) => {
 
   const { isMobile } = useIsMobile()
   const authentication = useAuthentication()
+  const [setShowModalComponent] = [useSetAtom(showComponentAtom)]
 
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
+  const [needsPhoneVerification, setNeedsPhoneVerification] = useState(false)
 
-  const login = () => {
-    authentication.login(creds.email, creds.password)
+
+  const login = async () => {
+    try {
+      const result = await authentication.login(creds.email, creds.password);
+      if (result?.needsVerification) {
+        setNeedsPhoneVerification(true);
+        showPhoneVerificationModal();
+      }
+    } catch (error) {
+    }
+  }
+
+  const showPhoneVerificationModal = () => {
+    setShowModalComponent(
+      <VerifyPhone
+        onVerified={async () => {
+          // After verification, try to login again
+          setShowModalComponent(null);
+          setNeedsPhoneVerification(false);
+          
+          // Retry login after verification
+          const result = await authentication.login(creds.email, creds.password);
+          if (result.user) {
+            // Login successful after verification - user state is now set
+            // Navigation to Home will happen automatically via the navigation system
+            navigation.navigate('Onboarding',{});
+          }
+        }}
+        onClose={() => {
+          setShowModalComponent(null);
+          setNeedsPhoneVerification(false);
+        }}
+      />
+    );
   }
 
   return (

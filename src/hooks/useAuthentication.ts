@@ -16,7 +16,7 @@ const TIMEOUT_SEC = 60
 
 export type Authentication = {
   logout: () => void
-  login: (email: string, password: string) => Promise<User | null>
+  login: (email: string, password: string) => Promise<{ user: User | null, needsVerification: boolean }>
   check: (set?: boolean, repeat?: boolean) => Promise<User | void>
   updateUser: (user: Partial<User>) => void
   user?: User
@@ -77,15 +77,30 @@ const useAuthentication = (): Authentication => {
   const login: Authentication['login'] = async (email, password) => {
     try {
       const res = await auth.login(email, password)
-      const user = await check(true)
+      const user = await check(false) // Don't set user state yet
       if (!user) throw new Error("Login failed")
-      return user
+      
+      // Check if phone is verified based on the API response
+      if (!user.phoneVerified) {
+        // Don't set user state, just return needsVerification: true
+        return { user: null, needsVerification: true }
+      }
+      
+      // Only set user state if phone is verified
+      setUser(user)
+      return { user, needsVerification: false }
       // toastSuccess('Login successful');
     } catch (err) {
       // TODO: Handle error
       console.log(err)
-      toastError('Login failed')
-      return null
+      if (err instanceof Error && err.message === "Phone number not verified") {
+        toastError('Please verify your phone number before logging in')
+        return { user: null, needsVerification: true }
+      } else {
+        // For any other error (including invalid credentials), just show login failed
+        toastError('Login failed')
+        return { user: null, needsVerification: false }
+      }
     } finally {
       setIsAuthLoading(false)
     }

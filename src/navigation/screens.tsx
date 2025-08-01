@@ -184,6 +184,7 @@ export const unauthenticatedScreens: Screens = {
   Login: [Login, "Sign In"],
   SignUp: [Register, "Register"],
   ForgotPassword: [ForgotPassword, "Forgot Password"],
+  Onboarding: [Onboarding, "Welcome !"],
   ...openScreens,
 }
 

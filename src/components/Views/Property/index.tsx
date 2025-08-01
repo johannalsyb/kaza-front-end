@@ -52,6 +52,8 @@ export default (props: Props) => {
   } = useSwapRequest(props.id)
   const [ploading, setPloading] = useState(false)
   const navigation = useNavigation<NativeStackNavigationProp<NavStackParamList, 'Properties' | 'Matching' | 'Favourites', undefined>>()
+  const showModalregisterPlaceAtom = useAtomValue(showModalRegisterPlaceAtom)
+  
   useEffect(() => {
     if (!props.property || property?.id !== props.id) {
       setPloading(true)
@@ -75,7 +77,6 @@ export default (props: Props) => {
 
   let { images, owner, city, country, approxLat, approxLon } = property
   images = Array.isArray(images) ? images.join(',') : images
-  const showModalregisterPlaceAtom = useAtomValue(showModalRegisterPlaceAtom)
 
   if (ploading) return <ActivityIndicator color={variables.colors.yellow} />
 
