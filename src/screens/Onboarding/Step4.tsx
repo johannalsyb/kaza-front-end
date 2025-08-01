@@ -80,7 +80,6 @@ export default (props: Props) => {
         <KButton
           text="Next Step"
           // loading={loading}
-          disabled={props.property.pics.length < 4}
           onPress={handleNextStep}
           color="primary"
           style={{width: '48%'}}
