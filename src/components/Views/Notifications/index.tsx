@@ -3,7 +3,7 @@ import useAuthentication from "../../../hooks/useAuthentication"
 import { Api } from "../../../common"
 import users from "../../../api/users"
 import { toastError } from "../../Toast/Toast"
-import { ActivityIndicator, Linking, Pressable, ScrollView, View } from "react-native"
+import { ActivityIndicator, Linking, Pressable, ScrollView, Text, View } from "react-native"
 import variables from "../../../styles/variables"
 import KText from "../../KText"
 import { timeAgo } from "../../../utils"
@@ -126,18 +126,43 @@ export default (props: Props) => {
       </ScrollView>
     </View>
   } else {
-    return (
-      <View
-        style={[
-          { paddingVertical: 5, paddingHorizontal: 15 },
-          isMobile && {
-            flex: 1,
-            width: '100%',
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }]}
-      >
+    return (isMobile ?
+      <View style={{
+        flex: 1,
+        width: '100%',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: variables.colors.greenLight,
+      }}>
+        <KText
+          style={{
+            fontFamily: 'Plus Jakarta Sans',
+            fontWeight: '600',
+            fontSize: 25,
+            lineHeight: 29,
+            letterSpacing: -0.5
+          }}
+        >
+          No Notifications Yet
+        </KText>
+        <KText
+          style={{
+            fontFamily: 'Plus Jakarta Sans',
+            fontWeight: '500',
+            fontSize: 15,
+            lineHeight: 21,
+            letterSpacing: -0.5,
+            opacity: 0.5,
+            textAlign: 'center',
+            width: '80%'
+          }}
+        >
+          No worries, once you send a swap request, you'll start receiving updates here!
+        </KText>
+      </View>
+      :
+      <View style={{ paddingVertical: 5, paddingHorizontal: 15 }}>
         <KText
           style={{
             fontFamily: 'Plus Jakarta Sans',

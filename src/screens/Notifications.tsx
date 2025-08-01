@@ -1,0 +1,71 @@
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import KIcon from '../components/KIcon/KIcon'
+import variables from '../styles/variables'
+import Notifications from "../components/Views/Notifications"
+
+const NotificationsHeader: React.FC<{ title?: string }> = ({ title = "Notifications" }) => {
+	const navigation = useNavigation()
+	return (
+		<View style={styles.header}>
+			<TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+				<KIcon name={'back'} size={'medium'} />
+			</TouchableOpacity>
+			<Text style={styles.title}>{title}</Text>
+			<View style={{ height: 40, width: 40 }}></View>
+		</View>
+	)
+}
+
+const NotificationsScreen = () => {
+	const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
+	const nm = parseInt(localStorage.getItem("newMatches") || "0")
+	const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
+
+	return (
+		<SafeAreaView style={styles.container}>
+			<NotificationsHeader title={"Notifications"} />
+			<Notifications unreadNotifications={bubbles.notifications || 0} />
+		</SafeAreaView>
+	)
+}
+
+export default NotificationsScreen
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: variables.colors.greenLight,
+	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingTop: 48,
+		paddingBottom: 16,
+		paddingHorizontal: 16,
+		borderBottomEndRadius: 30,
+		borderBottomStartRadius: 30,
+		backgroundColor: variables.colors.greenLight,
+	},
+	backButton: {
+		marginRight: 16,
+		padding: 8,
+		borderRadius: 100,
+		backgroundColor: variables.colors.white
+	},
+	backText: {
+		fontSize: 28,
+		color: '#333',
+	},
+	title: {
+		color: variables.colors.black,
+		textAlign: "center",
+		fontFamily: "Plus Jakarta Sans",
+		fontSize: 17,
+		fontweight: "500",
+		lineHeight: 17,
+		letterSpacing: -0.5,
+	},
+})

@@ -27,7 +27,6 @@ export default ({
   const user = auth.user
   const route = useRoute()
 
-
   const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
   const nm = parseInt(localStorage.getItem("newMatches") || "0")
   const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
@@ -85,15 +84,15 @@ export default ({
                   backgroundColor: route.name === "Home" ? "white" : variables.colors.blackLight
                 }} />
               <KIcon
-                onPress={() => setNotificationsVisible(prev => !prev)}
+                onPress={() => isMobile ? navigate('Notifications') : setNotificationsVisible(prev => !prev)}
                 name="bellNew" size="xlarge" style={{
                   marginRight: 5,
                   width: size,
                   height: size,
                   padding: 11,
                   borderRadius: size,
-                  stroke: route.name === "Chats" ? "black" : "white",
-                  backgroundColor: route.name === "Chats" ? "white" : variables.colors.blackLight
+                  stroke: route.name === "Notifications" ? "black" : "white",
+                  backgroundColor: route.name === "Notifications" ? "white" : variables.colors.blackLight
                 }}
               />
               <KIcon
