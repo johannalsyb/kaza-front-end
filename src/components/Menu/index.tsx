@@ -1,14 +1,16 @@
-import { useRef } from 'react'
-import { Pressable, View, ViewStyle, Animated } from "react-native"
-import useAuthentication from "../../hooks/useAuthentication";
-import { CircleImage } from "../CircleImage/CircleImage";
-import { useRoute } from "@react-navigation/native";
-import { NavStackParamList } from "../../navigation/screens";
-import KButton from "../KButton/KButton";
-import useIsMobile from "../../hooks/useIsMobile";
-import KIcon from "../KIcon/KIcon";
-import variables from "../../styles/variables";
-import { useEffect } from "react";
+import { useState } from 'react'
+import { Pressable, View, ViewStyle } from "react-native"
+import { useRoute } from "@react-navigation/native"
+
+import KIcon from "../KIcon/KIcon"
+import KButton from "../KButton/KButton"
+import variables from "../../styles/variables"
+import useIsMobile from "../../hooks/useIsMobile"
+import KSideModal from '../KModal/KSideModal'
+import { CircleImage } from "../CircleImage/CircleImage"
+import useAuthentication from "../../hooks/useAuthentication"
+import { NavStackParamList } from "../../navigation/screens"
+import Notifications from "../Views/Notifications"
 
 const size = 30
 
@@ -21,25 +23,20 @@ export default ({
 }) => {
 
   const { isMobile } = useIsMobile()
-  const auth = useAuthentication();
-  const user = auth.user;
+  const auth = useAuthentication()
+  const user = auth.user
   const route = useRoute()
 
-  const translateY = useRef(new Animated.Value(100)).current;
-
-  useEffect(() => {
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+  const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
+  const nm = parseInt(localStorage.getItem("newMatches") || "0")
+  const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
+  const [notificationsVisible, setNotificationsVisible] = useState(false)
 
   if (!isMobile) return <></>
+
   return (
-    <Animated.View
+    <View
       style={{
-        transform: [{ translateY }],
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -49,7 +46,7 @@ export default ({
         left: 0,
         right: 0,
         zIndex: 101,
-      
+
         ...style
       }}>
       <View style={{
@@ -69,11 +66,11 @@ export default ({
               borderTopRightRadius: 40,
               borderTopLeftRadius: 40,
               paddingVertical: 16,
-              paddingHorizontal:20,
+              paddingHorizontal: 20,
               gap: 2,
               width: '100%',
               backgroundColor: 'black',
-             
+
             }}>
               <KIcon
                 onPress={() => navigate('Home')}
@@ -87,15 +84,15 @@ export default ({
                   backgroundColor: route.name === "Home" ? "white" : variables.colors.blackLight
                 }} />
               <KIcon
-                onPress={() => navigate('Chats')}
+                onPress={() => isMobile ? navigate('Notifications') : setNotificationsVisible(prev => !prev)}
                 name="bellNew" size="xlarge" style={{
                   marginRight: 5,
                   width: size,
                   height: size,
                   padding: 11,
                   borderRadius: size,
-                  stroke: route.name === "Chats" ? "black" : "white",
-                  backgroundColor: route.name === "Chats" ? "white" : variables.colors.blackLight
+                  stroke: route.name === "Notifications" ? "black" : "white",
+                  backgroundColor: route.name === "Notifications" ? "white" : variables.colors.blackLight
                 }}
               />
               <KIcon
@@ -141,6 +138,13 @@ export default ({
                   }}
                 />
               </Pressable>
+              <KSideModal
+                visible={notificationsVisible}
+                onClose={() => {
+                  setNotificationsVisible(false)
+                }}>
+                <Notifications unreadNotifications={bubbles.notifications || 0} />
+              </KSideModal>
             </View>
           </>
           :
@@ -161,6 +165,6 @@ export default ({
           </View>
         }
       </View>
-    </Animated.View>
+    </View>
   )
 }

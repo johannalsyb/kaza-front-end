@@ -26,7 +26,7 @@ const CalendarComponent = () => {
     new Date(),
     (() => {
       const d = new Date()
-      d.setDate(d.getDate() + 6)
+      d.setDate(d.getDate() + 0)
       return d
     })()
   ])
@@ -41,7 +41,7 @@ const CalendarComponent = () => {
     return availableDates.some((item: any) => {
       if (!Array.isArray(item.value) || item.value.length < 2) return false
       const start = new Date(item.value[0])
-      const end = new Date(item.value[1])
+      const end = new Date(item.value[0])
       const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
       const e = new Date(end.getFullYear(), end.getMonth(), end.getDate())
@@ -101,7 +101,7 @@ const CalendarComponent = () => {
         <Pressable onPress={() => availableDates.length ? {} : setIsOpenCalendar(true)} style={{ width: '100%' }}>
           <SelectDates
             startDate={availableDates[0]?.value?.[0] ?? new Date()}
-            endDate={availableDates[0]?.value?.[1] ?? new Date()}
+            endDate={availableDates[0]?.value?.[0] ?? new Date()}
           // startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
           // endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
           />
@@ -142,7 +142,7 @@ const CalendarComponent = () => {
           <SelectDates
             style={{ marginBottom: 46, }}
             startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
-            endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
+            endDate={Array.isArray(value) ? value[0] ?? new Date() : new Date()}
           />
           <KCalendar
             onChange={handleChange}
