@@ -117,6 +117,11 @@ export default (props: any) => {
         error?.data?.error.indexOf('User already exists') >= 0
       ) {
         setError('email', {type: 'manual', message: 'Email already exists'});
+      } else if (
+        error?.data?.error &&
+        error?.data?.error.indexOf('User already exists with verified phone number') >= 0
+      ) {
+        setError('email', {type: 'manual', message: 'Email already exists with verified phone number'});
       }
     } finally {
       setLoading(false);
@@ -150,14 +155,11 @@ export default (props: any) => {
         height: '100%',
         flex: 1,
         position: 'relative',
-width:'100%',
+
         paddingHorizontal: isMobile ? 0 : 0,
       }}>
       {/* title="Join now!" */}
-      <View style={{width: isMobile?'100%':'50%'}}>
-
       <LeftSide style={styles.leftSide} />
-      </View>
 
       {isMobile ? (
         <View style={styles.containerLogin}>
@@ -246,7 +248,7 @@ width:'100%',
                       paddingLeft: 20,
                       height: isMobile ? 45 : 40,
                       paddingVertical:5,
-                      marginBottom:isMobile? 4.2:4.8
+                      marginBottom:isMobile? 4.5:3.5
                     }}
                     error={
                       errors.firstName
@@ -284,7 +286,7 @@ width:'100%',
                       textAlign: 'left',
                       paddingLeft: 20,
                       paddingVertical: 6,
-                  marginBottom:isMobile? 4.2:4.8,
+                  marginBottom:isMobile? 4.5:3.5,
                       height: isMobile ? 45 : 40,
                     }}
                     error={
@@ -403,7 +405,7 @@ width:'100%',
                   inputStyles={{
                     textAlign: 'left',
                     paddingLeft: 20,
-                    paddingVertical: isMobile?13:10.5,
+                    paddingVertical: 8,
                   }}
                   error={
                     errors.password

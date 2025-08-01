@@ -79,10 +79,17 @@ let callback: (() => void) | undefined
 export default (props: Props) => {
   const [currentStep, setCurrentStep] = useState<number | undefined>()
   const [property, setProperty] = useState<Property>()
+  const [hasProperties, setHasProperties] = useState<boolean>(false)
   const { user } = useAuthentication()
   const { isMobile, height } = useIsMobile()
 
   const navigationListenerFn = (e: any) => {
+    // If user has no properties and is on step 1, prevent going back
+    if (currentStep === 1 && !hasProperties) {
+      e.preventDefault()
+      return
+    }
+    
     if (currentStep === 1) return props.navigation.push('Login')
     if (!props.route?.params) return
     if (
@@ -113,6 +120,9 @@ export default (props: Props) => {
   useEffect(() => {
     Promise.all([users.me.get(), properties.ofUser('me')])
       .then(([me, properties]) => {
+        // Set whether user has properties
+        setHasProperties(properties.data.length > 0)
+        
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
         let onboarding: OnboardingInfo
         if (me.data.onboarding) {
@@ -149,6 +159,7 @@ export default (props: Props) => {
       .catch(err => {
         // We're most likely not logged in
         setCurrentStep(1)
+        setHasProperties(false)
       })
   }, [])
 
@@ -204,11 +215,17 @@ export default (props: Props) => {
       })
   }
 
+  // Callback to update hasProperties state when a property is created
+  const onPropertyCreated = () => {
+    setHasProperties(true)
+  }
+
   onboardingSteps[0].content = (
     <Step2
       property={property || defaultProperty}
       onChange={setProperty}
       onNext={() => stepUp(2)}
+      hasProperties={hasProperties}
     />
   )
   onboardingSteps[1].content = (
@@ -217,6 +234,7 @@ export default (props: Props) => {
       onChange={setProperty}
       onNext={() => stepUp(3)}
       onPrev={() => stepDown(1)}
+      onPropertyCreated={onPropertyCreated}
     />
   )
   onboardingSteps[2].content = (
@@ -231,7 +249,10 @@ export default (props: Props) => {
     <Step5
       onChange={setProperty}
       property={property || defaultProperty}
-      onNext={finish} onPrev={() => stepDown(3)} />
+      onNext={finish} 
+      onPrev={() => stepDown(3)}
+      onPropertyCreated={onPropertyCreated}
+    />
   )
 
   const currentStepObject = onboardingSteps[(currentStep || 1) - 1]
@@ -259,9 +280,22 @@ export default (props: Props) => {
             <KIcon
               name="backArrow"
               size={40}
-              onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')}
+              onPress={() => {
+                // Hide back button if user has no properties and is on step 1
+                if (currentStep === 1 && !hasProperties) {
+                  return
+                }
+                currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')
+              }}
               style={
-                { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+                { 
+                  backgroundColor: 'white', 
+                  borderRadius: 50, 
+                  padding: 5,
+                  // Hide the back button if user has no properties and is on step 1
+                  opacity: (currentStep === 1 && !hasProperties) ? 0 : 1,
+                  display: (currentStep === 1 && !hasProperties) ? 'none' : 'flex'
+                }
               }
             />
           </View>
@@ -365,8 +399,8 @@ export default (props: Props) => {
           contentContainerStyle={{
             marginHorizontal: 'auto',
             marginVertical: 40,
-            width: isMobile ? '100%' : 415,
-            paddingHorizontal: isMobile ? 30 : 10,
+            width: isMobile ? '100%' : 400,
+            paddingHorizontal: isMobile ? 30 : 0,
             ...(Platform.OS === 'web' && typeof height === 'number'
               ? { minHeight: isMobile ? 'auto' : height - 60, height: isMobile && currentStep === 4 ? 'calc(100% - 60px)' : 'auto' } as any
               : {}),
