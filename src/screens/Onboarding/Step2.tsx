@@ -15,6 +15,7 @@ type Props = {
     onNext: () => void,
     onChange: (property: Property) => void,
     property: Property,
+    hasProperties?: boolean,
 }
 
 const isValid = (property: Property) => {
@@ -40,16 +41,19 @@ export default (props: Props) => {
 
     return <>
         <Property1 property={props.property} onChange={props.onChange} error={error} />
-        <View style={styles.container}>
-            <KButton
-                text="Back"
-                onPress={() => navigation.goBack()}
-                color="light"
-                style={{
-                    ...styles.button,
-                    backgroundColor: variables.colors.lightCream,
-                    borderWidth: 0,
-                }} />
+        <View style={[{...styles.container, position: 'relative'}]}>
+           
+            {props.hasProperties && (
+                <KButton
+                    text="Back"
+                    onPress={() => navigation.goBack()}
+                    color="light"
+                    style={{
+                        ...styles.button,
+                        backgroundColor: variables.colors.lightCream,
+                        borderWidth: 0,
+                    }} />
+            )}
             <KButton
                 text="Next Step"
                 loading={loading}
@@ -69,8 +73,12 @@ export default (props: Props) => {
                         })
                 }}
                 color="primary"
-                style={styles.button} />
+                style={{
+                    ...styles.button,
+                    right: 0,
+                    position: 'absolute'
 
+                }} />
 
         </View>
     </>

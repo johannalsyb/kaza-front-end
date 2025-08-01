@@ -79,10 +79,16 @@ let callback: (() => void) | undefined
 export default (props: Props) => {
   const [currentStep, setCurrentStep] = useState<number | undefined>()
   const [property, setProperty] = useState<Property>()
+  const [hasProperties, setHasProperties] = useState<boolean>(false)
   const { user } = useAuthentication()
   const { isMobile, height } = useIsMobile()
 
   const navigationListenerFn = (e: any) => {
+    if (currentStep === 1 && !hasProperties) {
+      e.preventDefault()
+      return
+    }
+    
     if (currentStep === 1) return props.navigation.push('Login')
     if (!props.route?.params) return
     if (
@@ -90,7 +96,7 @@ export default (props: Props) => {
       props.route.params.step === onboardingSteps.length
     ) {
       callback && callback()
-      return // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
+      return
     }
     e.preventDefault()
     stepDown()
@@ -113,6 +119,9 @@ export default (props: Props) => {
   useEffect(() => {
     Promise.all([users.me.get(), properties.ofUser('me')])
       .then(([me, properties]) => {
+        // Set whether user has properties
+        setHasProperties(properties.data.length > 0)
+        
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
         let onboarding: OnboardingInfo
         if (me.data.onboarding) {
@@ -125,7 +134,7 @@ export default (props: Props) => {
             data = {}
             step = 5
             if (me.data.payment) {
-              step = 6 // If the user has already paid, skip to the end
+              step = 6 
               completed = true
             }
           }
@@ -147,8 +156,8 @@ export default (props: Props) => {
         setCurrentStep(onboarding.step)
       })
       .catch(err => {
-        // We're most likely not logged in
         setCurrentStep(1)
+        setHasProperties(false)
       })
   }, [])
 
@@ -204,11 +213,17 @@ export default (props: Props) => {
       })
   }
 
+  
+  const onPropertyCreated = () => {
+    setHasProperties(true)
+  }
+
   onboardingSteps[0].content = (
     <Step2
       property={property || defaultProperty}
       onChange={setProperty}
       onNext={() => stepUp(2)}
+      hasProperties={hasProperties}
     />
   )
   onboardingSteps[1].content = (
@@ -217,6 +232,7 @@ export default (props: Props) => {
       onChange={setProperty}
       onNext={() => stepUp(3)}
       onPrev={() => stepDown(1)}
+      onPropertyCreated={onPropertyCreated}
     />
   )
   onboardingSteps[2].content = (
@@ -231,7 +247,10 @@ export default (props: Props) => {
     <Step5
       onChange={setProperty}
       property={property || defaultProperty}
-      onNext={finish} onPrev={() => stepDown(3)} />
+      onNext={finish} 
+      onPrev={() => stepDown(3)}
+      onPropertyCreated={onPropertyCreated}
+    />
   )
 
   const currentStepObject = onboardingSteps[(currentStep || 1) - 1]
@@ -259,7 +278,13 @@ export default (props: Props) => {
             <KIcon
               name="backArrow"
               size={40}
-              onPress={() => currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')}
+              onPress={() => {
+                
+                if (currentStep === 1 && !hasProperties) {
+                  return
+                }
+                currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')
+              }}
               style={
                 { backgroundColor: 'white', borderRadius: 50, padding: 5 }
               }

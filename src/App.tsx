@@ -20,6 +20,8 @@ import variables from './styles/variables'
 import KIcon from './components/KIcon/KIcon'
 import { OnboardingInfo } from './common/types/api/auth'
 import { toastSuccess } from './components/Toast/Toast'
+import properties from './api/properties'
+
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark'
   if (Platform.OS === 'web') {
@@ -39,18 +41,42 @@ function App(): JSX.Element {
 
   useEffect(() => {
     authentication.check(true)
-      .then(uu => {
-        /* 19/06/2024 - We stop redirecting to onboarding */
-        // if(uu && uu.onboarding) {
-        //   const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
-        //   console.log(onboarding)
-        //   if(!onboarding.completed) {
-        //     setTimeout(() => {
-        //       console.log("Navigating to onboarding")
-        //       navRef.current?.navigate("Onboarding", {step: onboarding.step})
-        //     }, 200)
-        //   }
-        // }
+      .then(async (uu) => {
+        if (uu) {
+          
+          try {
+            const userProperties = await properties.ofUser('me')
+            const hasProperties = userProperties.data.length > 0
+            
+         
+            if (!hasProperties) {
+              setTimeout(() => {
+                console.log("No properties found, navigating to onboarding")
+                navRef.current?.navigate("Onboarding", { step: 1 })
+              }, 200)
+              return
+            }
+            
+            
+            if (uu.onboarding) {
+              const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
+              console.log(onboarding)
+              if (!onboarding.completed) {
+                setTimeout(() => {
+                  console.log("Onboarding not completed, navigating to onboarding")
+                  navRef.current?.navigate("Onboarding", { step: onboarding.step })
+                }, 200)
+              }
+            }
+          } catch (error) {
+            console.log("Error checking user properties:", error)
+            
+            setTimeout(() => {
+              console.log("Error checking properties, navigating to onboarding")
+              navRef.current?.navigate("Onboarding", { step: 1 })
+            }, 200)
+          }
+        }
       })
     config.load()
   }, [])

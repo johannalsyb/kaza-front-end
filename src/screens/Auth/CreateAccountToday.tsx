@@ -32,10 +32,6 @@ import React from 'react'
 import { useSetAtom } from 'jotai'
 import {  } from '../../atoms'
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-
-import { useNavigation } from '@react-navigation/native'
-import users from '../../api/users';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 import Modal from '../../components/Modal';
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
@@ -43,7 +39,6 @@ export default (props: any) => {
   const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
   const {isMobile} = useIsMobile();
   const authentication = useAuthentication();
-  const {isAuthLoading, user} = authentication;
   const [body, setBody] = useState({
     firstName: '',
     surname: '',
@@ -117,6 +112,11 @@ export default (props: any) => {
         error?.data?.error.indexOf('User already exists') >= 0
       ) {
         setError('email', {type: 'manual', message: 'Email already exists'});
+      } else if (
+        error?.data?.error &&
+        error?.data?.error.indexOf('User already exists with verified phone number') >= 0
+      ) {
+        setError('email', {type: 'manual', message: 'Email already exists with verified phone number'});
       }
     } finally {
       setLoading(false);
@@ -127,7 +127,6 @@ export default (props: any) => {
   const login = async (email: string, password: string) => {
     const user = await authentication.login(email, password);
     if (user) {
-      // Try to navigate to Onboarding after a short delay
       setTimeout(() => {
         if (props.navigation) {
           try {
@@ -137,7 +136,7 @@ export default (props: any) => {
         } else {
           window.location.href = '/';
         }
-      }); // Delay to ensure authentication state is updated
+      }); 
     } else {
     }
   };
