@@ -4,21 +4,53 @@ env:
   variables:
     CI: "false"
     PUBLIC_URL: "/"
+    AWS_REGION: "eu-west-3"
 
 phases:
   install:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "Installing dependencies..."
-      - npm install
+      - echo "Installing dependencies with npm ci..."
+      - npm ci --prefer-offline --audit false
+
+  pre_build:
+    commands:
+      - echo "Environment verification:"
+      - node -v
+      - npm -v
+      - aws --version
 
   build:
     commands:
-      - echo "Building the app..."
+      - echo "Building production bundle..."
       - npm run build
+      - echo "Build contents:"
+      - ls -la build/
 
   post_build:
     commands:
-      - echo "Deploying to S3 bucket: app.kazaswap.co"
-      - aws s3 sync build/ s3://app.kazaswap.co/ --region eu-west-3 --delete
+      - echo "Starting S3 deployment..."
+      - |
+        aws s3 sync build/ s3://app.kazaswap.co/ \
+          --region $AWS_REGION \
+          --delete \
+          --cache-control "max-age=31536000,public" \
+          --exclude "index.html" \
+          --exclude "service-worker.js" \
+          --no-progress
+      - |
+        aws s3 cp build/index.html s3://app.kazaswap.co/index.html \
+          --region $AWS_REGION \
+          --cache-control "no-cache,no-store,must-revalidate" \
+          --metadata-directive REPLACE
+      - echo "Deployment completed successfully."
+
+cache:
+  paths:
+    - node_modules/**/*
+    - build/**/*
+
+artifacts:
+  files:
+    - build/**/*
