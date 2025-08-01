@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native'
+import { Pressable, StyleSheet, View, ViewStyle, Platform } from 'react-native'
+
 import { IconText } from '../IconText/IconText'
 import { CircleImage } from '../CircleImage/CircleImage'
 import Gap from '../Gap/Gap'
@@ -13,7 +14,6 @@ import KButton from '../KButton/KButton'
 import KIcon from '../KIcon/KIcon'
 import SwapRequestButton from '../SwapRequestButton/SwapRequestButton'
 import { Property } from '../../common/types/api/properties'
-import { useRoute } from '@react-navigation/native'
 
 type PropertyCardProps = {
   favourite?: boolean
@@ -41,7 +41,7 @@ const photoStyle: CSSProperties = {
   objectFit: 'cover',
 }
 
-const cardHeight = 466
+const cardHeight = 310
 
 export const PropertyCard = ({
   avatar = '',
@@ -94,13 +94,15 @@ export const PropertyCard = ({
         ) : (
           <KImage imageId={photo} type="properties" style={photoStyle} />
         )}
+        <View style={styles.bottomOverlay} />
         <View style={[styles.avatarContainer]}>
           <CircleImage
             imageId={avatar}
             thumbnail={true}
             type="users"
-            size="xsmall"
+            style={{ borderRadius: 100, height: 45, width: 45 }}
           />
+          <KText style={{ color: variables.colors.white, fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
         </View>
       </View>
       {swapButton && property && (
@@ -113,10 +115,9 @@ export const PropertyCard = ({
         </View>
       )}
       <View style={[styles.infoContainer]}>
-        <View style={styles.infoTopContainer}>
-          <KText style={{ fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
+        {/* <View style={styles.infoTopContainer}>
           <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
-        </View>
+        </View> */}
         <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
           <KText
             style={{
@@ -135,6 +136,7 @@ export const PropertyCard = ({
               style={{
                 paddingHorizontal: variables.spacing.xxsmall,
                 fontSize: 13,
+                opacity: 0.5,
               }}>
               {property?.city}, {property?.country}
             </KText>
@@ -149,11 +151,12 @@ export const PropertyCard = ({
               }}
               numberOfLines={1}
             >
-              <KIcon name='calendar' size='medium' />
+              <KIcon name='calendar' size='medium' style={{ opacity: 0.5 }} />
               <KText
                 style={{
                   paddingHorizontal: variables.spacing.xxsmall,
-                  fontSize: 13
+                  fontSize: 13,
+                  opacity: 0.5,
                 }}>
                 {availableDateText}
               </KText>
@@ -173,7 +176,6 @@ export const PropertyCard = ({
             property={property}
             buttonStyle="primary"
             hideIcon
-          // iconStyle={{ color: variables.colors.yellow }}
           />}
         </View>}
       </View>
@@ -193,24 +195,20 @@ export const PropertyCard = ({
           }}
         />
       )}
-
-      {favourite && (
-        <KIcon
-          size="large"
-          name="fav"
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            zIndex: 1,
-            backgroundColor: variables.colors.yellow,
-            borderRadius: 100,
-            stroke: 'black',
-            fill: 'black',
-            padding: 7,
-          }}
-        />
-      )}
+      <KIcon
+        size="large"
+        name="fav"
+        style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          zIndex: 1,
+          borderRadius: 100,
+          stroke: favourite ? variables.colors.yellow : variables.colors.white,
+          fill: favourite ? variables.colors.yellow : 'transparent',
+          padding: 7,
+        }}
+      />
       {bottomComponent || null}
     </Pressable>
   )
@@ -222,27 +220,37 @@ const { white, yellow } = variables.colors
 // padding fix on the design
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
     borderRadius: 20,
     display: 'flex',
-    maxHeight: cardHeight,
+    maxWidth: 290,
     overflow: 'hidden',
-    height: '100%'
+    height: '100%',
+    minHeight: cardHeight,
   },
   imageContainer: {
     borderRadius: 20,
     overflow: 'hidden',
-    maxHeight: 250,
-    // maxWidth: 290,
-    height: '100%',
+    height: 275,
+  },
+  bottomOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    ...(Platform.OS === 'web'
+      ? {
+        backgroundImage: 'linear-gradient(to top, rgba(0,0,0,1), transparent)',
+      }
+      : {
+        backgroundColor: 'rgba(0,0,0,0.4)',
+      }),
   },
   infoContainer: {
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
     paddingHorizontal: 10,
-    // position: 'absolute',
     marginBottom: 10,
-    // bottom: 0,
     overflow: 'hidden',
     backgroundColor: 'transparent',
     width: '100%',
@@ -262,16 +270,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     paddingTop: 0,
-    minHeight:'auto'
+    paddingHorizontal: 5,
+    minHeight: 'auto'
   },
   avatarContainer: {
     position: 'absolute',
-    right: 16,
+    left: 16,
     bottom: 14,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: white,
     borderRadius: 100,
   },
   swapForText: {

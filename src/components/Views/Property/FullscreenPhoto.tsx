@@ -90,7 +90,7 @@ export default ({
     return (
       <Modal
         visible={visible}
-        animationType='slide'
+        animationType={isMobile ? 'none' : 'slide'}
         transparent={true}
         onRequestClose={() => setVisible(false)}
         onPointerUp={e => {

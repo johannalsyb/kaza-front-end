@@ -18,6 +18,7 @@ const inputStyles: TextStyle = {
   textAlign: 'left',
   height: variables.button.size.medium.height,
   padding: 10,
+  marginBottom: 3,
   marginLeft: 30,
 };
 
@@ -137,7 +138,7 @@ export default (props: Props) => {
             <KIcon
               name="location"
               size="medium"
-              style={{opacity: 0.5, marginTop: 2}}
+              style={{opacity: 0.5, }}
             />
           }
           placeholder="42 Elm Road, New York, NY 10001, USA"
@@ -238,7 +239,7 @@ export default (props: Props) => {
         style={{paddingTop: isMobile ? 20 : 10}}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
-        <View style={[styles.container, {gap: 8}]}>
+        <View style={[styles.container, {gap: 6}]}>
           <KButton
             style={{width: '48%', marginBottom: 10}}
             color={property.petFriendly ? 'primary' : 'light'}

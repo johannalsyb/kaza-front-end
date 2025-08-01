@@ -9,10 +9,12 @@ import CheckBox from "../../CheckBox/CheckBox"
 import { Property } from "."
 import KText from "../../KText"
 import KNumberInput from "../../Form/KNumberInput/KNumberInput"
-
+import useIsMobile from '../../../hooks/useIsMobile';
 const inputStyles: TextStyle = {
     textAlign: "left",
-    height: variables.button.size.medium.height
+    height: variables.button.size.medium.height,
+
+   
 }
 
 type Props = {
@@ -21,6 +23,7 @@ type Props = {
 }
 
 export default (props: Props) => {
+      const {isMobile} = useIsMobile();
     return <>
         <FormField label="How big is your space?"
             gapAfterChildren={false}
@@ -42,7 +45,10 @@ export default (props: Props) => {
                     if (nb > 10000) return
                     props.onChange({ ...props.property, size: nb })
                 }}
+              
+              
                 inputStyles={inputStyles} />
+                
         </FormField>
 
         <FormField

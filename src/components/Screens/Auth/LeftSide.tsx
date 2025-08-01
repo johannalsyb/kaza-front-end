@@ -24,7 +24,8 @@ interface LeftSideProps {
 const LeftSide = (props: LeftSideProps) => {
   const {isMobile} = useIsMobile();
   const {style, title} = props;
-  const {width, height} = Dimensions.get('window');
+  const {width,height} = Dimensions.get('window');
+  
   return (
     <>
       <Image
@@ -32,10 +33,10 @@ const LeftSide = (props: LeftSideProps) => {
         resizeMode={isMobile ? 'contain' : 'stretch'}
         style={{
           width: isMobile ? '100%' : width * 0.5,
-          height: isMobile ? 240 : height,
+          height: isMobile ? 240 :height,
           position: 'relative',
 
-          top:  isMobile ? -5:0,
+          top:  isMobile ? -5:-0,
           left:  0,
           zIndex: -1,
           marginBottom: isMobile ? 24 : 0,
@@ -81,7 +82,7 @@ const LeftSide = (props: LeftSideProps) => {
             to={'/'}
             style={{
               position: 'absolute',
-              width: '50%',
+              width: '100%',
               top: 0,
               display: 'flex',
               flexDirection: 'column',
@@ -96,7 +97,7 @@ const LeftSide = (props: LeftSideProps) => {
           <View
             style={{
               position: 'absolute',
-              width: '50%',
+              width: '100%',
               bottom: 65,
               display: 'flex',
               flexDirection: 'column',

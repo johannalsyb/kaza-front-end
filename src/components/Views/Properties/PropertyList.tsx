@@ -369,13 +369,15 @@ export default forwardRef<Handle, Props>(
                           color="primary"
                           style={{
                             width: isMobile ? '100%' : 'auto',
-                            paddingHorizontal: 10,
+                            paddingLeft: 16,
+                            paddingRight: 4,
                             display: 'flex',
                             marginTop: isMobile ? 10 : 71,
                             marginBottom: isMobile ? 0 : 55,
                           }}
                           icon="arrowDown"
-                          iconStyle={{ stroke: 'white' }}
+                          iconPosition='right'
+                          iconStyle={{ stroke: 'white', opacity: 0.5, marginTop: 4, marginLeft: -1 }}
                           textStyle={{ color: 'white' }}
                           text="Load More"
                         />

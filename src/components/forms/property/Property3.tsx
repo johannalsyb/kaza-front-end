@@ -286,9 +286,10 @@ export default (props: Props) => {
                     return <Pressable onPress={() => iuRef.current?.open()}
                         style={{
                             marginRight: 10,
-                            width: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
-                            height: isMobile ? KImageUploadWidthMobile : KImageUploadWidthDesktop,
+                            width: isMobile ? KImageUploadWidthMobile*0.95 : KImageUploadWidthDesktop,
+                            height: isMobile ? KImageUploadWidthMobile*0.95 : KImageUploadWidthDesktop,
                             borderWidth: 1,
+                            margin:'auto',
                             borderColor: variables.colors.borderGray,
                             backgroundColor: variables.colors.white,
                             borderRadius: 20,
@@ -299,6 +300,7 @@ export default (props: Props) => {
                         }} key={`pic_placeholder_${i}`}>
                         {imageLoading[i + pics.length] ?
                             <View style={{ width: "100%", height: "100%", borderRadius: 20, position: 'relative' }}>
+                                
                                 <Image
                                     source={{ uri: imageLoading[i + pics.length] as string }}
                                     style={{ width: "100%", height: "100%", borderRadius: 20 }} />
