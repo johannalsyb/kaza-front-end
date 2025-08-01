@@ -284,7 +284,7 @@ export default (props: Props) => {
                 color: number
                   ? variables.colors.black
                   : variables.colors.lightGray,
-                 
+                 paddingBottom:isMobile?3.5:0
               },
               //@ts-ignore
               Platform.OS === 'web' ? {outlineWidth: 0} : {},
