@@ -21,7 +21,7 @@ const ListAvailbleDates = (props: any) => {
 
   const range = (item: any) => {
     if (!item || !item.value || !item.value[0] || !item.value[1]) return ''
-    return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(item.value[0]).format('MMM DD')}`
+    return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(item.value[1]).format('MMM DD')}`
   }
   const { isMobile } = useIsMobile()
   return (

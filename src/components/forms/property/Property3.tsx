@@ -281,7 +281,8 @@ export default (props: Props) => {
                 },
               ]}
               numberOfLines={1}>
-              You need to add at least 4 pictures
+              
+              You need to add 4 pictures minimum 
             </KText>
             <Pressable
               onPress={() => props?.setShowImageNotification?.(false)}
@@ -431,9 +432,7 @@ const styles = StyleSheet.create({
   incorrectAddressBox: {
     backgroundColor: '#FF784E',
     position: 'relative',
-
     alignItems: 'center',
-
     borderRadius: 28,
     paddingTop: 10,
     paddingBottom: 10,

@@ -151,20 +151,26 @@ export default (props: Props) => {
       </FormField>
 
       {showIncorrectAddress && (
-        <View style={[styles.incorrectAddressBox,{  width: isMobile? '108%':'105%',  marginTop: isMobile?-14:-25,  }]}>
-          <KText style={[styles.incorectaddressMessage , {fontSize: isMobile ? 13 : 15,} ]}
-      numberOfLines={1}
-          >
+        <View
+          style={[
+            styles.incorrectAddressBox,
+            {
+              width: isMobile ? '108%' : '105%',
+              marginTop: isMobile ? -14 : -25,
+            },
+          ]}>
+          <KText
+            style={[
+              styles.incorectaddressMessage,
+              {fontSize: isMobile ? 13 : 15, paddingVertical: 6},
+            ]}
+            numberOfLines={1}>
             You need to put the exact address of your place
           </KText>
           <Pressable
             onPress={() => setShowIncorrectAddress(false)}
-            style={{zIndex: 232}}>
-            <KIcon
-              name="closeBtn"
-              size={'large'}
-              style={{color: 'black'}}
-            />
+            style={{position: 'absolute', right: 15}}>
+            <KIcon name="closeBtn" size={'medium'} style={{color: 'black'}} />
           </Pressable>
         </View>
       )}
@@ -190,7 +196,6 @@ export default (props: Props) => {
         style={{
           height: isMobile ? 140 : 'auto',
           paddingTop: isMobile ? 20 : 10,
-          
         }}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
@@ -286,27 +291,26 @@ export default (props: Props) => {
             );
           })}
         </View>
-      {!isMobile && (
-  <Pressable
-    onPress={() => setShowAllAmenities(!showAllAmenities)}
-    style={styles.showMoreButton}>
-    <KText style={styles.showMoreText}>
-      {showAllAmenities ? 'Show less' : 'Show more'}
-    </KText>
-    <Animated.View style={{
-      transform: [{
-        rotate: showAllAmenities ? '180deg' : '0deg'
-      }],
-      opacity: 0.7 
-    }}>
-      <KIcon
-        name="down"
-        size={'large'}
-        style={{ color: 'black' }}
-      />
-    </Animated.View>
-  </Pressable>
-)}
+        {!isMobile && (
+          <Pressable
+            onPress={() => setShowAllAmenities(!showAllAmenities)}
+            style={styles.showMoreButton}>
+            <KText style={styles.showMoreText}>
+              {showAllAmenities ? 'Show less' : 'Show more'}
+            </KText>
+            <Animated.View
+              style={{
+                transform: [
+                  {
+                    rotate: showAllAmenities ? '180deg' : '0deg',
+                  },
+                ],
+                opacity: 0.7,
+              }}>
+              <KIcon name="down" size={'large'} style={{color: 'black'}} />
+            </Animated.View>
+          </Pressable>
+        )}
       </FormField>
 
       <KModal
@@ -366,23 +370,21 @@ const styles = StyleSheet.create({
   incorrectAddressBox: {
     backgroundColor: '#FF784E',
     position: 'relative',
-    flexDirection: 'row',
+
     marginTop: -12,
-    
     alignItems: 'center',
-    justifyContent: 'space-between',
+
     borderRadius: 28,
-  paddingTop:10,
-  paddingBottom:10,
-  paddingLeft:8,
-  paddingRight:5,
-    
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 8,
+    paddingRight: 5,
   },
   incorectaddressMessage: {
-textAlign:'center',
-fontWeight:'400',
-lineHeight:16,
-letterSpacing: -0.4,
+    textAlign: 'center',
+    fontWeight: '400',
+    lineHeight: 16,
+    letterSpacing: -0.4,
     color: '#18181DF5',
   },
   icon: {
@@ -403,20 +405,19 @@ letterSpacing: -0.4,
     maxWidth: 300,
   },
   showMoreButton: {
-width:'100%',
-maxWidth:115,
+    width: '100%',
+    maxWidth: 115,
     marginTop: 10,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  alignSelf: 'flex-start',
-  gap: 4, 
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-start',
+    gap: 4,
   },
   showMoreText: {
-   
-      color: variables.colors.black,
-  fontWeight: '500',
-  textDecorationLine: 'underline',
-  textDecorationColor: '#979090ff',
+    color: variables.colors.black,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+    textDecorationColor: '#979090ff',
   },
 });

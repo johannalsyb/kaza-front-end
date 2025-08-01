@@ -66,7 +66,7 @@ export const defaultProperty: Property = {
   type: '',
   amenities: [],
   petFriendly: undefined,
-  size: 25,
+  size: 0,
   bedrooms: 1,
   beds: 1,
   bathrooms: 1,
