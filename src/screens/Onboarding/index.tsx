@@ -84,7 +84,6 @@ export default (props: Props) => {
   const { isMobile, height } = useIsMobile()
 
   const navigationListenerFn = (e: any) => {
-    // If user has no properties and is on step 1, prevent going back
     if (currentStep === 1 && !hasProperties) {
       e.preventDefault()
       return
@@ -97,7 +96,7 @@ export default (props: Props) => {
       props.route.params.step === onboardingSteps.length
     ) {
       callback && callback()
-      return // DO NOTHING WHEN FINISHED. This was creating a bug where the user would be redirected to onboarding when opening the profile after signing up
+      return
     }
     e.preventDefault()
     stepDown()
@@ -135,7 +134,7 @@ export default (props: Props) => {
             data = {}
             step = 5
             if (me.data.payment) {
-              step = 6 // If the user has already paid, skip to the end
+              step = 6 
               completed = true
             }
           }
@@ -157,7 +156,6 @@ export default (props: Props) => {
         setCurrentStep(onboarding.step)
       })
       .catch(err => {
-        // We're most likely not logged in
         setCurrentStep(1)
         setHasProperties(false)
       })
@@ -215,7 +213,7 @@ export default (props: Props) => {
       })
   }
 
-  // Callback to update hasProperties state when a property is created
+  
   const onPropertyCreated = () => {
     setHasProperties(true)
   }
@@ -281,21 +279,14 @@ export default (props: Props) => {
               name="backArrow"
               size={40}
               onPress={() => {
-                // Hide back button if user has no properties and is on step 1
+                
                 if (currentStep === 1 && !hasProperties) {
                   return
                 }
                 currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')
               }}
               style={
-                { 
-                  backgroundColor: 'white', 
-                  borderRadius: 50, 
-                  padding: 5,
-                  // Hide the back button if user has no properties and is on step 1
-                  opacity: (currentStep === 1 && !hasProperties) ? 0 : 1,
-                  display: (currentStep === 1 && !hasProperties) ? 'none' : 'flex'
-                }
+                { backgroundColor: 'white', borderRadius: 50, padding: 5 }
               }
             />
           </View>

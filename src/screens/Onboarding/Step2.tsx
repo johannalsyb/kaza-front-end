@@ -42,7 +42,7 @@ export default (props: Props) => {
     return <>
         <Property1 property={props.property} onChange={props.onChange} error={error} />
         <View style={styles.container}>
-            {/* Only show back button if user has properties */}
+           
             {props.hasProperties && (
                 <KButton
                     text="Back"

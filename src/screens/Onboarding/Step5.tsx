@@ -64,7 +64,7 @@ export default (props: Props) => {
             .then(p => {
                 //@ts-ignore
                 props.onChange({ ...props.property, id: p.data.id })
-                // Call the callback to update hasProperties state
+                
                 props.onPropertyCreated?.()
                 props.onNext()
             }).catch(e => {
