@@ -1,54 +1,61 @@
-import KText from '../../KText';
-import {Pressable, View, StyleSheet} from 'react-native';
-import {Property} from '../../../common/types/api/properties';
-import variables from '../../../styles/variables';
-import KIcon from '../../KIcon/KIcon';
-import {CircleImage} from '../../CircleImage/CircleImage';
-import useAuthentication from '../../../hooks/useAuthentication';
-import {useEffect, useState} from 'react';
-import properties from '../../../api/properties';
-import share, { shareProperty } from '../../../utils/Share';
-import {useSetAtom} from 'jotai';
-import {showSignInAtom} from '../../../atoms';
-import Gap from '../../Gap/Gap';
-import useIsMobile from '../../../hooks/useIsMobile';
-import SwapRequestButton from '../../SwapRequestButton/SwapRequestButton';
+import { useEffect, useState } from 'react'
+import { Pressable, View, StyleSheet } from 'react-native'
+
+import KText from '../../KText'
+import { Property } from '../../../common/types/api/properties'
+import variables from '../../../styles/variables'
+import KIcon from '../../KIcon/KIcon'
+import { CircleImage } from '../../CircleImage/CircleImage'
+import useAuthentication from '../../../hooks/useAuthentication'
+import properties from '../../../api/properties'
+import { shareProperty } from '../../../utils/Share'
+import { useSetAtom } from 'jotai'
+import { showSignInAtom } from '../../../atoms'
+import Gap from '../../Gap/Gap'
+import useIsMobile from '../../../hooks/useIsMobile'
+import SwapRequestButton from '../../SwapRequestButton/SwapRequestButton'
 
 type Props = {
-  property?: Property;
-  onBackPress?: () => void;
-};
+  property?: Property
+  onBackPress?: () => void
+}
 
-export default ({property, onBackPress}: Props) => {
-  const auth = useAuthentication();
-  const user = auth.user;
+export default ({ property, onBackPress }: Props) => {
+  const auth = useAuthentication()
+  const user = auth.user
   const [isFav, setIsFav] = useState(
     property &&
-      user &&
-      user.favourites &&
-      user.favourites.includes(property.id),
-  );
-  const setShowSignIn = useSetAtom(showSignInAtom);
-  const {isMobile} = useIsMobile();
+    user &&
+    user.favourites &&
+    user.favourites.includes(property.id),
+  )
+  const setShowSignIn = useSetAtom(showSignInAtom)
+  const { isMobile } = useIsMobile()
 
-  if (!property?.owner) return <KText>Loading...</KText>;
+  if (!property?.owner) return <KText>Loading...</KText>
 
   const toggleFav = () => {
-    if (!property) return;
+    if (!property) return
     properties.favourites
       .toggle(property.id)
-      .then(r => setIsFav(r.data.includes(property.id)))
-      .catch(e => console.log(e));
-  };
+      .then(r => {
+        setIsFav(r.data.includes(property.id))
+        auth.updateUser({
+          ...user,
+          favourites: Array.isArray(r.data) ? r.data.join(',') : r.data,
+        })
+      })
+      .catch(e => console.log(e))
+  }
 
   useEffect(() => {
     setIsFav(
       property &&
-        user &&
-        user.favourites &&
-        user.favourites.includes(property.id),
-    );
-  }, [property]);
+      user &&
+      user.favourites &&
+      user.favourites.includes(property.id),
+    )
+  }, [property])
 
   return (
     <>
@@ -80,8 +87,8 @@ export default ({property, onBackPress}: Props) => {
             {/* <KText>{property.owner.firstName}</KText> */}
             {/* <Gap size="small" /> */}
             <KIcon name="pin" size="medium" style={{
-                opacity: 0.4,
-            }}/>
+              opacity: 0.4,
+            }} />
             <KText
               style={{
               }}>
@@ -150,8 +157,8 @@ export default ({property, onBackPress}: Props) => {
         {!isMobile && <SwapRequestButton property={property} />}
       </View>
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   lightCircle: {
@@ -163,4 +170,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
+})
