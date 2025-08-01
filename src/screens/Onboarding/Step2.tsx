@@ -41,7 +41,7 @@ export default (props: Props) => {
 
     return <>
         <Property1 property={props.property} onChange={props.onChange} error={error} />
-        <View style={styles.container}>
+        <View style={[{...styles.container, position: 'relative'}]}>
            
             {props.hasProperties && (
                 <KButton
@@ -75,8 +75,9 @@ export default (props: Props) => {
                 color="primary"
                 style={{
                     ...styles.button,
-                    width: props.hasProperties ? '100%' : '100%',
-                    maxWidth: props.hasProperties ? 150 : '100%',
+                    right: 0,
+                    position: 'absolute'
+
                 }} />
 
         </View>
