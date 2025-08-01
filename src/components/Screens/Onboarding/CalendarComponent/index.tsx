@@ -24,24 +24,26 @@ const CalendarComponent = () => {
   const [isOpenCalendar, setIsOpenCalendar] = useState(false)
   const [value, onChange] = useState<Value>([
     new Date(),
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 0)
-      return d
-    })()
+    new Date()
   ])
+
+  const [calendarSelectedDateRange, setCalendarSelectedDateRange] = useState<Value>([new Date(),new Date()])
 
   const handleClickAddSlots = () => {
     setAvailableDates([{ id: availableDates.length + 1, value }, ...availableDates])
     adjustRangeIfBlocked(value as [Date, Date])
     setIsOpenCalendar(false)
+    setCalendarSelectedDateRange([
+      new Date(),
+      new Date()
+    ])
   }
 
   const isDateInRanges = (date: Date) => {
     return availableDates.some((item: any) => {
       if (!Array.isArray(item.value) || item.value.length < 2) return false
       const start = new Date(item.value[0])
-      const end = new Date(item.value[0])
+      const end = new Date(item.value[1])
       const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
       const s = new Date(start.getFullYear(), start.getMonth(), start.getDate())
       const e = new Date(end.getFullYear(), end.getMonth(), end.getDate())
@@ -75,17 +77,20 @@ const CalendarComponent = () => {
       }
     }
     onChange(val)
+    setCalendarSelectedDateRange(val)
   }
 
   const [itemEdit, setItemEdit] = useState<any>(undefined)
   const handleClickEdit = (item: any) => {
-    console.log('availableDates', availableDates, item)
+    // console.log('availableDates', availableDates, item)
+    setIsOpenCalendar(true)
     let updateItems = availableDates.filter((i: any) =>
       i.id !== item.id
     )
 
     setAvailableDates(updateItems)
     onChange(item.value)
+    setCalendarSelectedDateRange(item.value)
     setIsOpenCalendar(true)
     setItemEdit(item)
   }
@@ -95,15 +100,22 @@ const CalendarComponent = () => {
       adjustRangeIfBlocked([value[0], value[1]])
     }
   }, [availableDates])
+
+  useEffect(() => {
+    if(!isOpenCalendar){
+      setCalendarSelectedDateRange([
+        new Date(),
+        new Date()
+      ])
+    }
+  }, [isOpenCalendar])
   return (
     <>
       <View style={[styles.container, { justifyContent: 'center', marginBottom: isMobile ? 25 : 70, width: '100%' }]}>
         <Pressable onPress={() => availableDates.length ? {} : setIsOpenCalendar(true)} style={{ width: '100%' }}>
           <SelectDates
             startDate={availableDates[0]?.value?.[0] ?? new Date()}
-            endDate={availableDates[0]?.value?.[0] ?? new Date()}
-          // startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
-          // endDate={Array.isArray(value) ? value[1] ?? new Date() : new Date()}
+            endDate={availableDates[0]?.value?.[1] ?? new Date()}
           />
         </Pressable >
 
@@ -119,7 +131,10 @@ const CalendarComponent = () => {
       <ListAvailbleDates items={availableDates} setItems={setAvailableDates} onPressEdit={handleClickEdit} />
       <KSideModal
         visible={isOpenCalendar}
-        onClose={() => setIsOpenCalendar(false)}
+        onClose={() => {
+          setIsOpenCalendar(false)
+          Boolean(itemEdit) && setAvailableDates([...availableDates, itemEdit])
+        }}
         showCross={!isMobile}
         position={isMobile ? 'bottom' : 'right'}
         style={isMobile ? {
@@ -141,12 +156,12 @@ const CalendarComponent = () => {
         <View style={[styles.container, styles.calendarContainer]}>
           <SelectDates
             style={{ marginBottom: 46, }}
-            startDate={Array.isArray(value) ? value[0] ?? new Date() : value ?? new Date()}
-            endDate={Array.isArray(value) ? value[0] ?? new Date() : new Date()}
+            startDate={Array.isArray(calendarSelectedDateRange) ? calendarSelectedDateRange[0] : new Date()}
+            endDate={Array.isArray(calendarSelectedDateRange) ? calendarSelectedDateRange[1] : new Date()}
           />
           <KCalendar
             onChange={handleChange}
-            value={value}
+            value={calendarSelectedDateRange}
             minDate={new Date()}
             tileDisabled={({ date, view }) =>
               view === 'month' && isDateInRanges(date)
