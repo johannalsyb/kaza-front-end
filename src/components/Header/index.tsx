@@ -22,9 +22,10 @@ import MenuIcon from './MenuIcon'
 import HeaderEvent from '../../events/HeaderEvent'
 import MenuItem from './MenuItem'
 
-
+const NOTIFICATION_TOGGLE_ID = 'notification-toggle-button';
 let ueNotificationListenerId: string | undefined = undefined
 let ueNewMatchListenerId: string | undefined = undefined
+
 export default (
   props: NativeStackHeaderProps & {
     force?: boolean
@@ -48,6 +49,7 @@ export default (
   const popupNotificationsRef = useCloseFromOutside(
     notificationsVisible,
     setNotificationsVisible,
+    NOTIFICATION_TOGGLE_ID
   )
   const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
   const nm = parseInt(localStorage.getItem("newMatches") || "0")
@@ -138,7 +140,7 @@ export default (
       opacity: !searchAvailable ? 0 : 1,
       // flex: 1
     }} />
-  const notificationsIcon = () => <MenuIcon icon="bell" onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
+  const notificationsIcon = () => <MenuIcon nativeID={NOTIFICATION_TOGGLE_ID} icon="bell" onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
   const editIcon = (fn: () => void) => <MenuIcon icon="edit" onPress={fn} iconStyle={{ stroke: variables.colors.yellow, backgroundColor: "black" }} />
   const shareIcon = (fn: () => void) => <MenuIcon icon="share" onPress={fn} />
   const backIcon = () => <MenuIcon icon="back" onPress={() => {
@@ -156,7 +158,7 @@ export default (
         <KSideModal
           visible={notificationsVisible}
           onClose={visible => {
-            setNotificationsVisible(false)
+            setNotificationsVisible(prev => !prev)
           }}>
           <Notifications unreadNotifications={bubbles.notifications || 0} />
         </KSideModal>

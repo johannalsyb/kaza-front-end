@@ -14,7 +14,7 @@ import {useClickOutside} from 'react-native-click-outside';
 export const useCloseFromOutside = (
   isOpen: boolean,
   setIsOpen: (isOpen: boolean, e?: MouseEvent | TouchEvent) => void,
-  overrideElementId = undefined,
+  overrideElementId?: string,
 ) => {
   let closeFromOutsideRef = useRef<View | null>(null);
   const nativeRef = useClickOutside<View>(() => {
