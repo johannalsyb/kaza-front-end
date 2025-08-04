@@ -24,7 +24,7 @@ const NotificationsScreen = () => {
 	const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={[styles.container, { backgroundColor: bubbles.notifications ? variables.colors.white : variables.colors.greenLight }]}>
 			<NotificationsHeader title={"Notifications"} />
 			<Notifications unreadNotifications={bubbles.notifications || 0} />
 		</SafeAreaView>
@@ -36,7 +36,6 @@ export default NotificationsScreen
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: variables.colors.greenLight,
 	},
 	header: {
 		flexDirection: 'row',
