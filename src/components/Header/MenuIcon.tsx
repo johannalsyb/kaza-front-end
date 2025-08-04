@@ -11,11 +11,12 @@ type Props = {
     icon: string
     style?: ViewStyle
     iconStyle?: CSSProperties
+    nativeID?: string;
 }
 
 export default (props:Props) => {
     const {isMobile} = useIsMobile()
-    return <Pressable onPress={props.onPress} style={props.style}>
+    return <Pressable onPress={props.onPress} style={props.style} nativeID={props?.nativeID}>
         {props.bubble ? <View
         style={{    
             position: 'absolute',
