@@ -162,14 +162,14 @@ export default (props: Props) => {
           <KText
             style={[
               styles.incorectaddressMessage,
-              {fontSize: isMobile ? 13 : 15, paddingVertical: 6},
+              {fontSize: isMobile ? 13 : 15, paddingVertical: 6,marginRight:isMobile?20: 0},
             ]}
             numberOfLines={1}>
             You need to put the exact address of your place
           </KText>
           <Pressable
             onPress={() => setShowIncorrectAddress(false)}
-            style={{position: 'absolute', right: 15}}>
+            style={{position: 'absolute', right: 15,bottom: 12}}>
             <KIcon name="closeBtn" size={'medium'} style={{color: 'black'}} />
           </Pressable>
         </View>
@@ -407,11 +407,12 @@ const styles = StyleSheet.create({
   showMoreButton: {
     width: '100%',
     maxWidth: 115,
-    marginTop: 10,
+    marginTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     alignSelf: 'flex-start',
+    cursor: 'pointer',
     gap: 4,
   },
   showMoreText: {
