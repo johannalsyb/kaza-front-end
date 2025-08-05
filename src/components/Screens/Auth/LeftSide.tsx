@@ -24,25 +24,24 @@ interface LeftSideProps {
 const LeftSide = (props: LeftSideProps) => {
   const {isMobile} = useIsMobile();
   const {style, title} = props;
-  const {width,height} = Dimensions.get('window');
-  
+  const {width, height} = Dimensions.get('window');
+
   return (
     <>
       <Image
         source={isMobile ? TopImg : LeftImg}
-        resizeMode={isMobile ? 'contain' : 'stretch'}
+        resizeMode={isMobile ? 'contain' : 'cover'}
         style={{
           width: isMobile ? '100%' : width * 0.5,
-          height: isMobile ? 240 :height,
+          height: isMobile ? 240 : height,
           position: 'relative',
-
-          top:  isMobile ? -5:-0,
-          left:  0,
+          margin: 0,
+          top: isMobile ? -5 : -0,
+          left: 0,
           zIndex: -1,
           marginBottom: isMobile ? 24 : 0,
           borderTopRightRadius: isMobile ? 0 : 30,
           borderBottomRightRadius: isMobile ? 0 : 30,
-          
         }}
       />
 
@@ -73,8 +72,6 @@ const LeftSide = (props: LeftSideProps) => {
               ...style,
             }}
           />
-
-        
         </>
       ) : (
         <>
@@ -121,4 +118,3 @@ const LeftSide = (props: LeftSideProps) => {
 };
 
 export default LeftSide;
-
