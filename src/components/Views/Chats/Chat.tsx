@@ -20,7 +20,7 @@ import useAuthentication from '../../../hooks/useAuthentication';
 import variables from '../../../styles/variables';
 import {CircleImage} from '../../CircleImage/CircleImage';
 import useChatFeed from '../../../hooks/useChatFeed';
-import {SwapRequestChat} from '../../../screens/Chats';
+import {SwapRequestChat} from '../../../screens/Chats/Chats';
 import useIsMobile from '../../../hooks/useIsMobile';
 import KIcon from '../../KIcon/KIcon';
 import ChatMessage from './ChatMessage';
