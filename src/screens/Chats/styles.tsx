@@ -1,13 +1,13 @@
-import { StyleSheet } from 'react-native';
-import variables from '../../styles/variables';
+import { StyleSheet } from 'react-native'
+import variables from '../../styles/variables'
 
 const styles = StyleSheet.create({
 	header: {
-		paddingTop: 48,
-		paddingBottom: 16,
+		paddingTop: 15,
+		paddingBottom: 15,
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: 16,
+		paddingHorizontal: 15,
 		borderBottomEndRadius: 30,
 		borderBottomStartRadius: 30,
 		justifyContent: 'space-between',
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default styles;
+export default styles

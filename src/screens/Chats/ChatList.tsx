@@ -40,7 +40,7 @@ const ChatList: React.FC<Props> = ({
 	declineRequest,
 	timeAgo,
 }) => (
-	<ScrollView>
+	<ScrollView showsVerticalScrollIndicator={false}>
 		{visibleRequests.length ? visibleRequests.map((request, i) => {
 			const otherUser = request.fromProperty.owner.id === user!.id ? request.toProperty.owner : request.fromProperty.owner
 			const otherUserImage = otherUser.primaryImage && otherUser.primaryImage.length ? otherUser.primaryImage : (
@@ -58,13 +58,14 @@ const ChatList: React.FC<Props> = ({
 				}]}
 				key={`request-${i}`}>
 				{request.newMessage ? <KText style={styles.bubble}>1</KText> : null}
-				<Pressable style={{
-					display: 'flex',
-					flexDirection: 'row',
-					justifyContent: 'flex-start',
-					alignItems: 'center',
-					flex: 1,
-				}}
+				<Pressable
+					style={{
+						display: 'flex',
+						flexDirection: 'row',
+						justifyContent: 'flex-start',
+						alignItems: 'center',
+						flex: 1,
+					}}
 					onHoverIn={showArchive ? undefined : () => setShowChatMenuDots(request.id)}
 					onHoverOut={showArchive ? undefined : () => setShowChatMenuDots(null)}
 					onPress={() => {
