@@ -8,6 +8,7 @@ import swaps from '../../api/swaps'
 import { timeAgo } from '../../utils'
 import Menu from '../../components/Menu'
 import KText from '../../components/KText'
+import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import useConfig from '../../hooks/useConfig'
 import variables from '../../styles/variables'
@@ -27,8 +28,8 @@ import useAuthentication from '../../hooks/useAuthentication'
 import ContractView from '../../components/Views/ContractView'
 import Decline from '../../components/Views/SwapRequest/Decline'
 import KTextInput from '../../components/Form/KTextInput/KTextInput'
+import { CircleImage } from '../../components/CircleImage/CircleImage'
 import VerifyAccount from '../../components/Views/SwapRequest/VerifyAccount'
-
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Chats' | 'Chat'>
 export type SwapRequestChat = {
@@ -236,9 +237,27 @@ export default ({
   })
 
   const emptyIcon = () => <View style={{ width: 40, height: 40 }} />
-  const backIcon = () => <MenuIcon icon='back' onPress={() => navigation.canGoBack() ? navigation.goBack() : setShowArchive(false)} />
 
-  let headerLeftComponent = emptyIcon(), headerRightComponent = emptyIcon()
+  let headerLeftComponent = <Pressable onPress={() => setShowMobileSearchBar(true)} style={styles.headerButton}>
+    <KIcon name={'search'} size={'medium'} />
+  </Pressable>
+
+  useEffect(() => {
+    if (!request) {
+      headerLeftComponent = <Pressable onPress={() => setShowMobileSearchBar(true)} style={styles.headerButton}>
+        <KIcon name={'search'} size={'medium'} />
+      </Pressable>
+    } else if (request) {
+      headerLeftComponent = <KIcon name='back' size='medium' style={{
+        backgroundColor: 'white',
+        borderRadius: 50,
+        padding: 10,
+      }}
+        onPress={() => navigation.navigate('Chats')} />
+    }
+  }, [request])
+
+  let headerRightComponent = emptyIcon()
   if (isMobile) {
     if (request) {
       headerLeftComponent = <KIcon name='back' size='medium' style={{
@@ -256,8 +275,15 @@ export default ({
         flex: 1
       }}
         onPress={() => request ? setShowContractModal(true) : setShowArchive(!showArchive)} />
+    } if (showArchive) {
+      headerLeftComponent = <KIcon name='back' size='medium' style={{
+        backgroundColor: 'white',
+        borderRadius: 50,
+        padding: 10,
+      }}
+        onPress={() => setShowArchive(false)} />
     } else {
-      headerLeftComponent = backIcon()
+      headerLeftComponent = headerLeftComponent
     }
   }
 
@@ -275,42 +301,45 @@ export default ({
     alignItems: 'center',
   }}>
     <SlideUpView delay={0} style={{ flex: 1, width: '100%' }}>
-      {isMobile && <View style={styles.header}>
-        {showMobileSearchBar ?
-          <>
-            <KTextInput
-              topStyle={{ margin: 0, borderWidth: 1, height: 39, width: '100%', }}
-              inputStyles={{ textAlign: 'left', height: 39, marginLeft: -16 }}
-              leftComponent={<KIcon name='search' size='medium' style={{ marginLeft: -3 }} />}
-              rightComponent={<KIcon
-                name='crossCircle'
-                size='medium'
-                onPress={() => {
-                  setSearch('')
-                  setShowMobileSearchBar(false)
-                }}
-                style={{ marginRight: -2, opacity: 0.5, stroke: 'black' }}
-              />}
-              value={search}
-              onChangeText={text => setSearch(text)}
-              autoFocus={true}
-            />
-          </>
-          :
-          <>
-            <Pressable onPress={() => setShowMobileSearchBar(true)} style={styles.headerButton}>
-              <KIcon name={'search'} size={'medium'} />
-            </Pressable>
-            <Text style={styles.title}>Chat</Text>
-            <Pressable
-              onPress={() => setShowArchive(prev => !prev)}
-              style={styles.headerButton}>
-              <KIcon name={'archived'} size={'medium'} style={{ opacity: 1 }} />
-            </Pressable>
-          </>
-        }
-      </View>
-      }
+      {isMobile ? showMobileSearchBar ? <View style={styles.header}>
+        <KTextInput
+          topStyle={{ margin: 0, borderWidth: 1, height: 39, width: '100%', }}
+          inputStyles={{ textAlign: 'left', height: 39, marginLeft: -16 }}
+          leftComponent={<KIcon name='search' size='medium' style={{ marginLeft: -3 }} />}
+          rightComponent={<KIcon
+            name='crossCircle'
+            size='medium'
+            onPress={() => {
+              setSearch('')
+              setShowMobileSearchBar(false)
+            }}
+            style={{ marginRight: -2, opacity: 0.5, stroke: 'black' }}
+          />}
+          value={search}
+          onChangeText={text => setSearch(text)}
+          autoFocus={true}
+        />
+      </View> :
+        <Header
+          route={route}
+          navigation={navigation}
+          options={{}}
+          force={true}
+          title={request ? <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            width: '100%'
+          }}>
+            <CircleImage
+              thumbnail={true}
+              imageId={`${request.otherUser.id}/${request.otherUser.image}`}
+              type="users"
+              style={{ width: 44, height: 44, marginRight: 10, marginLeft: 10, marginTop: 3, borderWidth: 0 }} />
+            <KText>{request.otherUser.firstName}</KText>
+          </View> : (showArchive ? "Archive" : "Chat")}
+          leftComponent={headerLeftComponent}
+          rightComponent={headerRightComponent}
+        /> : null}
       <View style={[styles.mainContainer, { padding: isMobile ? 0 : 20, }]}>
         <View style={{
           flex: 1,
@@ -355,96 +384,97 @@ export default ({
             timeAgo={timeAgo}
           />
         </View>
-        {!isMobile ? <>
-          <View style={{
-            flex: 1,
-            borderRadius: 20,
-            backgroundColor: 'white',
-            marginLeft: 20,
-            marginRight: 20,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 20,
-            justifyContent: 'center'
-          }}>{loading ? <ActivityIndicator /> :
-            !user || (requests && !requests.length) ?
-              <View style={{ flex: 1, alignItems: 'center', width: '100%', justifyContent: 'center' }}>
-                <KIcon name='chat' size='xxlarge' style={styles.chatIcon} />
-                <KText style={{ fontSize: 25, fontWeight: 'bold', marginTop: 20, marginBottom: 20 }}>
-                  {user ? 'Chat is empty' : 'Please login to see your chats'}
-                </KText>
-                {user ?
-                  <>
-                    <KText style={{ maxWidth: isMobile ? '60%' : '25%', textAlign: 'center', lineHeight: 20 }}>
-                      Start exploring for Swap
-                    </KText>
-                    <KButton text='Explore' color='primary' onPress={() => {
-                      navigation.navigate('Home')
-                    }} style={{ marginTop: 20 }} />
-                  </>
-                  : (!isMobile ? <View style={styles.signinContainer}>
-                    <KButton text='Sign in' color={isMobile ? 'greenLight' : 'light'} onPress={() => {
-                      navigation.navigate('Login')
-                    }} style={{
-                      borderColor: !isMobile ? 'black' : 'white',
-                      borderWidth: 1,
-                      marginRight: 10,
-                    }} />
-                    <KButton text='Register' color='primary' onPress={() => {
-                      navigation.navigate('SignUp')
-                    }} />
-                  </View> : null)}
-              </View> :
-              !request ?
-                <View style={{ alignItems: 'center' }}>
-                  <KIcon name='chat' size='xxlarge' style={{ stroke: 'black' }} />
-                  <KText style={{
-                    textAlign: 'center',
-                    padding: 20
-                  }}>Select a request to start chatting</KText>
-                </View>
-                :
-                <ChatView
-                  request={request}
-                  onSwapRequestStatusChange={onSwapRequestStatusChange}
-                  onMessageUpdate={(msg) => onMessageUpdate(request, msg)}
-                />
-            }
-          </View>
-          <View style={{
-            maxWidth: 320,
-            borderRadius: 20,
-            backgroundColor: 'white',
-            flex: 1,
-            alignItems: 'flex-start',
-            justifyContent: 'flex-start',
-            flexDirection: 'column',
-            display: 'flex',
-          }}>
-            {request ? ShowStatus() : null}
-          </View>
-        </> : <>
-          {request ? <View style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            top: 0,
-            left: 0,
-            zIndex: 1000,
-            backgroundColor: 'white',
-            paddingLeft: 10,
-            paddingRight: 10,
-            paddingBottom: 20,
-          }}>
-            <ChatView
-              request={request}
-              onSwapRequestStatusChange={onSwapRequestStatusChange}
-              onMessageUpdate={msg => onMessageUpdate(request, msg)}
-            />
-          </View>
-            : null}
+        {!isMobile ?
+          <>
+            <View style={{
+              flex: 1,
+              borderRadius: 20,
+              backgroundColor: 'white',
+              marginLeft: 20,
+              marginRight: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: 20,
+              justifyContent: 'center'
+            }}>{loading ? <ActivityIndicator /> :
+              !user || (requests && !requests.length) ?
+                <View style={{ flex: 1, alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+                  <KIcon name='chat' size='xxlarge' style={styles.chatIcon} />
+                  <KText style={{ fontSize: 25, fontWeight: 'bold', marginTop: 20, marginBottom: 20 }}>
+                    {user ? 'Chat is empty' : 'Please login to see your chats'}
+                  </KText>
+                  {user ?
+                    <>
+                      <KText style={{ maxWidth: isMobile ? '60%' : '25%', textAlign: 'center', lineHeight: 20 }}>
+                        Start exploring for Swap
+                      </KText>
+                      <KButton text='Explore' color='primary' onPress={() => {
+                        navigation.navigate('Home')
+                      }} style={{ marginTop: 20 }} />
+                    </>
+                    : (!isMobile ? <View style={styles.signinContainer}>
+                      <KButton text='Sign in' color={isMobile ? 'greenLight' : 'light'} onPress={() => {
+                        navigation.navigate('Login')
+                      }} style={{
+                        borderColor: !isMobile ? 'black' : 'white',
+                        borderWidth: 1,
+                        marginRight: 10,
+                      }} />
+                      <KButton text='Register' color='primary' onPress={() => {
+                        navigation.navigate('SignUp')
+                      }} />
+                    </View> : null)}
+                </View> :
+                !request ?
+                  <View style={{ alignItems: 'center' }}>
+                    <KIcon name='chat' size='xxlarge' style={{ stroke: 'black' }} />
+                    <KText style={{
+                      textAlign: 'center',
+                      padding: 20
+                    }}>Select a request to start chatting</KText>
+                  </View>
+                  :
+                  <ChatView
+                    request={request}
+                    onSwapRequestStatusChange={onSwapRequestStatusChange}
+                    onMessageUpdate={(msg) => onMessageUpdate(request, msg)}
+                  />
+              }
+            </View>
+            <View style={{
+              maxWidth: 320,
+              borderRadius: 20,
+              backgroundColor: 'white',
+              flex: 1,
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              flexDirection: 'column',
+              display: 'flex',
+            }}>
+              {request ? ShowStatus() : null}
+            </View>
+          </> : <>
+            {request ? <View style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              top: 0,
+              left: 0,
+              zIndex: 1000,
+              backgroundColor: 'white',
+              paddingLeft: 10,
+              paddingRight: 10,
+              paddingBottom: 20,
+            }}>
+              <ChatView
+                request={request}
+                onSwapRequestStatusChange={onSwapRequestStatusChange}
+                onMessageUpdate={msg => onMessageUpdate(request, msg)}
+              />
+            </View>
+              : null}
 
-        </>}
+          </>}
       </View>
       <Footer route={navigation.getState().routes[0].name} />
       {/* } */}

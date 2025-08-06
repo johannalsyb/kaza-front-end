@@ -269,8 +269,9 @@ export default (
         width: '100%',
         backgroundColor: isMobile ? variables.colors.greenLight : 'black',
         paddingHorizontal: isMobile ? 14 : 20,
-        paddingVertical: isMobile ? 14 : 20,
-        // flex: 1,
+        paddingVertical: isMobile ? 12 : 20,
+        borderEndEndRadius: isMobile ? 30 : 0,
+        borderEndStartRadius: isMobile ? 30 : 0,
       }}>
 
       {isMobile && overlay && (!user || !isAdmin) && <View style={{
@@ -285,7 +286,7 @@ export default (
         webkitBackdropFilter: "blur(3px)"
       }} />}
 
-      {isMobile ? (
+      {isMobile && !props.leftComponent ? (
         <>
           <KTextInput
             placeholder="Where would you like to go?"
@@ -345,7 +346,7 @@ export default (
             </View>
           )}
 
-          {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: "center" }}>{title}</KText>
+          {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: "center", fontSize: 17 }}>{title}</KText>
             : <View
               style={{
                 display: 'flex',
@@ -364,7 +365,6 @@ export default (
               />)}
             </View>
           }
-
           <View
             style={{
               flexDirection: 'row',
