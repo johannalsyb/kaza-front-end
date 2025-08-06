@@ -270,9 +270,8 @@ export default (
         backgroundColor: isMobile ? variables.colors.greenLight : 'black',
         paddingHorizontal: isMobile ? 14 : 20,
         paddingVertical: isMobile ? 12 : 20,
-        borderEndEndRadius: 30,
-        borderEndStartRadius: 30,
-        // flex: 1,
+        borderEndEndRadius: isMobile ? 30 : 0,
+        borderEndStartRadius: isMobile ? 30 : 0,
       }}>
 
       {isMobile && overlay && (!user || !isAdmin) && <View style={{
