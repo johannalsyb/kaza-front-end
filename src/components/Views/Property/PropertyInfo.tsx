@@ -54,6 +54,7 @@ export default ({property}: Props) => {
               flexDirection: 'row',
               justifyContent: 'space-around',
               alignItems: 'center',
+              padding:25,
             },
           ]}>
           {mainInfo.map((info, i) => (
@@ -89,6 +90,7 @@ export default ({property}: Props) => {
                 size="medium"
                 iconName={amenities[am]}
                 text={am}
+                style={styles.textStyle}
               />
             </View> : null
           })}
@@ -106,8 +108,9 @@ export default ({property}: Props) => {
               style={{
                 width: isMobile ? '100%' : columnWidth,
                 paddingVertical: variables.spacing.xxsmall,
+                
               }}>
-              <IconText size="medium" iconName={rule.icon} text={rule.text} />
+              <IconText size="medium" style={styles.textStyle} iconName={rule.icon} text={rule.text} />
             </View>
           ))}
         </View>
@@ -131,4 +134,11 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'left',
   },
+  textStyle:{
+    fontSize: 15,
+    fontWeight: '500',
+    letterSpacing: -0.5,
+    lineHeight: 15,
+    color: variables.colors.black,
+  }
 });

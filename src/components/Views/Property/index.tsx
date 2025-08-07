@@ -148,14 +148,14 @@ export default (props: Props) => {
             backgroundColor: variables.colors.white,
             padding: 10,
             borderRadius: 20,
-            marginBottom: 10,
+            marginBottom: 19,
             display:
               property.owner.id === user?.id
                 || (swapRequest && swapRequestStatus === 'received')
                 ? "none" : 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingVertical: isMobile ? 16 : 0
+            paddingVertical: isMobile ? 10.5 : 0
           }}>
 
             <View style={{
@@ -170,7 +170,7 @@ export default (props: Props) => {
                 name='star'
                 size={'medium'}
               />
-              <KText >4.9</KText>
+              <KText style={{fontSize:15}}>4.9</KText>
             </View>
             <KButton
               onPress={() => { }}
@@ -186,7 +186,7 @@ export default (props: Props) => {
                 borderWidth: 0
               }}>
               <KIcon name="review" size="medium" style={{ stroke: variables.colors.black, opacity: 0.5 }} />
-              <KText style={{ marginLeft: 5 }}>3 Reviews</KText>
+              <KText style={{ marginLeft: 5,fontSize:15 }}>3 Reviews</KText>
             </KButton>
           </View>
           <PropertyCard
@@ -200,6 +200,7 @@ export default (props: Props) => {
                 ? true
                 : false
             }
+            isDetails={true}
             photo={`${props.id}/${(images ?? '').split(',')[0]}`}
             avatar={`${owner.id}/${owner.primaryImage}`}
             location={`${city}`}
@@ -209,14 +210,17 @@ export default (props: Props) => {
               to: owner.dateTo ? new Date(owner.dateTo) : null,
             }}
             style={{
-              marginBottom: isMobile ? 10 : 0,
+              marginBottom:  0,
             }}
           />
+          
         </>
       )}
       <View key="leftView" style={{ width: '100%', maxWidth: leftColumnWidth }}>
         <GalleryPhoto key="gallery" property={property} />
-        <Gap size="medium" vertical />
+        <Gap size="xsmall" vertical />
+        <Gap size="xxsmall" vertical />
+        
         {!isMobile && (
           <>
             <PlaceOwner key="owner" property={property} />
@@ -230,7 +234,9 @@ export default (props: Props) => {
         )}
         {!isMobile && <Gap size="medium" vertical />}
         <PropertyInfo key="info" property={property} />
-        <Gap size="medium" vertical />
+        <Gap size="xsmall" vertical />
+        <Gap size="xxsmall" vertical />
+
         <View
           key="map"
           style={{
@@ -263,7 +269,7 @@ export default (props: Props) => {
               width: '100%',
               height: '100%',
               borderRadius: 20,
-              marginBottom: 20,
+              marginBottom: 13,
             }}
             circles={[{ lat: approxLat, lng: approxLon, radius: 1000 }]}
           />

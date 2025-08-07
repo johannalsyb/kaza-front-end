@@ -1,15 +1,14 @@
 import KText from '../../KText';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import {Property} from '../../../common/types/api/properties';
 import variables from '../../../styles/variables';
-import KIcon from '../../KIcon/KIcon';
 import {CircleImage} from '../../CircleImage/CircleImage';
 import Gap from '../../Gap/Gap';
 import {IconText} from '../../IconText/IconText';
 import SwapRequestButton, { SwapRequestButtonHandle } from '../../SwapRequestButton/SwapRequestButton';
 import useIsMobile from '../../../hooks/useIsMobile';
 import useAuthentication from '../../../hooks/useAuthentication';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 type Props = {
   property?: Property;
@@ -22,8 +21,36 @@ export default ({
 }: Props) => {
   const {isMobile} = useIsMobile();
   const {user} = useAuthentication();
-
   const swpReqButtonRef = useRef<SwapRequestButtonHandle>(null);
+  const [showMore, setShowMore] = useState(false);
+
+
+  const showMoreTextComponent  = () => {
+      const wordLimit = isMobile ? 10 : 20;
+      const words = property?.owner?.hobby.trim().split(/\s+/) || [];
+      const isLongText = words.length > wordLimit;
+      const displayedText : any = showMore || !isLongText
+        ? property?.owner?.hobby
+        : words.slice(0, wordLimit).join(' ') + '...';
+
+
+      return (
+        <>
+          <KText style={{ textAlign: "center", fontWeight: '500',lineHeight: isMobile ? 21 : 22, fontSize: isMobile ? 15 : 16,letterSpacing: -0.5 }}>
+            {displayedText} {isLongText && (
+            <Pressable onPress={() => setShowMore(!showMore)}style={{}}>
+              <KText style={{ color: 'black',fontSize: isMobile ? 14 : 16, fontWeight: '800',textDecorationLine: 'underline' }}>
+                {showMore ? 'Show Less' : 'Show More'}
+              </KText>
+            </Pressable>
+          )}
+          </KText>
+          <Gap size="xsmall" vertical />
+        </>
+      )
+
+  };
+ 
 
   if (!property?.owner) return <KText>Loading...</KText>;
   else return <View style={styles.container}>
@@ -34,22 +61,12 @@ export default ({
         size="small"
         imageId={`${property.owner.id}/${property.owner.primaryImage}`}
         type="users"
+       
       />
-      {/* <KIcon
-        name="instagram"
-        size="large"
-        style={{
-          position: 'absolute',
-          top: 80,
-          right: 0,
-          left: 0,
-          margin: 'auto',
-          borderRadius: 100,
-        }}
-      /> */}
+
     </View>
     <Gap size="medium" vertical />
-    <KText style={{fontSize: 24}}>{property.owner.firstName}</KText>
+    <KText style={{fontSize: isMobile ? 24 : 30, textAlign: 'center', fontWeight: '600', letterSpacing: -0.5}}>{property.owner.firstName}</KText>
     <Gap size="xsmall" vertical />
     <IconText
       size="medium"
@@ -57,16 +74,14 @@ export default ({
       text={`${property.city}, ${property.country}`}
     />
     <Gap size="xsmall" vertical />
-    {!!property.owner.hobby && (
-      <>
-        <KText style={{textAlign: "center"}}>{property.owner.hobby}</KText>
-        <Gap size="xsmall" vertical />
-      </>
-    )}
-    {!!property.owner.job && (
-      <IconText size="medium" iconName="job" text={property.owner.job} />
-    )}
+     {!!property.owner.hobby && showMoreTextComponent()}
+     {!!property.owner.job && (  
+      <IconText numberOfLines={2} style={{textAlign: 'center',fontWeight: '400', lineHeight: 15}} size="medium" iconName="job" text={property.owner.job} />
+     )} 
+    
     {isMobile && <Gap size="xsmall" vertical />}
+    {isMobile && <Gap size="xsmall" vertical />}
+
     <View style={{
         position: isMobile ? undefined : "absolute",
         top: isMobile ? "auto" : 20,
@@ -88,7 +103,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     borderRadius: 20,
-    padding: variables.spacing.medium,
+    paddingVertical:24,
+    paddingHorizontal: variables.spacing.medium,
     maxWidth: 700,
     display: 'flex',
     alignItems: 'center',
