@@ -12,90 +12,85 @@ import variables from '../../styles/variables'
 import { useNavigation } from '@react-navigation/native'
 
 type Props = {
-    onNext: () => void,
-    onChange: (property: Property) => void,
-    property: Property,
-    hasProperties?: boolean,
+	onNext: () => void,
+	onChange: (property: Property) => void,
+	property: Property,
+	hasProperties?: boolean,
 }
 
 const isValid = (property: Property) => {
-    const errors: { [key: string]: string } = {}
-    if (!property.location || property.location.length < 3) errors.location = "Invalid location"
-    if (!property.type || !property.type.length) errors.type = "Please select a property type"
-    if (property.petFriendly === undefined) errors.petFriendly = "Please select if your property is pet friendly"
-    if (!property.amenities || property.amenities.length < 3) errors.amenities = "Please select at least one amenity"
-    return errors
+	const errors: { [key: string]: string } = {}
+	if (!property.location || property.location.length < 3) errors.location = "Invalid location"
+	if (!property.type || !property.type.length) errors.type = "Please select a property type"
+	if (property.petFriendly === undefined) errors.petFriendly = "Please select if your property is pet friendly"
+	if (!property.amenities || property.amenities.length < 3) errors.amenities = "Please select at least one amenity"
+	return errors
 }
 
 const checkAddress = (address: string) => {
-    return autocomplete.verify(address)
-        .catch(() => {
-            return false
-        })
+	return autocomplete.verify(address)
+		.catch(() => {
+			return false
+		})
 }
 
 export default (props: Props) => {
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState<{ [key: string]: string }>({})
-    const navigation = useNavigation()
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState<{ [key: string]: string }>({})
+	const navigation = useNavigation()
 
-    return <>
-        <Property1 property={props.property} onChange={props.onChange} error={error} />
-        <View style={[{...styles.container, position: 'relative',marginBottom:60}]}>
-           
-            {props.hasProperties && (
-                <KButton
-                    text="Back"
-                    onPress={() => navigation.goBack()}
-                    color="light"
-                    style={{
-                        ...styles.button,
-                        backgroundColor: variables.colors.lightCream,
-                        borderWidth: 0,
-                    }} />
-            )}
-            <KButton
-                text="Next Step"
-                loading={loading}
-                disabled={Object.keys(isValid(props.property)).length > 0}
-                onPress={() => {
-                    setLoading(true)
-                    checkAddress(props.property.location)
-                        .then(result => {
-                            if (!result) {
-                                setError({ ...error, location: "Please enter your exact address" })
-                                return
-                            }
-                            props.onNext()
-                        })
-                        .finally(() => {
-                            setLoading(false)
-                        })
-                }}
-                color="primary"
-                style={{
-                    ...styles.button,
-                    right: 0,
-                    position: 'absolute',
+	return <>
+		<Property1 property={props.property} onChange={props.onChange} error={error} />
+		<View style={[{ ...styles.container, position: 'relative', marginBottom: 60 }]}>
 
-                }} />
-
-        </View>
-    </>
+			{props.hasProperties && (
+				<KButton
+					text="Back"
+					onPress={() => navigation.goBack()}
+					color="light"
+					style={{
+						backgroundColor: variables.colors.lightCream,
+						borderWidth: 0,
+					}} />
+			)}
+			<View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start', }}>
+				<KButton
+					text="Next Step"
+					loading={loading}
+					disabled={Object.keys(isValid(props.property)).length > 0}
+					onPress={() => {
+						setLoading(true)
+						checkAddress(props.property.location)
+							.then(result => {
+								if (!result) {
+									setError({ ...error, location: "Please enter your exact address" })
+									return
+								}
+								props.onNext()
+							})
+							.finally(() => {
+								setLoading(false)
+							})
+					}}
+					color="primary"
+				/>
+			</View>
+		</View>
+	</>
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 10,
-        width: '100%',
-        justifyContent: 'space-between',
-    },
-    button: {
-        maxWidth: 150,
-        width: '100%',
-        marginTop: 30
+	container: {
+		display: 'flex',
+		flexDirection: 'row',
+		gap: 10,
+		width: '100%',
+		justifyContent: 'space-between',
+	},
+	button: {
+		maxWidth: 150,
+		width: '100%',
+		marginTop: 30
 
-    }
+	}
 })
