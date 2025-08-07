@@ -112,9 +112,9 @@ export const PropertyCard = ({
       style={[
         styles.container,
         {
-          width: 290,
+          width: '100%',
           maxWidth: isMobile ? '100%' : 290,
-          // aspectRatio: bottomComponent ? 'auto' : 1,
+          aspectRatio: bottomComponent ? 'auto' : 1,
           marginBottom: 18
         },
         // @ts-ignore
