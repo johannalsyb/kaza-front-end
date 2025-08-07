@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -14,24 +14,24 @@ import {
   ChatMessage as ChatMessageT,
   SwapRequest,
 } from '../../../common/types/SwapRequest';
-import {toastError, toastWarning} from '../../Toast/Toast';
+import { toastError, toastWarning } from '../../Toast/Toast';
 import KText from '../../KText';
 import useAuthentication from '../../../hooks/useAuthentication';
 import variables from '../../../styles/variables';
-import {CircleImage} from '../../CircleImage/CircleImage';
+import { CircleImage } from '../../CircleImage/CircleImage';
 import useChatFeed from '../../../hooks/useChatFeed';
-import {SwapRequestChat} from '../../../screens/Chats';
+import { SwapRequestChat } from '../../../screens/Chats/Chats';
 import useIsMobile from '../../../hooks/useIsMobile';
 import KIcon from '../../KIcon/KIcon';
 import ChatMessage from './ChatMessage';
-import KFileUpload, {Handle as KFileUploadHandle} from '../../Form/KFileUpload';
-import {set} from '../../../utils/Storage/storage';
+import KFileUpload, { Handle as KFileUploadHandle } from '../../Form/KFileUpload';
+import { set } from '../../../utils/Storage/storage';
 import Attachment from './Attachment';
 import KModal from '../../KModal/KModal';
 import ProgressBar from '../../ProgressBar';
 import ChatEvent from './ChatEvent';
-import {isImageExtension, isVideoExtension} from '../../../utils/pictures';
-import {resizeImage} from '../../../hooks/useResizeImage';
+import { isImageExtension, isVideoExtension } from '../../../utils/pictures';
+import { resizeImage } from '../../../hooks/useResizeImage';
 import useConfig from '../../../hooks/useConfig';
 
 type Props = {
@@ -47,17 +47,18 @@ export default ({
   onSwapRequestStatusChange,
   onMessageUpdate,
 }: Props) => {
-  const {config} = useConfig();
-  const [text, setText] = useState<{text: string; attachments: string[]}>({
+  const { config } = useConfig();
+  const [text, setText] = useState<{ text: string; attachments: string[] }>({
     text: '',
     attachments: [],
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [inputHeight, setInputHeight] = useState(40)
   const [progress, setProgress] = useState<[number, number] | null>(null);
   const [messages, setMessages] = useState<Chat>();
   const [attachment, setAttachment] = useState<string | null>(null);
-  const {user} = useAuthentication();
-  const {isMobile} = useIsMobile();
+  const { user } = useAuthentication();
+  const { isMobile } = useIsMobile();
   const [swapRequest, setSwapRequest] = useState<{
     swapRequest: SwapRequest;
     otherUser: {
@@ -78,7 +79,7 @@ export default ({
     }
     onMessageUpdate(message);
   };
-  const {connected} = useChatFeed({
+  const { connected } = useChatFeed({
     swapRequestId: swapRequest.swapRequest.id,
     status: swapRequest.swapRequest.status,
     onMessage,
@@ -111,7 +112,7 @@ export default ({
 
     promise
       .then(r => {
-        setText({text: '', attachments: []});
+        setText({ text: '', attachments: [] });
         setProgress(null);
         // setMessages(messages ? [...messages, r.data] : [r.data]) .
         if (r) onMessageUpdate(r.data);
@@ -125,7 +126,7 @@ export default ({
   };
 
   useEffect(() => {
-    svref.current?.scrollToEnd({animated: true});
+    svref.current?.scrollToEnd({ animated: true });
     if (messages) {
       msgsMap.set(swapRequest.swapRequest.id, [...messages]);
     }
@@ -161,15 +162,15 @@ export default ({
   if (!user) return null;
 
   const otherUserImageId = `${swapRequest.otherUser.id}/${swapRequest.otherUser.image}`;
-  const myImageId = `${user.id}/${
-    ((user.primaryImage || user.images) as string)?.split(',')[0]
-  }`;
+  const myImageId = `${user.id}/${((user.primaryImage || user.images) as string)?.split(',')[0]
+    }`;
   const fromMe = swapRequest.swapRequest.from === user.id;
   return (
     <>
       <ScrollView
         ref={svref}
-        onContentSizeChange={() => svref.current?.scrollToEnd({animated: true})}
+        showsVerticalScrollIndicator={false}
+        onContentSizeChange={() => svref.current?.scrollToEnd({ animated: true })}
         contentContainerStyle={{
           flex: 1,
         }}>
@@ -212,7 +213,7 @@ export default ({
               );
             })
           ) : (
-            <KText style={{alignSelf: 'center'}}>No Messages</KText>
+            <KText style={{ alignSelf: 'center' }}>No Messages</KText>
           )
         ) : (
           <ActivityIndicator size="large" color={variables.colors.yellow} />
@@ -228,23 +229,45 @@ export default ({
             marginTop: 20,
           }}>
           <KTextInput
-            inputStyles={{borderRadius: 10, textAlign: 'left'}}
-            topStyle={{flex: 1, marginRight: 10, borderRadius: 15}}
+            inputStyles={{ borderRadius: 50, textAlign: 'left', minHeight: 40, height: inputHeight }}
+            placeholder='Your message'
+            leftComponent={<KIcon
+              name="attach"
+              size="medium"
+              onPress={() => {
+                if (loading) return;
+                if (text.attachments.length >= 10) {
+                  toastWarning('Maximum 10 files per message');
+                  return;
+                }
+                if (fileUploadRef && fileUploadRef.current) {
+                  fileUploadRef.current.open();
+                }
+              }}
+              style={{
+                marginRight: 10,
+                stroke: variables.colors.grey,
+              }}
+            />}
+            onContentSizeChange={(e) => {
+              setInputHeight(e.nativeEvent.contentSize.height)
+            }}
+            topStyle={{ flex: 1, marginRight: 10, borderRadius: 50, }}
             value={text.text}
             multiline={true}
-            onChangeText={t => setText({...text, text: t})}
+            onChangeText={t => setText({ ...text, text: t })}
             attachments={text.attachments.map((a, i) => (
               <>
                 <Attachment
                   key={`attachment_${i}`}
                   attachment={a}
-                  style={{marginLeft: i === 0 ? 0 : 0}}
+                  style={{ marginLeft: i === 0 ? 40 : 0, marginBottom: 10 }}
                 />
                 <KIcon
                   name="crossCircle"
                   onPress={() => {
                     text.attachments.splice(i, 1);
-                    setText({...text, attachments: [...text.attachments]});
+                    setText({ ...text, attachments: [...text.attachments] });
                   }}
                   style={{
                     backgroundColor: variables.colors.orange,
@@ -260,31 +283,12 @@ export default ({
             ))}
             onSubmitEditing={send}
             enterKeyHint={loading ? 'done' : 'send'}
-            onKeyPress={({nativeEvent}) => {
+            onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === 'Enter' && !loading) {
                 send();
               }
             }}
             editable={!loading}
-            // editable={connected && !loading}
-          />
-          <KIcon
-            name="attach"
-            size="large"
-            onPress={() => {
-              if (loading) return;
-              if (text.attachments.length >= 10) {
-                toastWarning('Maximum 10 files per message');
-                return;
-              }
-              if (fileUploadRef && fileUploadRef.current) {
-                fileUploadRef.current.open();
-              }
-            }}
-            style={{
-              marginRight: 10,
-              stroke: variables.colors.grey,
-            }}
           />
           <KFileUpload
             multiple={true}
@@ -315,12 +319,12 @@ export default ({
             onPress={send}>
             {isMobile ? (
               <KIcon
-                name="chevronRight"
+                name="sendMessage"
                 size="large"
-                style={{stroke: variables.colors.yellow}}
+                style={{ stroke: variables.colors.yellow }}
               />
             ) : (
-              <KText style={{color: variables.colors.yellow}}>Send</KText>
+              <KText style={{ color: variables.colors.yellow }}>Send</KText>
             )}
           </KButton>
         </View>
@@ -338,14 +342,14 @@ export default ({
       <KModal
         visible={!!attachment}
         setVisibility={() => setAttachment(null)}
-        style={{backgroundColor: 'transparent', width: '100%', height: '100%'}}
-        crossStyle={{backgroundColor: 'white', borderRadius: 30, padding: 5}}>
+        style={{ backgroundColor: 'transparent', width: '100%', height: '100%' }}
+        crossStyle={{ backgroundColor: 'white', borderRadius: 30, padding: 5 }}>
         {!!attachment && (
           <>
             {isImageExtension(attachment.split('.').pop() || '') && (
               <Image
                 key={`attachment_i`}
-                source={{uri: attachment}}
+                source={{ uri: attachment }}
                 style={{
                   width: '100%',
                   height: '90%',

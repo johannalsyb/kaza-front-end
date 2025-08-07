@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, View, ViewStyle, Platform } from 'react-native'
+import { useEffect } from 'react'
 
+import properties from '../../api/properties'
 import { IconText } from '../IconText/IconText'
 import { CircleImage } from '../CircleImage/CircleImage'
 import Gap from '../Gap/Gap'
@@ -61,8 +63,15 @@ export const PropertyCard = ({
   isDetails = false,
 }: PropertyCardProps) => {
   const { isMobile } = useIsMobile()
-  const { user } = useAuthentication()
+  const auth = useAuthentication()
+  const { user } = auth
   const [isHovered, setIsHovered] = useState(false)
+  const [isFav, setIsFav] = useState(
+    property &&
+    user &&
+    user.favourites &&
+    user.favourites.includes(property.id),
+  )
   const swapForText = swapFor?.split('\n')
   const availableDateText =
     availableDate?.from && availableDate?.to
@@ -70,6 +79,30 @@ export const PropertyCard = ({
         availableDate?.to,
       )}`
       : 'Flexible'
+
+
+  const toggleFav = () => {
+    if (!property) return
+    properties.favourites
+      .toggle(property.id)
+      .then(r => {
+        setIsFav(r.data.includes(property.id))
+        auth.updateUser({
+          ...user,
+          favourites: Array.isArray(r.data) ? r.data.join(',') : r.data,
+        })
+      })
+      .catch(e => console.log(e))
+  }
+
+  useEffect(() => {
+    setIsFav(
+      property &&
+      user &&
+      user.favourites &&
+      user.favourites.includes(property.id),
+    )
+  }, [property])
 
   return (
     <Pressable
@@ -233,24 +266,30 @@ export const PropertyCard = ({
       )}
       {
         !isDetails && (
-
-          <KIcon
-            size="large"
-            name="fav"
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              zIndex: 1,
-              borderRadius: 100,
-              stroke: favourite ? variables.colors.yellow : variables.colors.white,
-              fill: favourite ? variables.colors.yellow : 'transparent',
-              padding: 7,
-            }}
-          />
-        )
-      }
-      {bottomComponent || null} 
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          zIndex: 1,
+          borderRadius: 100,
+          padding: 7,
+        }}
+        onPress={() => (user ? toggleFav() : onPress)}
+      >
+        <KIcon
+          size="large"
+          name="fav"
+          style={{
+            borderRadius: 100,
+            stroke: favourite ? variables.colors.yellow : variables.colors.white,
+            fill: favourite ? variables.colors.yellow : 'transparent',
+            padding: 7,
+          }}
+        />
+      </Pressable>
+      )
+      {bottomComponent || null}
     </Pressable>
   )
 }

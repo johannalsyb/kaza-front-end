@@ -104,6 +104,7 @@ const Filters = forwardRef<Handle, Props>(({
       nb += ffilters["bedrooms"].length
     }
     if (ffilters["bedrooms"].length !== 4 && !isMobile) showClearButton = true
+    if (ffilters["bedrooms"].length !== 0 && isMobile) showClearButton = true
     if (ffilters["startDate"] && ffilters["startDate"][0]) showClearButton = true
     if (ffilters["endDate"] && ffilters["endDate"][0]) showClearButton = true
     if (search.length) showClearButton = true
@@ -266,6 +267,7 @@ const Filters = forwardRef<Handle, Props>(({
             display: "flex",
             flexDirection: "row",
             flex: 1,
+            marginRight: 13,
           }}>
             <Pressable
               style={[

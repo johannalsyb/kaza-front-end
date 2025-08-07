@@ -103,7 +103,10 @@ export default forwardRef<Handle, Props>(
     }))
 
     const calculateNumberOfColumns = (width: number) => {
-      const columnCount = Math.floor(width / variables.propertyCardWidth)
+      const raw = width / 350
+      const decimal = raw - Math.floor(raw)
+      const columnCount = decimal >= 0.71 ? Math.ceil(raw) : Math.floor(raw)
+
       return columnCount > 0 ? columnCount : 1
     }
 
@@ -205,7 +208,7 @@ export default forwardRef<Handle, Props>(
           />}
         </View>
         {showMap ? (
-          <SlideUpView delay={0} style={{ flex: 1}}>
+          <SlideUpView delay={0} style={{ flex: 1 }}>
             <View style={{ display: 'flex', flex: 1 }}>
               <MapView
                 lat={30}
@@ -228,7 +231,7 @@ export default forwardRef<Handle, Props>(
                 <Footer />
               </View>
             </View>
-            </SlideUpView>
+          </SlideUpView>
         ) : (
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -285,6 +288,7 @@ export default forwardRef<Handle, Props>(
                               display: 'flex',
                               justifyContent: 'center',
                               alignItems: 'center',
+                              maxWidth: isMobile ? '100%' : 330,
                             },
                             isMobile && {
                               width: '100%',
@@ -306,12 +310,6 @@ export default forwardRef<Handle, Props>(
                             avatar={`${owner.id}/${owner.primaryImage}`}
                             location={`${city}`}
                             swapFor={owner.swapLocations || 'Flexible'}
-                          // availableDate={{
-                          //   from: owner.dateFrom
-                          //     ? new Date(owner.dateFrom)
-                          //     : null,
-                          //   to: owner.dateTo ? new Date(owner.dateTo) : null,
-                          // }}
                           />
                           {property.bubble ? (
                             <KText
@@ -339,17 +337,14 @@ export default forwardRef<Handle, Props>(
                       return Array.from({ length: placeholders }).map((_, i) => (
                         <View
                           key={`shimmer-${i}`}
-                          style={{ padding: 20 }}
+                          style={{ maxWidth: 330 }}
                         >
                           <View
                             style={{
-                              width: variables.propertyCardWidth,
+                              width: isMobile ? '100%' : 330,
                               height: 308,
-                              maxWidth: 315,
                               borderRadius: 10,
-                              paddingVertical: 20,
                               backgroundColor: variables.colors.white,
-                              marginHorizontal: isMobile ? 0 : 20,
                             }}
                           />
                         </View>
@@ -415,7 +410,7 @@ export default forwardRef<Handle, Props>(
                 }}>
                 <Footer route={navigation.getState().routes[0].name} />
               </View>
-              </SlideUpView>
+            </SlideUpView>
           </ScrollView>
         )}
 

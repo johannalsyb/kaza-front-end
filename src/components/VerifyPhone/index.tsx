@@ -3,7 +3,7 @@ import KText from "../KText"
 import KNumberInput from "../Form/KNumberInput/KNumberInput"
 import KButton from "../KButton/KButton"
 import variables from "../../styles/variables"
-import React, { LegacyRef } from "react"
+import React, { LegacyRef, useEffect } from "react"
 import users from "../../api/users"
 import auth from "../../api/auth"
 import { toastError } from "../Toast/Toast"
@@ -26,19 +26,20 @@ const codeLength = 6
 
 export default (props:{
     onVerified: () => void
-     onClose: () => void;
+    onClose: () => void;
 }) => {
 
-    const [state, setState] = React.useState<{
-        code: string[]
-    }>({
-        code: Array(codeLength).fill(''),
-    })
+    const [state, setState] = React.useState<{code: string[]}>({code: Array(codeLength).fill(''),})
 
     const [resendDisabledFor, setResendDisabledFor] = React.useState<number>(20)
     const [loading, setLoading] = React.useState<boolean>(false)
 
     const refs = Array(codeLength).fill(null).map(() => React.createRef<TextInput>())
+
+    useEffect(() => {
+        console.log('Requesting resend verification code')
+        resend()
+    }, [])
 
     React.useEffect(() => {
         refs[0].current?.focus()
