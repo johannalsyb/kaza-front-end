@@ -29,7 +29,10 @@ export default ({property}: Props) => {
       return null;
     }
 
-    const uniqueImages = [...new Set(images.split(','))];
+    const uniqueImages = [...new Set(images.split(','))].filter(
+      image => image && image !== '',
+    );
+
     return (
       <View
         style={[
