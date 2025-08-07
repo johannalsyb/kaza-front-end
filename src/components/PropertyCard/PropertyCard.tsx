@@ -82,14 +82,15 @@ export const PropertyCard = ({
           width: '100%',
           maxWidth: isMobile ? '100%' : 290,
           aspectRatio: bottomComponent ? 'auto' : 1,
-          marginBottom: 18
+          marginBottom: isDetails ? 0 : 18,
+          height: isDetails ? 362 : '100%',
         },
         // @ts-ignore
         // isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
         !isDetails && { maxHeight: 325, height: '100%' }
       ]}>
-      <View style={styles.imageContainer}>
+      <View style={[styles.imageContainer,{ borderBottomLeftRadius: isDetails? 0 : 20, borderBottomRightRadius:isDetails? 0:20}]}>
         {photo.startsWith('http') ? (
           <KImage source={photo} style={photoStyle} />
         ) : (
@@ -101,9 +102,13 @@ export const PropertyCard = ({
             imageId={avatar}
             thumbnail={true}
             type="users"
-            style={{ borderRadius: 100, height: 45, width: 45 }}
+            style={{ borderRadius: 100, height: isDetails?61: 45, width: isDetails?61:45 }}
           />
-          <KText style={{ color: variables.colors.white, fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
+        {
+          !isDetails && (
+            <KText style={{ color: variables.colors.white, fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
+          )
+        }
         </View>
       </View>
       {swapButton && property && (
@@ -115,10 +120,14 @@ export const PropertyCard = ({
           />
         </View>
       )}
-      <View style={[styles.infoContainer]}>
+      
+      <View style={[styles.infoContainer,{padding: isDetails ? 0 : 'auto'}]}>
         {/* <View style={styles.infoTopContainer}>
           <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
         </View> */}
+       
+        {
+          !isDetails && (
         <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
           <KText
             style={{
@@ -159,29 +168,55 @@ export const PropertyCard = ({
                   fontSize: 13,
                   opacity: 0.5,
                 }}>
-                {availableDateText}
+                {availableDateText} 
               </KText>
             </KText>
           }
         </View>
-        {isDetails && <View style={styles.infoTopContainer}>
-          <IconText
-            iconName="calendar"
-            text={availableDateText}
-            style={[styles.iconText, !isMobile && { paddingVertical: 5 }, { backgroundColor: variables.colors.lightCream, width: 'auto' }]}
-            textStyle={{ fontSize: 12 }}
-          />
 
+          )
+        }
+     
+        {isDetails && property?.id && <View style={styles.infoTopContainer}>
+          <KText
+            style={{
+              fontSize: 13,
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical:4,
+            }}
+            numberOfLines={1}>
+            <KIcon
+              name="location"
+              size="medium"
+              style={{ opacity: 0.5 }}
+            />
+            <KText
+              style={{
+                paddingHorizontal: variables.spacing.xxsmall,
+                fontSize: 13,
+                
+                fontWeight: '500',
+                color: '#000000',
+              }}>
+              {property?.city}, {property?.country}
+            </KText>
+          </KText>
+ 
           <Gap size="xsmall" />
           {property && <SwapRequestButton
             property={property}
             buttonStyle="primary"
             hideIcon
+            onPress={() => setShowCalendar(true)}
           />}
+         
         </View>}
       </View>
 
       {user && user?.id === userId && (
+        
         <KButton
           size="medium"
           text="Edit"
@@ -196,21 +231,26 @@ export const PropertyCard = ({
           }}
         />
       )}
-      <KIcon
-        size="large"
-        name="fav"
-        style={{
-          position: 'absolute',
-          top: 10,
-          right: 10,
-          zIndex: 1,
-          borderRadius: 100,
-          stroke: favourite ? variables.colors.yellow : variables.colors.white,
-          fill: favourite ? variables.colors.yellow : 'transparent',
-          padding: 7,
-        }}
-      />
-      {bottomComponent || null}
+      {
+        !isDetails && (
+
+          <KIcon
+            size="large"
+            name="fav"
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              zIndex: 1,
+              borderRadius: 100,
+              stroke: favourite ? variables.colors.yellow : variables.colors.white,
+              fill: favourite ? variables.colors.yellow : 'transparent',
+              padding: 7,
+            }}
+          />
+        )
+      }
+      {bottomComponent || null} 
     </Pressable>
   )
 }
@@ -224,11 +264,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     display: 'flex',
     overflow: 'hidden',
-    height: '100%',
     minHeight: cardHeight,
   },
   imageContainer: {
-    borderRadius: 20,
     overflow: 'hidden',
     height: 275,
   },
@@ -258,10 +296,14 @@ const styles = StyleSheet.create({
   infoTopContainer: {
     display: 'flex',
     flexDirection: 'row',
+    width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor:white,
     flex: 2,
-    paddingTop: 7
+    paddingVertical:14,
+    paddingHorizontal:13
+
   },
   infoBottomContainer: {
     display: 'flex',

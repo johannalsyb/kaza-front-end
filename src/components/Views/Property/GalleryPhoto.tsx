@@ -1,35 +1,35 @@
-import KText from '../../KText'
-import { View, StyleSheet, Pressable } from 'react-native'
-import { Property } from '../../../common/types/api/properties'
-import variables from '../../../styles/variables'
-import KIcon from '../../KIcon/KIcon'
-import Gap from '../../Gap/Gap'
-import KImage from '../../KImage/KImage'
-import { Fragment, useState } from 'react'
-import FullscreenPhoto from './FullscreenPhoto'
-import useIsMobile from '../../../hooks/useIsMobile'
+import KText from '../../KText';
+import {View, StyleSheet, Pressable} from 'react-native';
+import {Property} from '../../../common/types/api/properties';
+import variables from '../../../styles/variables';
+import KIcon from '../../KIcon/KIcon';
+import Gap from '../../Gap/Gap';
+import KImage from '../../KImage/KImage';
+import {Fragment, useState} from 'react';
+import FullscreenPhoto from './FullscreenPhoto';
+import useIsMobile from '../../../hooks/useIsMobile';
 
 type Props = {
-  property?: Property
-}
+  property?: Property;
+};
 
-const limit = 5
+const limit = 5;
 
-export default ({ property }: Props) => {
+export default ({property}: Props) => {
   // const [mainPhotoIndex, setMainPhotoIndex] = useState(0);
-  const [fullScreen, setFullScreen] = useState<number>(-1)
-  const { isMobile } = useIsMobile()
+  const [fullScreen, setFullScreen] = useState<number>(-1);
+  const {isMobile} = useIsMobile();
 
-  if (!property?.owner) return <KText>Loading...</KText>
+  if (!property?.owner) return <KText>Loading...</KText>;
   else {
-    let { images, id } = property
+    let {images, id} = property;
     // images = Array.isArray(images) ? images.join(',') : images;
 
     if (images == null) {
-      return null
+      return null;
     }
 
-    const uniqueImages = [...new Set(images.split(','))]
+    const uniqueImages = [...new Set(images.split(','))];
     return (
       <View
         style={[
@@ -47,79 +47,80 @@ export default ({ property }: Props) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '100%',
+                maxWidth: 550,
+                margin: 'auto',
                 backgroundColor: variables.colors.white,
                 borderRadius: 100,
               }}
               onPress={() => setFullScreen(0)}>
-              <KText style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                display: 'flex',
-              }}>
+              <KText
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  fontSize: 15,
+                  fontWeight: '500',
+                  lineHeight: 15,
+                  color: variables.colors.black,
+                }}>
                 View more photos
-                <KIcon name="image" size="medium" style={{ stroke: "black" }} />
-
+                {/* <KIcon name="image" size="medium" style={{ stroke: "black" }} /> */}
               </KText>
             </Pressable>
             <Gap size="xsmall" vertical />
           </>
         )}
-        <Pressable onPress={() => setFullScreen(0)}>
-          <KImage
-            imageId={`${id}/${uniqueImages[0]}`}
-            type="properties"
-            style={{
-              width: '100%',
-              aspectRatio: 620 / 380,
-              borderRadius: 20,
-              objectFit: 'cover',
-            }}
-          />
-        </Pressable>
+        {!isMobile && (
+          <Pressable onPress={() => setFullScreen(0)}>
+            <KImage
+              imageId={`${id}/${uniqueImages[0]}`}
+              type="properties"
+              style={{
+                width: '100%',
+                aspectRatio: 620 / 380,
+                borderRadius: 20,
+                objectFit: 'cover',
+              }}
+            />
+          </Pressable>
+        )}
         <Gap size={isMobile ? 'xxsmall' : 'small'} vertical />
+
         <View
           style={[
+            styles.imageRow,
             {
-              flexDirection: 'row',
-              justifyContent: isMobile ? "space-between" : 'flex-start',
-              aspectRatio: isMobile ? 1 : 4,
-              width: '100%',
+              justifyContent: isMobile ? 'space-between' : 'flex-start',
+              aspectRatio: isMobile ? undefined : 4,
+              height: isMobile ? undefined : 'auto',
             },
           ]}>
           {uniqueImages.slice(1, isMobile ? 3 : 4).map((image, i) => {
             // if (isMobile ? i > 0 && i < 3 : i < 4) {
             return (
               <Fragment key={`image-${i}`}>
-                {image &&
+                {image && (
                   <Pressable
                     key={`image-${i}`}
-                    style={{
-                      height: isMobile ? '100%' : '98%',
-                      borderRadius: 20,
-                      aspectRatio: 1,
-                      marginRight: isMobile ? 0 : 5,
-                    }}
-                    onPress={() => {
-                      setFullScreen(i + 1)
-                    }}>
+                    style={[
+                      styles.imageContainer,
+                      isMobile ? styles.mobileImage : styles.desktopImage,
+                      {marginRight: isMobile ? 0 : 5},
+                    ]}
+                    onPress={() => setFullScreen(i + 1)}>
                     <KImage
                       imageId={`${id}/${image}`}
                       type="properties"
-                      style={{
-                        aspectRatio: 1,
-                        borderRadius: 20,
-                        objectFit: 'cover',
-                      }}
+                      style={styles.image}
                     />
                   </Pressable>
-                }
+                )}
               </Fragment>
-
-            )
+            );
             // }
           })}
 
-          {(!isMobile && uniqueImages.length > limit) && (
+          {!isMobile && uniqueImages.length > limit && (
             <Pressable
               onPress={() => setFullScreen(0)}
               style={{
@@ -139,19 +140,20 @@ export default ({ property }: Props) => {
                   objectFit: 'cover',
                 }}
               />
-              <View style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                borderRadius: 20,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: variables.colors.black + "aa",
-              }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  borderRadius: 20,
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: variables.colors.black + 'aa',
+                }}>
                 <KIcon name="image" size="medium" />
                 <KText style={styles.lightText}>View more</KText>
               </View>
@@ -165,9 +167,9 @@ export default ({ property }: Props) => {
           setVisible={() => setFullScreen(-1)}
         />
       </View>
-    )
+    );
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -182,4 +184,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
-})
+  imageRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    width: '100%',
+  },
+  imageContainer: {
+    borderRadius: 20,
+    aspectRatio: 1,
+  },
+  mobileImage: {
+    flex: 1,
+    maxHeight: '100%',
+  },
+  desktopImage: {
+    height: '98%',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+    objectFit: 'cover',
+  },
+});
