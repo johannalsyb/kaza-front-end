@@ -261,7 +261,7 @@ export default ({
                 <Attachment
                   key={`attachment_${i}`}
                   attachment={a}
-                  style={{ marginLeft: i === 0 ? 0 : 0 }}
+                  style={{ marginLeft: i === 0 ? 40 : 0, marginBottom: 10 }}
                 />
                 <KIcon
                   name="crossCircle"
