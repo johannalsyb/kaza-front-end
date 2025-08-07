@@ -242,7 +242,6 @@ export const PropertyCard = ({
             property={property}
             buttonStyle="primary"
             hideIcon
-            onPress={() => setShowCalendar(true)}
           />}
          
         </View>}
@@ -264,8 +263,7 @@ export const PropertyCard = ({
           }}
         />
       )}
-      {
-        !isDetails && (
+      { !isDetails && (
       <Pressable
         style={{
           position: 'absolute',
@@ -288,7 +286,7 @@ export const PropertyCard = ({
           }}
         />
       </Pressable>
-      )
+      )}
       {bottomComponent || null}
     </Pressable>
   )
