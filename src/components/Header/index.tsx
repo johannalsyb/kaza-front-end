@@ -431,7 +431,10 @@ export default (
                           marginBottom: 5,
                           marginTop: 5,
                         }}></View>
-                      {menuItemView("logout", "Logout", () => auth.logout())}
+                      {menuItemView("logout", "Logout", () => {
+                        props.navigation.replace('Home')
+                        auth.logout()
+                      })}
                     </View>
                   </View>
                 ) : (

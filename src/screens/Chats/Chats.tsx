@@ -340,7 +340,7 @@ export default ({
           leftComponent={headerLeftComponent}
           rightComponent={headerRightComponent}
         /> : null}
-      <View style={[styles.mainContainer, { padding: isMobile ? 0 : 20, }]}>
+      <View style={[styles.mainContainer, { padding: isMobile ? 0 : 50, }]}>
         <View style={{
           flex: 1,
           backgroundColor: variables.colors.white,
@@ -512,5 +512,5 @@ export default ({
         </View>
       }
     </SlideUpView >
-  </View >
+  </View>
 }

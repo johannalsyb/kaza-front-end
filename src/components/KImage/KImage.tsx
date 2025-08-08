@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 
 type Props = {
   source?: string;
-  style?: React.CSSProperties;
+  style?: React.CSSProperties | React.CSSProperties[];
   defaultSource?: string;
   imageId?: string;
   type?: 'properties' | 'users';
@@ -31,11 +31,11 @@ const KImage = ({
 
   useEffect(() => {
     setImageSource(source);
-  }, [source]);
+  }, [source, imageId]);
 
   return (
     <img
-      style={style}
+      style={Array.isArray(style) ? StyleSheet.flatten(style) : style}
       onError={e => {
         setImageSource(defaultSource);
       }}
