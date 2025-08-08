@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, View, ViewStyle, Platform } from 'react-native'
-import { useEffect } from 'react'
+import { Pressable, StyleSheet, View, ViewStyle, Platform, FlatList } from 'react-native'
+import { useEffect, useRef } from 'react'
 
 import properties from '../../api/properties'
 import { IconText } from '../IconText/IconText'
@@ -21,6 +21,7 @@ type PropertyCardProps = {
   favourite?: boolean
   avatar?: string
   photo?: string
+  photos?: string[]
   availableDate?: {
     from: Date | null
     to: Date | null
@@ -47,7 +48,7 @@ const cardHeight = 310
 
 export const PropertyCard = ({
   avatar = '',
-  photo = '',
+  photos = [],
   favourite,
   userId,
   availableDate,
@@ -72,7 +73,9 @@ export const PropertyCard = ({
     user.favourites &&
     user.favourites.includes(property.id),
   )
-  const swapForText = swapFor?.split('\n')
+  const flatListRef = useRef<FlatList<string> | null>(null)
+  const [cardWidth, setCardWidth] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const availableDateText =
     availableDate?.from && availableDate?.to
       ? `${formatFriendlyDate(availableDate?.from)} - ${formatFriendlyDate(
@@ -104,6 +107,22 @@ export const PropertyCard = ({
     )
   }, [property])
 
+  const goNext = () => {
+    if (currentIndex < photos.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      flatListRef?.current?.scrollToIndex({ index: newIndex, animated: true });
+    }
+  };
+
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      flatListRef?.current?.scrollToIndex({ index: newIndex, animated: true });
+    }
+  };
+
   return (
     <Pressable
       onPress={onPress}
@@ -118,30 +137,78 @@ export const PropertyCard = ({
           marginBottom: isDetails ? 0 : 18,
           height: isDetails ? 362 : '100%',
         },
-        // @ts-ignore
-        // isHovered && { boxShadow: '10px 15px 20px 0px #8D835180' },
         style,
         !isDetails && { maxHeight: 325, height: '100%' }
       ]}>
-      <View style={[styles.imageContainer,{ borderBottomLeftRadius: isDetails? 0 : 20, borderBottomRightRadius:isDetails? 0:20}]}>
-        {photo.startsWith('http') ? (
-          <KImage source={photo} style={photoStyle} />
-        ) : (
-          <KImage imageId={photo} type="properties" style={photoStyle} />
+      <View
+        style={[
+          styles.imageContainer,
+          {
+            borderBottomLeftRadius: isDetails ? 0 : 20,
+            borderBottomRightRadius: isDetails ? 0 : 20,
+          },
+        ]}
+        onLayout={e => setCardWidth(e.nativeEvent.layout.width)}
+      >
+        <FlatList
+          ref={flatListRef}
+          data={photos}
+          keyExtractor={(item, index) => index.toString() + item}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={e => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
+            setCurrentIndex(index);
+          }}
+          getItemLayout={(_, index) => ({
+            length: cardWidth,
+            offset: cardWidth * index,
+            index,
+          })}
+          extraData={cardWidth}
+          renderItem={({ item }) => (
+            <KImage
+              imageId={item}
+              type="properties"
+              style={[photoStyle, { width: cardWidth, height: cardHeight }]}
+            />
+          )}
+        />
+        {currentIndex > 0 && (
+          <Pressable style={[styles.navButton, { left: 10 }]} onPress={goPrev}>
+            <KIcon name="chevronLeft" size={40} style={{ color: variables.colors.white, opacity: 0.5 }} />
+          </Pressable>
+        )}
+        {currentIndex < photos.length - 1 && (
+          <Pressable style={[styles.navButton, { right: 0 }]} onPress={goNext}>
+            <KIcon name="chevronRight" size={40} style={{ stroke: variables.colors.white, opacity: 0.5 }} />
+          </Pressable>
         )}
         <View style={styles.bottomOverlay} />
-        <View style={[styles.avatarContainer]}>
+        <View style={styles.avatarContainer}>
           <CircleImage
             imageId={avatar}
             thumbnail={true}
             type="users"
-            style={{ borderRadius: 100, height: isDetails?61: 45, width: isDetails?61:45 }}
+            style={{
+              borderRadius: 100,
+              height: isDetails ? 61 : 45,
+              width: isDetails ? 61 : 45,
+            }}
           />
-        {
-          !isDetails && (
-            <KText style={{ color: variables.colors.white, fontSize: 19, fontFamily: 'Plus Jakarta Sans', fontWeight: '500' }}>{property?.owner?.firstName?.split(' ')[0] || ''}'s Place</KText>
-          )
-        }
+          {!isDetails && (
+            <KText
+              style={{
+                color: variables.colors.white,
+                fontSize: 19,
+                fontFamily: 'Plus Jakarta Sans',
+                fontWeight: '500',
+              }}
+            >
+              {property?.owner?.firstName?.split(' ')[0] || ''}'s Place
+            </KText>
+          )}
         </View>
       </View>
       {swapButton && property && (
@@ -153,63 +220,60 @@ export const PropertyCard = ({
           />
         </View>
       )}
-      
-      <View style={[styles.infoContainer,{padding: isDetails ? 0 : 'auto'}]}>
+      <View style={[styles.infoContainer, { padding: isDetails ? 0 : 'auto' }]}>
         {/* <View style={styles.infoTopContainer}>
           <KButton onPress={() => console.log("Swap now is pressed")} text='Swap now' color={isMobile ? 'light' : 'greenLight'} style={{ width: 'auto', height: 'auto', paddingVertical: 4, paddingHorizontal: 10, borderWidth: 0 }} />
         </View> */}
-       
         {
           !isDetails && (
-        <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 5 }]}>
-          <KText
-            style={{
-              fontSize: 13,
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-            numberOfLines={1}>
-            <KIcon
-              name="location"
-              size="medium"
-              style={{ opacity: 0.5 }}
-            />
-            <KText
-              style={{
-                paddingHorizontal: variables.spacing.xxsmall,
-                fontSize: 13,
-                opacity: 0.5,
-              }}>
-              {property?.city}, {property?.country}
-            </KText>
-          </KText>
-          {!isDetails &&
-            <KText
-              style={{
-                fontSize: 13,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-              numberOfLines={1}
-            >
-              <KIcon name='calendar' size='medium' style={{ opacity: 0.5 }} />
+            <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 8 }]}>
               <KText
                 style={{
-                  paddingHorizontal: variables.spacing.xxsmall,
                   fontSize: 13,
-                  opacity: 0.5,
-                }}>
-                {availableDateText} 
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                numberOfLines={1}>
+                <KIcon
+                  name="location"
+                  size="medium"
+                  style={{ opacity: 0.5 }}
+                />
+                <KText
+                  style={{
+                    paddingHorizontal: variables.spacing.xxsmall,
+                    fontSize: 13,
+                    opacity: 0.5,
+                  }}>
+                  {property?.city}, {property?.country}
+                </KText>
               </KText>
-            </KText>
-          }
-        </View>
+              {!isDetails &&
+                <KText
+                  style={{
+                    fontSize: 13,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                  numberOfLines={1}
+                >
+                  <KIcon name='calendar' size='medium' style={{ opacity: 0.5 }} />
+                  <KText
+                    style={{
+                      paddingHorizontal: variables.spacing.xxsmall,
+                      fontSize: 13,
+                      opacity: 0.5,
+                    }}>
+                    {availableDateText}
+                  </KText>
+                </KText>
+              }
+            </View>
 
           )
         }
-     
         {isDetails && property?.id && <View style={styles.infoTopContainer}>
           <KText
             style={{
@@ -217,7 +281,7 @@ export const PropertyCard = ({
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              paddingVertical:4,
+              paddingVertical: 4,
             }}
             numberOfLines={1}>
             <KIcon
@@ -229,26 +293,22 @@ export const PropertyCard = ({
               style={{
                 paddingHorizontal: variables.spacing.xxsmall,
                 fontSize: 13,
-                
                 fontWeight: '500',
                 color: '#000000',
               }}>
               {property?.city}, {property?.country}
             </KText>
           </KText>
- 
           <Gap size="xsmall" />
           {property && <SwapRequestButton
             property={property}
             buttonStyle="primary"
             hideIcon
           />}
-         
         </View>}
       </View>
 
       {user && user?.id === userId && (
-        
         <KButton
           size="medium"
           text="Edit"
@@ -263,29 +323,29 @@ export const PropertyCard = ({
           }}
         />
       )}
-      { !isDetails && (
-      <Pressable
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          zIndex: 1,
-          borderRadius: 100,
-          padding: 7,
-        }}
-        onPress={() => (user ? toggleFav() : onPress)}
-      >
-        <KIcon
-          size="large"
-          name="fav"
+      {!isDetails && (
+        <Pressable
           style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            zIndex: 1,
             borderRadius: 100,
-            stroke: favourite ? variables.colors.yellow : variables.colors.white,
-            fill: favourite ? variables.colors.yellow : 'transparent',
             padding: 7,
           }}
-        />
-      </Pressable>
+          onPress={() => (user ? toggleFav() : onPress)}
+        >
+          <KIcon
+            size="large"
+            name="fav"
+            style={{
+              borderRadius: 100,
+              stroke: favourite ? variables.colors.yellow : variables.colors.white,
+              fill: favourite ? variables.colors.yellow : 'transparent',
+              padding: 7,
+            }}
+          />
+        </Pressable>
       )}
       {bottomComponent || null}
     </Pressable>
@@ -336,10 +396,10 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor:white,
+    backgroundColor: white,
     flex: 2,
-    paddingVertical:14,
-    paddingHorizontal:13
+    paddingVertical: 14,
+    paddingHorizontal: 13
 
   },
   infoBottomContainer: {
@@ -376,4 +436,10 @@ const styles = StyleSheet.create({
     height: 45,
     maxWidth: 152
   },
+  navButton: {
+    position: 'absolute',
+    top: '50%',
+    transform: [{ translateY: -12 }],
+    zIndex: 1,
+  }
 })
