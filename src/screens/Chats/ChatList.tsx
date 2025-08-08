@@ -42,19 +42,19 @@ const ChatList: React.FC<Props> = ({
 }) => (
 	<ScrollView showsVerticalScrollIndicator={false}>
 		{visibleRequests.length ? visibleRequests.map((request, i) => {
-			const otherUser = request.fromProperty.owner.id === user!.id ? request.toProperty.owner : request.fromProperty.owner
+			const otherUser = request.fromProperty.owner?.id === user?.id ? request.toProperty.owner : request.fromProperty.owner
 			const otherUserImage = otherUser.primaryImage && otherUser.primaryImage.length ? otherUser.primaryImage : (
 				otherUser.images && otherUser.images.length ? (otherUser.images as string).split(',')[0] : ''
 			)
 			const lastMessage = request.lastMessage && request.lastMessage.length ? JSON.parse(request.lastMessage) as ChatMessage : null
 			const lastMessageTimeAgo = lastMessage ? timeAgo(typeof lastMessage.at === 'string' ? new Date(lastMessage.at).getTime() : lastMessage.at) : null
-			const backgroundColor = `${request.id === id ? variables.colors.yellow : variables.colors.greenLight}${showChatMenuDots === request.id ? 'aa' : 'ff'}`
+			const backgroundColor = `${request?.id === id ? variables.colors.yellow : variables.colors.greenLight}${showChatMenuDots === request.id ? 'aa' : 'ff'}`
 			return <View
 				style={[styles.chatItem, {
 					marginBottom: isMobile ? 5 : 10,
 					borderRadius: isMobile ? 10 : 20,
 					backgroundColor,
-					zIndex: showChatMenu !== request.id ? -1 : 0,
+					zIndex: showChatMenu !== request?.id ? -1 : 0,
 				}]}
 				key={`request-${i}`}>
 				{request.newMessage ? <KText style={styles.bubble}>1</KText> : null}
@@ -66,13 +66,13 @@ const ChatList: React.FC<Props> = ({
 						alignItems: 'center',
 						flex: 1,
 					}}
-					onHoverIn={showArchive ? undefined : () => setShowChatMenuDots(request.id)}
+					onHoverIn={showArchive ? undefined : () => setShowChatMenuDots(request?.id)}
 					onHoverOut={showArchive ? undefined : () => setShowChatMenuDots(null)}
 					onPress={() => {
 						openChat({
 							swapRequest: request,
 							otherUser: {
-								id: otherUser.id,
+								id: otherUser?.id,
 								image: otherUserImage,
 								firstName: otherUser.firstName
 							}
@@ -80,7 +80,7 @@ const ChatList: React.FC<Props> = ({
 					}}>
 					<CircleImage
 						thumbnail={true}
-						imageId={`${otherUser.id}/${otherUserImage}`}
+						imageId={`${otherUser?.id}/${otherUserImage}`}
 						type='users'
 						style={{ width: 40, height: 40, marginRight: 10 }} />
 					<View style={{
@@ -115,19 +115,19 @@ const ChatList: React.FC<Props> = ({
 					</View>
 				</Pressable>
 
-				{request.status === 'pending' && !showArchive && (isMobile || showChatMenuDots === request.id) ? <Pressable
+				{request.status === 'pending' && !showArchive && (isMobile || showChatMenuDots === request?.id) ? <Pressable
 					style={{ height: '100%', justifyContent: 'center' }}
-					onPress={showArchive ? undefined : () => setShowChatMenu(request.id)}
-					onHoverIn={showArchive ? undefined : () => setShowChatMenuDots(request.id)}
+					onPress={showArchive ? undefined : () => setShowChatMenu(request?.id)}
+					onHoverIn={showArchive ? undefined : () => setShowChatMenuDots(request?.id)}
 					onHoverOut={showArchive ? undefined : () => setShowChatMenuDots(null)}
 				>
 					<KIcon name='more' size='medium' style={{ transform: 'rotate(90deg)', opacity: 0.5 }} />
 				</Pressable> : null}
 				<ChatMenu
-					show={request.status === 'pending' && showChatMenu === request.id}
-					setShow={(b) => setShowChatMenu(b ? request.id : null)}
-					onAccept={() => confirmRequest(request.id)}
-					onDecline={() => declineRequest(request.id, 'Declined')}
+					show={request.status === 'pending' && showChatMenu === request?.id}
+					setShow={(b) => setShowChatMenu(b ? request?.id : null)}
+					onAccept={() => confirmRequest(request?.id)}
+					onDecline={() => declineRequest(request?.id, 'Declined')}
 				/>
 			</View>
 		}) : <View style={{ alignItems: 'center' }}>
