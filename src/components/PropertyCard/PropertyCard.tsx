@@ -48,6 +48,7 @@ const cardHeight = 310
 
 export const PropertyCard = ({
   avatar = '',
+  photo,
   photos = [],
   favourite,
   userId,
@@ -150,31 +151,36 @@ export const PropertyCard = ({
         ]}
         onLayout={e => setCardWidth(e.nativeEvent.layout.width)}
       >
-        <FlatList
-          ref={flatListRef}
-          data={photos}
-          keyExtractor={(item, index) => index.toString() + item}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={e => {
-            const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
-            setCurrentIndex(index);
-          }}
-          getItemLayout={(_, index) => ({
-            length: cardWidth,
-            offset: cardWidth * index,
-            index,
-          })}
-          extraData={cardWidth}
-          renderItem={({ item }) => (
-            <KImage
-              imageId={item}
-              type="properties"
-              style={[photoStyle, { width: cardWidth, height: cardHeight }]}
-            />
-          )}
-        />
+        {isDetails ?
+          <KImage imageId={photo} type="properties" style={photoStyle} />
+          :
+          <FlatList
+            ref={flatListRef}
+            data={photos}
+            keyExtractor={(item, index) => index.toString() + item}
+            horizontal
+            pagingEnabled
+            decelerationRate={"normal"} 
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={e => {
+              const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
+              setCurrentIndex(index);
+            }}
+            getItemLayout={(_, index) => ({
+              length: cardWidth,
+              offset: cardWidth * index,
+              index,
+            })}
+            extraData={cardWidth}
+            renderItem={({ item }) => (
+              <KImage
+                imageId={item}
+                type="properties"
+                style={[photoStyle, { width: cardWidth, height: cardHeight }]}
+              />
+            )}
+          />
+        }
         {currentIndex > 0 && (
           <Pressable style={[styles.navButton, { left: 10 }]} onPress={goPrev}>
             <KIcon name="chevronLeft" size={40} style={{ color: variables.colors.white, opacity: 0.5 }} />
