@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import variables from '../../styles/variables'
 import { Property } from '../../common/types/api/properties'
 import properties from '../../api/properties'
+import useIsMobile from '../../hooks/useIsMobile'
 
 declare global {
   interface Window {
@@ -61,6 +62,7 @@ const GoogleMap: React.FC<MapProps> = ({
     >()
   const ref = useRef<HTMLDivElement>(null)
   const { config } = useConfig()
+  const { isMobile } = useIsMobile()
   const handleMarkerHover = (
     marker: google.maps.Marker,
     property: Property,
@@ -93,7 +95,39 @@ const GoogleMap: React.FC<MapProps> = ({
       clickableIcons: false,
       disableDefaultUI: true,
       zoomControl: true,
+      gestureHandling: 'greedy',
     })
+    const styleElement = document.createElement('style');
+     styleElement.innerHTML = `
+      .gm-style .gm-style-cc, 
+      .gm-style-cc, 
+      .gmnoprint, 
+      .gm-style-mtc, 
+      .gm-fullscreen-control,
+      .gm-bundled-control,
+      .gm-bundled-control-on-bottom {
+        display: none !important;
+      }
+      
+      a[title*='Google'] {
+        display: none !important;
+      }
+      
+      .gm-style a[href^="https://maps.google.com/maps"] {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(styleElement);
+
+    const attributionDiv = document.createElement('div');
+    attributionDiv.style.position = 'absolute';
+    attributionDiv.style.bottom = '8px';
+    attributionDiv.style.left = '8px';
+    attributionDiv.style.backgroundColor = 'rgba(255,255,255,0.7)';
+    attributionDiv.style.padding = '2px 4px';
+    attributionDiv.style.fontSize = '10px';
+    attributionDiv.style.borderRadius = '2px';
+    ref.current.appendChild(attributionDiv);
 
     if (lines && lines.length) {
       lines.forEach((lineCoords, i) => {
@@ -170,7 +204,7 @@ const GoogleMap: React.FC<MapProps> = ({
 
   return (
     <>
-      <div style={{ ...(style || {}) }} className="map" ref={ref} />
+      <div style={{ ...(style || {}),height:isMobile ? 300 :'100%' }} className="map" ref={ref} />
       {/* <div ref={kmlRef} id="capture" /> */}
     </>
   )

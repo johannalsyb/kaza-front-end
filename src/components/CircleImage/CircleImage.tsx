@@ -41,7 +41,7 @@ export const CircleImage = ({
           borderStyle: 'solid',
           borderWidth: 2,
           ...styles.circleImage,
-          borderRadius: circleImageSize[size].width / 2,
+          borderRadius: circleImageSize[size].width / 1.82,
           ...style,
         }}
         defaultSource={defaultCircleImage}

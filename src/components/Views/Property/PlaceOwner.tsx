@@ -61,6 +61,7 @@ export default ({
         size="small"
         imageId={`${property.owner.id}/${property.owner.primaryImage}`}
         type="users"
+        style={{borderWidth: 4,}}
        
       />
 
@@ -78,7 +79,7 @@ export default ({
      {!!property.owner.job && (  
       <IconText numberOfLines={2} style={{textAlign: 'center',fontWeight: '400', lineHeight: 15}} size="medium" iconName="job" text={property.owner.job} />
      )} 
-    
+     
     {isMobile && <Gap size="xsmall" vertical />}
     {isMobile && <Gap size="xsmall" vertical />}
 

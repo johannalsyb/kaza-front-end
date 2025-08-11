@@ -235,7 +235,7 @@ export const PropertyCard = ({
             <View style={[styles.infoBottomContainer, !isDetails && { paddingTop: 8 }]}>
               <KText
                 style={{
-                  fontSize: 13,
+                  fontSize: 15,
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -249,7 +249,7 @@ export const PropertyCard = ({
                 <KText
                   style={{
                     paddingHorizontal: variables.spacing.xxsmall,
-                    fontSize: 13,
+                    fontSize: 15,
                     opacity: 0.5,
                   }}>
                   {property?.city}, {property?.country}
@@ -258,7 +258,7 @@ export const PropertyCard = ({
               {!isDetails &&
                 <KText
                   style={{
-                    fontSize: 13,
+                    fontSize: 15,
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -269,7 +269,7 @@ export const PropertyCard = ({
                   <KText
                     style={{
                       paddingHorizontal: variables.spacing.xxsmall,
-                      fontSize: 13,
+                      fontSize: 15,
                       opacity: 0.5,
                     }}>
                     {availableDateText}
