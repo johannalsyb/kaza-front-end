@@ -15,7 +15,7 @@ import KImage from '../../KImage/KImage';
 import {useEffect, useState} from 'react';
 import useIsMobile from '../../../hooks/useIsMobile';
 import Carousel from '../../Carousel';
-
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 type Props = {
   property: Property;
   visible: boolean;
@@ -23,18 +23,14 @@ type Props = {
   setVisible: (visible: boolean) => void;
 };
 
-export default ({
-  property,
-  visible = false,
-  setVisible,
-  index = 0,
-}: Props) => {
+export default ({property, visible = false, setVisible, index = 0}: Props) => {
   const [photoDisplayedIndex, setPhotoDisplayedIndex] = useState(index);
+
   const {isMobile} = useIsMobile();
   let {images, id} = property;
-  const imagesArray = images 
-  ? [...new Set(images.split(',').filter(image => image.trim() !== ""))] 
-  : [];
+  const imagesArray = images
+    ? [...new Set(images.split(',').filter(image => image.trim() !== ''))]
+    : [];
   const {width, height} = useWindowDimensions();
 
   useEffect(() => {
@@ -57,33 +53,39 @@ export default ({
   }, [index]);
 
   const imageViews = imagesArray.map((image, i) => {
-    return (<Pressable
-      onPress={() => setVisible(false)}
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        pointerEvents: "none",
-      }}>
-        <Pressable onPress={() => {
-          // DO NOTHING
-        }}>
-          <KImage
-            imageId={`${id}/${image}`}
-            type="properties"
-            style={{
-              height: height-50,
-              objectFit: "contain",
-              pointerEvents: "all",
-            }}
-          />
+    return (
+      <>
+        <Pressable
+          onPress={() => setVisible(false)}
+          key={`fullscreenphoto_${i}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+            pointerEvents: 'none',
+          }}>
+          <Pressable
+            onPress={() => {
+              // DO NOTHING
+            }}>
+            <KImage
+              imageId={`${id}/${image}`}
+              type="properties"
+              style={{
+                height: height - 50,
+                objectFit: 'contain',
+                pointerEvents: 'all',
+              }}
+            />
+          </Pressable>
         </Pressable>
-      </Pressable>
+      </>
     );
-  })
+  });
 
   if (!property?.owner) return <KText>Loading...</KText>;
   else {
@@ -94,12 +96,39 @@ export default ({
         transparent={true}
         onRequestClose={() => setVisible(false)}
         onPointerUp={e => {
-          console.log(e)
+          console.log(e);
         }}>
         <TouchableOpacity
           onPress={() => setVisible(false)}
           style={[styles.modalOverlay]}></TouchableOpacity>
-        
+        {isMobile && (
+          <View style={[styles.imageGalerryTopBar]}>
+            <Pressable onPress={() => setVisible(false)} style={{zIndex: 3333}}>
+              <KIcon
+                name="calcelBtn"
+                size={'xlarge'}
+                style={{color: 'black'}}
+              />
+            </Pressable>
+            <KText style={styles.numberOfImages}>{`${
+              photoDisplayedIndex < 10 ? '0' : ''
+            }${photoDisplayedIndex} of ${imageViews.length}`}</KText>
+          </View>
+        )}
+        {!isMobile && (
+          <View style={[styles.ImagegalleryTopBarDesktopView]}>
+            <KText style={styles.numberOfImages}>{`${
+              photoDisplayedIndex < 10 ? '0' : ''
+            }${photoDisplayedIndex} of ${imageViews.length}`}</KText>
+            <Pressable onPress={() => setVisible(false)} style={{zIndex: 3333}}>
+              <KIcon
+                name="calcelBtn"
+                size={'xlarge'}
+                style={{color: 'black'}}
+              />
+            </Pressable>
+          </View>
+        )}
         <View
           style={[
             styles.container,
@@ -126,13 +155,16 @@ export default ({
           <Carousel
             data={imageViews}
             style={{
-              width: "100%",
-              height: "90%",
-              display: "flex",
-              flex: 1
+              width: '100%',
+              height: '90%',
+              display: 'flex',
+              flex: 1,
             }}
-            />
-          
+            onIndexChange={(index: number) => {
+              console.log('index changed', index + 1);
+              setPhotoDisplayedIndex(index + 1);
+            }}
+          />
 
           {/* <KImage
             imageId={`${id}/${imagesArray[photoDisplayedIndex]}`}
@@ -151,7 +183,8 @@ export default ({
               name="chevronLeft"
               size="xxlarge"
               onPress={() => {
-                if (photoDisplayedIndex > 0) setPhotoDisplayedIndex(photoDisplayedIndex - 1);
+                if (photoDisplayedIndex > 0)
+                  setPhotoDisplayedIndex(photoDisplayedIndex - 1);
                 else setPhotoDisplayedIndex(imagesArray.length - 1);
               }}
             />
@@ -186,7 +219,8 @@ export default ({
               name="chevronRight"
               size="xxlarge"
               onPress={() => {
-                if (photoDisplayedIndex < imagesArray.length - 1) setPhotoDisplayedIndex(photoDisplayedIndex + 1);
+                if (photoDisplayedIndex < imagesArray.length - 1)
+                  setPhotoDisplayedIndex(photoDisplayedIndex + 1);
                 else setPhotoDisplayedIndex(0);
               }}
             />
@@ -204,8 +238,8 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     flex: 1,
-    pointerEvents: "none",
-    display: "flex",
+    pointerEvents: 'none',
+    display: 'flex',
     width: '100%',
     // zIndex: -1,
   },
@@ -218,7 +252,7 @@ const styles = StyleSheet.create({
     left: 0,
     opacity: 0.8,
     zIndex: 0,
-    cursor: "initial",
+    cursor: 'initial',
   },
   lightText: {
     opacity: 0.5,
@@ -232,7 +266,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 20,
     zIndex: 2,
-    display: "none"
+    display: 'none',
   },
   arrow: {
     backgroundColor: variables.colors.yellow,
@@ -240,6 +274,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 2,
-    pointerEvents: "all",
+    pointerEvents: 'all',
+  },
+  imageGalerryTopBar: {
+    position: 'absolute',
+    zIndex: 33330,
+    top: 30,
+    left: 10,
+    flexDirection: 'row',
+    gap: 10,
+    width: '55%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  ImagegalleryTopBarDesktopView: {
+    flexDirection: 'row',
+    position: 'relative',
+    zIndex: 3333,
+    gap: 10,
+    top: 30,
+    width: '80%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  numberOfImages: {
+    color: variables.colors.white,
+    fontWeight: '500',
+    fontSize: 17,
+
+    lineHeight: 17,
+    letterSpacing: -0.5,
   },
 });

@@ -57,14 +57,12 @@ export default (props:Props) => {
         showArrows={true}
         // dynamicHeight={true}
         showThumbs={false}
-        onChange={e => {
-            // console.log(e)
-        }}
         showStatus={false}
         renderArrowPrev={(c) => arrow("left", c)}
         renderArrowNext={(c) => arrow("right", c)}
         width={"100%"}
         infiniteLoop={true}
+        onChange={props.onIndexChange}
         >
         {props.data.map((item, index) => item)}
     </Carousel>;
