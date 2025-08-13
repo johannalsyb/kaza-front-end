@@ -74,9 +74,17 @@ export default ({property}: Props) => {
             </View>
           ))}
         </View>
+        {
+          !isMobile &&(
+            <Gap size="xsmall" vertical />
+          )
+        }
+
         <View
-          style={[styles.container, {backgroundColor: variables.colors.white}]}>
-          <KText style={styles.lightText}>Amenities</KText>
+          style={[styles.container, {backgroundColor: isMobile? variables.colors.white: variables.colors.greenLight}]}>
+          <KText style={[styles.lightText,{
+            opacity: isMobile? 0.4: 1
+          }]}>Amenities</KText>
           <Gap size="medium" vertical />
           {property.amenities.split(',').map((amenity, i) => {
             const am = amenity.replace(/\W+ /g, "");
@@ -95,10 +103,16 @@ export default ({property}: Props) => {
             </View> : null
           })}
         </View>
+        {
+          !isMobile &&(
+            <Gap size="xsmall" vertical />
+          )
+        }
+
         <View
           style={[
             styles.container,
-            {backgroundColor: variables.colors.yellow},
+            {backgroundColor: isMobile ? variables.colors.yellow: variables.colors.greenLight},
           ]}>
           <KText style={styles.lightText}>Rules of this place</KText>
           <Gap size="medium" vertical />
@@ -130,8 +144,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   lightText: {
-    opacity: 0.5,
+  
     width: '100%',
+    fontWeight: '500',
+    letterSpacing: -0.5,
     textAlign: 'left',
   },
   textStyle:{

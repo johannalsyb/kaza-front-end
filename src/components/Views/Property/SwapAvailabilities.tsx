@@ -42,48 +42,21 @@ export default ({property}: Props) => {
       <View style={styles.container}>
         <View
           style={{
-            // display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            width: '100%',
-            gap: 8,
+            flexDirection: 'column',
+            gap:16
           }}>
-          <View style={styles.textIconCard}>
-            <KIcon name="location" size="large" style={{opacity: 0.4}} />
-            <KText
-              style={[styles.locationText, {fontWeight: '500',fontSize:16}]}
-              numberOfLines={2}>
-              {`${city}, ${country}`}
-            </KText>
-          </View>
-          <View style={styles.textIconCard}>
-            <KIcon name="calendar" size="large" style={{opacity: 0.4}} />
-            <KText
-              style={[
-                styles.locationText,
-                {
-                  backgroundColor: variables.colors.greenLight,
-                  fontWeight: '400',
-                  paddingHorizontal: 11,
-                  paddingVertical: 8,
-                  borderRadius: 20,
-                  fontSize:15
-                },
-              ]}
-              numberOfLines={1}>
-              Swap Availabilities
-            </KText>
-          </View>
+            <KText style={styles.availableDatesSlot}>Preferred dates by Host </KText>
+         
           <View style={styles.infoTopContainer}>
-            <View
-              style={{flexDirection: 'column', alignItems: 'center', gap: 2}}>
+            <View 
+              style={{flexDirection: 'row', alignItems: 'center', gap: 8,}}>
               <IconText
                 size="small"
                 iconName="calendar"
                 text={availableDateText}
                 style={styles.availableDates}
               />
+             
             </View>
           </View>
         </View>
@@ -95,46 +68,32 @@ export default ({property}: Props) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    paddingHorizontal:24,
+    paddingVertical: 19,
+    height: 104,
     // aspectRatio: 620 / 155,
     borderRadius: 20,
+    backgroundColor: variables.colors.greenLight
   },
   infoTopContainer: {
-    width: '32%',
+    width: '100%',
+    margin:'auto'
   },
-  infoBottomContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: variables.spacing.small,
-  },
-  lightText: {
-    opacity: 0.4,
-    marginBottom: variables.spacing.xsmall,
-  },
-  textIconCard: {
-    width: '32%',
-    backgroundColor: variables.colors.white,
-    flexDirection: 'column',
-    height: 126,
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-  },
-  locationText: {
-    color: variables.colors.black,
-    marginTop: 6,
-    fontSize: 16,
-    
-    textAlign: 'center',
-    letterSpacing: -0.5,
+  availableDatesSlot:{
+    fontWeight:'600',
+    fontSize: 15,
+    lineHeight: 12,
+    letterSpacing: -0.5
   },
   availableDates: {
     paddingVertical: 8,
+    width: 182,
+    height: 40,
     paddingHorizontal: 14,
     borderRadius: 12,
+    borderColor: '#C6C5BA80',
+    borderWidth: 1,
     textAlign: 'center',
     fontSize: 12,
     backgroundColor: variables.colors.white,
