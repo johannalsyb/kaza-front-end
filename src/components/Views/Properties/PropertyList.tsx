@@ -275,61 +275,58 @@ export default forwardRef<Handle, Props>(
                   />
                 ) : propertiesFiltered.length ? (
                   <>
-                    {propertiesFiltered.map((property, i) => {
-                      let { images, owner, city, country, id } = property
-                      images = Array.isArray(images) ? images.join(',') : images
-                      return (
-                        <View
-                          style={[
-                            {
-                              flexGrow: 1,
-                              flexShrink: 1,
-                              padding: isMobile ? 0 : 20,
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              maxWidth: isMobile ? '100%' : 330,
-                            },
-                            isMobile && {
-                              width: '100%',
-                            },
-                          ]}
-                          key={`property-${i}`}>
-                          <PropertyCard
-                            property={property}
-                            favourite={
-                              user &&
-                                user.favourites &&
-                                property &&
-                                user.favourites.includes(property.id)
-                                ? true
-                                : false
-                            }
-                            onPress={() => handleClikOpenDetailInfo(id, property)}
-                            photos={(images ?? '').split(',').map(img => `${id}/${img}`)}
-                            avatar={`${owner.id}/${owner.primaryImage}`}
-                            location={`${city}`}
-                            swapFor={owner.swapLocations || 'Flexible'}
-                          />
-                          {property.bubble ? (
-                            <KText
-                              style={{
-                                position: 'absolute',
-                                top: isMobile ? 0 : 5,
-                                right: 0,
-                                backgroundColor: variables.colors.orange,
-                                color: 'white',
-                                padding: 5,
-                                borderRadius: 30,
-                                zIndex: 10,
-                                fontSize: 12,
-                              }}>
-                              {property.bubble}
-                            </KText>
-                          ) : null}
-                        </View>
-                      )
-                    })}
+                    {propertiesFiltered
+                      .filter(property => property.owner.id !== user?.id)
+                      .map((property, i) => {
+                        let { images, owner, city, country, id } = property
+                        images = Array.isArray(images) ? images.join(',') : images
+                        return (
+                          <View
+                            style={[
+                              {
+                                flexGrow: 1,
+                                flexShrink: 1,
+                                padding: isMobile ? 0 : 20,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                maxWidth: isMobile ? '100%' : 330,
+                              },
+                              isMobile && {
+                                width: '100%',
+                              },
+                            ]}
+                            key={`property-${i}`}>
+                            <PropertyCard
+                              property={property}
+                              favourite={
+                                user?.favourites?.includes(property.id) ? true : false
+                              }
+                              onPress={() => handleClikOpenDetailInfo(id, property)}
+                              photos={(images ?? '').split(',').map(img => `${id}/${img}`)}
+                              avatar={`${owner.id}/${owner.primaryImage}`}
+                              location={`${city}`}
+                              swapFor={owner.swapLocations || 'Flexible'}
+                            />
+                            {property.bubble ? (
+                              <KText
+                                style={{
+                                  position: 'absolute',
+                                  top: isMobile ? 0 : 5,
+                                  right: 0,
+                                  backgroundColor: variables.colors.orange,
+                                  color: 'white',
+                                  padding: 5,
+                                  borderRadius: 30,
+                                  zIndex: 10,
+                                  fontSize: 12,
+                                }}>
+                                {property.bubble}
+                              </KText>
+                            ) : null}
+                          </View>
+                        )
+                      })}
                     {(() => {
                       const remainder = propertiesFiltered.length % columns
                       const placeholders = remainder === 0 ? 0 : columns - remainder

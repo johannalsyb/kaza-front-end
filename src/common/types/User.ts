@@ -34,8 +34,9 @@ export type User = PublicUser & {
     favourites: string | null,
     unreadNotifications?: number,
     onboarding: string | null,
-    newMatches?: number
-    payment: string | null
+    newMatches?: number,
+    payment: string | null,
+    credits: number,
 }
 
 export default User
