@@ -23,7 +23,6 @@ export default ({property, hideSwapRequestButton}: Props) => {
   const {user} = useAuthentication();
   const swpReqButtonRef = useRef<SwapRequestButtonHandle>(null);
   const [showMore, setShowMore] = useState(false);
-
   const showMoreTextComponent = () => {
     const wordLimit = isMobile ? 10 : 20;
     const words = property?.owner?.hobby.trim().split(/\s+/) || [];
@@ -73,7 +72,7 @@ export default ({property, hideSwapRequestButton}: Props) => {
         {/* <Gap size="small" vertical /> */}
         <View style={styles.avatar}>
           <CircleImage
-            size={`${isMobile ? 'small': 'large'}`}
+            size={`${isMobile ? 'small' : 'large'}`}
             imageId={`${property.owner.id}/${property.owner.primaryImage}`}
             type="users"
             style={{borderWidth: 4}}
@@ -98,66 +97,19 @@ export default ({property, hideSwapRequestButton}: Props) => {
         <Gap size="xsmall" vertical />
         {!!property.owner.hobby && showMoreTextComponent()}
 
-        <View
-          style={[
-            styles.ownerJobbox,
-            {
-              width: isMobile ? 'auto' : '100%',
-              marginTop: isMobile ? 0 : 15,
-              justifyContent: !property.owner.job
-                ? 'flex-end'
-                : 'space-between',
-            },
-          ]}>
-          {!!property.owner.job && (
-            <IconText
-              numberOfLines={2}
-              style={[styles.ownerjobTitle, {fontSize: isMobile ? 13 : 14,opacity: isMobile ? 1: 0.6}]}
-              size="medium"
-              iconName="job"
-              text={property.owner.job}
-            />
-          )}
-          {!isMobile && (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'flex-end',
-                gap: 10,
-                justifyContent: 'center',
-              }}>
-              <View>
-                <KText
-                  style={{
-                    fontWeight: '600',
-                    fontSize: 14,
-                    lineHeight: 18,
-                    letterSpacing: -0.4,
-                    color: 'black',
-                    textAlign: 'right',
-                  }}>
-                  Globetrotter Training
-                </KText>
-                <KText
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: -0.3,
-                    lineHeight: 15,
-                    fontWeight: '500',
-                    textAlign: 'right',
-                    color: '#00000080',
-                  }}>
-                  Level 1 (Newbie)
-                </KText>
-              </View>
-              <KIcon
-                style={styles.ownerPlaceDeletionBtn}
-                name="deletionbtn"
-                size="medium"
-              />
-            </View>
-          )}
-        </View>
+        {!!property.owner.job && (
+          <IconText
+            numberOfLines={2}
+            style={[
+              styles.ownerjobTitle,
+              {fontSize: isMobile ? 13 : 14, opacity: isMobile ? 1 : 0.6},
+            ]}
+            size="medium"
+            iconName="job"
+            text={property.owner.job}
+          />
+        )}
+
         {isMobile && <Gap size="xsmall" vertical />}
         {isMobile && <Gap size="xsmall" vertical />}
 
@@ -171,13 +123,15 @@ export default ({property, hideSwapRequestButton}: Props) => {
                 ? 'flex'
                 : 'none',
           }}>
+         
           <SwapRequestButton
             ref={swpReqButtonRef}
             property={property}
             buttonStyle="primary"
             iconStyle={{color: variables.colors.yellow}}
             hideIcon={true}
-          />
+            />
+           
         </View>
       </View>
     );
@@ -195,20 +149,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     backgroundColor: variables.colors.yellow,
   },
-  ownerPlaceDeletionBtn: {
-    backgroundColor: variables.colors.white,
-    padding: 11,
-    borderRadius: 50,
-  },
   lightText: {
     opacity: 0.5,
     width: '100%',
     textAlign: 'left',
-  },
-  ownerJobbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 40,
   },
   ownerjobTitle: {
     textAlign: 'center',
@@ -216,7 +160,6 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: 'black',
     letterSpacing: -0.5,
-    
   },
   avatar: {},
 });

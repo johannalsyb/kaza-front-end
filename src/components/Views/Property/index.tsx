@@ -19,10 +19,11 @@ import SwapRequestButton from "../../SwapRequestButton/SwapRequestButton"
 import KIcon from "../../KIcon/KIcon"
 import Onboarding from '../../../screens/Onboarding/Onboarding'
 import { useAtomValue } from 'jotai'
-import { showModalRegisterPlaceAtom } from '../../../atoms'
+import { showModalCalendarAtom, showModalRegisterPlaceAtom } from '../../../atoms'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../../../navigation/screens'
 import { useNavigation } from '@react-navigation/native'
+import CalendarComponent from "./calenderIndex"
 
 type Props = {
   id: string,
@@ -34,8 +35,8 @@ type Props = {
   //   undefined>
 }
 
-export const leftColumnWidth = 700
-export const rightColumnWidth = 550
+export const leftColumnWidth = 622
+export const rightColumnWidth = 620
 
 export default (props: Props) => {
   const [property, setProperty] = useState<Property | undefined>(props.property)
@@ -84,9 +85,13 @@ export default (props: Props) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       style={{
-        backgroundColor: variables.colors.greenLight,
+        backgroundColor: isMobile? variables.colors.greenLight: variables.colors.white,
         borderTopLeftRadius: isMobile ? 0 : 20,
-        borderTopRightRadius: isMobile ? 0 : 20,
+        borderTopRightRadius: isMobile ? 0 : 20,    
+        width: '100%',
+        maxWidth: 1500,
+        margin:'auto',  
+     
         ...(props.style || {})
       }}
       contentContainerStyle={{
@@ -164,7 +169,8 @@ export default (props: Props) => {
               justifyContent: 'center',
               alignItems: 'center',
               paddingVertical: 4,
-              paddingLeft: 10
+              paddingLeft: 10,
+              
             }}>
               <KIcon
                 name='star'
@@ -183,7 +189,8 @@ export default (props: Props) => {
                 paddingVertical: 10,
                 backgroundColor: variables.colors.lightCream,
                 borderRadius: 100,
-                borderWidth: 0
+                borderWidth: 0,
+                
               }}>
               <KIcon name="review" size="medium" style={{ stroke: variables.colors.black, opacity: 0.5 }} />
               <KText style={{ marginLeft: 5,fontSize:15 }}>3 Reviews</KText>
@@ -216,11 +223,10 @@ export default (props: Props) => {
           
         </>
       )}
+    
       <View key="leftView" style={{ width: '100%', maxWidth: leftColumnWidth }}>
         <GalleryPhoto key="gallery" property={property} />
-        <Gap size="xsmall" vertical />
-        <Gap size={`${isMobile ? 'xxsmall': 'small'}`} vertical />
-        
+        <Gap size="xsmall" vertical />   
         {!isMobile && (
           <>
             <PlaceOwner key="owner" property={property} />
@@ -255,7 +261,7 @@ export default (props: Props) => {
             style={{
               aspectRatio: 620 / 60,
               width: '100%',
-              backgroundColor: 'white',
+              backgroundColor: isMobile? variables.colors.white: variables.colors.greenLight,
               position: 'absolute',
               top: 0,
               left: 0,
@@ -265,8 +271,14 @@ export default (props: Props) => {
               justifyContent: 'center',
               zIndex: 1,
             }}>
-            <KText style={styles.lightText}>Neighborhood</KText>
+            <KText style={[styles.lightText, {opacity: isMobile ? 0.5 : 1}]}>Neighborhood</KText>
           </View>
+          {
+            !isMobile &&(
+              <Gap size="xsmall" vertical />
+            )
+          }
+
           <MapView
             lat={approxLat}
             lng={approxLon}
@@ -283,6 +295,7 @@ export default (props: Props) => {
         </View>
         {isMobile && <PlaceOwner key="owner" property={property} hideSwapRequestButton={!isMobile} />}
       </View>
+
       {isMobile && <View style={{ height: 100, width: '100%' }} />}
     </ScrollView>
     {/* <Menu navigate={navigation.navigate} />
@@ -291,6 +304,7 @@ export default (props: Props) => {
           setVisibility={() => setShowModal(undefined)}>
           {showModal}
         </KModal> */}
+      
     <Onboarding open={showModalregisterPlaceAtom} />
   </>
 }
@@ -298,8 +312,10 @@ export default (props: Props) => {
 
 const styles = StyleSheet.create({
   lightText: {
-    opacity: 0.5,
+  
     width: '100%',
+    fontWeight:'500',
+    letterSpacing: -0.5,
     textAlign: 'left',
   },
   lightCircle: {

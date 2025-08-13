@@ -50,7 +50,7 @@ export default ({property}: Props) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '100%',
-                maxWidth: 550,
+                maxWidth: 620,
                 margin: 'auto',
                 backgroundColor: variables.colors.white,
                 borderRadius: 100,
@@ -65,6 +65,7 @@ export default ({property}: Props) => {
                   fontWeight: '500',
                   lineHeight: 15,
                   color: variables.colors.black,
+                  letterSpacing: -0.5
                 }}>
                 View more photos
                 {/* <KIcon name="image" size="medium" style={{ stroke: "black" }} /> */}
@@ -96,6 +97,7 @@ export default ({property}: Props) => {
               justifyContent: isMobile ? 'space-between' : 'flex-start',
               aspectRatio: isMobile ? undefined : 4,
               height: isMobile ? undefined : 'auto',
+              width: isMobile ? '100%' : '96%'
             },
           ]}>
           {uniqueImages.slice(1, isMobile ? 3 : 4).map((image, i) => {
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     alignItems: 'center',
-    width: '100%',
+   
   },
   imageContainer: {
     borderRadius: 20,
@@ -203,6 +205,7 @@ const styles = StyleSheet.create({
   },
   desktopImage: {
     height: '98%',
+  
   },
   image: {
     width: '100%',
