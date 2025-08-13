@@ -1,0 +1,162 @@
+import React, { useEffect, useState } from 'react'
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
+import admin from '../../api/admin'
+
+type Reason = 'on sign up' | 'on referral' | 'on swap'
+
+interface LogEntry {
+	id: number
+	date: string
+	fromUser: string | null
+	toUser: string
+	credits: number
+	reason: Reason
+}
+
+const mockLogs: LogEntry[] = [
+	{ id: 1, date: '2025-08-11 10:15:23', fromUser: null, toUser: 'Alice', credits: 5, reason: 'on sign up' },
+	{ id: 2, date: '2025-08-10 14:42:10', fromUser: null, toUser: 'Bob', credits: 2, reason: 'on referral' },
+	{ id: 3, date: '2025-08-09 09:20:45', fromUser: 'Alice', toUser: 'Charlie', credits: 2, reason: 'on swap' },
+	{ id: 4, date: '2025-08-08 18:33:12', fromUser: 'David', toUser: 'Eve', credits: 7, reason: 'on swap' },
+	{ id: 5, date: '2025-08-07 07:50:05', fromUser: null, toUser: 'Frank', credits: 5, reason: 'on sign up' },
+	{ id: 6, date: '2025-08-06 13:15:56', fromUser: null, toUser: 'Grace', credits: 3, reason: 'on referral' },
+	{ id: 7, date: '2025-08-05 16:42:29', fromUser: 'Eve', toUser: 'Henry', credits: 4, reason: 'on swap' },
+	{ id: 8, date: '2025-08-04 11:05:17', fromUser: 'Charlie', toUser: 'Ivy', credits: 6, reason: 'on swap' },
+	{ id: 9, date: '2025-08-03 08:10:44', fromUser: null, toUser: 'Jack', credits: 5, reason: 'on sign up' },
+	{ id: 10, date: '2025-08-02 20:33:09', fromUser: null, toUser: 'Kate', credits: 2, reason: 'on referral' },
+	{ id: 11, date: '2025-08-01 15:27:38', fromUser: 'Henry', toUser: 'Liam', credits: 8, reason: 'on swap' },
+	{ id: 12, date: '2025-07-31 12:14:51', fromUser: 'Ivy', toUser: 'Mia', credits: 3, reason: 'on swap' },
+	{ id: 13, date: '2025-07-30 09:59:04', fromUser: null, toUser: 'Noah', credits: 5, reason: 'on sign up' },
+	{ id: 14, date: '2025-07-29 17:25:36', fromUser: null, toUser: 'Olivia', credits: 2, reason: 'on referral' },
+	{ id: 15, date: '2025-07-28 06:45:18', fromUser: 'Mia', toUser: 'Paul', credits: 6, reason: 'on swap' },
+]
+
+const sortedLogs = [...mockLogs].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+export default function LogsScreen() {
+	const [logs, setLogs] = useState<LogEntry[]>([])
+	const [loading, setLoading] = useState(true)
+
+	const loadLogs = async () => {
+		try {
+			setLoading(true)
+			const res = await admin.credits.logs({ limit: '100', sort: '-createdAt' }) // add other query params if needed
+			setLogs(res?.data || [])
+		} catch (err) {
+			console.error('Failed to load credit logs:', err)
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	useEffect(() => {
+		loadLogs()
+	}, [])
+
+	const sortedLogs = [...logs].sort(
+		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+	)
+
+	if (loading) {
+		return (
+			<View style={styles.loading}>
+				<ActivityIndicator size="large" />
+			</View>
+		)
+	}
+
+	if (!loading && logs.length === 0) {
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+				<Text style={{ fontSize: 16, color: '#777' }}>No data to show</Text>
+			</View>
+		)
+	}
+
+	return (
+		<View style={styles.container}>
+			<Text style={styles.header}>Credit Logs</Text>
+
+			<View style={[styles.row, styles.headerRow]}>
+				<Text style={[styles.cell, styles.cellDate]}>Date</Text>
+				<Text style={styles.cell}>From</Text>
+				<Text style={styles.cell}>To</Text>
+				<Text style={styles.cell}>Credits</Text>
+				<Text style={styles.cell}>Reason</Text>
+				<Text style={[styles.cell, styles.cellDescription]}>Description</Text>
+			</View>
+
+			<FlatList
+				data={sortedLogs}
+				keyExtractor={(item) => item.id.toString()}
+				renderItem={({ item }) => (
+					<View style={styles.row}>
+						<Text style={[styles.cell, styles.cellDate]}>
+							{new Intl.DateTimeFormat('en-US', {
+								month: 'short',
+								day: 'numeric',
+								year: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric',
+								hour12: true,
+							}).format(new Date(item.date.replace(' ', 'T')))}
+						</Text>
+						<Text style={styles.cell}>{item.fromUser ?? '—'}</Text>
+						<Text style={styles.cell}>{item.toUser}</Text>
+						<Text style={styles.cell}>{item.credits}</Text>
+						<Text style={styles.cell}>{item.reason}</Text>
+						<Text style={[styles.cell, styles.cellDescription]}>
+							{item.credits} credits were{' '}
+							{item.reason === 'on referral' || item.reason === 'on sign up'
+								? 'awarded to '
+								: 'moved from '}
+							{item.fromUser ? `${item.fromUser} to ` : ''}
+							{item.toUser} {item.reason}.
+						</Text>
+					</View>
+				)}
+			/>
+		</View>
+	)
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		padding: 16,
+		backgroundColor: '#fafafa',
+	},
+	loading: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	header: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		marginBottom: 12,
+	},
+	row: {
+		flexDirection: 'row',
+		borderBottomWidth: 1,
+		borderBottomColor: '#ddd',
+		paddingVertical: 8,
+		alignItems: 'center',
+	},
+	headerRow: {
+		backgroundColor: '#f0f0f0',
+		borderTopWidth: 1,
+		borderTopColor: '#ddd',
+	},
+	cell: {
+		flex: 1,
+		fontSize: 14,
+		paddingHorizontal: 4,
+	},
+	cellDate: {
+		flex: 1.5,
+	},
+	cellDescription: {
+		flex: 2.5,
+	},
+})

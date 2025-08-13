@@ -118,7 +118,6 @@ export default (
       setBubbles({ ...bubbles, notifications: u.unreadNotifications || 0 })
     })
 
-
     if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
     ueNewMatchListenerId = UserEvent.addListener('match', u => {
       localStorage.setItem("newMatches", `${u.newMatches || 0}`)
