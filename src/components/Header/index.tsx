@@ -318,7 +318,7 @@ export default (
                 stroke: variables.colors.blackLight,
               }}
             />
-            <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{5}</Text>
+            <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{user?.credits}</Text>
           </Pressable>}
         </>
       ) : (
@@ -406,7 +406,7 @@ export default (
                           stroke: variables.colors.blackLight,
                         }}
                       />
-                      <Text style={{ fontSize: 16, marginLeft: -2 }}>{5}</Text>
+                      <Text style={{ fontSize: 16, marginLeft: -2 }}>{user?.credits}</Text>
                     </Pressable>
                     <View
                       ref={popupMenuRef}
