@@ -23,7 +23,6 @@ import { showModalRegisterPlaceAtom } from '../../../atoms'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../../../navigation/screens'
 import { useNavigation } from '@react-navigation/native'
-import CalendarComponent from "./calenderIndex"
 
 type Props = {
   id: string,
