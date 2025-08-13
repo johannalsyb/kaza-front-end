@@ -101,15 +101,13 @@ export default function LogsScreen() {
 								hour12: true,
 							}).format(new Date(item.date.replace(' ', 'T')))}
 						</Text>
-						<Text style={styles.cell}>{item.fromUser ?? '—'}</Text>
+						<Text style={styles.cell}>{item.fromUser ?? 'Kaza'}</Text>
 						<Text style={styles.cell}>{item.toUser}</Text>
 						<Text style={styles.cell}>{item.credits}</Text>
 						<Text style={styles.cell}>{item.reason}</Text>
 						<Text style={[styles.cell, styles.cellDescription]}>
 							{item.credits} credits were{' '}
-							{item.reason === 'on referral' || item.reason === 'on sign up'
-								? 'awarded to '
-								: 'moved from '}
+							{item?.fromUser ? 'moved from ' : 'awarded to '}
 							{item.fromUser ? `${item.fromUser} to ` : ''}
 							{item.toUser} {item.reason}.
 						</Text>
