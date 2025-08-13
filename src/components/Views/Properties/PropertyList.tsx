@@ -305,6 +305,10 @@ export default forwardRef<Handle, Props>(
                               onPress={() => handleClikOpenDetailInfo(id, property)}
                               photos={(images ?? '').split(',').map(img => `${id}/${img}`)}
                               avatar={`${owner.id}/${owner.primaryImage}`}
+                              availableDate={{
+                                from: property.owner.dateFrom ? new Date(property.owner.dateFrom) : null,
+                                to: property.owner.dateTo ? new Date(property.owner.dateTo) : null
+                              }}
                               location={`${city}`}
                               swapFor={owner.swapLocations || 'Flexible'}
                             />
