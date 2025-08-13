@@ -19,7 +19,7 @@ import SwapRequestButton from "../../SwapRequestButton/SwapRequestButton"
 import KIcon from "../../KIcon/KIcon"
 import Onboarding from '../../../screens/Onboarding/Onboarding'
 import { useAtomValue } from 'jotai'
-import { showModalCalendarAtom, showModalRegisterPlaceAtom } from '../../../atoms'
+import { showModalRegisterPlaceAtom } from '../../../atoms'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../../../navigation/screens'
 import { useNavigation } from '@react-navigation/native'
