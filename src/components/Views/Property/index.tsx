@@ -219,7 +219,7 @@ export default (props: Props) => {
       <View key="leftView" style={{ width: '100%', maxWidth: leftColumnWidth }}>
         <GalleryPhoto key="gallery" property={property} />
         <Gap size="xsmall" vertical />
-        <Gap size="xxsmall" vertical />
+        <Gap size={`${isMobile ? 'xxsmall': 'small'}`} vertical />
         
         {!isMobile && (
           <>
@@ -232,7 +232,9 @@ export default (props: Props) => {
         {!isMobile && (
           <SwapAvailabilities key="property" property={property} />
         )}
-        {!isMobile && <Gap size="medium" vertical />}
+        {!isMobile && <Gap size="xsmall" vertical />}
+        {!isMobile && <Gap size="xxsmall" vertical />}
+
         <PropertyInfo key="info" property={property} />
         <Gap size="xsmall" vertical />
         <Gap size="xxsmall" vertical />
@@ -243,6 +245,11 @@ export default (props: Props) => {
             width: '100%',
             aspectRatio: 620 / 380,
             borderRadius: 20,
+            height: isMobile ? 300 : '100%',
+            maxHeight: 434,
+            marginBottom: 13,
+            paddingBottom: isMobile? 0 :8
+           
           }}>
           <View
             style={{
@@ -269,7 +276,7 @@ export default (props: Props) => {
               width: '100%',
               height: '100%',
               borderRadius: 20,
-              marginBottom: 13,
+              
             }}
             circles={[{ lat: approxLat, lng: approxLon, radius: 1000 }]}
           />
