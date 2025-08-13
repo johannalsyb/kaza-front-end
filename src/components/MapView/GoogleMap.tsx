@@ -118,15 +118,8 @@ const GoogleMap: React.FC<MapProps> = ({
       }
     `;
     document.head.appendChild(styleElement);
-
     const attributionDiv = document.createElement('div');
     attributionDiv.style.position = 'absolute';
-    attributionDiv.style.bottom = '8px';
-    attributionDiv.style.left = '8px';
-    attributionDiv.style.backgroundColor = 'rgba(255,255,255,0.7)';
-    attributionDiv.style.padding = '2px 4px';
-    attributionDiv.style.fontSize = '10px';
-    attributionDiv.style.borderRadius = '2px';
     ref.current.appendChild(attributionDiv);
 
     if (lines && lines.length) {
@@ -204,7 +197,7 @@ const GoogleMap: React.FC<MapProps> = ({
 
   return (
     <>
-      <div style={{ ...(style || {}),height:isMobile ? 300 :'100%' }} className="map" ref={ref} />
+      <div style={{ ...(style || {}) }} className="map" ref={ref} />
       {/* <div ref={kmlRef} id="capture" /> */}
     </>
   )

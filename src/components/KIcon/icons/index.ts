@@ -33,6 +33,7 @@ export {ReactComponent as close} from './close.svg';
 export {ReactComponent as closeWithBorder} from './closeWithBorder.svg';
 export {ReactComponent as closeBtn} from './closeBtn.svg';
 export {ReactComponent as calcelBtn} from './cancel.svg';
+export {ReactComponent as deletionbtn} from './deletionbtn.svg';
 
 
 export {ReactComponent as back} from './back.svg';

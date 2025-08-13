@@ -7,19 +7,23 @@ import {IconText} from '../../IconText/IconText';
 import {formatFriendlyDate} from '../../../utils/date';
 import KButton from '../../KButton/KButton';
 import useAuthentication from '../../../hooks/useAuthentication';
-import { showSignInAtom, showSwapNowAtom } from '../../../atoms';
-import { useAtomValue, useSetAtom } from 'jotai';
+import {showSignInAtom, showSwapNowAtom} from '../../../atoms';
+import {useAtomValue, useSetAtom} from 'jotai';
+import KIcon from '../../KIcon/KIcon';
 
 type Props = {
   property?: Property;
 };
 
 export default ({property}: Props) => {
+  const user = useAuthentication();
+  const [showSwapNow, setShowSwapNow] = [
+    useAtomValue(showSwapNowAtom),
+    useSetAtom(showSwapNowAtom),
+  ];
 
-  const user = useAuthentication()
-  const [showSwapNow, setShowSwapNow] = [useAtomValue(showSwapNowAtom), useSetAtom(showSwapNowAtom)];
-
-  if (!property?.owner) return <ActivityIndicator color={variables.colors.yellow}/>;
+  if (!property?.owner)
+    return <ActivityIndicator color={variables.colors.yellow} />;
   else {
     const {
       owner: {firstName, dateFrom, dateTo, swapLocations},
@@ -33,53 +37,55 @@ export default ({property}: Props) => {
           )}`
         : 'Flexible';
     const swapForText = swapLocations?.split('\n') || ['Flexible'];
+    console.log('property:-', property);
     return (
       <View style={styles.container}>
-        <View style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}>
-          <KText
-            style={
-              styles.lightText
-            }>{`Swap availabilities for ${firstName}`}</KText>
-            <KButton
-              style={{display: property.owner.id === user.user?.id ? "flex" : "none"}}
-              color="tertiary"
-              text="Edit Availability"
-              icon="calendarEdit"
-              iconStyle={{
-                stroke: variables.colors.yellow,
-                width: 25,
-              }}
-              onPress={() => setShowSwapNow(true)} />
-        </View>
-        <View style={styles.infoTopContainer}>
-          <IconText
-            size="medium"
-            iconName="calendar"
-            text={availableDateText}
-          />
-          {/* <Gap size="small" /> */}
-          {/* <IconText
-            size="medium"
-            iconName="location"
-            text={`${city}, ${country}`}
-          /> */}
-        </View>
-        <View style={styles.infoBottomContainer}>
-          <KText style={{...styles.lightText, }}>Swap for</KText>
-          <KText numberOfLines={1}>
-            {swapForText?.map((s, i) => (
-              <KText
-                style={{marginRight: variables.spacing.xsmall}}
-                key={`swap-for-${i}`}>
-                {s.split(',')[0]}
-              </KText>
-            ))}
-          </KText>
+        <View
+          style={{
+            // display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            width: '100%',
+            gap: 8,
+          }}>
+          <View style={styles.textIconCard}>
+            <KIcon name="location" size="large" style={{opacity: 0.4}} />
+            <KText
+              style={[styles.locationText, {fontWeight: '500',fontSize:16}]}
+              numberOfLines={2}>
+              {`${city}, ${country}`}
+            </KText>
+          </View>
+          <View style={styles.textIconCard}>
+            <KIcon name="calendar" size="large" style={{opacity: 0.4}} />
+            <KText
+              style={[
+                styles.locationText,
+                {
+                  backgroundColor: variables.colors.greenLight,
+                  fontWeight: '400',
+                  paddingHorizontal: 11,
+                  paddingVertical: 8,
+                  borderRadius: 20,
+                  fontSize:15
+                },
+              ]}
+              numberOfLines={1}>
+              Swap Availabilities
+            </KText>
+          </View>
+          <View style={styles.infoTopContainer}>
+            <View
+              style={{flexDirection: 'column', alignItems: 'center', gap: 2}}>
+              <IconText
+                size="small"
+                iconName="calendar"
+                text={availableDateText}
+                style={styles.availableDates}
+              />
+            </View>
+          </View>
         </View>
       </View>
     );
@@ -88,17 +94,13 @@ export default ({property}: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: variables.colors.white,
     width: '100%',
+    flexDirection: 'row',
     // aspectRatio: 620 / 155,
     borderRadius: 20,
-    justifyContent: 'space-around',
-    padding: variables.spacing.medium,
-    maxWidth: 700,
   },
   infoTopContainer: {
-    display: 'flex',
-    flexDirection: 'row',
+    width: '32%',
   },
   infoBottomContainer: {
     display: 'flex',
@@ -108,5 +110,33 @@ const styles = StyleSheet.create({
   lightText: {
     opacity: 0.4,
     marginBottom: variables.spacing.xsmall,
+  },
+  textIconCard: {
+    width: '32%',
+    backgroundColor: variables.colors.white,
+    flexDirection: 'column',
+    height: 126,
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
+  },
+  locationText: {
+    color: variables.colors.black,
+    marginTop: 6,
+    fontSize: 16,
+    
+    textAlign: 'center',
+    letterSpacing: -0.5,
+  },
+  availableDates: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    textAlign: 'center',
+    fontSize: 12,
+    backgroundColor: variables.colors.white,
   },
 });
