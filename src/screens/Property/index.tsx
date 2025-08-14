@@ -14,10 +14,14 @@ import PropertyHead from '../../components/Views/Property/PropertyHead'
 import { Property as PropertyT } from '../../common/types/api/properties'
 import SlideUpView from '../../components/SlideUpView'
 
+
 type Props = NativeStackScreenProps<NavStackParamList, 'Property'>
 
 export default ({ route, navigation }: Props) => {
   const [property, setProperty] = useState<PropertyT | undefined>()
+
+    
+
   const { id } = route.params
   const {
     showModal,

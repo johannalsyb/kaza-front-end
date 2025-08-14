@@ -83,7 +83,7 @@ export default ({property}: Props) => {
         <View
           style={[styles.container, {backgroundColor: isMobile? variables.colors.white: variables.colors.greenLight}]}>
           <KText style={[styles.lightText,{
-            opacity: isMobile? 0.4: 1
+            opacity: isMobile ? 0.5 : 1
           }]}>Amenities</KText>
           <Gap size="medium" vertical />
           {property.amenities.split(',').map((amenity, i) => {
@@ -108,13 +108,12 @@ export default ({property}: Props) => {
             <Gap size="xsmall" vertical />
           )
         }
-
         <View
           style={[
             styles.container,
             {backgroundColor: isMobile ? variables.colors.yellow: variables.colors.greenLight},
           ]}>
-          <KText style={styles.lightText}>Rules of this place</KText>
+          <KText style={[styles.lightText, {opacity: isMobile ? 0.5 : 1}]}>Rules of this place</KText>
           <Gap size="medium" vertical />
           {rules.map((rule, i) => (
             <View
