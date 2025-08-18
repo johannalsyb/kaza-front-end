@@ -29,6 +29,7 @@ export default {
 		verify: (id: string, value: boolean) => api.get<User>(`/admin/users/${id}/verify?verify=${value}`),
 		resetPassword: (id: string) => api.get<{ url: string }>(`/admin/users/${id}/resetPassword`),
 		delete: (id: string) => api.del(`/admin/users/${id}`),
+		getAll: () => api.get<User[]>(`/users/all`)
 	},
 	properties: {
 		get: (qs: Query = {}) => api.get<Property[]>(`/admin/properties?${new URLSearchParams(qs).toString()}`),
@@ -54,5 +55,6 @@ export default {
 	credits: {
 		logs: (qs: Query = { limit: "100" }) =>
 			api.get<Api.Admin.Credits.Logs>(`/admin/credits/logs?${new URLSearchParams(qs).toString()}`),
+		add: (data: { toUser: string, credits: number }) => api.post<Api.Admin.Credits.Add>(`/admin/credits/add`, data),
 	},
 }

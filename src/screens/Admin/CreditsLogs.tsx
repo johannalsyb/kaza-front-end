@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, TextInput } from 'react-native'
 import admin from '../../api/admin'
+import KModal from '../../components/KModal/KModal'
+import KButton from '../../components/KButton/KButton'
+import Dropdown from '../../components/Dropdown/Dropdown'
 
 type Reason = 'on sign up' | 'on referral' | 'on swap'
 
@@ -37,6 +40,31 @@ export default function LogsScreen() {
 	const [logs, setLogs] = useState<LogEntry[]>([])
 	const [loading, setLoading] = useState(true)
 
+	const [modalVisible, setModalVisible] = useState(false)
+	// const [users, setUsers] = useState<string[]>(["Alice", "Bob", "Charlie", "David"])
+	const [selectedUser, setSelectedUser] = useState<string>("")
+	const [credits, setCredits] = useState<string>("")
+	const [users, setUsers] = useState<{ id: string; name: string }[]>([])
+	const [loadingUsers, setLoadingUsers] = useState(false)
+
+	const loadUsers = async () => {
+		try {
+			setLoadingUsers(true)
+			const res = await admin.users.getAll()
+			const mapped = (res?.data || []).map((u: any) => ({
+				id: u.id,
+				name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.email || "Unknown"
+			}))
+			setUsers(mapped)
+		} catch (err) {
+			console.error("Failed to load users:", err)
+			Alert.alert("Error", "Failed to load users")
+		} finally {
+			setLoadingUsers(false)
+		}
+	}
+
+
 	const loadLogs = async () => {
 		try {
 			setLoading(true)
@@ -56,6 +84,38 @@ export default function LogsScreen() {
 	const sortedLogs = [...logs].sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	)
+	const handleAddCredits = () => {
+		if (!selectedUser || !credits) {
+			Alert.alert("Error", "Please select a user and enter credits")
+			return
+		}
+
+		Alert.alert(
+			"Confirm",
+			`Are you sure you want to give ${credits} credits to ${selectedUser}?`,
+			[
+				{ text: "Cancel", style: "cancel" },
+				{
+					text: "Yes",
+					onPress: async () => {
+						try {
+							await admin.credits.add({
+								toUser: selectedUser,
+								credits: Number(credits)
+							})
+							setModalVisible(false)
+							setCredits("")
+							setSelectedUser("")
+							loadLogs()
+						} catch (err) {
+							console.error("Failed to add credits:", err)
+							Alert.alert("Error", "Failed to add credits")
+						}
+					}
+				}
+			]
+		)
+	}
 
 	if (loading) {
 		return (
@@ -75,7 +135,17 @@ export default function LogsScreen() {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.header}>Credit Logs</Text>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+				<Text style={styles.header}>Credit Logs</Text>
+				<KButton
+					style={{ marginBottom: 12 }}
+					onPress={() => {
+						setModalVisible(true)
+						loadUsers()
+					}}
+					text='Add Credits'
+				/>
+			</View>
 
 			<View style={[styles.row, styles.headerRow]}>
 				<Text style={[styles.cell, styles.cellDate]}>Date</Text>
@@ -114,6 +184,47 @@ export default function LogsScreen() {
 					</View>
 				)}
 			/>
+
+			<KModal visible={modalVisible} setVisibility={setModalVisible}>
+				<View style={{ padding: 20, width: "100%" }}>
+					<Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>Add Credits</Text>
+
+					{/* User Dropdown */}
+					<Text style={{ fontSize: 16, marginBottom: 8 }}>Select User:</Text>
+					{loadingUsers ? (
+						<ActivityIndicator size="small" />
+					) : (
+						<Dropdown
+							items={users.map(u => u.name)}
+							onChange={(selectedItems) => {
+								const picked = users.find(u => u.name === selectedItems[0])
+								setSelectedUser(picked?.id || "")
+							}}
+							showSearch={true}
+							dropdownStyle={{ width: '100%' }}
+						/>
+					)}
+
+
+					{/* Credits Input */}
+					<Text style={{ fontSize: 16, marginTop: 8 }}>Credits:</Text>
+					<TextInput
+						value={credits}
+						onChangeText={setCredits}
+						placeholder="Enter credits"
+						keyboardType="numeric"
+						style={{
+							borderWidth: 1,
+							borderColor: "#ccc",
+							borderRadius: 10,
+							padding: 12,
+							marginVertical: 10
+						}}
+					/>
+
+					<KButton text="Confirm" onPress={handleAddCredits} />
+				</View>
+			</KModal>
 		</View>
 	)
 }
@@ -131,6 +242,19 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		fontSize: 20,
+		fontWeight: 'bold',
+		marginBottom: 12,
+	},
+	hBtn: {
+		backgroundColor: '#000000',
+		color: '#d8c230ff',
+		paddingLeft: 10,
+		paddingRight: 10,
+		paddingTop: 5,
+		textAlign: 'center',
+		borderRadius: 8,
+		cursor: 'pointer',
+		fontSize: 15,
 		fontWeight: 'bold',
 		marginBottom: 12,
 	},
