@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "types": ["node", "jest"],
-    "lib": ["dom"]
+    "lib": ["dom"],
+    "jsx": "react-jsx" 
   },
   "exclude": ["functions/**/*"],
   "include": ["src", "src/declarations/*.d.ts"]

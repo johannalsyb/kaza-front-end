@@ -145,6 +145,11 @@ export namespace Api {
 			}
 
 			export type Logs = LogEntry[];
+			export type Add = {
+				success: boolean
+				message: string
+				entry: LogEntry
+			}
 		}
 	}
 }
