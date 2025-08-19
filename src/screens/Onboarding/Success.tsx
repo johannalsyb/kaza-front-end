@@ -1,4 +1,4 @@
-import { ImageBackground, Pressable, ScrollView, StyleSheet, View } from "react-native"
+import { ImageBackground, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native"
 import KButton from "../../components/KButton/KButton"
 import { useEffect, useState } from "react"
 import User1, { Preferences } from "../../components/forms/user/User1"
@@ -28,6 +28,17 @@ export default (props: Props) => {
     //     props.navigation.navigate("Home")
     //     return null
     // }
+    const { width, height } = useWindowDimensions();
+      const calculateFontSize = () => {
+        const baseSize = 70 * width * 0.00069;
+        return Math.min(baseSize, 70); 
+      };
+    
+      const calculateLineHeight = () => {
+        const baseSize = 80 * (width * 0.00082);
+        return Math.min(baseSize, 80); 
+      };
+    
 
     console.log('user', user)
     return  <View style={{ flex: 1}}>
@@ -49,7 +60,7 @@ export default (props: Props) => {
                         resizeMode="cover"
                          >
                         <View style={[styles.containerText, { marginTop: 36 }]}>
-                            <KText style={{ fontWeight: '700', fontSize: 35, color: '#FFFFFF' }}>Congratulations</KText>
+                            <KText style={{ fontWeight: '700', fontSize: 35, color: '#FFFFFF' }}>Congratulation</KText>
                             <KText style={{ fontWeight: '700', fontSize: 35, color: '#FFFFFF' }}>{user?.firstName}!</KText>
                         </View>
                           {isMobile &&
@@ -99,7 +110,7 @@ export default (props: Props) => {
              
                  props.navigation.navigate("Home")
                 }}>
-                <KIcon name="KazaSwaplogoblackandyellowVertical" size={70} />
+                <KIcon name="KazaSwaplogoblackandyellowVertical" style={{width: 70, height: 104,}} />
               </Pressable>
                 )
               }
@@ -111,13 +122,20 @@ export default (props: Props) => {
         contentContainerStyle={[styles.container, isMobile && { flexDirection: "column" }]}>
             {
                 !isMobile && (
-
         <View
             style={[styles.containerLeftSide, styles.borderRadiusDesktop, isMobile && { maxWidth: '100%', borderTopEndRadius: 0, borderBottomStartRadius: 23, maxHeight: 295 }]}
         >
             <View style={[styles.containerText, isMobile && { marginTop: 0 }]} >
-                <KText style={{ fontWeight: isMobile ? '700' : '600', fontSize: isMobile ? 35 : 56,color: '#FFFFFF' }}>Congratulations</KText>
-                <KText style={{ fontWeight: isMobile ? '700' : '600', fontSize: isMobile ? 35 : 56, color: '#FFFFFF' }}>{user?.firstName}!</KText>
+                <KText
+                 style={{ fontWeight: isMobile ? '700' : '600', fontSize: calculateFontSize(),
+                  lineHeight: calculateLineHeight(),color: '#FFFFFF' }}>
+                    Congratulation
+                    </KText>
+                <KText 
+                style={{ fontWeight: isMobile ? '700' : '600', fontSize: calculateFontSize(),
+                  lineHeight: calculateLineHeight(), color: '#FFFFFF' }}>
+                    {user?.firstName}!
+                    </KText>
             </View>
         </View>
                 )
@@ -138,7 +156,7 @@ export default (props: Props) => {
 
         }]}>
 
-            <KText style={[styles.label && { fontSize: isMobile ? 20 : 35, lineHeight: isMobile ? 24 : 39, textAlign: 'center', fontWeight: '700',letterSpacing: -0.5 }]}>
+            <KText style={[styles.label && { fontSize: isMobile ? 20 : 35, lineHeight: isMobile ? 24 : 39, textAlign: 'center', fontWeight: '600',letterSpacing: -0.5 }]}>
                 Welcome to the  {!isMobile &&(<br />) }  Kaza Swap {isMobile &&(<br />) } community!
             </KText>
             <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 61, marginBottom: 65 }}>
@@ -149,7 +167,7 @@ export default (props: Props) => {
                     </KText>
                 </View>}
                 <View style={styles.contaiterNotification}>
-                    <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
+                    <KIcon name="credits" size='large' style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
                     <KText style={[styles.emailText, isMobile && { lineHeight: 21 }]}>
                         For registering you get {' '}
                         <KText style={{ fontWeight: "bold", color: variables.colors.black }}>
@@ -264,11 +282,10 @@ const styles = StyleSheet.create({
         letterSpacing: -0.5,
         maxWidth: 400,
         textAlign: "center",
-
     },
     icon: {
         backgroundColor: variables.colors.lightCream,
-        borderRadius: 100,
+        borderRadius: 50,
         padding: 12
     },
     iconMobile: {

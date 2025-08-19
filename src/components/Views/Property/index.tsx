@@ -42,10 +42,9 @@ type Props = {
   // navigation: NativeStackNavigationProp<NavStackParamList,
   //   'Properties' | 'Matching' | 'Favourites',
   //   undefined>
-};
-
-export const leftColumnWidth = 622;
-export const rightColumnWidth = 620;
+}
+export const leftColumnWidth = 662
+export const rightColumnWidth = 662
 
 export default (props: Props) => {
   const [property, setProperty] = useState<Property | undefined>(
@@ -104,211 +103,206 @@ export default (props: Props) => {
 
   if (ploading) return <ActivityIndicator color={variables.colors.yellow} />;
 
-  return (
-    <>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          backgroundColor: isMobile
-            ? variables.colors.greenLight
-            : variables.colors.white,
-          borderTopLeftRadius: isMobile ? 0 : 20,
-          borderTopRightRadius: isMobile ? 0 : 20,
-          width: '100%',
-          maxWidth: 1500,
-          margin: 'auto',
-
-          ...(props.style || {}),
-        }}
-        contentContainerStyle={{
-          flex: 1,
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-around',
-          padding: isMobile
-            ? variables.spacing.xsmall
-            : variables.spacing.large,
-          ...(props.contentContainerStyle || {}),
-        }}>
-        {isMobile && swapRequest && swapRequestStatus === 'received' && (
+  return <>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{
+        backgroundColor: isMobile? variables.colors.greenLight: variables.colors.white,
+        borderTopLeftRadius: isMobile ? 0 : 20,
+        borderTopRightRadius: isMobile ? 0 : 20,    
+        width: '100%',
+        maxWidth: 1380,
+        margin:'auto',  
+        gap:20,
+        marginBottom: 100,
+        ...(props.style || {})
+      }}
+      contentContainerStyle={{
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        paddingVertical: isMobile
+          ? variables.spacing.xsmall
+          : variables.spacing.large,
+        ...(props.contentContainerStyle || {})
+      }}>
+      {isMobile && swapRequest && swapRequestStatus === 'received' && (
+        <View
+          style={{
+            width: '100%',
+            aspectRatio: 373 / 133,
+            backgroundColor: variables.colors.yellow,
+            borderRadius: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 10,
+          }}>
+          <KText style={{ color: variables.colors.grey }}>
+            {swapRequest.from.firstName} has sent you a
+            <KText style={{ color: 'black', marginLeft: 5 }}>
+              Swap Request
+            </KText>
+          </KText>
+          <Gap size="small" vertical />
           <View
             style={{
-              width: '100%',
-              aspectRatio: 373 / 133,
-              backgroundColor: variables.colors.yellow,
-              borderRadius: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 10,
+              flexDirection: 'row',
             }}>
-            <KText style={{color: variables.colors.grey}}>
-              {swapRequest.from.firstName} has sent you a
-              <KText style={{color: 'black', marginLeft: 5}}>
-                Swap Request
-              </KText>
-            </KText>
-            <Gap size="small" vertical />
-            <View
-              style={{
-                flexDirection: 'row',
-              }}>
-              <KButton
-                text="Decline"
-                color="greenLight"
-                icon="close"
-                iconSize="large"
-                loading={loading}
-                onPress={declineSwapRequest}
-              />
-              <Gap size="small" />
-              <KButton
-                text="Accept"
-                color="tertiary"
-                icon="tick"
-                iconSize="small"
-                loading={loading}
-                onPress={acceptSwapRequest}
-              />
-            </View>
+            <KButton
+              text="Decline"
+              color="greenLight"
+              icon="close"
+              iconSize="large"
+              loading={loading}
+              onPress={declineSwapRequest}
+            />
+            <Gap size="small" />
+            <KButton
+              text="Accept"
+              color="tertiary"
+              icon="tick"
+              iconSize="small"
+              loading={loading}
+              onPress={acceptSwapRequest}
+            />
           </View>
-        )}
-        {isMobile && (
-          <>
-            <View
-              style={{
-                width: '100%',
-                backgroundColor: variables.colors.white,
-                padding: 10,
-                borderRadius: 20,
-                marginBottom: 19,
-                display:
-                  property.owner.id === user?.id ||
-                  (swapRequest && swapRequestStatus === 'received')
-                    ? 'none'
-                    : 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingVertical: isMobile ? 10.5 : 0,
-              }}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingVertical: 4,
-                  paddingLeft: 10,
-                }}>
-                <KIcon name="star" size={'medium'} />
-                <KText style={{fontSize: 15}}>4.9</KText>
-              </View>
-              <KButton
-                onPress={() => {}}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  width: 'auto',
-                  paddingHorizontal: 15,
-                  paddingVertical: 10,
-                  backgroundColor: variables.colors.lightCream,
-                  borderRadius: 100,
-                  borderWidth: 0,
-                }}>
-                <KIcon
-                  name="review"
-                  size="medium"
-                  style={{stroke: variables.colors.black, opacity: 0.5}}
-                />
-                <KText style={{marginLeft: 5, fontSize: 15}}>3 Reviews</KText>
-              </KButton>
+        </View>
+      )}
+      {isMobile && (
+        <>
+          <View style={{
+            width: '97%',
+            backgroundColor: variables.colors.white,
+            padding: 10,
+            borderRadius: 20,
+            marginBottom: 19,
+            display:
+              property.owner.id === user?.id
+                || (swapRequest && swapRequestStatus === 'received')
+                ? "none" : 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: isMobile ? 10.5 : 0
+          }}>
+
+            <View style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 4,
+              paddingLeft: 10,
+              
+            }}>
+              <KIcon
+                name='star'
+                size={'medium'}
+              />
+              <KText style={{fontSize:15}}>4.9</KText>
             </View>
-            <PropertyCard
-              key="property"
-              property={property}
-              favourite={
-                user &&
+            <KButton
+              onPress={() => { }}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                width: 'auto',
+                paddingHorizontal: 15,
+                paddingVertical: 10,
+                backgroundColor: variables.colors.lightCream,
+                borderRadius: 100,
+                borderWidth: 0,
+                
+              }}>
+              <KIcon name="review" size="medium" style={{ stroke: variables.colors.black, opacity: 0.5 }} />
+              <KText style={{ marginLeft: 5,fontSize:15 }}>3 Reviews</KText>
+            </KButton>
+          </View>
+          <View style={{width: isMobile ? '97%': '100%'}}>
+
+          <PropertyCard
+            key="property"
+            property={property}
+            favourite={
+              user &&
                 user.favourites &&
                 property &&
                 user.favourites.includes(property.id)
-                  ? true
-                  : false
-              }
-              isDetails={true}
-              photo={`${props.id}/${(images ?? '').split(',')[0]}`}
-              avatar={`${owner.id}/${owner.primaryImage}`}
-              location={`${city}`}
-              swapFor={owner.swapLocations || 'Flexible'}
-              availableDate={{
-                from: owner.dateFrom ? new Date(owner.dateFrom) : null,
-                to: owner.dateTo ? new Date(owner.dateTo) : null,
-              }}
-              style={{
-                marginBottom: 0,
-              }}
-            />
+                ? true
+                : false
+            }
+            isDetails={true}
+            photo={`${props.id}/${(images ?? '').split(',')[0]}`}
+            avatar={`${owner.id}/${owner.primaryImage}`}
+            location={`${city}`}
+            swapFor={owner.swapLocations || 'Flexible'}
+            availableDate={{
+              from: owner.dateFrom ? new Date(owner.dateFrom) : null,
+              to: owner.dateTo ? new Date(owner.dateTo) : null,
+            }}
+            style={{
+              marginBottom:  0,
+            }}
+          />
+          </View>
+          
+        </>
+      )}
+    
+      <View key="leftView" style={{ width: isMobile ? '97%': '100%', maxWidth: leftColumnWidth }}>
+        <GalleryPhoto key="gallery" property={property} />
+        <Gap size="xsmall" vertical />   
+        {!isMobile && (
+          <>
+            <PlaceOwner key="owner" property={property} />     
           </>
         )}
-
-        <View key="leftView" style={{width: '100%', maxWidth: leftColumnWidth}}>
-          <GalleryPhoto key="gallery" property={property} />
-          <Gap size="xsmall" vertical />
-          {!isMobile && (
-            <>
-              <PlaceOwner key="owner" property={property} />
-              <Gap size="medium" vertical />
-            </>
-          )}
-        </View>
-        <View
-          key="rightView"
-          style={{
-            width: '100%',
-            maxWidth: rightColumnWidth,
-            marginLeft: isMobile ? 0 : 20,
-          }}>
-          {!isMobile && (
-            <SwapAvailabilities key="property" property={property} />
-          )}
-          {!isMobile && <Gap size="xsmall" vertical />}
-          {!isMobile && <Gap size="xxsmall" vertical />}
+      </View>
+      <View key="rightView" style={{ width: isMobile ? '97%': '100%', maxWidth: rightColumnWidth, marginLeft: isMobile ? 0 : 20 }}>
+        {!isMobile && (
+          <SwapAvailabilities key="property" property={property} />
+        )}
+        {!isMobile && <Gap size="xsmall" vertical />}
+        {!isMobile && <Gap size="xxsmall" vertical />}
 
           <PropertyInfo key="info" property={property} />
           <Gap size="xsmall" vertical />
           <Gap size="xxsmall" vertical />
 
+        <View
+          key="map"
+          style={{
+            width: '100%',
+            aspectRatio: 620 / 380,
+            borderRadius: 20,
+            height: isMobile ? 300 : '100%',
+            maxHeight: 434,
+            marginBottom: 13,
+            paddingBottom: isMobile? 0 :8
+           
+          }}>
           <View
-            key="map"
             style={{
+              aspectRatio: 620 / 60,
               width: '100%',
-              aspectRatio: 620 / 380,
-              borderRadius: 20,
-              height: isMobile ? 300 : '100%',
-              maxHeight: 434,
-              marginBottom: 13,
-              paddingBottom: isMobile ? 0 : 8,
+              backgroundColor: isMobile? variables.colors.white: variables.colors.greenLight,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              padding: 30,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              justifyContent: 'center',
+              zIndex: 1,
             }}>
-            <View
-              style={{
-                aspectRatio: 620 / 60,
-                width: '100%',
-                backgroundColor: isMobile
-                  ? variables.colors.white
-                  : variables.colors.greenLight,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                padding: 30,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                justifyContent: 'center',
-                zIndex: 1,
-              }}>
-              <KText style={[styles.lightText, {opacity: isMobile ? 0.5 : 1}]}>
-                Neighborhood
-              </KText>
-            </View>
-            {!isMobile && <Gap size="xsmall" vertical />}
+            <KText style={[styles.lightText, {opacity: isMobile ? 0.5 : 1}]}>Neighborhood</KText>
+          </View>
+          {
+            !isMobile &&(
+              <Gap size="xsmall" vertical />
+            )
+          }
 
             <MapView
               lat={approxLat}
@@ -343,13 +337,12 @@ export default (props: Props) => {
       {isCalendarOpen && <CalendarComponent />}
       <Onboarding open={showModalregisterPlaceAtom} />
     </>
-  );
 };
 
 const styles = StyleSheet.create({
   lightText: {
     width: '100%',
-    fontWeight: '500',
+    fontWeight:'500',
     letterSpacing: -0.5,
     textAlign: 'left',
   },

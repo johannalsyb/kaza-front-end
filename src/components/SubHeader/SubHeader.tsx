@@ -19,6 +19,7 @@ const SubHeader = ({style, children = null}: Props) => {
           padding: isMobile ? 14 : 20,
           borderTopRightRadius: isMobile ? 0 : 20,
           borderTopLeftRadius: isMobile ? 0 : 20,
+     
         },
         style,
       ]}>

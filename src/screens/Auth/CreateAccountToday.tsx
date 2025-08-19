@@ -31,7 +31,7 @@ import {showComponentAtom,showModalRegisterPlaceAtom} from '../../atoms';
 import React from 'react'
 import { useSetAtom } from 'jotai'
 import {  } from '../../atoms'
-
+import { useWindowDimensions } from 'react-native';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 import Modal from '../../components/Modal';
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
@@ -67,8 +67,18 @@ export default (props: any) => {
     },
   });
 
-  const [setShowModalComponent] = [useSetAtom(showComponentAtom)];
+  const { width, height } = useWindowDimensions();
+  const calculateFontSize = () => {
+    const baseSize = 70 * width * 0.00069;
+    return Math.min(baseSize, 75); 
+  };
 
+  const calculateLineHeight = () => {
+    const baseSize = 80 * (width * 0.00082);
+    return Math.min(baseSize, 80); 
+  };
+
+  const [setShowModalComponent] = [useSetAtom(showComponentAtom)];
   const createAccount = async (body: FieldValues) => {
     setLoading(true);
     try {
@@ -186,7 +196,7 @@ export default (props: any) => {
             }}>
             <KIcon
               name="KazaSwaplogoblackandyellowVertical"
-              style={{width: 70, height: 104,}}
+              style={{width: 70, height: 100,}}
             />
           </Link>
           <View
@@ -200,16 +210,12 @@ export default (props: any) => {
               alignItems: 'center',
             }}>
             <KText
-              style={{
-                fontSize: 50,
-                maxWidth: 670,
-                margin: 'auto',
-                fontWeight: '600',
-                lineHeight: 60,
-                textAlign: 'center',
-                color: 'white',    
-                overflow: 'hidden'         
-              }}
+              style={[styles.responsivetext, {
+                 fontSize: calculateFontSize(),
+                  lineHeight: calculateLineHeight(),
+              }]
+                       
+              }
               numberOfLines={2}
               >
               Swap your place, <br /> explore the world
@@ -229,7 +235,7 @@ export default (props: any) => {
         <View style={styles.containerLogin}>
           <KText
             style={{
-              fontSize: 35,
+              fontSize: 31,
               fontWeight: '600',
               lineHeight: 31,
               textAlign: 'center',
@@ -251,7 +257,7 @@ export default (props: any) => {
             borderRadius:isMobile ? 0 :30 ,
             width: isMobile ? '100%' : undefined,
             marginTop: isMobile ? 0 : 30,
-            marginRight: isMobile ? 0 : 50,
+            marginRight: isMobile ? 0 : 47,
             paddingBottom: isMobile ? 10 : 50,
             paddingTop: isMobile ? 30 : '2%',
             paddingLeft: isMobile ? 5: '3%',
@@ -281,7 +287,7 @@ export default (props: any) => {
                 style={{
                   fontSize: 35,
                   fontWeight: '600',
-                  marginBottom: 56,
+                  marginBottom: 54,
                   lineHeight: 36,
                   textAlign: 'center',
                   maxWidth: 320,
@@ -525,10 +531,10 @@ export default (props: any) => {
         </View>
       </ScrollView>
       {!isMobile && (
-        <View style={{position: 'absolute', top: 20, right: 20}}>
+        <View style={{position: 'absolute', zIndex: 9933, top: 20, right: 20,backgroundColor: variables.colors.greenLight, padding: 8, borderRadius: 30}}>
           <KIcon
-            name="closeWithBorder"
-            size={'large'}
+            name="minusBtn"
+            size={'medium'}
             onPress={() => {
               props.navigation.navigate('Home');
             }}
@@ -569,6 +575,15 @@ const styles = StyleSheet.create({
         // flex: 1,
         margin: 'auto',
         // height: "100%",
+    },
+    responsivetext: {
+       maxWidth: '95%',
+       margin: 'auto',
+       fontWeight: '600',
+       textAlign: 'center',
+       fontStyle: 'normal',
+       color: variables.colors.white,    
+       overflow: 'hidden' 
     },
   title: {
     fontSize: 30,

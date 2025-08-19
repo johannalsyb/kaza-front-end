@@ -5,6 +5,7 @@ import {
   View,
   Animated,
   ImageBackground,
+  useWindowDimensions,
 } from 'react-native'
 
 import useAuthentication from '../../hooks/useAuthentication'
@@ -35,7 +36,17 @@ export default ({ navigation }: Props) => {
   const [creds, setCreds] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [needsPhoneVerification, setNeedsPhoneVerification] = useState(false)
+ const { width, height } = useWindowDimensions();
+    
+  const calculateFontSize = () => {
+    const baseSize = 70 * width * 0.00069;
+    return Math.min(baseSize, 75); 
+  };
 
+  const calculateLineHeight = () => {
+    const baseSize = 80 * (width * 0.00082);
+    return Math.min(baseSize, 80); 
+  };
 
   const login = async () => {
     try {
@@ -110,7 +121,7 @@ export default ({ navigation }: Props) => {
             }}>
             <KIcon
               name="KazaSwaplogoblackandyellowVertical"
-              style={{width: 70, height: 104,}}
+              style={{width: 70, height: 100,}}
             />
           </Link>
           <View
@@ -124,16 +135,12 @@ export default ({ navigation }: Props) => {
               alignItems: 'center',
             }}>
             <KText
-              style={{
-                fontSize: 50,
-                maxWidth: 670,
-                margin: 'auto',
-                fontWeight: '600',
-                lineHeight: 60,
-                textAlign: 'center',
-                color: 'white',    
-                overflow: 'hidden'         
-              }}
+              style={[styles.responsivetext, {
+                 fontSize: calculateFontSize(),
+                  lineHeight: calculateLineHeight(),
+              }]
+                       
+              }
               numberOfLines={2}
               >
               Swap your place, <br /> explore the world
@@ -160,9 +167,9 @@ export default ({ navigation }: Props) => {
             borderRadius:isMobile ? 0 :30 ,
             width: isMobile ? '100%' : '100%',
             marginTop: isMobile ? 0 : 30,
-            marginRight: isMobile ? 0 : 50,
+            marginRight: isMobile ? 0 : 47,
             paddingBottom: isMobile ? 10 : 50,
-            paddingTop: isMobile ? 30 : '2%',
+            paddingTop: isMobile ? 0 : '4%',
             paddingLeft: isMobile ? 5: '3%',
             paddingRight: isMobile ? 5 : '3%',
             margin: isMobile ? 'auto' : undefined,
@@ -171,8 +178,8 @@ export default ({ navigation }: Props) => {
             zIndex: 33334
          }]}
         >
-        <View style={{ width: '100%', maxWidth: 400 }}>
-      <KText style={[styles.title, {textAlign: 'center'}]}>Sign In</KText>
+        <View style={{ width: '100%', maxWidth: 320 }}>
+      <KText style={[styles.title, {fontSize: isMobile ? 25 : 35, marginBottom: isMobile ? 30 : 40,}]}>Sign In</KText>
           <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Email"
@@ -181,13 +188,13 @@ export default ({ navigation }: Props) => {
               inputStyles={{
                 paddingTop: isMobile ? 11 : 9,
                 paddingBottom: isMobile ? 15 : 12,
-                textAlign: 'center',
+                textAlign: 'center',            
               }}
             />
           </FormField>
         </View>
 
-        <View style={{ width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 320 }}>
           <FormField labelAlign="center" label="Password" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Password"
@@ -210,7 +217,7 @@ export default ({ navigation }: Props) => {
             />
           </FormField>
         </View>
-        <View style={{ width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 320 }}>
           <KText
             style={[styles.forgotPassword, isMobile && { margin: 0, marginBottom: 25 }]}
             onPress={() => navigation.navigate('ForgotPassword')}>
@@ -219,11 +226,11 @@ export default ({ navigation }: Props) => {
           </KText>
         </View>
         {/* Sign In Button */}
-        <View style={{ width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 320 }}>
           <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
         </View>
          {/* Divider + Google Login */}
-        <View style={{ width: '100%', maxWidth: 400 }}>
+        <View style={{ width: '100%', maxWidth: 320 }}>
           {!isMobile && (
               <KText style={styles.dividerContainer}>
                 <View style={styles.divider} />
@@ -247,8 +254,8 @@ export default ({ navigation }: Props) => {
       </View>
 
       {!isMobile && (
-        <View style={{ position: 'absolute', top: 20, right: 20 }}>
-          <KIcon name="closeWithBorder" size={'large'} onPress={() => navigation.navigate('Home')} />
+        <View style={{ position: 'absolute', top: 20, right: 20, backgroundColor: variables.colors.greenLight, padding: 11, borderRadius: 30 ,opacity:1 }}>
+          <KIcon name="closeWithBorder" size={'medium'} onPress={() => navigation.navigate('Home')} />
         </View>
       )}
     </ScrollView>
@@ -277,10 +284,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 35,
     fontWeight: '500',
-    marginBottom: 24,
+    lineHeight: 24,
+    letterSpacing: -0.5,
+   
+    textAlign: 'center'
   },
+    responsivetext: {
+                maxWidth: '95%',
+                margin: 'auto',
+                fontWeight: '600',
+                textAlign: 'center',
+                fontStyle: 'normal',
+                color: variables.colors.white,    
+                overflow: 'hidden' 
+    },
   forgotPassword: {
     display: 'flex',
     flexDirection: 'row',

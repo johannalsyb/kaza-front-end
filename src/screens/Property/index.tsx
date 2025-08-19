@@ -52,13 +52,14 @@ export default ({ route, navigation }: Props) => {
         <SlideUpView delay={0} style={{ flex: 1 }}>
           <View style={{ backgroundColor: 'black', zIndex: 1 }}>
             <SubHeader>
+            
               <PropertyHead
                 property={property}
                 onBackPress={() =>
                   navigation.canGoBack()
                     ? navigation.goBack()
                     : navigation.navigate('Home')
-                }
+                }              
               />
             </SubHeader>
           </View>

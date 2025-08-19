@@ -259,6 +259,7 @@ export default (
   if (hidden) return null
 
   return (
+    <View style={{ backgroundColor: isMobile ? variables.colors.greenLight : 'black',}}>
     <View
       style={{
         display: 'flex',
@@ -267,12 +268,13 @@ export default (
         alignItems: 'center',
         width: '100%',
         backgroundColor: isMobile ? variables.colors.greenLight : 'black',
-        paddingHorizontal: isMobile ? 14 : 20,
+        paddingHorizontal: isMobile ? 14 : 5,
         paddingVertical: isMobile ? 12 : 20,
         borderEndEndRadius: isMobile ? 30 : 0,
         borderEndStartRadius: isMobile ? 30 : 0,
+        maxWidth: isMobile ? '100%' : '97%',
+        margin:'auto'
       }}>
-
       {isMobile && overlay && (!user || !isAdmin) && <View style={{
         width: "100%",
         height: "100%",
@@ -333,7 +335,7 @@ export default (
             <View style={{ flex: .5 }}>
               <KIcon
                 name="logo"
-                width={130}
+                width={111}
                 height={40}
                 onPress={() => {
                   props.navigation.navigate('Home')
@@ -482,6 +484,7 @@ export default (
           {notificationsView()}
         </>
       )}
+      </View>
     </View>
   )
 }

@@ -50,6 +50,7 @@ const SlideUpView = ({ children, delay = 0, duration = 500, style }: Props) => {
         {
           transform: [{ translateY }],
           opacity,
+         
         },
         style,
       ]}

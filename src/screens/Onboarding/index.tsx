@@ -344,7 +344,7 @@ export default (props: Props) => {
                 onPress={() => {
                   Linking.openURL('/')
                 }}>
-                <KIcon name="KazaSwaplogoblackandyellowVertical" size={70} />
+                <KIcon name="KazaSwaplogoblackandyellowVertical" style={{width: 70, height: 104,}} />
               </Pressable>
                 )
               }

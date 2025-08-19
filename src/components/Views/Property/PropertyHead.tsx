@@ -58,18 +58,19 @@ export default ({ property, onBackPress }: Props) => {
   }, [property])
 
   return (
-    <>
+    <View style={{width: '100%', maxWidth: isMobile ? '100%': 1380, margin: 'auto', flexDirection: 'row', justifyContent: 'space-between'}}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+         
         }}>
         <Pressable style={[
           styles.lightCircle,
           {
             backgroundColor: 'white',
             borderColor: isMobile ? 'white' : "black",
-            marginLeft: isMobile ? 5 : 0
+            marginLeft: isMobile ? 0 : 0
           }
         ]} onPress={onBackPress}>
           <KIcon name="back" size="large" />
@@ -86,9 +87,7 @@ export default ({ property, onBackPress }: Props) => {
             <Gap size="small" />
             {/* <KText>{property.owner.firstName}</KText> */}
             {/* <Gap size="small" /> */}
-            <KIcon name="pin" size="medium" style={{
-              opacity: 0.4,
-            }} />
+            
             <KText
               style={{
               }}>
@@ -115,6 +114,7 @@ export default ({ property, onBackPress }: Props) => {
         style={{
           flexDirection: 'row',
           alignItems: isMobile ? 'flex-end' : 'center',
+       
         }}>
         <Pressable
           style={[
@@ -140,7 +140,7 @@ export default ({ property, onBackPress }: Props) => {
             {
               backgroundColor: variables.colors.yellow,
               borderColor: variables.colors.yellow,
-              marginRight: isMobile ? 5 : 0
+              marginRight: isMobile ? 0 : 0
             },
           ]}
           onPress={() => (user ? toggleFav() : setShowSignIn(true))}>
@@ -154,9 +154,9 @@ export default ({ property, onBackPress }: Props) => {
           />
         </Pressable>
         {!isMobile && <Gap size="small" />}
-        {!isMobile && <SwapRequestButton property={property} />}
+        {!isMobile && <SwapRequestButton property={property} hideIcon={true}/>}
       </View>
-    </>
+    </View>
   )
 }
 

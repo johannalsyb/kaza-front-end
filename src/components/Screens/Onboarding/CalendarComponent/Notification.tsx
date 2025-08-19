@@ -102,9 +102,6 @@ const Notification = (props: NotificationProps) => {
       <View style={styles.container}>
         <KIcon name="bell" size={29} style={styles.icon} />
         <View style={{ flex: 1 }}>
-          <KText style={styles.title}>
-            NOTE!
-          </KText>
           <KText style={styles.text}>
             You will get
             <KText style={styles.credits}> {culculatedCredits} credits</KText> if someone stays at your
@@ -139,15 +136,11 @@ const styles = StyleSheet.create({
     padding: 7,
     backgroundColor: variables.colors.white,
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 15,
-    lineHeight: 20
-  },
+ 
   text: {
     fontSize: 12,
     lineHeight: 16,
-    maxWidth: 300
+    maxWidth: 300,
   },
   credits: {
     fontWeight: 'bold',
