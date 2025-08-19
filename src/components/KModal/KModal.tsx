@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
+    zIndex: 1,
   },
   modalView: {
     backgroundColor: yellow,
@@ -99,6 +100,9 @@ const styles = StyleSheet.create({
     margin: 'auto',
     width: '90%',
     maxWidth: 480,
+    zIndex: 2,
+    // Elevation for Android to ensure the modal content sits above the overlay
+    elevation: 10,
   },
   close: {
     position: 'absolute',

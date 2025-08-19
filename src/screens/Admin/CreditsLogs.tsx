@@ -87,41 +87,57 @@ export default function LogsScreen() {
 	const sortedLogs = [...logs].sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	)
-	const handleAddCredits = () => {
+	const handleAddCredits = async() => {
 		const amount = Number(credits)
 		if (!selectedUser || Number.isNaN(amount) || amount <= 0) {
 			Alert.alert("Error", "Please select a user and enter a valid positive number of credits")
 			return
 		}
 
-		Alert.alert(
-			"Confirm",
-			`Are you sure you want to give ${amount} credits to ${selectedUser}?`,
-			[
-				{ text: "Cancel", style: "cancel" },
-				{
-					text: "Yes",
-					onPress: async () => {
-						try {
-							// Close immediately
-							setModalVisible(false)
+		// Close immediately
+		try {
+			setModalVisible(false)
 							await admin.credits.send({
 								userId: selectedUser,
 								credits: amount
 							})
-							toastSuccess(`Successfully sent ${amount} credits`)
-							setCredits("")
-							setSelectedUser("")
-							setSelectedUserTotalCredits("")
-							loadLogs()
-						} catch (err) {
-							console.error("Failed to send credits:", err)
-							toastError("Failed to send credits")
-						}
-					}
-				}
-			]
-		)
+			toastSuccess(`Successfully sent ${amount} credits`)
+			setCredits("")
+			setSelectedUser("")
+			setSelectedUserTotalCredits("")
+			loadLogs()
+		} catch (error) {
+			toastError(error instanceof Error ? error.message : "Credits cannot be greater then 99")
+		}
+							
+		// Alert.alert(
+		// 	"Confirm",
+		// 	`Are you sure you want to give ${amount} credits to ${selectedUser}?`,
+		// 	[
+		// 		{ text: "Cancel", style: "cancel" },
+		// 		{
+		// 			text: "Yes",
+		// 			onPress: async () => {
+		// 				try {
+							// // Close immediately
+							// setModalVisible(false)
+							// await admin.credits.send({
+							// 	userId: selectedUser,
+							// 	credits: amount
+							// })
+		// 					toastSuccess(`Successfully sent ${amount} credits`)
+		// 					setCredits("")
+		// 					setSelectedUser("")
+		// 					setSelectedUserTotalCredits("")
+		// 					loadLogs()
+		// 				} catch (err) {
+		// 					console.error("Failed to send credits:", err)
+		// 					toastError("Failed to send credits")
+		// 				}
+		// 			}
+		// 		}
+		// 	]
+		// )
 	}
 
 	if (loading) {
