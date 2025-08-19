@@ -27,6 +27,7 @@ export const showComponentAtom = atom<ReactNode | null>(null)
 export const showOverlayAtom = atom<false | string>(false)
 
 export const showModalRegisterPlaceAtom = atom<boolean>(false)
+export const showModalCalendarAtom = atom<boolean>(false)
 export const showAlert = atom<IKAlert>({} as IKAlert)
 
 export const avilebleDatesAtom = atom<any>([])

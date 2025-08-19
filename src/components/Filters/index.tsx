@@ -240,7 +240,7 @@ const Filters = forwardRef<Handle, Props>(({
   }
 
   return (
-    <SubHeader style={{ paddingVertical: 18, paddingHorizontal: isMobile ? 14 : 30 }}>
+    <SubHeader style={{ paddingVertical: 18, paddingHorizontal: isMobile ? 14 : 30}}>
       <View style={{ flexDirection: 'row', display: "flex", flex: isMobile ? 1 : undefined }}>
         {!isMobile ?
           <KTextInput
