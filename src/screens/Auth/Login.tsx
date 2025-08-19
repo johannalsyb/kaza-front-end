@@ -4,6 +4,7 @@ import {
   StyleSheet,
   View,
   Animated,
+  ImageBackground,
 } from 'react-native'
 
 import useAuthentication from '../../hooks/useAuthentication'
@@ -21,6 +22,7 @@ import LeftSide from '../../components/Screens/Auth/LeftSide'
 import { showComponentAtom } from '../../atoms'
 import { useSetAtom } from 'jotai'
 import VerifyPhone from '../../components/VerifyPhone'
+import { Link } from '@react-navigation/native'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>
 
@@ -71,16 +73,106 @@ export default ({ navigation }: Props) => {
   }
 
   return (
+    <View style={{ flex: 1, backgroundColor: isMobile ? variables.colors.white : 'transparent' }}>
+  <ImageBackground
+         source={!isMobile && require('../../components/KIcon/icons/onboardingBg.jpg')}
+         style={{
+         display: 'flex',
+         justifyContent: 'center',
+        //  alignItems: 'center',
+         flexDirection: 'column',
+         width: '100%',     
+         height: '100%',
+         zIndex: 1,
+         flex: isMobile ? undefined : 1,
+         overflow: 'hidden', 
+           }}
+           resizeMode="cover">
+
     <ScrollView
       contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-      <View style={{  width: isMobile?'100%':'50%' }}>
-        <LeftSide title='Sign In' />
+    
+{
+        !isMobile && (
+          <View 
+          style={{width: isMobile?'100%':'50%'}}
+          >
+          <Link
+            to={'/'}
+            style={{
+              position: 'absolute',
+              width: '100%',
+              top: 270,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <KIcon
+              name="KazaSwaplogoblackandyellowVertical"
+              style={{width: 70, height: 104,}}
+            />
+          </Link>
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              left: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <KText
+              style={{
+                fontSize: 50,
+                maxWidth: 670,
+                margin: 'auto',
+                fontWeight: '600',
+                lineHeight: 60,
+                textAlign: 'center',
+                color: 'white',    
+                overflow: 'hidden'         
+              }}
+              numberOfLines={2}
+              >
+              Swap your place, <br /> explore the world
+            </KText>
+          </View>
+        </View>
+        )   
+      }
+      {
+       isMobile && (
+      <View style={{width: isMobile?'100%':'50%'}}>
+        <LeftSide title='Sign In' />  
       </View>
+        )
+      }
+      
       <View
         style={[styles.containerLogin,
-        isMobile && { justifyContent: 'flex-start', maxWidth: '100%', paddingHorizontal: '11%' }]}
+        { justifyContent: 'flex-start',  paddingHorizontal: '11%',
+            backgroundColor:  variables.colors.white, 
+            marginBottom: isMobile ? 30 : 40,
+            position: 'relative',
+            maxWidth: isMobile ? '100%' :  540,
+            borderRadius:isMobile ? 0 :30 ,
+            width: isMobile ? '100%' : '100%',
+            marginTop: isMobile ? 0 : 30,
+            marginRight: isMobile ? 0 : 50,
+            paddingBottom: isMobile ? 10 : 50,
+            paddingTop: isMobile ? 30 : '2%',
+            paddingLeft: isMobile ? 5: '3%',
+            paddingRight: isMobile ? 5 : '3%',
+            margin: isMobile ? 'auto' : undefined,
+            borderTopStartRadius: isMobile ? 20 : undefined,
+            borderTopRightRadius: isMobile ? 20 : undefined,
+            zIndex: 33334
+         }]}
         >
         <View style={{ width: '100%', maxWidth: 400 }}>
+      <KText style={[styles.title, {textAlign: 'center'}]}>Sign In</KText>
           <FormField labelAlign="center" label="Email" gapAfterChildren={false} gapBeforeChildren={false}>
             <KTextInput
               placeholder="Email"
@@ -130,7 +222,6 @@ export default ({ navigation }: Props) => {
         <View style={{ width: '100%', maxWidth: 400 }}>
           <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
         </View>
-
          {/* Divider + Google Login */}
         <View style={{ width: '100%', maxWidth: 400 }}>
           {!isMobile && (
@@ -161,6 +252,8 @@ export default ({ navigation }: Props) => {
         </View>
       )}
     </ScrollView>
+           </ImageBackground>
+    </View>
   )
 }
 
@@ -176,20 +269,16 @@ const styles = StyleSheet.create({
   },
   containerLogin: {
     display: 'flex',
-  
- margin:'auto',
+    margin:'auto',
     justifyContent: 'space-between',
     paddingHorizontal: 6,
     flexDirection: 'column',
     alignItems: 'center',
-   
     flex: 1,
-    
-    width: '100%',
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '500',
     marginBottom: 24,
   },
   forgotPassword: {

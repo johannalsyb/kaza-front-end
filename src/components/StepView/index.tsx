@@ -22,7 +22,8 @@ export default (props:Props) => {
                 width: `${95/props.number}%`,
                 height,
                 borderRadius: 50,
-                backgroundColor: props.current === i+1 ? 'black' : (props.current > i+1 ? 'green' : '#ddd')
+                backgroundColor: props.current === i+1 ? 'white' : (props.current > i+1 ? 'white' : '#FFFFFF'),
+                opacity: ( props.current > i+1 || props.current === i+1)? 1 : 0.2
             }}>{""}</View>
         })}
     </View>

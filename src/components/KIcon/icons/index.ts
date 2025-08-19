@@ -24,6 +24,8 @@ export {ReactComponent as KazaSwapBlackYellow} from './KazaSwap_logo_black and y
 export {ReactComponent as KazaSwapBlackWhiteYellow} from './KazaSwap_black_and_white_and_yellow.svg'; // => Beta by default
 export {ReactComponent as KazaSwapLogoBlackYellow} from './KazaSwap_logo_black_and_yellow.svg'; // => Beta by default
 export {ReactComponent as KazaSwapLogoBlackYellowNew} from './KazaSwap_black_and_yellow.svg'; // => Beta by default
+export {ReactComponent as KazaSwaplogoblackandyellowVertical} from './KazaSwap_logo_black and yellowVertical.svg'; // => Beta by default
+
 
 // export {ReactComponent as logoText2Beta} from './logoText2Beta.svg';
 

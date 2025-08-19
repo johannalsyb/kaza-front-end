@@ -26,7 +26,7 @@ import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButt
 import LeftSide from '../../components/Screens/Auth/LeftSide';
 import VerifyPhone from '../../components/VerifyPhone';
 import {toastSuccess} from '../../components/Toast/Toast';
-
+import {Link} from '@react-navigation/native';
 import {showComponentAtom,showModalRegisterPlaceAtom} from '../../atoms';
 import React from 'react'
 import { useSetAtom } from 'jotai'
@@ -52,7 +52,6 @@ export default (props: any) => {
   useEffect(() => {
     authentication.check();
   }, []);
-
   const {
     handleSubmit,
     control,
@@ -141,6 +140,23 @@ export default (props: any) => {
     }
   };
   return (
+    <View 
+    style={{ flex: 1, backgroundColor: isMobile ? variables.colors.white : 'transparent' }}>
+      
+     <ImageBackground
+         source={!isMobile && require('../../components/KIcon/icons/onboardingBg.jpg')}
+         style={{
+         display: 'flex',
+         justifyContent: 'center',
+         alignItems: 'center',
+         flexDirection: 'column',
+         width: '100%',     
+         height: '100%',
+         zIndex: 1,
+         flex: isMobile ? undefined : 1,
+         overflow: 'hidden', 
+           }}
+           resizeMode="cover">
     <View
       style={{
         display: 'flex',
@@ -149,20 +165,71 @@ export default (props: any) => {
         height: '100%',
         flex: 1,
         position: 'relative',
-width:'100%',
+        width:'100%',
         paddingHorizontal: isMobile ? 0 : 0,
       }}>
-      {/* title="Join now!" */}
+      {
+        !isMobile && (
+          <View 
+          style={{width: isMobile?'100%':'50%'}}
+          >
+          <Link
+            to={'/'}
+            style={{
+              position: 'absolute',
+              width: '100%',
+              top: 270,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <KIcon
+              name="KazaSwaplogoblackandyellowVertical"
+              style={{width: 70, height: 104,}}
+            />
+          </Link>
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              left: 4,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <KText
+              style={{
+                fontSize: 50,
+                maxWidth: 670,
+                margin: 'auto',
+                fontWeight: '600',
+                lineHeight: 60,
+                textAlign: 'center',
+                color: 'white',    
+                overflow: 'hidden'         
+              }}
+              numberOfLines={2}
+              >
+              Swap your place, <br /> explore the world
+            </KText>
+          </View>
+        </View>
+        )   
+      }
+      {
+       isMobile && (
       <View style={{width: isMobile?'100%':'50%'}}>
-
       <LeftSide style={styles.leftSide} />
       </View>
-
+        )
+      }
       {isMobile ? (
         <View style={styles.containerLogin}>
           <KText
             style={{
-              fontSize: 31,
+              fontSize: 35,
               fontWeight: '600',
               lineHeight: 31,
               textAlign: 'center',
@@ -177,18 +244,30 @@ width:'100%',
 
       <ScrollView
         contentContainerStyle={{padding: 0}}
-        style={{
-          width: '100%',
-          marginBottom: isMobile ? 30 : 40,
-          marginTop: 20,
-        }}>
+        style={[styles.containerRightSide,{
+            backgroundColor:  variables.colors.white, 
+            marginBottom: isMobile ? 30 : 40,
+            maxWidth: isMobile ? '100%' :  654,
+            borderRadius:isMobile ? 0 :30 ,
+            width: isMobile ? '100%' : undefined,
+            marginTop: isMobile ? 0 : 30,
+            marginRight: isMobile ? 0 : 50,
+            paddingBottom: isMobile ? 10 : 50,
+            paddingTop: isMobile ? 30 : '2%',
+            paddingLeft: isMobile ? 5: '3%',
+            paddingRight: isMobile ? 5 : '3%',
+            margin: isMobile ? 'auto' : undefined,
+            borderTopStartRadius: isMobile ? 20 : undefined,
+            borderTopRightRadius: isMobile ? 20 : undefined,
+        }]
+        }>
         <View
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: isMobile ? 'flex-start' : 'space-between',
             alignItems: 'center',
-            height: 900,
+            height: isMobile ? '100%': 900,
             margin: 'auto',
             flex: 1,
             width: '100%',
@@ -208,7 +287,7 @@ width:'100%',
                   maxWidth: 320,
                   letterSpacing: -0.5,
                 }}>
-                Create your account today!
+                Join our <br /> community 
               </KText>
             </>
           )}
@@ -259,7 +338,6 @@ width:'100%',
 
             <FormField
               labelAlign="left"
-              
               label={isMobile ? undefined : 'Surname'}
               gapBeforeChildren={false}
               gapAfterChildren={false}
@@ -283,7 +361,7 @@ width:'100%',
                       textAlign: 'left',
                       paddingLeft: 20,
                       paddingVertical: 6,
-                  marginBottom:isMobile? 2.2:4.8,
+                      marginBottom:isMobile? 2.2:4.8,
                       height: isMobile ? 45 : 40,
                     }}
                     error={
@@ -427,7 +505,6 @@ width:'100%',
               text="Create account"
               style={{
                 width: '100%',
-
                 marginTop: isMobile ? 9 : 10,
                 borderColor: `1px solid ${variables.colors.borderGray}`,
               }}
@@ -438,7 +515,6 @@ width:'100%',
               disabled={loading}
               loading={loading}
             />
-            
             <KText style={styles.dividerContainer}>
               <View style={styles.divider} />
               <span style={{padding: '0 22px'}}>or</span>
@@ -461,6 +537,8 @@ width:'100%',
       )}
   
     </View>
+           </ImageBackground> 
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -476,15 +554,22 @@ const styles = StyleSheet.create({
   containerLogin: {
     display: 'flex',
     justifyContent: 'space-between',
-
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-
     flex: 1,
     maxWidth: 400,
     width: '100%',
   },
+    containerRightSide: {
+        // display: "flex",
+        // flexDirection: "column",
+        // justifyContent: "center",
+        // alignItems: "center",
+        // flex: 1,
+        margin: 'auto',
+        // height: "100%",
+    },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
