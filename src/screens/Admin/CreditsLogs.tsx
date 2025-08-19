@@ -186,7 +186,7 @@ export default function LogsScreen() {
 			/>
 
 			<KModal visible={modalVisible} setVisibility={setModalVisible}>
-				<View style={{ padding: 20, width: "100%" }}>
+				<View style={{ padding: 20, width: "100%", backgroundColor: "white", borderRadius: 12 }}>
 					<Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>Add Credits</Text>
 
 					{/* User Dropdown */}
@@ -201,7 +201,7 @@ export default function LogsScreen() {
 								setSelectedUser(picked?.id || "")
 							}}
 							showSearch={true}
-							dropdownStyle={{ width: '100%' }}
+							dropdownStyle={{ width: "100%", maxHeight: 300 }}
 						/>
 					)}
 
