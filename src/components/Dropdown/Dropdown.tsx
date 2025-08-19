@@ -1,10 +1,10 @@
-import React, {CSSProperties, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Pressable, StyleSheet, Switch, TextInput, TextStyle, View, ViewStyle} from 'react-native';
+import React, { CSSProperties, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Switch, TextInput, TextStyle, View, ViewStyle, ScrollView } from 'react-native';
 import variables from '../../styles/variables';
-import KIcon, {IconName} from '../KIcon/KIcon';
+import KIcon, { IconName } from '../KIcon/KIcon';
 import KText from '../KText';
 import useIsMobile from '../../hooks/useIsMobile';
-import {useCloseFromOutside} from '../../hooks/useCloseFromOutside';
+import { useCloseFromOutside } from '../../hooks/useCloseFromOutside';
 import KTextInput from '../Form/KTextInput/KTextInput';
 
 type Props = {
@@ -23,13 +23,14 @@ type Props = {
   iconStyle?: CSSProperties
   selectedTextManipulationFunction?: (item: string) => string
   showSearch?: boolean
+  emptyInitially?: boolean
 };
 
 export type DropdownHandle = {
   setSelectedItems: (items: string[]) => void;
 }
 
-const Dropdown = React.forwardRef<DropdownHandle, Props>(({
+const Dropdown = React.forwardRef<DropdownHandle, Props>(({ 
   style,
   leftIcon,
   leftIconStyle = {},
@@ -44,13 +45,16 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
   iconStyle = {},
   selectedTextManipulationFunction = (i) => i,
   onChange,
-  showSearch = false
+  showSearch = false,
+  emptyInitially = false
 }, ref) => {
-  const {isMobile} = useIsMobile();
+  const { isMobile } = useIsMobile();
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [itemHoveredIndex, setItemHoveredIndex] = useState<number>(-1);
   const [search, setSearch] = useState<string>('');
-  const sItems = multiple ? items.map((i, ii) => selectedIndexes[ii] && i).filter(t => !!t) : [items[selectedIndex] || items[0]]
+  const sItems = multiple
+    ? items.map((i, ii) => selectedIndexes[ii] && i).filter(t => !!t)
+    : (emptyInitially ? [] : [items[selectedIndex] || items[0]].filter(Boolean))
 
   const [selectedItems, setSelectedItems] = useState<string[]>(sItems);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -79,6 +83,7 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
         styles.container,
         {
           backgroundColor: isHovered ? '#232527' : variables.colors.black,
+          zIndex: isDropdownOpen ? 1000 : 0,
         },
         style,
       ]}>
@@ -98,10 +103,10 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
         style={[{
           color: variables.colors.white,
         }, textStyle]}>
-        {selectedItems.length === 0 ? 'None' : (selectedItems.length === items.length ? 
+        {selectedItems.length === 0 ? 'Select' : (selectedItems.length === items.length ?
           "Any" : (selectedItems.length > 1
-          ? `${selectedItems.length} selected`
-          : selectedTextManipulationFunction(capitalize && selectedItems[0] ? selectedItems[0].capitalize() : selectedItems[0])))}
+            ? `${selectedItems.length} selected`
+            : selectedTextManipulationFunction(capitalize && selectedItems[0] ? selectedItems[0].capitalize() : selectedItems[0])))}
       </KText>
       {isDropdownOpen && (
         <View style={[
@@ -112,21 +117,22 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
             editable={true}
             ref={searchRef}
             placeholder="Type the country..."
-            style={{height: 44, marginLeft: 10, marginRight: 10,
+            style={{
+              height: 44, marginLeft: 10, marginRight: 10,
               //@ts-ignore
               outlineWidth: 0
             }}
             onChangeText={t => setSearch(t)}
             selectTextOnFocus={true}
             onLayout={e => searchRef.current?.focus()}
-            inputStyles={{marginBottom: 10}}
-            onKeyPress={({nativeEvent}) => {
+            inputStyles={{ marginBottom: 10 }}
+            onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === 'Enter') {
                 if (itemHoveredIndex > -1) {
-                  if(multiple) {
+                  if (multiple) {
                     if (selectedItems.includes(items[itemHoveredIndex])) {
                       const narr = selectedItems.filter((i) => i !== items[itemHoveredIndex])
-                      if(narr.length >= multipleMinimum) {
+                      if (narr.length >= multipleMinimum) {
                         setSelectedItems(narr);
                       }
                     } else {
@@ -137,55 +143,68 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
                   }
                 }
                 setIsDropdownOpen(false);
-              }else if(nativeEvent.key === 'Escape') {
+              } else if (nativeEvent.key === 'Escape') {
                 setIsDropdownOpen(false);
-              } else if(nativeEvent.key === 'ArrowDown') {
+              } else if (nativeEvent.key === 'ArrowDown') {
                 setItemHoveredIndex(itemHoveredIndex + 1 > items.length - 1 ? itemHoveredIndex : itemHoveredIndex + 1)
-              } else if(nativeEvent.key === 'ArrowUp') {
+              } else if (nativeEvent.key === 'ArrowUp') {
                 setItemHoveredIndex(itemHoveredIndex - 1 < 0 ? itemHoveredIndex : itemHoveredIndex - 1)
               }
             }}
           />}
-          {items.filter(i => search.length ? i.toLowerCase().includes(search.toLowerCase()) : true).map((item, i) => (
-            <Pressable
-              key={`dropdown-item-${i}`}
-              onHoverIn={() => setItemHoveredIndex(i)}
-              onHoverOut={() => setItemHoveredIndex(-1)}
-              style={{
-                padding: 15,
-                borderRadius: 30,
-                backgroundColor:
-                  itemHoveredIndex === i
-                    ? variables.colors.yellow
-                    : 'transparent',
-              }}
-              onPress={() => {
-                if(multiple) {
-                  if (selectedItems.includes(item)) {
-                    const narr = selectedItems.filter((i) => i !== item)
-                    if(narr.length >= multipleMinimum) {
-                      setSelectedItems(narr);
+          <ScrollView style={{ maxHeight: 300 }}>
+            {items
+              .filter((i) =>
+                search.length ? i.toLowerCase().includes(search.toLowerCase()) : true
+              )
+              .map((item, i) => (
+                <Pressable
+                  key={`dropdown-item-${i}`}
+                  onHoverIn={() => setItemHoveredIndex(i)}
+                  onHoverOut={() => setItemHoveredIndex(-1)}
+                  style={{
+                    padding: 15,
+                    borderRadius: 30,
+                    backgroundColor:
+                      itemHoveredIndex === i
+                        ? variables.colors.yellow
+                        : "transparent",
+                  }}
+                  onPress={() => {
+                    if (multiple) {
+                      if (selectedItems.includes(item)) {
+                        const narr = selectedItems.filter((i) => i !== item);
+                        if (narr.length >= multipleMinimum) {
+                          setSelectedItems(narr);
+                        }
+                      } else {
+                        setSelectedItems([...new Set([...selectedItems, item])]);
+                      }
+                    } else {
+                      setSelectedItems([item]);
                     }
-                  } else {
-                    setSelectedItems([...new Set([...selectedItems, item])]);
-                  }
-                } else {
-                  setSelectedItems([item]);
-                }
-                setIsDropdownOpen(false);
-              }}>
-              <KText style={{
-                color: selectedItems.includes(item) || !multiple ? variables.colors.black : variables.colors.grey,
-              }}>{capitalize ? item.capitalize() : item}
-              </KText>
-            </Pressable>
-          ))}
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  <KText
+                    style={{
+                      color:
+                        selectedItems.includes(item) || !multiple
+                          ? variables.colors.black
+                          : variables.colors.grey,
+                    }}
+                  >
+                    {capitalize ? item.capitalize() : item}
+                  </KText>
+                </Pressable>
+              ))}
+          </ScrollView>
         </View>
       )}
       <KIcon
         name="arrowDown"
         size="medium"
-        style={{color: variables.colors.white, opacity: 0.6, ...iconStyle}}
+        style={{ color: variables.colors.white, opacity: 0.6, ...iconStyle }}
       />
     </Pressable>
   );

@@ -4,6 +4,7 @@ import admin from '../../api/admin'
 import KModal from '../../components/KModal/KModal'
 import KButton from '../../components/KButton/KButton'
 import Dropdown from '../../components/Dropdown/Dropdown'
+import { toastSuccess, toastError } from '../../components/Toast/Toast'
 
 type Reason = 'on sign up' | 'on referral' | 'on swap'
 
@@ -44,8 +45,9 @@ export default function LogsScreen() {
 	// const [users, setUsers] = useState<string[]>(["Alice", "Bob", "Charlie", "David"])
 	const [selectedUser, setSelectedUser] = useState<string>("")
 	const [credits, setCredits] = useState<string>("")
-	const [users, setUsers] = useState<{ id: string; name: string }[]>([])
+	const [users, setUsers] = useState<{ id: string; name: string; credits?: number }[]>([])
 	const [loadingUsers, setLoadingUsers] = useState(false)
+	const [selectedUserTotalCredits, setSelectedUserTotalCredits] = useState<string>("")
 
 	const loadUsers = async () => {
 		try {
@@ -53,7 +55,8 @@ export default function LogsScreen() {
 			const res = await admin.users.getAll()
 			const mapped = (res?.data || []).map((u: any) => ({
 				id: u.id,
-				name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.email || "Unknown"
+				name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.email || "Unknown",
+				credits: typeof u.credits === 'number' ? u.credits : 0,
 			}))
 			setUsers(mapped)
 		} catch (err) {
@@ -85,31 +88,35 @@ export default function LogsScreen() {
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	)
 	const handleAddCredits = () => {
-		if (!selectedUser || !credits) {
-			Alert.alert("Error", "Please select a user and enter credits")
+		const amount = Number(credits)
+		if (!selectedUser || Number.isNaN(amount) || amount <= 0) {
+			Alert.alert("Error", "Please select a user and enter a valid positive number of credits")
 			return
 		}
 
 		Alert.alert(
 			"Confirm",
-			`Are you sure you want to give ${credits} credits to ${selectedUser}?`,
+			`Are you sure you want to give ${amount} credits to ${selectedUser}?`,
 			[
 				{ text: "Cancel", style: "cancel" },
 				{
 					text: "Yes",
 					onPress: async () => {
 						try {
-							await admin.credits.add({
-								toUser: selectedUser,
-								credits: Number(credits)
-							})
+							// Close immediately
 							setModalVisible(false)
+							await admin.credits.send({
+								userId: selectedUser,
+								credits: amount
+							})
+							toastSuccess(`Successfully sent ${amount} credits`)
 							setCredits("")
 							setSelectedUser("")
+							setSelectedUserTotalCredits("")
 							loadLogs()
 						} catch (err) {
-							console.error("Failed to add credits:", err)
-							Alert.alert("Error", "Failed to add credits")
+							console.error("Failed to send credits:", err)
+							toastError("Failed to send credits")
 						}
 					}
 				}
@@ -141,6 +148,9 @@ export default function LogsScreen() {
 					style={{ marginBottom: 12 }}
 					onPress={() => {
 						setModalVisible(true)
+						setSelectedUser("")
+						setSelectedUserTotalCredits("")
+						setCredits("")
 						loadUsers()
 					}}
 					text='Add Credits'
@@ -199,12 +209,30 @@ export default function LogsScreen() {
 							onChange={(selectedItems) => {
 								const picked = users.find(u => u.name === selectedItems[0])
 								setSelectedUser(picked?.id || "")
+								setSelectedUserTotalCredits(picked && typeof picked.credits === 'number' ? String(picked.credits) : "")
 							}}
 							showSearch={true}
+							emptyInitially={true}
 							dropdownStyle={{ width: "100%", maxHeight: 300 }}
 						/>
 					)}
 
+
+					{/* Total Credits (read-only) */}
+					<Text style={{ fontSize: 16, marginTop: 8 }}>Total Credits:</Text>
+					<TextInput
+						value={selectedUserTotalCredits}
+						editable={false}
+						placeholder="Select a user to view total credits"
+						style={{
+							borderWidth: 1,
+							borderColor: "#ccc",
+							borderRadius: 10,
+							padding: 12,
+							marginVertical: 10,
+							backgroundColor: "#f5f5f5"
+						}}
+					/>
 
 					{/* Credits Input */}
 					<Text style={{ fontSize: 16, marginTop: 8 }}>Credits:</Text>

@@ -56,5 +56,6 @@ export default {
 		logs: (qs: Query = { limit: "100" }) =>
 			api.get<Api.Admin.Credits.Logs>(`/admin/credits/logs?${new URLSearchParams(qs).toString()}`),
 		add: (data: { toUser: string, credits: number }) => api.post<Api.Admin.Credits.Add>(`/admin/credits/add`, data),
+		send: (data: { userId: string, credits: number }) => api.post<Api.Admin.Credits.Add>(`/admin/credits/send`, data),
 	},
 }
