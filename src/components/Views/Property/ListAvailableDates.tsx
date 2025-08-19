@@ -81,7 +81,7 @@ const ListAvailbleDates = (props: any) => {
             )}
           </View>
         )}
-        {!isMobile && items?.length > 0 && (
+        {items?.length > 0 && (
           <KText
             style={{
               fontSize: 12,
@@ -111,6 +111,7 @@ const ListAvailbleDates = (props: any) => {
                 }
                 onPressDelete={() => handleClickDelete(item.id)}
                 onPressEdit={() => onPressEdit(item)}
+                readonly={!!item.readonly}
               />
             ))}
           </View>

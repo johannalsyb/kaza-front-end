@@ -340,7 +340,16 @@ export default (props: Props) => {
           setVisibility={() => setShowModal(undefined)}>
           {showModal}
         </KModal> */}
-      {isCalendarOpen && <CalendarComponent />}
+      {isCalendarOpen && (
+        <CalendarComponent
+          autoOpenCalendar={!(property.owner.dateFrom && property.owner.dateTo)}
+          initialHostDates={
+            property.owner.dateFrom && property.owner.dateTo
+              ? [new Date(property.owner.dateFrom), new Date(property.owner.dateTo)]
+              : null
+          }
+        />
+      )}
       <Onboarding open={showModalregisterPlaceAtom} />
     </>
   );
