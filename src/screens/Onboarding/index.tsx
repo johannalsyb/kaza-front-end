@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Button,
+  ImageBackground,
   Linking,
   Platform,
   Pressable,
@@ -44,11 +45,11 @@ export const onboardingSteps: {
 }[] = [
     {
       icon: '🏡',
-      title: 'About your place',
+      title: 'Describe Your Place',
     },
     {
       icon: '🤓',
-      title: 'A bit more details',
+      title: 'Add More Info',
     },
     {
       icon: '📷',
@@ -57,7 +58,7 @@ export const onboardingSteps: {
     },
     {
       icon: 'calendarNew',
-      title: 'What’s the availabilities of your place?',
+      title: 'When’s Your Place Free?',
     },
   ]
 
@@ -277,7 +278,7 @@ export default (props: Props) => {
           <View style={styles.iconBack}>
             <KIcon
               name="backArrow"
-              size={40}
+              size={35}
               onPress={() => {
                 
                 if (currentStep === 1 && !hasProperties) {
@@ -286,106 +287,69 @@ export default (props: Props) => {
                 currentStep && currentStep !== 1 ? stepDown(currentStep - 1) : props.navigation.push('Home')
               }}
               style={
-                { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+                { backgroundColor: 'white', borderRadius: 50, padding: 4 }
               }
             />
           </View>
         }
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            paddingBottom: 30,
-            paddingTop: 20,
-            borderBottomLeftRadius: 20,
-            borderBottomRightRadius: 20,
-            zIndex: 1,
-            width: isMobile ? '100%' : undefined,
-            flex: isMobile ? undefined : 1,
-            backgroundColor: variables.colors.greenLight,
-          }}>
-            
-          {isMobile && (
-            <StepView
-              number={onboardingSteps.length}
-              current={currentStep || 1}
-              style={{
-                height: 3,
-                width: '90%',
-                flex: 1,
-                opacity: !currentStep ? 0 : 1,
-              }}
-            />
-          )}
-          {Boolean(currentStep) && <KText
-            style={{
-              fontSize: isMobile ? 40 : 70,
-              backgroundColor: isMobile ? 'transparent' : 'white',
-              padding: isMobile ? 0 : 10,
-              borderRadius: isMobile ? 0 : 60,
-              width: isMobile ? 'auto' : 120,
-              textAlign: 'center',
-              marginTop: isMobile ? 44 : 0
-            }}>
-            {currentStepObject.icon === 'calendarNew' ? <KIcon
-              name={currentStepObject.icon as 'calendarNew'}
-              size={isMobile ? 40 : 70}
-              style={{
-                color: variables.colors.yellow,
-                // marginTop: isMobile ? 44 : 10,
 
-              }} /> :
-              currentStepObject.icon}
-          </KText>}
+       <ImageBackground
+        source={require('../../components/KIcon/icons/onboardingBg.jpg')}
+        style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      paddingBottom: 30,
+     
+      height: isMobile ? 228 :undefined,
+      marginBottom: isMobile? 0 :32,
+      marginLeft: isMobile ? 0 : 39,
+      marginTop: isMobile ? 0 : 55,
+      borderRadius: isMobile ? 25 : 54,
+      zIndex: 1,
+      width: isMobile ? '100%' : undefined,
+      flex: isMobile ? undefined : 1,
+      overflow: 'hidden', 
+        }}
+        resizeMode="cover">
           {Boolean(currentStep) && <KText
-            style={styles.title}>
-            {currentStepObject.title}
+            style={[styles.title, { fontSize: isMobile ? 27 : 40, fontWeight: isMobile ? '700' : '600'}]}          
+            >
+            {currentStepObject.title} 
           </KText>}
-          {currentStepObject.subtitle && (
-            <KText
-              style={styles.subtitle}>
-              {currentStepObject.subtitle}
-            </KText>
-          )}
-
-          {!isMobile && (
             <>
-              <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1 }}>
-                Step {currentStep} of {onboardingSteps.length}
-              </KText>
               <StepView
                 number={onboardingSteps.length}
                 current={currentStep || 1}
                 style={{
-                  height: 3,
-                  width: '90%',
+                  height: 7,
+                  width: '100%',
+                  maxWidth: 268,
                   marginTop: 30,
                   opacity: !currentStep ? 0 : 1,
                 }}
               />
+                <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1,fontSize:19, color: 'white' }}>
+                  Step {`${(currentStep ?? 0) < 10 ? '0' : ''}`}{currentStep}  <KText style={{color: '#FFE361'}}>of {onboardingSteps.length}</KText> 
+                </KText>
+              {
+                !isMobile && (
               <Pressable
-                style={{ position: 'absolute', top: 0, left: 40 }}
+                style={{ position: 'absolute', bottom: 32, left: 0, right: 0 ,
+
+                   alignItems: 'center', 
+                  justifyContent: 'center', 
+                }}
                 onPress={() => {
                   Linking.openURL('/')
                 }}>
-                <KIcon name="KazaSwapLogoBlackYellowNew" size={120} />
+                <KIcon name="KazaSwaplogoblackandyellowVertical" size={70} />
               </Pressable>
-              <KText
-                style={{
-                  position: 'absolute',
-                  bottom: 10,
-                  left: 10,
-                  fontSize: 10,
-                  color: variables.colors.grey,
-                }}>
-                © {new Date().getFullYear()} Kaza Swap LLC. All rights reserved.
-              </KText>
+                )
+              }
             </>
-          )}
-        </View>
-        
+        </ImageBackground>
         <ScrollView
           contentContainerStyle={{
             marginHorizontal: 'auto',
@@ -434,30 +398,18 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    color: '#000',
+    color: 'white',
     textAlign: 'center',
     fontFamily: "Plus Jakarta Sans",
-    fontSize: 20,
     fontStyle: 'normal',
-    fontWeight: '700',
-    lineHeight: 23,
+    lineHeight: 30,
     letterSpacing: -0.5,
-    maxWidth: 243
+    maxWidth: 530
   },
-  subtitle: {
-    marginTop: 5,
-    opacity: 0.5,
-    textAlign: 'center',
-    fontFamily: "Plus Jakarta Sans",
-    fontSize: 13,
-    fontStyle: 'normal',
-    fontWeight: '500',
-    lineHeight: 13,
-    letterSpacing: -0.5
-  },
+  
   iconBack: {
     position: 'absolute',
-    top: 40,
+    top: 70,
     left: 17,
     zIndex: 1000
   }

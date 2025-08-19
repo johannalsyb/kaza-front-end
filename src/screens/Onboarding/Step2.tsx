@@ -41,7 +41,7 @@ export default (props: Props) => {
 
 	return <>
 		<Property1 property={props.property} onChange={props.onChange} error={error} />
-		<View style={[{ ...styles.container, position: 'relative', marginBottom: 60 }]}>
+		<View style={[{ ...styles.container, position: 'relative', marginBottom: 60 ,marginTop: 20}]}>
 
 			{props.hasProperties && (
 				<KButton
@@ -53,7 +53,7 @@ export default (props: Props) => {
 						borderWidth: 0,
 					}} />
 			)}
-			<View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start', }}>
+			<View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-start'}}>
 				<KButton
 					text="Next Step"
 					loading={loading}

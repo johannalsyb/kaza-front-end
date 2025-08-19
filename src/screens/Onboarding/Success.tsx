@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native"
+import { ImageBackground, Pressable, ScrollView, StyleSheet, View } from "react-native"
 import KButton from "../../components/KButton/KButton"
 import { useEffect, useState } from "react"
 import User1, { Preferences } from "../../components/forms/user/User1"
@@ -21,46 +21,136 @@ const dimg = require("../../assets/Onboarding/Desktop_Congrats.jpg")
 
 export default (props: Props) => {
     const { user } = useAuthentication()
+    const {navigate} = useNavigation()
     const { isMobile } = useIsMobile()
     const [loading, setLoading] = useState(false)
     // if(!user) {
     //     props.navigation.navigate("Home")
     //     return null
     // }
+
     console.log('user', user)
-    return <ScrollView
+    return  <View style={{ flex: 1}}>
+{ isMobile && (
+       
+                  <ImageBackground
+                        source={require('../../components/KIcon/icons/onboardingBg.jpg')}
+                        style={{
+                            width: '100%',
+                            height: 300, 
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderBottomRightRadius: 28,
+                            borderBottomLeftRadius: 28,
+                            borderColor: '#EDEBD9',
+                            borderWidth: 1,
+                            overflow: 'hidden'
+                        }}
+                        resizeMode="cover"
+                         >
+                        <View style={[styles.containerText, { marginTop: 36 }]}>
+                            <KText style={{ fontWeight: '700', fontSize: 35, color: '#FFFFFF' }}>Congratulations</KText>
+                            <KText style={{ fontWeight: '700', fontSize: 35, color: '#FFFFFF' }}>{user?.firstName}!</KText>
+                        </View>
+                          {isMobile &&
+                          <View style={styles.iconBack}>
+                          <KIcon
+                              name="backArrow"
+                              size={40}
+                              onPress={() => {
+                                props.navigation.push('Home')
+                              }}
+                              style={
+                               { backgroundColor: 'white', borderRadius: 50, padding: 5 }
+                              }
+                            />
+                          </View>
+                        }
+                    </ImageBackground>
+    )
+}
+     <ImageBackground
+        source={require('../../components/KIcon/icons/onboardingBg.jpg')}
+          style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          height: isMobile ? 'auto' :undefined,
+          zIndex: 1,
+          width: isMobile ? '100%' : undefined,
+          flex: isMobile ? undefined : 1,
+          overflow: 'hidden', 
+          position: 'relative'
+            }}
+            resizeMode="cover"
+            >
+                
+            {
+                !isMobile && (
+              <Pressable
+                style={{ position: 'absolute', bottom: 82, left: 0, right: 0 ,
+                   zIndex: 3333,
+                   alignItems: 'center', 
+                   justifyContent: 'center', 
+                   width: '50%'
+                }}
+                onPress={() => {
+             
+                 props.navigation.navigate("Home")
+                }}>
+                <KIcon name="KazaSwaplogoblackandyellowVertical" size={70} />
+              </Pressable>
+                )
+              }
+    <ScrollView
         style={{
-            paddingBottom: isMobile ? 20 : 0,
+            paddingBottom: 0,
             width: "100%",
         }}
         contentContainerStyle={[styles.container, isMobile && { flexDirection: "column" }]}>
+            {
+                !isMobile && (
+
         <View
             style={[styles.containerLeftSide, styles.borderRadiusDesktop, isMobile && { maxWidth: '100%', borderTopEndRadius: 0, borderBottomStartRadius: 23, maxHeight: 295 }]}
         >
-            {!isMobile && <KIcon name="KazaSwap" size={124} style={styles.logo} />}
-            <KIcon name="tada" size={isMobile ? 99 : 140} />
-            <View style={[styles.containerText, isMobile && { marginTop: 22 }]} >
-                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>Congratulations</KText>
-                <KText style={{ fontWeight: "bold", fontSize: isMobile ? 28 : 54 }}>{user?.firstName}!</KText>
+            <View style={[styles.containerText, isMobile && { marginTop: 0 }]} >
+                <KText style={{ fontWeight: isMobile ? '700' : '600', fontSize: isMobile ? 35 : 56,color: '#FFFFFF' }}>Congratulations</KText>
+                <KText style={{ fontWeight: isMobile ? '700' : '600', fontSize: isMobile ? 35 : 56, color: '#FFFFFF' }}>{user?.firstName}!</KText>
             </View>
         </View>
+                )
+            }
 
+        <View 
+        style={[styles.containerRightSide,
+             {
+            maxWidth: isMobile ? '100%' :  654, borderRadius:isMobile ? 0 :30 ,
+            width: isMobile ? '100%' : undefined,
+            marginTop: isMobile ? 0 : 83,
+            marginRight: isMobile ? 0 : 50,
+            paddingBottom: isMobile ? 30 : 127,
+            paddingTop: isMobile ? 39 : '5%',
+            paddingLeft: isMobile ? 20: '3%',
+            paddingRight: isMobile ? 20 : '3%',
+            margin: 'auto',
 
-        <View style={[styles.containerRightSide, isMobile && { paddingHorizontal: 30 }]}>
+        }]}>
 
-            <KText style={[styles.label && { fontSize: isMobile ? 17 : 28, lineHeight: 24, textAlign: isMobile ? 'left' : 'center', fontWeight: '700' }]}>
-                Welcome to the Kaza Swap community! We are thrilled to have you here.
+            <KText style={[styles.label && { fontSize: isMobile ? 20 : 35, lineHeight: isMobile ? 24 : 39, textAlign: 'center', fontWeight: '700',letterSpacing: -0.5 }]}>
+                Welcome to the  {!isMobile &&(<br />) }  Kaza Swap {isMobile &&(<br />) } community!
             </KText>
-            <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 95, marginBottom: 65 }}>
+            <View style={isMobile ? { marginTop: 38, marginBottom: 56 } : { marginTop: 61, marginBottom: 65 }}>
                 {!Boolean(user?.emailVerified) && <View style={[styles.contaiterNotification, { marginBottom: isMobile ? 26 : 34 }]}>
                     <KIcon name="email" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
-                    <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
-                        Please cjheck your mailbox to validate your email now
+                    <KText style={[styles.emailText, isMobile && { lineHeight: 21 }]}>
+                        Please check your mailbox to validate your email now
                     </KText>
                 </View>}
                 <View style={styles.contaiterNotification}>
                     <KIcon name="swap" size={33} style={{ ...(isMobile ? styles.iconMobile : styles.icon) }} />
-                    <KText style={[styles.emailText, isMobile && { fontSize: 15, lineHeight: 20 }]}>
+                    <KText style={[styles.emailText, isMobile && { lineHeight: 21 }]}>
                         For registering you get {' '}
                         <KText style={{ fontWeight: "bold", color: variables.colors.black }}>
                             5 credits
@@ -69,10 +159,11 @@ export default (props: Props) => {
                     </KText>
                 </View>
             </View>
-            {!isMobile && <KText style={{ fontSize: 16, marginBottom: 68, width: '100%' }}>
-                Cheers!
-            </KText>}
+           
             <View style={{ justifyContent: 'flex-start' }}>
+            </View>
+            <View>
+                {/* sdf */}
             </View>
             <KButton
                 text="Start Exploring"
@@ -91,20 +182,26 @@ export default (props: Props) => {
                         })
                 }}
                 color="primary"
-                style={{ width: '100%', marginBottom: 15 }}
+                style={{ width: '100%', maxWidth: 400, marginBottom: 15, marginHorizontal: 'auto' }}
                 textStyle={{ fontSize: 15, fontWeight: '600' }}
             />
-            {!Boolean(user?.emailVerified) && <KButton
-                text="Check your mailbox"
-                onPress={() => { window.open('https://mail.google.com', '_blank') }}
-                color="light"
-                style={styles.buttonMailbox}
-                textStyle={{ fontSize: 15, fontWeight: '600' }}
-            />}
-
-        </View>
-
+            {!isMobile && (
+     <>
+{!Boolean(user?.emailVerified) && <KButton
+    text="Check your mailbox"
+    onPress={() => { window.open('https://mail.google.com', '_blank') }}
+    color="light"
+    style={styles.buttonMailbox}
+    textStyle={{ fontSize: 15, fontWeight: '600' }}
+/>
+}
+</>
+)}
+    </View>
     </ScrollView>
+    </ImageBackground>
+    </View>
+
 }
 
 const styles = StyleSheet.create({
@@ -126,7 +223,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         height: "100%",
-        backgroundColor: variables.colors.yellow,
+        backgroundColor: 'transparent',
         position: "relative",
         maxWidth: '50%'
     },
@@ -140,7 +237,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         fontSize: 28,
-        marginTop: 57,
+      
     },
     logo: {
         position: "absolute",
@@ -155,10 +252,10 @@ const styles = StyleSheet.create({
         // justifyContent: "center",
         // alignItems: "center",
         // flex: 1,
-        maxWidth: 400,
-        marginHorizontal: 'auto',
-        // height: "100%",
-        marginTop: 35
+        margin: 'auto',
+        backgroundColor: variables.colors.white,  
+        
+        
     },
     label: {
         fontSize: 28,
@@ -198,8 +295,16 @@ const styles = StyleSheet.create({
     },
     buttonMailbox: {
         width: '100%',
+        maxWidth: 400,
         borderRadius: 23,
         backgroundColor: variables.colors.lightCream,
         borderWidth: 0,
-    }
+        marginHorizontal: 'auto'
+    },
+     iconBack: {
+    position: 'absolute',
+    top: 70,
+    left: 17,
+    zIndex: 1000
+  }
 })
