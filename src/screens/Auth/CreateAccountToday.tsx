@@ -69,13 +69,13 @@ export default (props: any) => {
 
   const { width, height } = useWindowDimensions();
   const calculateFontSize = () => {
-    const baseSize = 70 * width * 0.00069;
-    return Math.min(baseSize, 75); 
+    const baseSize = 70 * width * 0.00071;
+    return Math.min(baseSize, 105); 
   };
 
   const calculateLineHeight = () => {
-    const baseSize = 80 * (width * 0.00082);
-    return Math.min(baseSize, 80); 
+    const baseSize = 80 * (width * 0.00068);
+    return Math.min(baseSize, 120); 
   };
 
   const [setShowModalComponent] = [useSetAtom(showComponentAtom)];
@@ -161,7 +161,7 @@ export default (props: any) => {
          alignItems: 'center',
          flexDirection: 'column',
          width: '100%',     
-         height: '100%',
+         height: 'auto',
          zIndex: 1,
          flex: isMobile ? undefined : 1,
          overflow: 'hidden', 
@@ -203,11 +203,12 @@ export default (props: any) => {
             style={{
               position: 'absolute',
               width: '100%',
-              left: 4,
               display: 'flex',
+              left: 47,
               flexDirection: 'column',
               justifyContent: 'center',
-              alignItems: 'center',
+            
+              bottom: -100
             }}>
             <KText
               style={[styles.responsivetext, {
@@ -218,7 +219,7 @@ export default (props: any) => {
               }
               numberOfLines={2}
               >
-              Swap your place, <br /> explore the world
+              Swap your place, <br />explore the world 
             </KText>
           </View>
         </View>
@@ -247,6 +248,19 @@ export default (props: any) => {
           </KText>
         </View>
       ) : null}
+<View>
+   </View>
+      {!isMobile && (
+        <View style={{position: 'absolute', zIndex: 9933, top: 45, right: 20,backgroundColor: variables.colors.greenLight, padding: 8, borderRadius: 30}}>
+          <KIcon
+            name="minusBtn"
+            size={'medium'}
+            onPress={() => {
+              props.navigation.navigate('Home');
+            }}
+          />
+        </View>
+      )}
 
       <ScrollView
         contentContainerStyle={{padding: 0}}
@@ -254,11 +268,12 @@ export default (props: any) => {
             backgroundColor:  variables.colors.white, 
             marginBottom: isMobile ? 30 : 40,
             maxWidth: isMobile ? '100%' :  654,
-            borderRadius:isMobile ? 0 :30 ,
+            borderRadius:isMobile ? 0 :30,
+            height: isMobile ? undefined : (width > 1024 ? height/1.2: 'auto') ,
             width: isMobile ? '100%' : undefined,
-            marginTop: isMobile ? 0 : 30,
-            marginRight: isMobile ? 0 : 47,
-            paddingBottom: isMobile ? 10 : 50,
+            marginTop: isMobile ? 0 : 85,
+            marginRight: isMobile ? 0 : 65,
+            paddingBottom: isMobile ? 10 : 30,
             paddingTop: isMobile ? 30 : '2%',
             paddingLeft: isMobile ? 5: '3%',
             paddingRight: isMobile ? 5 : '3%',
@@ -267,6 +282,7 @@ export default (props: any) => {
             borderTopRightRadius: isMobile ? 20 : undefined,
         }]
         }>
+          
         <View
           style={{
             display: 'flex',
@@ -530,18 +546,7 @@ export default (props: any) => {
           </View>
         </View>
       </ScrollView>
-      {!isMobile && (
-        <View style={{position: 'absolute', zIndex: 9933, top: 20, right: 20,backgroundColor: variables.colors.greenLight, padding: 8, borderRadius: 30}}>
-          <KIcon
-            name="minusBtn"
-            size={'medium'}
-            onPress={() => {
-              props.navigation.navigate('Home');
-            }}
-          />
-        </View>
-      )}
-  
+     
     </View>
            </ImageBackground> 
     </View>
@@ -577,10 +582,10 @@ const styles = StyleSheet.create({
         // height: "100%",
     },
     responsivetext: {
-       maxWidth: '95%',
-       margin: 'auto',
+       maxWidth: '100%',
+      //  margin: 'auto',
        fontWeight: '600',
-       textAlign: 'center',
+       textAlign: 'left',
        fontStyle: 'normal',
        color: variables.colors.white,    
        overflow: 'hidden' 

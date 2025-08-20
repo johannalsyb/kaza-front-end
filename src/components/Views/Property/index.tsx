@@ -114,7 +114,7 @@ export default (props: Props) => {
         maxWidth: 1380,
         margin:'auto',  
         gap:20,
-        marginBottom: 100,
+       
         ...(props.style || {})
       }}
       contentContainerStyle={{
@@ -318,16 +318,26 @@ export default (props: Props) => {
             />
           </View>
           {isMobile && (
+            <>
             <PlaceOwner
               key="owner"
               property={property}
               hideSwapRequestButton={!isMobile}
+              
             />
+          {isMobile && <View style={{height: 100, width: '100%'}} />}
+          
+            </>
+
           )}
         </View>
 
         {isMobile && <View style={{height: 100, width: '100%'}} />}
-      </ScrollView>
+        {!isMobile && <View style={{height: 100, width: '100%'}} />}
+
+      
+        </ScrollView>
+
       {/* <Menu navigate={navigation.navigate} />
         <KModal
           visible={!!showModal}
@@ -355,6 +365,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     textAlign: 'left',
   },
+ 
   lightCircle: {
     borderWidth: 1,
     borderRadius: 50,
