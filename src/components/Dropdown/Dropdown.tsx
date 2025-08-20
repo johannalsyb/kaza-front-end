@@ -116,7 +116,7 @@ const Dropdown = React.forwardRef<DropdownHandle, Props>(({
           {showSearch && <KTextInput
             editable={true}
             ref={searchRef}
-            placeholder="Type the country..."
+            placeholder="start typing...."
             style={{
               height: 44, marginLeft: 10, marginRight: 10,
               //@ts-ignore
