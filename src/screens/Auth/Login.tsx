@@ -39,13 +39,13 @@ export default ({ navigation }: Props) => {
  const { width, height } = useWindowDimensions();
     
   const calculateFontSize = () => {
-    const baseSize = 70 * width * 0.00069;
-    return Math.min(baseSize, 75); 
+    const baseSize = 70 * width * 0.00071;
+    return Math.min(baseSize, 105); 
   };
 
   const calculateLineHeight = () => {
-    const baseSize = 80 * (width * 0.00082);
-    return Math.min(baseSize, 80); 
+    const baseSize = 80 * (width * 0.00068);
+    return Math.min(baseSize, 120); 
   };
 
   const login = async () => {
@@ -90,7 +90,6 @@ export default ({ navigation }: Props) => {
          style={{
          display: 'flex',
          justifyContent: 'center',
-        //  alignItems: 'center',
          flexDirection: 'column',
          width: '100%',     
          height: '100%',
@@ -99,11 +98,10 @@ export default ({ navigation }: Props) => {
          overflow: 'hidden', 
            }}
            resizeMode="cover">
-
+            
     <ScrollView
-      contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}>
-    
-{
+      contentContainerStyle={[styles.container, isMobile && { flexDirection: 'column' }]}> 
+         {
         !isMobile && (
           <View 
           style={{width: isMobile?'100%':'50%'}}
@@ -121,18 +119,18 @@ export default ({ navigation }: Props) => {
             }}>
             <KIcon
               name="KazaSwaplogoblackandyellowVertical"
-              style={{width: 70, height: 100,}}
+              style={{width: 70 , height: 100,}}
             />
           </Link>
           <View
             style={{
               position: 'absolute',
               width: '100%',
-              left: 4,
+              left: 47,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              alignItems: 'center',
+              bottom: -100
             }}>
             <KText
               style={[styles.responsivetext, {
@@ -143,7 +141,7 @@ export default ({ navigation }: Props) => {
               }
               numberOfLines={2}
               >
-              Swap your place, <br /> explore the world
+              Swap your place, <br />explore the world
             </KText>
           </View>
         </View>
@@ -163,11 +161,12 @@ export default ({ navigation }: Props) => {
             backgroundColor:  variables.colors.white, 
             marginBottom: isMobile ? 30 : 40,
             position: 'relative',
-            maxWidth: isMobile ? '100%' :  540,
+            maxWidth: isMobile ? '100%' :  654,
+            height: isMobile ? undefined : (width > 1024 ? height/1.32: 'auto') ,
             borderRadius:isMobile ? 0 :30 ,
             width: isMobile ? '100%' : '100%',
             marginTop: isMobile ? 0 : 30,
-            marginRight: isMobile ? 0 : 47,
+            marginRight: isMobile ? 0 : 65,
             paddingBottom: isMobile ? 10 : 50,
             paddingTop: isMobile ? 0 : '4%',
             paddingLeft: isMobile ? 5: '3%',
@@ -230,7 +229,7 @@ export default ({ navigation }: Props) => {
           <KButton text="Sign In" style={{ width: '100%', marginTop: isMobile ? 0 : 40, marginBottom: isMobile ? 15 : 0, }} onPress={login} />
         </View>
          {/* Divider + Google Login */}
-        <View style={{ width: '100%', maxWidth: 320 }}>
+        <View style={{ width: '100%', maxWidth: 320  }}>
           {!isMobile && (
               <KText style={styles.dividerContainer}>
                 <View style={styles.divider} />
@@ -243,7 +242,7 @@ export default ({ navigation }: Props) => {
           <KText
             style={[
             styles.registrationContainer,
-            {paddingBottom: isMobile ? 31 : 0},
+            {paddingBottom: isMobile ? 31 : 60},
             ]}
             onPress={() => navigation.navigate('SignUp')}>
              <KText numberOfLines={1}> Don't have an account yet?</KText>
@@ -254,12 +253,12 @@ export default ({ navigation }: Props) => {
       </View>
 
       {!isMobile && (
-        <View style={{ position: 'absolute', top: 20, right: 20, backgroundColor: variables.colors.greenLight, padding: 11, borderRadius: 30 ,opacity:1 }}>
-          <KIcon name="closeWithBorder" size={'medium'} onPress={() => navigation.navigate('Home')} />
+        <View style={{ position: 'absolute', top: 40, right: 20, backgroundColor: variables.colors.greenLight, padding: 11, borderRadius: 30 ,opacity:1 }}>
+          <KIcon name="closeBtn" size={'medium'} onPress={() => navigation.navigate('Home')} />
         </View>
       )}
     </ScrollView>
-           </ImageBackground>
+    </ImageBackground>
     </View>
   )
 }
@@ -291,14 +290,14 @@ const styles = StyleSheet.create({
    
     textAlign: 'center'
   },
-    responsivetext: {
-                maxWidth: '95%',
-                margin: 'auto',
-                fontWeight: '600',
-                textAlign: 'center',
-                fontStyle: 'normal',
-                color: variables.colors.white,    
-                overflow: 'hidden' 
+   responsivetext: {
+       maxWidth: '100%',
+      //  margin: 'auto',
+       fontWeight: '600',
+       textAlign: 'left',
+       fontStyle: 'normal',
+       color: variables.colors.white,    
+       overflow: 'hidden' 
     },
   forgotPassword: {
     display: 'flex',
