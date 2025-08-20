@@ -160,7 +160,7 @@ export const PropertyCard = ({
             keyExtractor={(item, index) => index.toString() + item}
             horizontal
             pagingEnabled
-            decelerationRate={"normal"} 
+            decelerationRate={"normal"}
             showsHorizontalScrollIndicator={false}
             onMomentumScrollEnd={e => {
               const index = Math.round(e.nativeEvent.contentOffset.x / cardWidth);
