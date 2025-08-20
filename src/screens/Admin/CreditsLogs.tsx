@@ -3,8 +3,11 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, TextInput }
 import admin from '../../api/admin'
 import KModal from '../../components/KModal/KModal'
 import KButton from '../../components/KButton/KButton'
+import KIcon from '../../components/KIcon/KIcon'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import { toastSuccess, toastError } from '../../components/Toast/Toast'
+import { phone } from '../../components/KIcon/icons'
+import variables from '../../styles/variables'
 
 type Reason = 'on sign up' | 'on referral' | 'on swap'
 
@@ -15,6 +18,17 @@ interface LogEntry {
 	toUser: string
 	credits: number
 	reason: Reason
+}
+
+function useDebounce<T>(value: T, delay: number): T {
+	const [debouncedValue, setDebouncedValue] = useState(value)
+
+	useEffect(() => {
+		const handler = setTimeout(() => setDebouncedValue(value), delay)
+		return () => clearTimeout(handler)
+	}, [value, delay])
+
+	return debouncedValue
 }
 
 const mockLogs: LogEntry[] = [
@@ -41,11 +55,39 @@ export default function LogsScreen() {
 	const [logs, setLogs] = useState<LogEntry[]>([])
 	const [loading, setLoading] = useState(true)
 
+	const [page, setPage] = useState(1)
+	const [limit] = useState(10) // fixed 10 per page
+	const [totalCount, setTotalCount] = useState(0)
+
+
+	// filters
+	const [fromFilter, setFromFilter] = useState("")
+	const [toFilter, setToFilter] = useState("")
+	const [date, setDate] = useState("")
+	const [reasonFilter, setReasonFilter] = useState("")
+
+	const isClearVisible = fromFilter || toFilter || date || reasonFilter
+
+	// Debounced filters
+	const debouncedFrom = useDebounce(fromFilter, 2000)
+	const debouncedTo = useDebounce(toFilter, 2000)
+	const debouncedDate = useDebounce(date, 2000)
+	const debouncedReason = useDebounce(reasonFilter, 2000)
+
+	useEffect(() => {
+		// whenever filters change, reset to page 1
+		setPage(1)
+	}, [debouncedFrom, debouncedTo, debouncedReason, debouncedDate])
+
+	useEffect(() => {
+		loadLogs()
+	}, [debouncedFrom, debouncedTo, debouncedReason, debouncedDate, page])
+
 	const [modalVisible, setModalVisible] = useState(false)
 	// const [users, setUsers] = useState<string[]>(["Alice", "Bob", "Charlie", "David"])
 	const [selectedUser, setSelectedUser] = useState<string>("")
 	const [credits, setCredits] = useState<string>("")
-	const [users, setUsers] = useState<{ id: string; name: string; credits?: number }[]>([])
+	const [users, setUsers] = useState<{ id: string; name: string; email: string; phone: string; credits?: number }[]>([])
 	const [loadingUsers, setLoadingUsers] = useState(false)
 	const [selectedUserTotalCredits, setSelectedUserTotalCredits] = useState<string>("")
 
@@ -56,6 +98,8 @@ export default function LogsScreen() {
 			const mapped = (res?.data || []).map((u: any) => ({
 				id: u.id,
 				name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.email || "Unknown",
+				email: u.email || "Unknown",
+				phone: u.phone || "Unknown",
 				credits: typeof u.credits === 'number' ? u.credits : 0,
 			}))
 			setUsers(mapped)
@@ -68,26 +112,67 @@ export default function LogsScreen() {
 	}
 
 
+	interface LogEntry {
+		id: number
+		date: string
+		fromUser: string | null
+		toUser: string
+		credits: number
+		reason: Reason
+	}
+
+	interface LogsResponse {
+		page: number
+		limit: number
+		count: number
+		data: LogEntry[]
+	}
+
+	interface LogsApiResponse {
+		meta: { time: number; code: number }
+		data: LogsResponse
+	}
+
 	const loadLogs = async () => {
 		try {
 			setLoading(true)
-			const res = await admin.credits.logs({ limit: '100', sort: '-createdAt' }) // add other query params if needed
-			setLogs(res?.data || [])
+			const qs: any = { page: page.toString(), limit: limit.toString() }
+			if (debouncedFrom) qs.userFrom = debouncedFrom
+			if (debouncedTo) qs.userTo = debouncedTo
+			if (debouncedReason) qs.reason = debouncedReason
+			if (debouncedDate) qs.date = debouncedDate
+
+			const res = await admin.credits.logs(qs)
+			
+			// Handle the response based on your actual API structure
+			// If res.data is the array directly (current type definition)
+			if (Array.isArray(res.data)) {
+				setLogs(res.data)
+				setTotalCount(res.data.length)
+			} else if (res.data && typeof res.data === 'object' && 'data' in res.data) {
+				// If res.data has the nested structure like your backend shows
+				setLogs((res.data as any).data || [])
+				setTotalCount((res.data as any).count || 0)
+			} else {
+				setLogs([])
+				setTotalCount(0)
+			}
 		} catch (err) {
-			console.error('Failed to load credit logs:', err)
+			console.error("Failed to load credit logs:", err)
+			Alert.alert("Error", "Could not load logs")
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	useEffect(() => {
-		loadLogs()
-	}, [])
+	// useEffect(() => {
+	// 	loadLogs()
+	// }, [fromFilter, toFilter, reasonFilter, date])
 
 	const sortedLogs = [...logs].sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	)
-	const handleAddCredits = async() => {
+	const handleAddCredits = async () => {
 		const amount = Number(credits)
 		if (!selectedUser || Number.isNaN(amount) || amount <= 0) {
 			Alert.alert("Error", "Please select a user and enter a valid positive number of credits")
@@ -97,10 +182,10 @@ export default function LogsScreen() {
 		// Close immediately
 		try {
 			setModalVisible(false)
-							await admin.credits.send({
-								userId: selectedUser,
-								credits: amount
-							})
+			await admin.credits.send({
+				userId: selectedUser,
+				credits: amount
+			})
 			toastSuccess(`Successfully sent ${amount} credits`)
 			setCredits("")
 			setSelectedUser("")
@@ -109,7 +194,7 @@ export default function LogsScreen() {
 		} catch (error) {
 			toastError(error instanceof Error ? error.message : "Credits cannot be greater then 99")
 		}
-							
+
 		// Alert.alert(
 		// 	"Confirm",
 		// 	`Are you sure you want to give ${amount} credits to ${selectedUser}?`,
@@ -119,12 +204,12 @@ export default function LogsScreen() {
 		// 			text: "Yes",
 		// 			onPress: async () => {
 		// 				try {
-							// // Close immediately
-							// setModalVisible(false)
-							// await admin.credits.send({
-							// 	userId: selectedUser,
-							// 	credits: amount
-							// })
+		// // Close immediately
+		// setModalVisible(false)
+		// await admin.credits.send({
+		// 	userId: selectedUser,
+		// 	credits: amount
+		// })
 		// 					toastSuccess(`Successfully sent ${amount} credits`)
 		// 					setCredits("")
 		// 					setSelectedUser("")
@@ -139,6 +224,20 @@ export default function LogsScreen() {
 		// 	]
 		// )
 	}
+
+	// const filteredLogs = logs.filter((log) => {
+	// 	return (
+	// 		(fromFilter === '' || log.fromUser?.toLowerCase().includes(fromFilter.toLowerCase())) &&
+	// 		(toFilter === '' || log.toUser.toLowerCase().includes(toFilter.toLowerCase())) &&
+	// 		(dateFilter === '' || log.date.includes(dateFilter)) &&
+	// 		(reasonFilter === '' || log.reason.toLowerCase().includes(reasonFilter.toLowerCase()))
+	// 	)
+	// })
+
+	// const sortedFilterLogs = [...filteredLogs].sort(
+	// 	(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+	// )
+
 
 	if (loading) {
 		return (
@@ -172,6 +271,48 @@ export default function LogsScreen() {
 					text='Add Credits'
 				/>
 			</View>
+
+			<View style={styles.searchBar}>
+				<TextInput
+					style={styles.input}
+					placeholder="From User"
+					value={fromFilter}
+					onChangeText={setFromFilter}
+				/>
+				<TextInput
+					style={styles.input}
+					placeholder="To User"
+					value={toFilter}
+					onChangeText={setToFilter}
+				/>
+				<TextInput
+					style={styles.input}
+					placeholder="Date (YYYY-MM-DD)"
+					value={date}
+					onChangeText={setDate}
+				/>
+
+				<TextInput
+					style={styles.input}
+					placeholder="Reason (swap/referral/sign up)"
+					value={reasonFilter}
+					onChangeText={setReasonFilter}
+				/>
+				{isClearVisible && (
+					<KIcon
+						name="close"
+						size={"large"}
+						style={{padding: 5, borderRadius: 100 }}
+						onPress={() => {
+							setFromFilter("")
+							setToFilter("")
+							setDate("")
+							setReasonFilter("")
+						}}
+					/>
+				)}
+			</View>
+
 
 			<View style={[styles.row, styles.headerRow]}>
 				<Text style={[styles.cell, styles.cellDate]}>Date</Text>
@@ -221,11 +362,31 @@ export default function LogsScreen() {
 						<ActivityIndicator size="small" />
 					) : (
 						<Dropdown
-							items={users.map(u => u.name)}
+							items={users.map(
+								u =>
+									`Name: ${u.name}${u.email ? " - Email: " + u.email : ""}${u.phone ? " - Phone: " + u.phone : ""
+									}`
+							)}
 							onChange={(selectedItems) => {
-								const picked = users.find(u => u.name === selectedItems[0])
+								const picked = users.find(u => {
+									const name = u.name || ""
+									const email = u.email || ""
+									const phone = u.phone || ""
+									const selected = selectedItems[0] || ""
+
+									return (
+										selected.includes(name) ||
+										selected.includes(email) ||
+										selected.includes(phone)
+									)
+								})
+
 								setSelectedUser(picked?.id || "")
-								setSelectedUserTotalCredits(picked && typeof picked.credits === 'number' ? String(picked.credits) : "")
+								setSelectedUserTotalCredits(
+									picked && typeof picked.credits === "number"
+										? String(picked.credits)
+										: ""
+								)
 							}}
 							showSearch={true}
 							emptyInitially={true}
@@ -269,6 +430,22 @@ export default function LogsScreen() {
 					<KButton text="Confirm" onPress={handleAddCredits} />
 				</View>
 			</KModal>
+
+			<View style={styles.pagination}>
+				<KButton
+					text="Prev"
+					onPress={() => setPage((p) => Math.max(1, p - 1))}
+					disabled={page === 1}
+					style={{ marginRight: 10 }}
+				/>
+				<Text style={{ alignSelf: 'center' }}>Page {page}</Text>
+				<KButton
+					text="Next"
+					onPress={() => setPage((p) => p + 1)}
+					disabled={logs.length < limit} // disable if less than limit
+					style={{ marginLeft: 10 }}
+				/>
+			</View>
 		</View>
 	)
 }
@@ -325,4 +502,22 @@ const styles = StyleSheet.create({
 	cellDescription: {
 		flex: 2.5,
 	},
+	searchBar: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		justifyContent: 'space-between',
+		marginBottom: 10,
+		width: '100%',
+	},
+	input: {
+		flex: 1,
+		minWidth: '22%',
+		margin: 4,
+		padding: 8,
+		borderWidth: 1,
+		borderColor: '#ddd',
+		borderRadius: 6,
+	},
+	pagination: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 12 }
+
 })
