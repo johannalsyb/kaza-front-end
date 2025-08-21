@@ -1,123 +1,82 @@
-import React, {useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-// import variables from '../../../../styles/variables'
-import variables from '../../../styles/variables';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useSetAtom } from 'jotai';
 
+import variables from '../../../styles/variables';
 import KText from '../../../components/KText/index';
 import KIcon from '../../../components/KIcon/KIcon';
-// import AvalibleSlot from './AvalibleSlot'
-import AvalibleSlot from '../../Screens/Onboarding/CalendarComponent/AvalibleSlot';
-
-import dayjs from 'dayjs';
-import {useSetAtom, useAtomValue} from 'jotai';
-// import { showAlert } from '../../../../atoms'
-
 import useIsMobile from '../../../hooks/useIsMobile';
+import { showModalCalendarAtom } from '../../../atoms';
+import AvalibleSlot from './DateSlot';
 
-import KButton from '../../../components/KButton/KButton';
-import {showModalCalendarAtom} from '../../../atoms';
 const ListAvailbleDates = (props: any) => {
-  const {items, setItems, onPressEdit} = props;
-  console.log('items', items);
-  const setShowCalendarModal = useSetAtom(showModalCalendarAtom);
+  const { items, setSelectedDate } = props;
 
-  const handleClickDelete = (id: number) => {
-    const updatedItems = items.filter((item: any) => item.id !== id);
-    setItems(updatedItems);
-  };
+  const { isMobile } = useIsMobile();
 
-  const range = (item: any) => {
-    if (!item || !item.value || !item.value[0] || !item.value[1]) return '';
-    return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(
-      item.value[1],
-    ).format('MMM DD')}`;
-  };
-  const {isMobile} = useIsMobile();
   return (
-    <View style={{position: 'relative', width: '100%'}}>
+    <View style={{ width: '100%' }}>
       <View style={[styles.container]}>
         {((items.length && isMobile) || !isMobile) && (
           <View
             style={{
-              flexDirection: isMobile ? 'column' : 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              position: 'relative',
               margin: 'auto',
               gap: isMobile ? undefined : 20,
               width: '100%',
-              backgroundColor: isMobile ? '' : variables.colors.greenLight,
-              paddingVertical: isMobile ? 0 : 15,
               marginBottom: isMobile ? 0 : 20,
               borderRadius: 20,
             }}>
-            {isMobile && <View style={styles.divider} />}
-
             <KText
               style={[
                 styles.label,
                 {
                   fontSize: isMobile ? 25 : 20,
                   fontWeight: isMobile ? '600' : '500',
+                  backgroundColor: isMobile ? '' : variables.colors.lightCream,
                 },
               ]}>
               List of available dates
             </KText>
-            {!isMobile && (
-              <KIcon
-                onPress={() => {
-                  setShowCalendarModal(false);
-                }}
-                name="closeBtn"
-                size={'large'}
-                style={{
-                  color: '#000000',
-                  position: 'relative',
-                  right: 10,
-                  opacity: 0.5,
-                  
-                }}
-              />
-            )}
           </View>
         )}
-        {items?.length > 0 && (
-          <KText
-            style={{
-              fontSize: 12,
-              opacity: 0.6,
-              fontWeight: '500',
-              marginBottom: 14,
-            }}>
-            Preferred dates by Host
-          </KText>
-        )}
-        {items?.length > 0 && (
-          <View
-            style={[
-              styles.container,
-              {
-                rowGap: 10,
-                marginTop: isMobile ? 15 : 0,
-                marginBottom: isMobile ? 0 : 14,
-              },
-            ]}>
-            {items.map((item: any) => (
-              <AvalibleSlot
-                key={item?.id}
-                range={range(item)}
-                year={
-                  item?.value?.[1] ? dayjs(item.value[1]).format('YYYY') : ''
-                }
-                onPressDelete={() => handleClickDelete(item.id)}
-                onPressEdit={() => onPressEdit(item)}
-                readonly={!!item.readonly}
-              />
-            ))}
-          </View>
-        )}
-
-        {!isMobile && <View style={styles.availablelistDatesdivider} />}
+        <View style={{ paddingHorizontal: isMobile ? 16 : 30, }}>
+          {items?.length > 0 && !isMobile && (
+            <KText
+              style={{
+                fontSize: 12,
+                opacity: 0.6,
+                fontWeight: '500',
+                marginBottom: 14,
+              }}>
+              Preferred dates by Host
+            </KText>
+          )}
+          {items?.length > 0 && (
+            <View
+              style={[
+                styles.container,
+                {
+                  rowGap: 10,
+                  marginTop: isMobile ? 15 : 0,
+                  marginBottom: isMobile ? 0 : 14,
+                },
+              ]}>
+              {items.map((item: any) => (
+                <AvalibleSlot
+                  key={item.id}
+                  dates={item}
+                  onPress={(range) => {
+                    setSelectedDate(range)
+                  }}
+                />
+              ))}
+            </View>
+          )}
+          {!isMobile && <View style={styles.availablelistDatesdivider} />}
+        </View>
       </View>
     </View>
   );
@@ -142,20 +101,18 @@ const styles = StyleSheet.create({
     gap: 10,
     margin: 'auto',
     marginTop: 61,
-    // columnGap: 23,
   },
   label: {
-    // display: 'flex',
-    // flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     textAlign: 'center',
     flex: 1,
-
     margin: 'auto',
     lineHeight: 13,
     letterSpacing: -0.5,
-    paddingVertical: 10,
+    paddingVertical: 20,
+    borderEndEndRadius: 28,
+    borderEndStartRadius: 28
   },
   containerIcon: {
     backgroundColor: variables.colors.lightCream,
@@ -189,18 +146,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     lineHeight: 17,
   },
-  divider: {
-    // flex: 1,
-    width: 34,
-    margin: 'auto',
-    height: 2,
-    borderRadius: 20,
-    backgroundColor: '#FFE361',
-    marginTop: 10,
-    marginBottom: 10,
-  },
   availablelistDatesdivider: {
-    // flex: 1,
     width: '100%',
     margin: 'auto',
     height: 1,
