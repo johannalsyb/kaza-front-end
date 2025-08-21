@@ -91,7 +91,15 @@ const useSwapRequest = (propertyId: string) => {
           }
           else throw new Error("You need to have a verified property to send a swap request")
         }
-        else return swaps.requests.new(r[0].id, propertyId)
+        // else return swaps.requests.new(r[0].id, propertyId)
+        else return swaps.requests.new(
+          r[0].id,
+          propertyId,
+          startDate,
+          endDate,
+          isCustomDate
+        )
+
       })
       .then(r => {
         if (r?.data) {
