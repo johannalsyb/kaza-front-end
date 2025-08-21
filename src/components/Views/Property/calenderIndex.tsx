@@ -8,7 +8,7 @@ import ListAvailbleDates from './ListAvailableDates';
 import KSideModal from '../../../components/KModal/KSideModal';
 import KCalendar from '../../../components/KCalendar';
 import SelectDates from '../../Screens/Onboarding/CalendarComponent/SelectDates';
-import { avilebleDatesAtom, showModalCalendarAtom } from '../../../atoms';
+import { showModalCalendarAtom } from '../../../atoms';
 import useIsMobile from '../../../hooks/useIsMobile';
 import variables from '../../../styles/variables';
 import KText from '../../../components/KText/index';
@@ -27,11 +27,10 @@ type Props = {
 };
 
 const CalendarComponent = (props: Props) => {
-	const [availableDates, setAvailableDates] = useAtom(avilebleDatesAtom);
+	const [availableDates, setAvailableDates] = useState<any>([]);
 	const [selectedDate, setSelectedDate] = useState<any>(null);
-	const [isOpenCalendar, setIsOpenCalendar] = useState(
-		props.autoOpenCalendar ?? false,
-	);
+	const [isCustomDate, setIsCustomDate] = useState(false);
+	const [isOpenCalendar, setIsOpenCalendar] = useState(props.autoOpenCalendar ?? false);
 	const [value, onChange] = useState<Value>([new Date(), new Date()]);
 	const setShowCalendarModal = useSetAtom(showModalCalendarAtom);
 	const [calendarSelectedDateRange, setCalendarSelectedDateRange] = useState<Value>([new Date(), new Date()])
@@ -215,12 +214,11 @@ const CalendarComponent = (props: Props) => {
 								sendSwapRequest({
 									dateFrom: selectedDate.value[0],
 									dateTo: selectedDate.value[1],
-									isCustomDate: true,
+									isCustomDate: isCustomDate,
 								})
 								setShowCalendarModal(false)
 							} : () => setIsOpenCalendar(true)}
 							color="primary"
-							disabled={availableDates?.length === 3}
 							style={{ width: selectedDate ? '45%' : '100%' }}
 						/>
 						<KButton
@@ -261,6 +259,7 @@ const CalendarComponent = (props: Props) => {
 						}
 				}>
 				<View style={[styles.container, styles.calendarContainer]}>
+					{isMobile && <View style={styles.divider} />}
 					<KText
 						style={{ textAlign: 'center', fontSize: 25, fontWeight: '600' }}>
 						Dates
@@ -299,7 +298,10 @@ const CalendarComponent = (props: Props) => {
 						/>
 						<KButton
 							text="Confirm"
-							onPress={() => handleClickAddSlots()}
+							onPress={() => {
+								handleClickAddSlots()
+								setIsCustomDate(true)
+							}}
 							color="primary"
 							style={{ width: '100%', flex: 1 }}
 						/>
@@ -341,6 +343,7 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	label: {
+		marginTop: 10,
 		alignItems: 'center',
 		width: '100%',
 		textAlign: 'center',
@@ -362,7 +365,6 @@ const styles = StyleSheet.create({
 	},
 	calendarContainer: {
 		alignItems: 'center',
-		paddingHorizontal: 50,
 		height: '100%',
 	},
 	containerButtons: {
