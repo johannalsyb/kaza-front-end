@@ -4,13 +4,13 @@ import { Property } from '../../common/types/api/properties'
 import variables from '../../styles/variables'
 import KButton, { KButtonProps } from '../../components/KButton/KButton'
 import useAuthentication from '../../hooks/useAuthentication'
-import { useAtom, useAtomValue, useSetAtom ,} from 'jotai'
+import { useAtom, useAtomValue, useSetAtom, } from 'jotai'
 import KModal from '../../components/KModal/KModal'
 import Gap from '../../components/Gap/Gap'
 import useIsMobile from '../../hooks/useIsMobile'
 import useSwapRequest from '../../hooks/useSwapRequest'
 import { forwardRef, useImperativeHandle, useState } from 'react'
-import { propertiesAtom, showModalRegisterPlaceAtom,showModalCalendarAtom } from '../../atoms'
+import { propertiesAtom, showModalRegisterPlaceAtom, showModalCalendarAtom } from '../../atoms'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../../navigation/screens'
@@ -21,7 +21,7 @@ type Props = {
   buttonStyle?: KButtonProps['color']
   iconStyle?: KButtonProps['iconStyle']
   hideIcon?: boolean
-  
+
 }
 
 export type SwapRequestButtonHandle = {
@@ -51,9 +51,9 @@ export default forwardRef<SwapRequestButtonHandle, Props>(
     //  const [showswapCalender, setshowswapCalender] = useAtom(showModalCalendarAtom);
     // const [showModalRegisterPlace, setShowModalRegisterPlace] = useState(false)
     // console.log('showModalRegisterPlace', showModalRegisterPlace)
-// const handleToggle = () => {
-//         setshowswapCalender(true);
-//       };
+    // const handleToggle = () => {
+    //         setshowswapCalender(true);
+    //       };
     const [properties] = [useAtomValue(propertiesAtom)]
     const navigation =
       useNavigation<
@@ -122,9 +122,9 @@ export default forwardRef<SwapRequestButtonHandle, Props>(
             icon={hideIcon ? undefined : 'swap'}
             iconSize="medium"
             onPress={() => {
-               if (buttonText === 'Request Swap') {
-              setShowCalendarModal(true); 
-            }
+              // if (buttonText === 'Request Swap') {
+              //   setShowCalendarModal(true);
+              // }
               if (buttonDisabled) return
               if ((properties || []).some(p => p.private)) {
                 // setShowModal(
@@ -152,13 +152,15 @@ export default forwardRef<SwapRequestButtonHandle, Props>(
                 //     />
                 //   </View>,
                 // )
-               
+
                 return
               }
 
               user ?
                 properties && properties?.length > 0 ?
-                  sendSwapRequest() :
+                  // sendSwapRequest()
+                  setShowCalendarModal(true)
+                  :
                   setShowModalRegisterPlace(true) :
                 setShowSignIn(true)
             }}

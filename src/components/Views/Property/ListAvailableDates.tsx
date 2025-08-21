@@ -1,58 +1,40 @@
-import React, {useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-// import variables from '../../../../styles/variables'
-import variables from '../../../styles/variables';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useSetAtom } from 'jotai';
 
+import variables from '../../../styles/variables';
 import KText from '../../../components/KText/index';
 import KIcon from '../../../components/KIcon/KIcon';
-// import AvalibleSlot from './AvalibleSlot'
-import AvalibleSlot from '../../Screens/Onboarding/CalendarComponent/AvalibleSlot';
-
-import dayjs from 'dayjs';
-import {useSetAtom, useAtomValue} from 'jotai';
-// import { showAlert } from '../../../../atoms'
-
 import useIsMobile from '../../../hooks/useIsMobile';
+import { showModalCalendarAtom } from '../../../atoms';
+import AvalibleSlot from './DateSlot';
 
-import KButton from '../../../components/KButton/KButton';
-import {showModalCalendarAtom} from '../../../atoms';
 const ListAvailbleDates = (props: any) => {
-  const {items, setItems, onPressEdit} = props;
-  console.log('items', items);
-  const setShowCalendarModal = useSetAtom(showModalCalendarAtom);
-
-  const handleClickDelete = (id: number) => {
-    const updatedItems = items.filter((item: any) => item.id !== id);
-    setItems(updatedItems);
-  };
-
+  const { items, setSelectedDate } = props;
   const range = (item: any) => {
     if (!item || !item.value || !item.value[0] || !item.value[1]) return '';
     return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(
       item.value[1],
     ).format('MMM DD')}`;
   };
-  const {isMobile} = useIsMobile();
+  const { isMobile } = useIsMobile();
+
   return (
-    <View style={{position: 'relative', width: '100%'}}>
+    <View style={{ width: '100%' }}>
       <View style={[styles.container]}>
         {((items.length && isMobile) || !isMobile) && (
           <View
             style={{
-              flexDirection: isMobile ? 'column' : 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              position: 'relative',
               margin: 'auto',
               gap: isMobile ? undefined : 20,
               width: '100%',
-              backgroundColor: isMobile ? '' : variables.colors.greenLight,
               paddingVertical: isMobile ? 0 : 15,
               marginBottom: isMobile ? 0 : 20,
               borderRadius: 20,
             }}>
-            {isMobile && <View style={styles.divider} />}
-
             <KText
               style={[
                 styles.label,
@@ -63,25 +45,9 @@ const ListAvailbleDates = (props: any) => {
               ]}>
               List of available dates
             </KText>
-            {!isMobile && (
-              <KIcon
-                onPress={() => {
-                  setShowCalendarModal(false);
-                }}
-                name="closeBtn"
-                size={'large'}
-                style={{
-                  color: '#000000',
-                  position: 'relative',
-                  right: 10,
-                  opacity: 0.5,
-                  
-                }}
-              />
-            )}
           </View>
         )}
-        {items?.length > 0 && (
+        {items?.length > 0 && !isMobile && (
           <KText
             style={{
               fontSize: 12,
@@ -104,19 +70,16 @@ const ListAvailbleDates = (props: any) => {
             ]}>
             {items.map((item: any) => (
               <AvalibleSlot
-                key={item?.id}
+                key={item.id}
                 range={range(item)}
-                year={
-                  item?.value?.[1] ? dayjs(item.value[1]).format('YYYY') : ''
-                }
-                onPressDelete={() => handleClickDelete(item.id)}
-                onPressEdit={() => onPressEdit(item)}
-                readonly={!!item.readonly}
+                year={item?.value?.[1] ? dayjs(item.value[1]).format('YYYY') : ''}
+                onPress={(r, y) => {
+                  setSelectedDate({ range: r, year: y })
+                }}
               />
             ))}
           </View>
         )}
-
         {!isMobile && <View style={styles.availablelistDatesdivider} />}
       </View>
     </View>
@@ -142,16 +105,12 @@ const styles = StyleSheet.create({
     gap: 10,
     margin: 'auto',
     marginTop: 61,
-    // columnGap: 23,
   },
   label: {
-    // display: 'flex',
-    // flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     textAlign: 'center',
     flex: 1,
-
     margin: 'auto',
     lineHeight: 13,
     letterSpacing: -0.5,
@@ -189,18 +148,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     lineHeight: 17,
   },
-  divider: {
-    // flex: 1,
-    width: 34,
-    margin: 'auto',
-    height: 2,
-    borderRadius: 20,
-    backgroundColor: '#FFE361',
-    marginTop: 10,
-    marginBottom: 10,
-  },
   availablelistDatesdivider: {
-    // flex: 1,
     width: '100%',
     margin: 'auto',
     height: 1,
