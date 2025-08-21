@@ -167,7 +167,6 @@ const CalendarComponent = (props: Props) => {
 						flexWrap: 'wrap',
 						justifyContent: 'space-around',
 						paddingTop: isMobile ? 16 : 0,
-						paddingHorizontal: isMobile ? 16 : 30,
 					}}>
 					{isMobile && <View style={styles.divider} />}
 					{selectedDate ?
@@ -179,16 +178,19 @@ const CalendarComponent = (props: Props) => {
 										fontSize: isMobile ? 25 : 20,
 										fontWeight: isMobile ? '600' : '500',
 										marginBottom: 20,
+										backgroundColor: isMobile ? '' : variables.colors.lightCream,
 									},
 								]}>
-								Dates
+								List of available dates
 							</KText>
-							<AvalibleSlot
-								dates={selectedDate}
-								onPress={() => null}
-								selected={true}
-							/>
-							{!isMobile && <View style={styles.availablelistDatesdivider} />}
+							<View style={{ paddingHorizontal: isMobile ? 16 : 30, }}>
+								<AvalibleSlot
+									dates={selectedDate}
+									onPress={() => null}
+									selected={true}
+								/>
+								{!isMobile && <View style={styles.availablelistDatesdivider} />}
+							</View>
 						</>
 						:
 						<ListAvailbleDates
@@ -204,9 +206,9 @@ const CalendarComponent = (props: Props) => {
 							justifyContent: 'space-between',
 							width: '100%',
 							gap: 10,
-							paddingHorizontal: isMobile ? 0 : 30,
+							paddingHorizontal: isMobile ? 16 : 30,
 							paddingBottom: 40,
-							marginTop: isMobile ? 40 : 15,
+							marginTop: isMobile ? 61 : 15,
 						}}>
 						<KButton
 							text={selectedDate ? "Send Request" : "Suggest a date"}
@@ -343,7 +345,6 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	label: {
-		marginTop: 10,
 		alignItems: 'center',
 		width: '100%',
 		textAlign: 'center',
@@ -351,7 +352,9 @@ const styles = StyleSheet.create({
 		margin: 'auto',
 		lineHeight: 13,
 		letterSpacing: -0.5,
-		paddingVertical: 10,
+		paddingVertical: 20,
+		borderEndEndRadius: 28,
+		borderEndStartRadius: 28
 	},
 	button: {
 		backgroundColor: variables.colors.lightCream,

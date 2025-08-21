@@ -26,7 +26,6 @@ const ListAvailbleDates = (props: any) => {
               margin: 'auto',
               gap: isMobile ? undefined : 20,
               width: '100%',
-              paddingVertical: isMobile ? 0 : 15,
               marginBottom: isMobile ? 0 : 20,
               borderRadius: 20,
             }}>
@@ -36,45 +35,48 @@ const ListAvailbleDates = (props: any) => {
                 {
                   fontSize: isMobile ? 25 : 20,
                   fontWeight: isMobile ? '600' : '500',
+                  backgroundColor: isMobile ? '' : variables.colors.lightCream,
                 },
               ]}>
               List of available dates
             </KText>
           </View>
         )}
-        {items?.length > 0 && !isMobile && (
-          <KText
-            style={{
-              fontSize: 12,
-              opacity: 0.6,
-              fontWeight: '500',
-              marginBottom: 14,
-            }}>
-            Preferred dates by Host
-          </KText>
-        )}
-        {items?.length > 0 && (
-          <View
-            style={[
-              styles.container,
-              {
-                rowGap: 10,
-                marginTop: isMobile ? 15 : 0,
-                marginBottom: isMobile ? 0 : 14,
-              },
-            ]}>
-            {items.map((item: any) => (
-              <AvalibleSlot
-                key={item.id}
-                dates={item}
-                onPress={(range) => {
-                  setSelectedDate(range)
-                }}
-              />
-            ))}
-          </View>
-        )}
-        {!isMobile && <View style={styles.availablelistDatesdivider} />}
+        <View style={{ paddingHorizontal: isMobile ? 16 : 30, }}>
+          {items?.length > 0 && !isMobile && (
+            <KText
+              style={{
+                fontSize: 12,
+                opacity: 0.6,
+                fontWeight: '500',
+                marginBottom: 14,
+              }}>
+              Preferred dates by Host
+            </KText>
+          )}
+          {items?.length > 0 && (
+            <View
+              style={[
+                styles.container,
+                {
+                  rowGap: 10,
+                  marginTop: isMobile ? 15 : 0,
+                  marginBottom: isMobile ? 0 : 14,
+                },
+              ]}>
+              {items.map((item: any) => (
+                <AvalibleSlot
+                  key={item.id}
+                  dates={item}
+                  onPress={(range) => {
+                    setSelectedDate(range)
+                  }}
+                />
+              ))}
+            </View>
+          )}
+          {!isMobile && <View style={styles.availablelistDatesdivider} />}
+        </View>
       </View>
     </View>
   );
@@ -108,7 +110,9 @@ const styles = StyleSheet.create({
     margin: 'auto',
     lineHeight: 13,
     letterSpacing: -0.5,
-    paddingVertical: 10,
+    paddingVertical: 20,
+    borderEndEndRadius: 28,
+    borderEndStartRadius: 28
   },
   containerIcon: {
     backgroundColor: variables.colors.lightCream,
