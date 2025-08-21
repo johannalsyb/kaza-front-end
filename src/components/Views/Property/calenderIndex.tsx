@@ -165,7 +165,6 @@ const CalendarComponent = (props: Props) => {
 						justifyContent: 'space-around',
 						paddingTop: isMobile ? 16 : 0,
 						paddingHorizontal: isMobile ? 16 : 30,
-						paddingBottom: 'auto',
 					}}>
 					{isMobile && <View style={styles.divider} />}
 					{selectedDate ?
@@ -189,6 +188,7 @@ const CalendarComponent = (props: Props) => {
 								}}
 								selected={true}
 							/>
+							{!isMobile && <View style={styles.availablelistDatesdivider} />}
 						</>
 						:
 						<ListAvailbleDates
@@ -200,23 +200,20 @@ const CalendarComponent = (props: Props) => {
 					<View
 						style={{
 							display: 'flex',
-							flexDirection: selectedDate ? 'row' : 'column',
-							// justifyContent: 'space-between',
-							// alignItems: 'center',
-							// width: selectedDate ? 'auto' : '100%',
-							// gap: 10,
-							// margin: 'auto',
-							// paddingHorizontal: isMobile ? 0 : 30,
+							flexDirection: selectedDate ? 'row-reverse' : 'column',
+							justifyContent: 'space-between',
+							width: '100%',
+							gap: 10,
+							paddingHorizontal: isMobile ? 0 : 30,
 							paddingBottom: 40,
-							marginTop: isMobile ? 61 : 15,
-							backgroundColor: 'pink',
+							marginTop: isMobile ? 40 : 15,
 						}}>
 						<KButton
 							text={selectedDate ? "Send Request" : "Suggest a date"}
 							onPress={() => setIsOpenCalendar(true)}
 							color="primary"
-							style={{ width: '100%' }}
 							disabled={availableDates?.length === 3}
+							style={{ width: selectedDate ? '45%' : '100%' }}
 						/>
 						<KButton
 							text="Back"
@@ -224,7 +221,7 @@ const CalendarComponent = (props: Props) => {
 								setShowCalendarModal(false);
 							}}
 							color="greenLight"
-							style={{ width: '100%' }}
+							style={{ width: selectedDate ? '45%' : '100%' }}
 						/>
 					</View>
 				</ScrollView>
@@ -336,15 +333,15 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	label: {
-    alignItems: 'center',
-    width: '100%',
-    textAlign: 'center',
-    flex: 1,
-    margin: 'auto',
-    lineHeight: 13,
-    letterSpacing: -0.5,
-    paddingVertical: 10,
-  },
+		alignItems: 'center',
+		width: '100%',
+		textAlign: 'center',
+		flex: 1,
+		margin: 'auto',
+		lineHeight: 13,
+		letterSpacing: -0.5,
+		paddingVertical: 10,
+	},
 	button: {
 		backgroundColor: variables.colors.lightCream,
 		display: 'flex',
@@ -367,5 +364,15 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: 80,
 		columnGap: 23,
+	},
+	availablelistDatesdivider: {
+		width: '100%',
+		margin: 'auto',
+		height: 1,
+		marginVertical: 26,
+		borderRadius: 20,
+		backgroundColor: '#C6C5BA',
+		marginTop: 10,
+		marginBottom: 10,
 	},
 });
