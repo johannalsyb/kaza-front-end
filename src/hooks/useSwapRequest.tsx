@@ -31,6 +31,13 @@ export type SwapRequestStatus =
   | 'accepted'
   | 'declined'
 
+interface SendSwapRequestParams {
+    startDate: Date
+    endDate: Date
+    isCustomDate?: boolean
+    to?: string
+  }
+
 const useSwapRequest = (propertyId: string) => {
   const auth = useAuthentication()
   const user = auth.user
@@ -77,7 +84,7 @@ const useSwapRequest = (propertyId: string) => {
       })
   }, [propertyId])
 
-  const sendSwapRequest = (to?: string) => {
+  const sendSwapRequest = (props: SendSwapRequestParams) => {
     if (!config) return
     const prevValue = swapRequestStatus
     setSwapRequestStatus('unknown')
@@ -95,9 +102,9 @@ const useSwapRequest = (propertyId: string) => {
         else return swaps.requests.new(
           r[0].id,
           propertyId,
-          startDate,
-          endDate,
-          isCustomDate
+          props.startDate,
+          props.endDate,
+          props.isCustomDate
         )
 
       })
@@ -106,7 +113,7 @@ const useSwapRequest = (propertyId: string) => {
           setSwapRequestStatus('sent')
           setShowModal(<>
             <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
-            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{to ? ` to ${to}` : ""}.</KText>
+            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
             <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>Open the chat now to discuss further.</KText>
             <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
               <KButton text="Close" color="light" onPress={() => setShowModal(undefined)} style={{ marginRight: 5, borderColor: "white" }} />
