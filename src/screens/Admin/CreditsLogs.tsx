@@ -143,7 +143,7 @@ export default function LogsScreen() {
 			if (debouncedDate) qs.date = debouncedDate
 
 			const res = await admin.credits.logs(qs)
-			
+
 			// Handle the response based on your actual API structure
 			// If res.data is the array directly (current type definition)
 			if (Array.isArray(res.data)) {
@@ -302,7 +302,7 @@ export default function LogsScreen() {
 					<KIcon
 						name="close"
 						size={"large"}
-						style={{padding: 5, borderRadius: 100 }}
+						style={{ padding: 5, borderRadius: 100 }}
 						onPress={() => {
 							setFromFilter("")
 							setToFilter("")
@@ -362,24 +362,39 @@ export default function LogsScreen() {
 						<ActivityIndicator size="small" />
 					) : (
 						<Dropdown
+							// items={users.map(
+							// 	u =>
+							// 		`Name: ${u.name}${u.email ? " - Email: " + u.email : ""}${u.phone ? " - Phone: " + u.phone : ""
+							// 		}`
+							// )}
 							items={users.map(
-								u =>
-									`Name: ${u.name}${u.email ? " - Email: " + u.email : ""}${u.phone ? " - Phone: " + u.phone : ""
-									}`
+								u => `${u.id}::Name: ${u.name}${u.email ? " - Email: " + u.email : ""}${u.phone ? " - Phone: " + u.phone : ""}`
 							)}
-							onChange={(selectedItems) => {
-								const picked = users.find(u => {
-									const name = u.name || ""
-									const email = u.email || ""
-									const phone = u.phone || ""
-									const selected = selectedItems[0] || ""
+							// onChange={(selectedItems) => {
+							// 	const picked = users.find(u => {
+							// 		const name = u.name || ""
+							// 		const email = u.email || ""
+							// 		const phone = u.phone || ""
+							// 		const selected = selectedItems[0] || ""
 
-									return (
-										selected.includes(name) ||
-										selected.includes(email) ||
-										selected.includes(phone)
-									)
-								})
+							// 		return (
+							// 			selected.includes(name) ||
+							// 			selected.includes(email) ||
+							// 			selected.includes(phone)
+							// 		)
+							// 	})
+
+							// 	setSelectedUser(picked?.id || "")
+							// 	setSelectedUserTotalCredits(
+							// 		picked && typeof picked.credits === "number"
+							// 			? String(picked.credits)
+							// 			: ""
+							// 	)
+							// }
+							onChange={(selectedItems) => {
+								const raw = selectedItems[0] || ""
+								const id = raw.split("::")[0] // 👈 extract id from "id::label"
+								const picked = users.find(u => u.id === id)
 
 								setSelectedUser(picked?.id || "")
 								setSelectedUserTotalCredits(
@@ -387,7 +402,8 @@ export default function LogsScreen() {
 										? String(picked.credits)
 										: ""
 								)
-							}}
+							}
+							}
 							showSearch={true}
 							emptyInitially={true}
 							dropdownStyle={{ width: "100%", maxHeight: 300 }}
