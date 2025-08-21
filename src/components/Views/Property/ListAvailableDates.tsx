@@ -12,12 +12,7 @@ import AvalibleSlot from './DateSlot';
 
 const ListAvailbleDates = (props: any) => {
   const { items, setSelectedDate } = props;
-  const range = (item: any) => {
-    if (!item || !item.value || !item.value[0] || !item.value[1]) return '';
-    return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(
-      item.value[1],
-    ).format('MMM DD')}`;
-  };
+
   const { isMobile } = useIsMobile();
 
   return (
@@ -71,10 +66,9 @@ const ListAvailbleDates = (props: any) => {
             {items.map((item: any) => (
               <AvalibleSlot
                 key={item.id}
-                range={range(item)}
-                year={item?.value?.[1] ? dayjs(item.value[1]).format('YYYY') : ''}
-                onPress={(r, y) => {
-                  setSelectedDate({ range: r, year: y })
+                dates={item}
+                onPress={(range) => {
+                  setSelectedDate(range)
                 }}
               />
             ))}

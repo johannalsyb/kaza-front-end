@@ -3,11 +3,11 @@ import api from "."
 
 const requests = {
     all: () => api.get<Api.Swaps.SwapRequest[]>(`/swaps/requests`),
-    new: (fromPropertyId: string, toPropertyId: string, startDate: Date, endDate: Date, isCustomDate: boolean = false) => api.post<Api.Swaps.SwapRequest>(`/swaps/requests`, {
+    new: (fromPropertyId: string, toPropertyId: string, dateFrom: Date, dateTo: Date, isCustomDate: boolean = false) => api.post<Api.Swaps.SwapRequest>(`/swaps/requests`, {
         fromPropertyId,
         toPropertyId,
-        startDate: startDate ? startDate.toISOString().split("T")[0] : undefined,
-        endDate: endDate ? endDate.toISOString().split("T")[0] : undefined,
+        dateFrom: dateFrom ? dateFrom.toISOString().split("T")[0] : undefined,
+        dateTo: dateTo ? dateTo.toISOString().split("T")[0] : undefined,
         isCustomDate
     }),
     history: () => api.get<Api.Swaps.SwapRequest[]>(`/swaps/requests/history`),

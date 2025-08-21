@@ -1,24 +1,32 @@
+import dayjs from 'dayjs';
 import { Pressable, StyleSheet } from 'react-native';
 
 import KIcon from '../../../components/KIcon/KIcon';
 import KText from '../../../components/KText/index';
 import variables from '../../../styles/variables';
 
-export interface IAvalibleSlot {
-	range: string;
-	year: string;
-	onPress: (range: string, year: string) => void;
+export interface IDateSlot {
+	dates: any;
+	onPress: (range: any) => void;
 	selected?: boolean;
 }
 
-const AvalibleSlot = ({ range, year, onPress, selected }: IAvalibleSlot) => {
+const range = (item: any) => {
+	if (!item || !item.value || !item.value[0] || !item.value[1]) return '';
+	return `${dayjs(item.value[0]).format('MMM DD')} - ${dayjs(
+		item.value[1],
+	).format('MMM DD')}`;
+};
+
+const DateSlot = ({ dates, onPress, selected }: IDateSlot) => {
+	console.log("DATES: ", dates);
 	return (
 		<Pressable
 			style={[
 				styles.dateContainer,
 				{ backgroundColor: selected ? variables.colors.yellow : variables.colors.white },
 			]}
-			onPress={() => onPress(range, year)}
+			onPress={() => onPress(dates)}
 		>
 			<KIcon
 				name="calendar"
@@ -26,9 +34,9 @@ const AvalibleSlot = ({ range, year, onPress, selected }: IAvalibleSlot) => {
 				style={{ opacity: 0.5 }}
 			/>
 			<KText style={{ color: '#000', fontSize: 15 }}>
-				{range}
+				{range(dates)}
 				<KText style={{ color: 'rgba(0,0,0,0.5)', marginLeft: 16 }}>
-					{year}
+					{dates?.value?.[1] ? dayjs(dates.value[1]).format('YYYY') : ''}
 				</KText>
 			</KText>
 			<KIcon
@@ -41,7 +49,7 @@ const AvalibleSlot = ({ range, year, onPress, selected }: IAvalibleSlot) => {
 	);
 };
 
-export default AvalibleSlot;
+export default DateSlot;
 
 const styles = StyleSheet.create({
 	dateContainer: {

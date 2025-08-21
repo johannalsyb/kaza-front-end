@@ -14,28 +14,29 @@ import variables from '../../../styles/variables';
 import KText from '../../../components/KText/index';
 import AvalibleSlot from './DateSlot';
 import KModal from '../../KModal/KModal';
+import useSwapRequest from '../../../hooks/useSwapRequest';
 
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 type Props = {
+	propertyId: string;
 	autoOpenCalendar?: boolean;
 	initialHostDates?: [Date, Date] | null;
 };
 
 const CalendarComponent = (props: Props) => {
 	const [availableDates, setAvailableDates] = useAtom(avilebleDatesAtom);
-	const [selectedDate, setSelectedDate] = useState<{ range: string; year: string } | null>(null);
+	const [selectedDate, setSelectedDate] = useState<any>(null);
 	const [isOpenCalendar, setIsOpenCalendar] = useState(
 		props.autoOpenCalendar ?? false,
 	);
 	const [value, onChange] = useState<Value>([new Date(), new Date()]);
 	const setShowCalendarModal = useSetAtom(showModalCalendarAtom);
-	const [calendarSelectedDateRange, setCalendarSelectedDateRange] =
-		useState<Value>([new Date(), new Date()]);
+	const [calendarSelectedDateRange, setCalendarSelectedDateRange] = useState<Value>([new Date(), new Date()])
 
-	// seed preferred dates by host if provided
+	useEffect(() => console.log("selectedDate: ", selectedDate), [selectedDate]);
 	useEffect(() => {
 		if (props.initialHostDates && Array.isArray(props.initialHostDates)) {
 			const [start, end] = props.initialHostDates
@@ -50,14 +51,18 @@ const CalendarComponent = (props: Props) => {
 		}
 	}, [props.initialHostDates, setAvailableDates])
 
+	const { sendSwapRequest } = useSwapRequest(props.propertyId)
+
 	const handleClickAddSlots = () => {
-		setAvailableDates([
-			{ id: availableDates.length + 1, value },
-			...availableDates,
-		]);
+		console.log("Value: ", value)
+		// setAvailableDates([
+		// 	{ id: availableDates.length + 1, value },
+		// 	...availableDates,
+		// ]);
 		adjustRangeIfBlocked(value as [Date, Date]);
 		setIsOpenCalendar(false);
 		setCalendarSelectedDateRange([new Date(), new Date()]);
+		setSelectedDate({ id: availableDates.length + 1, value })
 	};
 
 	const isDateInRanges = (date: Date) => {
@@ -104,7 +109,6 @@ const CalendarComponent = (props: Props) => {
 
 	const [itemEdit, setItemEdit] = useState<any>(undefined);
 	const handleClickEdit = (item: any) => {
-		// console.log('availableDates', availableDates, item)
 		setIsOpenCalendar(true);
 		let updateItems = availableDates.filter((i: any) => i.id !== item.id);
 
@@ -181,11 +185,8 @@ const CalendarComponent = (props: Props) => {
 								Dates
 							</KText>
 							<AvalibleSlot
-								range={selectedDate.range}
-								year={selectedDate.year}
-								onPress={(range, year) => {
-									setSelectedDate({ range, year });
-								}}
+								dates={selectedDate}
+								onPress={() => null}
 								selected={true}
 							/>
 							{!isMobile && <View style={styles.availablelistDatesdivider} />}
@@ -210,7 +211,14 @@ const CalendarComponent = (props: Props) => {
 						}}>
 						<KButton
 							text={selectedDate ? "Send Request" : "Suggest a date"}
-							onPress={() => setIsOpenCalendar(true)}
+							onPress={selectedDate ? () => {
+								sendSwapRequest({
+									dateFrom: selectedDate.value[0],
+									dateTo: selectedDate.value[1],
+									isCustomDate: true,
+								})
+								setShowCalendarModal(false)
+							} : () => setIsOpenCalendar(true)}
 							color="primary"
 							disabled={availableDates?.length === 3}
 							style={{ width: selectedDate ? '45%' : '100%' }}

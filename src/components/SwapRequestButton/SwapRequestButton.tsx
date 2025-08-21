@@ -122,9 +122,9 @@ export default forwardRef<SwapRequestButtonHandle, Props>(
             icon={hideIcon ? undefined : 'swap'}
             iconSize="medium"
             onPress={() => {
-              // if (buttonText === 'Request Swap') {
-              //   setShowCalendarModal(true);
-              // }
+              if (buttonText === 'Request Swap') {
+                setShowCalendarModal(true);
+              }
               if (buttonDisabled) return
               if ((properties || []).some(p => p.private)) {
                 // setShowModal(
@@ -152,10 +152,8 @@ export default forwardRef<SwapRequestButtonHandle, Props>(
                 //     />
                 //   </View>,
                 // )
-
                 return
               }
-
               user ?
                 properties && properties?.length > 0 ?
                   // sendSwapRequest()

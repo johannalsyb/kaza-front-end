@@ -32,8 +32,8 @@ export type SwapRequestStatus =
   | 'declined'
 
 interface SendSwapRequestParams {
-    startDate: Date
-    endDate: Date
+    dateFrom: Date
+    dateTo: Date
     isCustomDate?: boolean
     to?: string
   }
@@ -102,8 +102,8 @@ const useSwapRequest = (propertyId: string) => {
         else return swaps.requests.new(
           r[0].id,
           propertyId,
-          props.startDate,
-          props.endDate,
+          props.dateFrom,
+          props.dateTo,
           props.isCustomDate
         )
 
