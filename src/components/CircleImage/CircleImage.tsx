@@ -30,7 +30,7 @@ export const CircleImage = ({
     source = `${cfg.url}${imageId}${thumbnail ? cfg.thumbnailSuffix : cfg.suffix
       }`
   }
- console.log('defualt img:-',defaultCircleImage)
+
   return (
     <>
       <KImage

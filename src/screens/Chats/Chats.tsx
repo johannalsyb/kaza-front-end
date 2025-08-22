@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
 import { ActivityIndicator, Pressable, View, Text } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
@@ -30,6 +31,7 @@ import Decline from '../../components/Views/SwapRequest/Decline'
 import KTextInput from '../../components/Form/KTextInput/KTextInput'
 import { CircleImage } from '../../components/CircleImage/CircleImage'
 import VerifyAccount from '../../components/Views/SwapRequest/VerifyAccount'
+import { swapRequestStatusAtom } from '../../atoms'
 
 type Props = NativeStackScreenProps<NavStackParamList, 'Chats' | 'Chat'>
 export type SwapRequestChat = {
@@ -59,6 +61,7 @@ export default ({
   const [showChatMenuDots, setShowChatMenuDots] = useState<string | null>(null)
   const [showChatMenu, setShowChatMenu] = useState<string | null>(null)
   const [showMobileSearchBar, setShowMobileSearchBar] = useState(false)
+  const [, setStatuses] = useAtom(swapRequestStatusAtom)
 
   const { config, overlay } = useConfig()
   const showOverlay = overlay || config?.features.chat === false
@@ -195,6 +198,10 @@ export default ({
           ...request,
           swapRequest: sr
         })
+        setStatuses(prev => ({
+          ...prev,
+          [sr.toProperty]: sr.status === 'pending' ? 'none' : (sr.status)
+        }))
         setShowModal(undefined)
       }}
       onError={() => {

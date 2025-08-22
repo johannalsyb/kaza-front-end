@@ -14,14 +14,15 @@ import variables from '../../../styles/variables';
 import KText from '../../../components/KText/index';
 import AvalibleSlot from './DateSlot';
 import KModal from '../../KModal/KModal';
-import useSwapRequest from '../../../hooks/useSwapRequest';
+import SwapRequestButton from '../../SwapRequestButton/SwapRequestButton';
+import { Property } from '../../../common/types/api/properties';
 
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 type Props = {
-	propertyId: string;
+	property: Property;
 	autoOpenCalendar?: boolean;
 	initialHostDates?: [Date, Date] | null;
 };
@@ -32,7 +33,7 @@ const CalendarComponent = (props: Props) => {
 	const [isCustomDate, setIsCustomDate] = useState(false);
 	const [isOpenCalendar, setIsOpenCalendar] = useState(props.autoOpenCalendar ?? false);
 	const [value, onChange] = useState<Value>([new Date(), new Date()]);
-	const setShowCalendarModal = useSetAtom(showModalCalendarAtom);
+	const [showCalendarModal, setShowCalendarModal] = useAtom(showModalCalendarAtom)
 	const [calendarSelectedDateRange, setCalendarSelectedDateRange] = useState<Value>([new Date(), new Date()])
 
 	useEffect(() => console.log("selectedDate: ", selectedDate), [selectedDate]);
@@ -49,8 +50,6 @@ const CalendarComponent = (props: Props) => {
 			})
 		}
 	}, [props.initialHostDates, setAvailableDates])
-
-	const { sendSwapRequest } = useSwapRequest(props.propertyId)
 
 	const handleClickAddSlots = () => {
 		console.log("Value: ", value)
@@ -129,10 +128,17 @@ const CalendarComponent = (props: Props) => {
 			setCalendarSelectedDateRange([new Date(), new Date()]);
 		}
 	}, [isOpenCalendar]);
+
+	let params = {
+		dateFrom: selectedDate?.value[0],
+		dateTo: selectedDate?.value[1],
+		isCustomDate: isCustomDate,
+	}
+
 	return (
 		<>
-			<KModal
-				visible={showModalCalendarAtom ? true : false}
+			{showCalendarModal && <KModal
+				visible={showCalendarModal ? true : false}
 				setVisibility={() => setShowCalendarModal(false)}
 				showCross={isMobile ? false : true}
 				style={{
@@ -210,7 +216,7 @@ const CalendarComponent = (props: Props) => {
 							paddingBottom: 40,
 							marginTop: isMobile ? 61 : 15,
 						}}>
-						<KButton
+						{/* <KButton
 							text={selectedDate ? "Send Request" : "Suggest a date"}
 							onPress={selectedDate ? () => {
 								sendSwapRequest({
@@ -222,7 +228,20 @@ const CalendarComponent = (props: Props) => {
 							} : () => setIsOpenCalendar(true)}
 							color="primary"
 							style={{ width: selectedDate ? '45%' : '100%' }}
+						/> */}
+						{selectedDate ? <SwapRequestButton
+							property={props.property}
+							params={params}
+							hideIcon
 						/>
+							:
+							<KButton
+								text={"Suggest a date"}
+								onPress={() => setIsOpenCalendar(true)}
+								color="primary"
+								style={{ width: selectedDate ? '45%' : '100%' }}
+							/>
+						}
 						<KButton
 							text="Back"
 							onPress={() => {
@@ -233,7 +252,7 @@ const CalendarComponent = (props: Props) => {
 						/>
 					</View>
 				</ScrollView>
-			</KModal>
+			</KModal>}
 			{isOpenCalendar && <KSideModal
 				visible={isOpenCalendar}
 				onClose={() => {

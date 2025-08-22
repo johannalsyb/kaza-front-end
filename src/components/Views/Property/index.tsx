@@ -346,7 +346,7 @@ export default (props: Props) => {
         </KModal> */}
       {isCalendarOpen && (
         <CalendarComponent
-          propertyId={props.id}
+          property={property}
           autoOpenCalendar={!(property.owner.dateFrom && property.owner.dateTo)}
           initialHostDates={
             property.owner.dateFrom && property.owner.dateTo
