@@ -8,20 +8,14 @@ import { useEffect, useState } from 'react'
 import { SwapRequest } from '../common/types/api/swap'
 import { toastError, toastInfo } from '../components/Toast/Toast'
 import VerifyAccount from '../components/Views/SwapRequest/VerifyAccount'
-import { Property } from '../common/types/api/properties'
-import users from '../api/users'
 import Decline from '../components/Views/SwapRequest/Decline'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import Properties from '../api/properties'
-import { set } from '../utils/Storage/storage'
+import { useNavigation } from '@react-navigation/native'
 import useConfig from './useConfig'
 import KText from '../components/KText'
-import { View } from 'react-native'
-import KButton from '../components/KButton/KButton'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../navigation/screens'
-import variables from '../styles/variables'
 import { swapRequestStatusAtom, showModalCalendarAtom } from '../atoms'
+import useIsMobile from './useIsMobile'
 
 export type SwapRequestStatus =
   | 'unknown'
@@ -49,6 +43,7 @@ const useSwapRequest = (propertyId: string) => {
   const setStatus = (status: SwapRequestStatus) => {
     setStatuses(prev => ({ ...prev, [propertyId]: status }))
   }
+  const isMobile = useIsMobile()
   const [, setShowCalendarModal] = useAtom(showModalCalendarAtom)
   const { config } = useConfig()
   const setShowSignIn = useSetAtom(showSignInAtom)
@@ -144,7 +139,8 @@ const useSwapRequest = (propertyId: string) => {
           e.statusText ||
           e.message ||
           'An error occured'
-        toastInfo(message)
+        
+        toastError(message, "Error", { placement: isMobile ? 'top' : 'center' })
         if (message === 'User not verified') {
           setShowModal(
             <VerifyAccount onClicked={() => setShowModal(undefined)} />,

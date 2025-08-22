@@ -6,7 +6,6 @@ import variables from '../../styles/variables';
 const BASIC_TOAST: ToastOptions = {
   animationType: 'slide-in',
   // duration: 50000,
-  placement: 'bottom',
   successColor: variables.colors.green,
   dangerColor: variables.colors.orange,
   warningColor: variables.colors.greenLight,
