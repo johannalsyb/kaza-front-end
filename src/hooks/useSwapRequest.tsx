@@ -116,24 +116,23 @@ const useSwapRequest = (propertyId: string) => {
       .then(r => {
         if (r?.data) {
           setStatus('sent')
-          setShowModal(<>
-            <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
-            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
-            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>Open the chat now to discuss further.</KText>
-            <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
-              <KButton text="Close" color="light" style={{ marginRight: 5, borderColor: "white" }}
-              onPress={() => {
-                setShowModal(undefined)
-                setShowCalendarModal(false)
-                }}
-              />
-              <KButton text="Chat now" color="primary" onPress={() => {
-                setShowModal(undefined)
-                setShowCalendarModal(false)
-                navigation.navigate('Chat', { id: r.data.id })
-              }} style={{ marginLeft: 5 }} />
-            </View>
-          </>)
+          setShowCalendarModal(false)
+          // setShowModal(<>
+          //   <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
+          //   <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
+          //   <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>Open the chat now to discuss further.</KText>
+          //   <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
+          //     <KButton text="Close" color="light" style={{ marginRight: 5, borderColor: "white" }}
+          //     onPress={() => {
+          //       setShowModal(undefined)
+          //       }}
+          //     />
+          //     <KButton text="Chat now" color="primary" onPress={() => {
+          //       setShowModal(undefined)
+          //       navigation.navigate('Chat', { id: r.data.id })
+          //     }} style={{ marginLeft: 5 }} />
+          //   </View>
+          // </>)
         }
         else setSwapRequest(null)
       })
