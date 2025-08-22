@@ -271,6 +271,7 @@ const CalendarComponent = (props: Props) => {
 							width: '100%',
 							paddingTop: 23,
 							paddingBottom: 50,
+							paddingHorizontal: 16,
 							borderTopLeftRadius: 28,
 							borderTopRightRadius: 28,
 						}
