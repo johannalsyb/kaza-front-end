@@ -37,7 +37,7 @@ export default ({property}: Props) => {
           )}`
         : 'Flexible';
     const swapForText = swapLocations?.split('\n') || ['Flexible'];
-    console.log('property:-', property);
+    
     return (
       <View style={styles.container}>
         <View

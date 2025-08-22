@@ -2,6 +2,7 @@ import { Api, User } from '../common'
 import { atom } from 'jotai'
 import { Component, Dispatch, ReactNode, SetStateAction } from 'react'
 import Property from '../common/types/Property'
+import { SwapRequestStatus } from '../hooks/useSwapRequest'
 
 export interface IKAlert {
   open: boolean
@@ -31,4 +32,5 @@ export const showModalCalendarAtom = atom<boolean>(false)
 export const showAlert = atom<IKAlert>({} as IKAlert)
 
 export const avilebleDatesAtom = atom<any>([])
+export const swapRequestStatusAtom = atom<Record<string, SwapRequestStatus>>({})
 
