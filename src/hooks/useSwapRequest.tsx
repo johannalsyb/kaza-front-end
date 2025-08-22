@@ -6,22 +6,16 @@ import swaps from '../api/swaps'
 import { PublicUser } from '../common/types/User'
 import { useEffect, useState } from 'react'
 import { SwapRequest } from '../common/types/api/swap'
-import { toastError } from '../components/Toast/Toast'
+import { toastError, toastInfo } from '../components/Toast/Toast'
 import VerifyAccount from '../components/Views/SwapRequest/VerifyAccount'
-import { Property } from '../common/types/api/properties'
-import users from '../api/users'
 import Decline from '../components/Views/SwapRequest/Decline'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import Properties from '../api/properties'
-import { set } from '../utils/Storage/storage'
+import { useNavigation } from '@react-navigation/native'
 import useConfig from './useConfig'
 import KText from '../components/KText'
-import { View } from 'react-native'
-import KButton from '../components/KButton/KButton'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { NavStackParamList } from '../navigation/screens'
-import variables from '../styles/variables'
 import { swapRequestStatusAtom, showModalCalendarAtom } from '../atoms'
+import useIsMobile from './useIsMobile'
 
 export type SwapRequestStatus =
   | 'unknown'
@@ -33,11 +27,11 @@ export type SwapRequestStatus =
   | 'declined'
 
 interface SendSwapRequestParams {
-    dateFrom: Date
-    dateTo: Date
-    isCustomDate?: boolean
-    to?: string
-  }
+  dateFrom: Date
+  dateTo: Date
+  isCustomDate?: boolean
+  to?: string
+}
 
 const useSwapRequest = (propertyId: string) => {
   const auth = useAuthentication()
@@ -49,6 +43,7 @@ const useSwapRequest = (propertyId: string) => {
   const setStatus = (status: SwapRequestStatus) => {
     setStatuses(prev => ({ ...prev, [propertyId]: status }))
   }
+  const isMobile = useIsMobile()
   const [, setShowCalendarModal] = useAtom(showModalCalendarAtom)
   const { config } = useConfig()
   const setShowSignIn = useSetAtom(showSignInAtom)
@@ -116,35 +111,36 @@ const useSwapRequest = (propertyId: string) => {
       .then(r => {
         if (r?.data) {
           setStatus('sent')
-          setShowModal(<>
-            <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
-            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
-            <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>Open the chat now to discuss further.</KText>
-            <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
-              <KButton text="Close" color="light" style={{ marginRight: 5, borderColor: "white" }}
-              onPress={() => {
-                setShowModal(undefined)
-                setShowCalendarModal(false)
-                }}
-              />
-              <KButton text="Chat now" color="primary" onPress={() => {
-                setShowModal(undefined)
-                setShowCalendarModal(false)
-                navigation.navigate('Chat', { id: r.data.id })
-              }} style={{ marginLeft: 5 }} />
-            </View>
-          </>)
+          setShowCalendarModal(false)
+          // setShowModal(<>
+          //   <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
+          //   <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
+          //   <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>Open the chat now to discuss further.</KText>
+          //   <View style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
+          //     <KButton text="Close" color="light" style={{ marginRight: 5, borderColor: "white" }}
+          //     onPress={() => {
+          //       setShowModal(undefined)
+          //       }}
+          //     />
+          //     <KButton text="Chat now" color="primary" onPress={() => {
+          //       setShowModal(undefined)
+          //       navigation.navigate('Chat', { id: r.data.id })
+          //     }} style={{ marginLeft: 5 }} />
+          //   </View>
+          // </>)
         }
         else setSwapRequest(null)
       })
       .catch(e => {
+        setShowCalendarModal(false)
         console.error(e)
         const message =
           e.json?.data?.error ||
           e.statusText ||
           e.message ||
           'An error occured'
-        toastError(message)
+        
+        toastError(message, "Error", { placement: isMobile ? 'top' : 'center' })
         if (message === 'User not verified') {
           setShowModal(
             <VerifyAccount onClicked={() => setShowModal(undefined)} />,
@@ -195,7 +191,7 @@ const useSwapRequest = (propertyId: string) => {
           e.statusText ||
           e.message ||
           'An error occured'
-        toastError(message)
+        toastInfo(message)
         if (message === 'User not verified') {
           setShowModal(
             <VerifyAccount onClicked={() => setShowModal(undefined)} />,
