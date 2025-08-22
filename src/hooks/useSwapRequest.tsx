@@ -6,7 +6,7 @@ import swaps from '../api/swaps'
 import { PublicUser } from '../common/types/User'
 import { useEffect, useState } from 'react'
 import { SwapRequest } from '../common/types/api/swap'
-import { toastError } from '../components/Toast/Toast'
+import { toastError, toastInfo } from '../components/Toast/Toast'
 import VerifyAccount from '../components/Views/SwapRequest/VerifyAccount'
 import { Property } from '../common/types/api/properties'
 import users from '../api/users'
@@ -33,11 +33,11 @@ export type SwapRequestStatus =
   | 'declined'
 
 interface SendSwapRequestParams {
-    dateFrom: Date
-    dateTo: Date
-    isCustomDate?: boolean
-    to?: string
-  }
+  dateFrom: Date
+  dateTo: Date
+  isCustomDate?: boolean
+  to?: string
+}
 
 const useSwapRequest = (propertyId: string) => {
   const auth = useAuthentication()
@@ -137,13 +137,14 @@ const useSwapRequest = (propertyId: string) => {
         else setSwapRequest(null)
       })
       .catch(e => {
+        setShowCalendarModal(false)
         console.error(e)
         const message =
           e.json?.data?.error ||
           e.statusText ||
           e.message ||
           'An error occured'
-        toastError(message)
+        toastInfo(message)
         if (message === 'User not verified') {
           setShowModal(
             <VerifyAccount onClicked={() => setShowModal(undefined)} />,
@@ -194,7 +195,7 @@ const useSwapRequest = (propertyId: string) => {
           e.statusText ||
           e.message ||
           'An error occured'
-        toastError(message)
+        toastInfo(message)
         if (message === 'User not verified') {
           setShowModal(
             <VerifyAccount onClicked={() => setShowModal(undefined)} />,
