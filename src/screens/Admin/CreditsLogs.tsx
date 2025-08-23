@@ -8,6 +8,7 @@ import Dropdown from '../../components/Dropdown/Dropdown'
 import { toastSuccess, toastError } from '../../components/Toast/Toast'
 import { phone } from '../../components/KIcon/icons'
 import variables from '../../styles/variables'
+import KText from '../../components/KText'
 
 type Reason = 'on sign up' | 'on referral' | 'on swap'
 
@@ -58,6 +59,25 @@ export default function LogsScreen() {
 	const [page, setPage] = useState(1)
 	const [limit] = useState(10) // fixed 10 per page
 	const [totalCount, setTotalCount] = useState(0)
+
+	const [cLoading, setCLoading] = useState(false)
+	const [result, setResult] = useState<string | null>(null)
+
+	const handleRunTestCron = async () => {
+		try {
+			setCLoading(true);
+			setResult(null);
+
+			const res = await admin.credits.runTestCron();
+
+			setResult(res.data.message || "Test cron executed successfully");
+		} catch (err: any) {
+			console.error("Error running test cron:", err);
+			setResult(err?.response?.data?.error || "Failed to run test cron");
+		} finally {
+			setCLoading(false);
+		}
+	};
 
 
 	// filters
@@ -257,6 +277,7 @@ export default function LogsScreen() {
 
 	return (
 		<View style={styles.container}>
+			{/* main heading where credit logs and add credits button */}
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 				<Text style={styles.header}>Credit Logs</Text>
 				<KButton
@@ -271,6 +292,23 @@ export default function LogsScreen() {
 					text='Add Credits'
 				/>
 			</View>
+
+			{/* <View>
+				<KButton
+					style={styles.hBtn}
+					onPress={handleRunTestCron}
+					disabled={cLoading}
+				>
+				<KText style={{color:'white'}}>{cLoading ? "Running..." : "Run Test Cron"}</KText>	
+				</KButton>
+				{result && (
+					<KText style={{ marginTop: 10 }}>
+						{result}
+					</KText>
+				)}
+			</View> */}
+
+			{/* Filtering the credits logs */}
 
 			<View style={styles.searchBar}>
 				<TextInput

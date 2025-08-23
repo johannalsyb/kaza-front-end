@@ -128,6 +128,8 @@ export default ({
           ...request,
           swapRequest: res.data
         })
+        // Refresh user data to update credits
+        auth.check(true)
       })
       .catch(e => {
         console.error(e)
@@ -168,6 +170,8 @@ export default ({
           ...request,
           swapRequest: res.data
         })
+        // Refresh user data to update credits
+        auth.check(true)
       })
       .catch(e => {
         console.error(e)
