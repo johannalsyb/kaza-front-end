@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SwapRequest } from "../../../../common/types/api/swap";
 import swaps from "../../../../api/swaps";
 import { toastError } from "../../../Toast/Toast";
+import useAuthentication from "../../../../hooks/useAuthentication";
 
 type Props = {
     swapRequest: SwapRequest
@@ -17,6 +18,7 @@ type Props = {
 export default (props:Props) => {
     const [loading, setLoading] = useState(false)
     const [note, setNote] = useState<string>("")
+    const auth = useAuthentication()
 
     return <View style={{padding: 20, alignItems: "center"}}>
           <KText style={{fontSize: 30, fontWeight: "bold"}}>Decline swap request</KText>
@@ -29,6 +31,8 @@ export default (props:Props) => {
             .then(r => {
             //   setSwapRequestStatus("declined")
                 props.onDeclined(r.data)
+                // Refresh user data to update credits
+                auth.check(true)
             })
             .catch(e => {
               console.error(e)
