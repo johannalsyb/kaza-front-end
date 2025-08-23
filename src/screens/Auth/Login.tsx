@@ -174,7 +174,8 @@ export default ({ navigation }: Props) => {
             margin: isMobile ? 'auto' : undefined,
             borderTopStartRadius: isMobile ? 20 : undefined,
             borderTopRightRadius: isMobile ? 20 : undefined,
-            zIndex: 33334
+            zIndex: 33334,
+            
          }]}
         >
         <View style={{ width: '100%', maxWidth: 320 }}>
@@ -272,6 +273,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     flexDirection: 'row',
     paddingHorizontal: 0,
+  
+    
   },
   containerLogin: {
     display: 'flex',
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
   },
    responsivetext: {
        maxWidth: '100%',
-      //  margin: 'auto',
+   
        fontWeight: '600',
        textAlign: 'left',
        fontStyle: 'normal',

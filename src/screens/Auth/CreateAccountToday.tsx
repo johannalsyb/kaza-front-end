@@ -26,7 +26,7 @@ import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButt
 import LeftSide from '../../components/Screens/Auth/LeftSide';
 import VerifyPhone from '../../components/VerifyPhone';
 import {toastSuccess} from '../../components/Toast/Toast';
-import {Link} from '@react-navigation/native';
+import {Link , useRoute, RouteProp} from '@react-navigation/native';
 import {showComponentAtom,showModalRegisterPlaceAtom} from '../../atoms';
 import React from 'react'
 import { useSetAtom } from 'jotai'
@@ -34,6 +34,12 @@ import {  } from '../../atoms'
 import { useWindowDimensions } from 'react-native';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 import Modal from '../../components/Modal';
+
+type RegisterScreenParams = {
+  Register: {
+    source?: string;
+  };
+};
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
 export default (props: any) => {
   const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
@@ -48,6 +54,15 @@ export default (props: any) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const route = useRoute<RouteProp<RegisterScreenParams, 'Register'>>();
+  const [source, setSource] = useState<string | null>(null);
+
+  useEffect(() => {
+  if (route.params?.source) {
+    setSource(route.params.source);
+  }
+  }, [route.params]);
+   console.log("search param:-", source);
   
   useEffect(() => {
     authentication.check();
@@ -248,8 +263,7 @@ export default (props: any) => {
           </KText>
         </View>
       ) : null}
-<View>
-   </View>
+
       {!isMobile && (
         <View style={{position: 'absolute', zIndex: 9933, top: 45, right: 20,backgroundColor: variables.colors.greenLight, padding: 8, borderRadius: 30}}>
           <KIcon

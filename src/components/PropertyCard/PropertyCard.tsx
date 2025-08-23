@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View, ViewStyle, Platform, FlatList } from 'react-native'
+import { Pressable, StyleSheet, View, ViewStyle, Platform, FlatList ,useWindowDimensions} from 'react-native'
 import { useEffect, useRef } from 'react'
 
 import properties from '../../api/properties'
@@ -75,6 +75,7 @@ export const PropertyCard = ({
     user.favourites.includes(property.id),
   )
   const flatListRef = useRef<FlatList<string> | null>(null)
+  const { width, height } = useWindowDimensions()
   const [cardWidth, setCardWidth] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0)
   const availableDateText =
@@ -133,7 +134,7 @@ export const PropertyCard = ({
         styles.container,
         {
           width: '100%',
-          maxWidth: isMobile ? '100%' : 290,
+          minWidth: isMobile ? '100%' :(width >= 1023 ? 307: 'auto'),
           aspectRatio: bottomComponent ? 'auto' : 1,
           marginBottom: isDetails ? 0 : 18,
           height: isDetails ? 362 : '100%',
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     borderBottomStartRadius: 20,
     borderBottomEndRadius: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
     marginBottom: 10,
     overflow: 'hidden',
     backgroundColor: 'transparent',
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
     paddingTop: 0,
-    paddingHorizontal: 5,
+    paddingHorizontal: 0,
     minHeight: 'auto'
   },
   avatarContainer: {
