@@ -257,6 +257,7 @@ export default function LogsScreen() {
 
 	return (
 		<View style={styles.container}>
+			{/* main heading where credit logs and add credits button */}
 			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 				<Text style={styles.header}>Credit Logs</Text>
 				<KButton
@@ -271,6 +272,8 @@ export default function LogsScreen() {
 					text='Add Credits'
 				/>
 			</View>
+
+			{/* Filtering the credits logs */}
 
 			<View style={styles.searchBar}>
 				<TextInput
