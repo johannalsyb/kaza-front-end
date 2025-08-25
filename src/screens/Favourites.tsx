@@ -42,7 +42,8 @@ export default ({ route, navigation }: Props) => {
 
   if (!properties) return null
   
-  return <PropertyList
+  return (
+  <PropertyList
     loading={loading}
     properties={properties}
     navigation={navigation}
@@ -63,17 +64,17 @@ export default ({ route, navigation }: Props) => {
           borderRadius: 100,
           padding: 10,
         }} />
-        <KText style={{ fontSize: isMobile ? 18 : 25, fontWeight: "bold", marginTop: 20, marginBottom: 20, textAlign: "center" }}>
+        <KText style={{ fontSize: isMobile ? 18 : 25, fontWeight: "bold", marginTop: 10, marginBottom: 20, textAlign: "center" }}>
           {user ? "Haven't found any favourites yet" : "Please login to see your favourites"}
         </KText>
         {user ?
           <>
-            <KText style={{ maxWidth: isMobile ? "90%" : "25%", textAlign: "center", lineHeight: 20 }}>
+            {/* <KText style={{ maxWidth: isMobile ? "90%" : "25%", textAlign: "center", lineHeight: 20 }}>
               No worries! Explore our content, discover your favorites, and start building a personalized collection that speaks to you.
-            </KText>
+            </KText> */}
             <KButton text="Explore" color="primary" onPress={() => {
               navigation.navigate('Home')
-            }} style={{ marginTop: 20 }} />
+            }} style={{ marginTop: 10 }} />
           </>
           : <View style={{
             display: "flex",
@@ -98,4 +99,5 @@ export default ({ route, navigation }: Props) => {
           </View>}
       </View>
     } />
+  );
 };

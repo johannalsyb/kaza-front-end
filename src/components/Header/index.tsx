@@ -259,231 +259,244 @@ export default (
   if (hidden) return null
 
   return (
-    <View style={{ backgroundColor: isMobile ? variables.colors.greenLight : 'black',}}>
-    <View
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        width: '100%',
-        backgroundColor: isMobile ? variables.colors.greenLight : 'black',
-        paddingHorizontal: isMobile ? 14 : 5,
-        paddingVertical: isMobile ? 12 : 20,
-        borderEndEndRadius: isMobile ? 30 : 0,
-        borderEndStartRadius: isMobile ? 30 : 0,
-        maxWidth: isMobile ? '100%' : '97%',
-        margin:'auto'
-      }}>
-      {isMobile && overlay && (!user || !isAdmin) && <View style={{
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        top: 0,
-        zIndex: 100,
-        //@ts-ignore
-        backdropFilter: "blur(3px)",
-        //@ts-ignore
-        webkitBackdropFilter: "blur(3px)"
-      }} />}
+    <View style={{ backgroundColor: isMobile ? variables.colors.greenLight : 'black', }}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          width: '100%',
+          backgroundColor: isMobile ? variables.colors.greenLight : 'black',
+          paddingHorizontal: isMobile ? 14 : 5,
+          paddingVertical: isMobile ? 12 : 20,
+          borderEndEndRadius: isMobile ? 30 : 0,
+          borderEndStartRadius: isMobile ? 30 : 0,
+          maxWidth: isMobile ? '100%' : '97%',
+          margin: 'auto'
+        }}>
+        {isMobile && overlay && (!user || !isAdmin) && <View style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          zIndex: 100,
+          //@ts-ignore
+          backdropFilter: "blur(3px)",
+          //@ts-ignore
+          webkitBackdropFilter: "blur(3px)"
+        }} />}
 
-      {isMobile && !props.leftComponent ? (
-        <>
-          <KTextInput
-            placeholder="Where would you like to go?"
-            topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: "center" }}
-            inputStyles={{ textAlign: 'left' }}
-            leftComponent={<KIcon name="search" size="small" />}
-            value={search}
-            onChangeText={text => setSearch(text)}
-            autoFocus={true}
-            suggestionCallback={text => {
-              return autocomplete.zone(text).then(res => {
-                return res.data.results.map((r: any) => r.description)
-              })
-            }}
-            onSuggestionSelected={text => {
-              // onSearch(text)
-              setSearch(text)
-              new PropertySearchEvent().emit(text)
-            }}
-          />
-          {user && <Pressable
-            onPress={() => { console.log("credits pressed") }}
-            style={styles.creditsContainerMobile}
-          >
-            <KIcon
-              name={"credits"}
-              size="small"
+        {isMobile && !props.leftComponent ? (
+          isFavourites ? (
+            <KText
               style={{
-                marginRight: 5,
-                stroke: variables.colors.blackLight,
-              }}
-            />
-            <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{user?.credits}</Text>
-          </Pressable>}
-        </>
-      ) : (
-        <>
-          {isMobile ? (
-            props.leftComponent || <>
-              {leftButton === "search" ? searchIcon() : null}
-              {leftButton === "back" ? backIcon() : null}
-              {leftButton === "none" ? emptyIcon() : null}
-            </>
-          ) : (
-            <View style={{ flex: .5 }}>
-              <KIcon
-                name="logo"
-                width={111}
-                height={40}
-                onPress={() => {
-                  props.navigation.navigate('Home')
-                }}
-                style={{
-                  fill: 'white',
-                }}
-              />
-            </View>
-          )}
-
-          {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: "center", fontSize: 17 }}>{title}</KText>
-            : <View
-              style={{
-                display: 'flex',
                 flex: 1,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              {topMenu.map(m => <MenuItem
-                key={m.text}
-                onPress={m.onPress}
-                selected={m.selected}
-                text={m.text}
-                icon={m.icon}
-                bubble={m.bubble}
-              />)}
-            </View>
-          }
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: isMobile ? undefined : .5,
-              justifyContent: 'flex-end',
-            }}>
-            <View style={{
-              flexDirection: 'row',
-            }}>
-              {!isMobile ? (
-                user ? (
-                  <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    {notificationsIcon()}
-                    <Pressable
-                      onPress={() => {
-                        if (!menuVisible) setMenuVisible(true)
-                      }}>
-                      <CircleImage
-                        thumbnail={true}
-                        imageId={`${user.id}/${user.primaryImage}`}
-                        type="users"
-                        style={{
-                          width: user.primaryImage ? 44 : 28,
-                          height: user.primaryImage ? 44 : 28,
-                          marginLeft: 10,
-                          padding: user.primaryImage ? 0 : 6,
-                          borderColor: user.primaryImage ? variables.colors.orange : variables.colors.orange,
-                          borderWidth: user.primaryImage ? 0 : 2
-                        }}
-                      />
-                    </Pressable>
-                    <Pressable
-                      onPress={() => { console.log("credits pressed") }}
-                      style={styles.creditsContainer}
-                    >
-                      <KIcon
-                        name={"credits"}
-                        size="small"
-                        style={{
-                          stroke: variables.colors.blackLight,
-                        }}
-                      />
-                      <Text style={{ fontSize: 16, marginLeft: -2 }}>{user?.credits}</Text>
-                    </Pressable>
-                    <View
-                      ref={popupMenuRef}
-                      style={[
-                        styles.popupmenu,
-                        { display: menuVisible ? undefined : 'none' },
-                      ]}>
-                      <View
-                        style={[
-                          styles.triangle,
-                          { right: 30, position: 'absolute' },
-                        ]}
-                      />
-                      {menu.map(m => menuItemView(m.icon, m.text, m.onPress))}
-                      <View
-                        style={{
-                          height: 0,
-                          borderWidth: 1,
-                          borderColor: variables.colors.grey,
-                          borderStyle: 'dashed',
-                          marginBottom: 5,
-                          marginTop: 5,
-                        }}></View>
-                      {menuItemView("logout", "Logout", () => {
-                        props.navigation.replace('Home')
-                        auth.logout()
-                      })}
-                    </View>
-                  </View>
-                ) : (
-                  <>
-                    <KButton
-                      text="Register your place"
-                      icon="register"
-                      iconSize='medium'
-                      color="secondary"
-                      textStyle={{ fontSize: 12, color: variables.colors.black }}
-                      style={{ width: "auto", backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
-                      onPress={() => {
-                        props.navigation.navigate('SignUp')
-                      }}
-                    />
-                    <KButton
-                      text="Sign In"
-                      icon="login"
-                      iconStyle={{ stroke: 'white' }}
-                      color="tertiary"
-                      style={{ backgroundColor: "transparent" }}
-                      textStyle={{ fontSize: 12 }}
-                      onPress={() => {
-                        props.navigation.navigate('Login')
-                      }}
-                    />
-                  </>
-                )
-              ) : (
-                props.rightComponent || (
-                  <>
-                    {user ? <>
-                      {rightButton === "notifications" ? notificationsIcon() : null}
-                      {rightButton === "edit" ? editIcon(editFn) : null}
-                      {rightButton === "none" ? emptyIcon() : null}
-                      {rightButton === "share" ? shareIcon(editFn) : null}
-                    </> : (
-                      emptyIcon()
-                    )}
-                  </>
-                )
-              )}
-            </View>
-          </View>
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: "900",
+              }}
+            >
+              Favourites
+            </KText>
+          )
+            : (
+              <>
+                <KTextInput
+                  placeholder="Where would you like to go?"
+                  topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: "center" }}
+                  inputStyles={{ textAlign: 'left' }}
+                  leftComponent={<KIcon name="search" size="small" />}
+                  value={search}
+                  onChangeText={text => setSearch(text)}
+                  autoFocus={true}
+                  suggestionCallback={text => {
+                    return autocomplete.zone(text).then(res => {
+                      return res.data.results.map((r: any) => r.description)
+                    })
+                  }}
+                  onSuggestionSelected={text => {
+                    // onSearch(text)
+                    setSearch(text)
+                    new PropertySearchEvent().emit(text)
+                  }}
+                />
+                {user && <Pressable
+                  onPress={() => { console.log("credits pressed") }}
+                  style={styles.creditsContainerMobile}
+                >
+                  <KIcon
+                    name={"credits"}
+                    size="small"
+                    style={{
+                      marginRight: 5,
+                      stroke: variables.colors.blackLight,
+                    }}
+                  />
+                  <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{user?.credits}</Text>
+                </Pressable>}
+              </>
+            )) : (
+          <>
+            {isMobile ? (
+              props.leftComponent || <>
+                {leftButton === "search" ? searchIcon() : null}
+                {leftButton === "back" ? backIcon() : null}
+                {leftButton === "none" ? emptyIcon() : null}
+              </>
+            ) : (
+              <View style={{ flex: .5 }}>
+                <KIcon
+                  name="logo"
+                  width={111}
+                  height={40}
+                  onPress={() => {
+                    props.navigation.navigate('Home')
+                  }}
+                  style={{
+                    fill: 'white',
+                  }}
+                />
+              </View>
+            )}
 
-          {notificationsView()}
-        </>
-      )}
+            {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: "center", fontSize: 17 }}>{title}</KText>
+              : <View
+                style={{
+                  display: 'flex',
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {topMenu.map(m => <MenuItem
+                  key={m.text}
+                  onPress={m.onPress}
+                  selected={m.selected}
+                  text={m.text}
+                  icon={m.icon}
+                  bubble={m.bubble}
+                />)}
+              </View>
+            }
+            <View
+              style={{
+                flexDirection: 'row',
+                flex: isMobile ? undefined : .5,
+                justifyContent: 'flex-end',
+              }}>
+              <View style={{
+                flexDirection: 'row',
+              }}>
+                {!isMobile ? (
+                  user ? (
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                      {notificationsIcon()}
+                      <Pressable
+                        onPress={() => {
+                          if (!menuVisible) setMenuVisible(true)
+                        }}>
+                        <CircleImage
+                          thumbnail={true}
+                          imageId={`${user.id}/${user.primaryImage}`}
+                          type="users"
+                          style={{
+                            width: user.primaryImage ? 44 : 28,
+                            height: user.primaryImage ? 44 : 28,
+                            marginLeft: 10,
+                            padding: user.primaryImage ? 0 : 6,
+                            borderColor: user.primaryImage ? variables.colors.orange : variables.colors.orange,
+                            borderWidth: user.primaryImage ? 0 : 2
+                          }}
+                        />
+                      </Pressable>
+                      <Pressable
+                        onPress={() => { console.log("credits pressed") }}
+                        style={styles.creditsContainer}
+                      >
+                        <KIcon
+                          name={"credits"}
+                          size="small"
+                          style={{
+                            stroke: variables.colors.blackLight,
+                          }}
+                        />
+                        <Text style={{ fontSize: 16, marginLeft: -2 }}>{user?.credits}</Text>
+                      </Pressable>
+                      <View
+                        ref={popupMenuRef}
+                        style={[
+                          styles.popupmenu,
+                          { display: menuVisible ? undefined : 'none' },
+                        ]}>
+                        <View
+                          style={[
+                            styles.triangle,
+                            { right: 30, position: 'absolute' },
+                          ]}
+                        />
+                        {menu.map(m => menuItemView(m.icon, m.text, m.onPress))}
+                        <View
+                          style={{
+                            height: 0,
+                            borderWidth: 1,
+                            borderColor: variables.colors.grey,
+                            borderStyle: 'dashed',
+                            marginBottom: 5,
+                            marginTop: 5,
+                          }}></View>
+                        {menuItemView("logout", "Logout", () => {
+                          props.navigation.replace('Home')
+                          auth.logout()
+                        })}
+                      </View>
+                    </View>
+                  ) : (
+                    <>
+                      <KButton
+                        text="Register your place"
+                        icon="register"
+                        iconSize='medium'
+                        color="secondary"
+                        textStyle={{ fontSize: 12, color: variables.colors.black }}
+                        style={{ width: "auto", backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
+                        onPress={() => {
+                          props.navigation.navigate('SignUp')
+                        }}
+                      />
+                      <KButton
+                        text="Sign In"
+                        icon="login"
+                        iconStyle={{ stroke: 'white' }}
+                        color="tertiary"
+                        style={{ backgroundColor: "transparent" }}
+                        textStyle={{ fontSize: 12 }}
+                        onPress={() => {
+                          props.navigation.navigate('Login')
+                        }}
+                      />
+                    </>
+                  )
+                ) : (
+                  props.rightComponent || (
+                    <>
+                      {user ? <>
+                        {rightButton === "notifications" ? notificationsIcon() : null}
+                        {rightButton === "edit" ? editIcon(editFn) : null}
+                        {rightButton === "none" ? emptyIcon() : null}
+                        {rightButton === "share" ? shareIcon(editFn) : null}
+                      </> : (
+                        emptyIcon()
+                      )}
+                    </>
+                  )
+                )}
+              </View>
+            </View>
+
+            {notificationsView()}
+          </>
+        )}
       </View>
     </View>
   )

@@ -112,6 +112,8 @@ const useSwapRequest = (propertyId: string) => {
         if (r?.data) {
           setStatus('sent')
           setShowCalendarModal(false)
+          // Refresh user data to update credits after sending swap request
+          auth.check(true)
           // setShowModal(<>
           //   <KText style={{ textAlign: 'center', padding: 10, fontSize: 24, fontWeight: "600", marginTop: 10, marginBottom: 10 }}>Swap Request sent</KText>
           //   <KText style={{ textAlign: 'center', fontSize: 16, color: variables.colors.blackLight }}>You have sent a swap request{props.to ? ` to ${props.to}` : ""}.</KText>
@@ -183,6 +185,8 @@ const useSwapRequest = (propertyId: string) => {
       .accept(swapRequest.sr.id)
       .then(r => {
         setStatus('accepted')
+        // Refresh user data to update credits
+        auth.check(true)
       })
       .catch(e => {
         console.error(e)
