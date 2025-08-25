@@ -55,15 +55,7 @@ export default (props: any) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = useRoute<RouteProp<RegisterScreenParams, 'Register'>>();
-  const [source, setSource] = useState<string | null>(null);
-
-  useEffect(() => {
-  if (route.params?.source) {
-    setSource(route.params.source);
-  }
-  }, [route.params]);
-   console.log("search param:-", source);
-  
+  const [source, setSource] = useState<Boolean>(route.params?.source === 'founders' || false);
   useEffect(() => {
     authentication.check();
   }, []);
@@ -102,7 +94,7 @@ export default (props: any) => {
         password: body.password as string,
         firstName: body.firstName as string,
         surname: body.surname as string,
-
+        founder: source, 
         phone: body.phone as string,
       };
       const response = await auth.signup(signupBody);
