@@ -26,7 +26,7 @@ import GoogleLoginButton from '../../components/GoogleAuthButton/GoogleLoginButt
 import LeftSide from '../../components/Screens/Auth/LeftSide';
 import VerifyPhone from '../../components/VerifyPhone';
 import {toastSuccess} from '../../components/Toast/Toast';
-import {Link} from '@react-navigation/native';
+import {Link, RouteProp, useRoute} from '@react-navigation/native';
 import {showComponentAtom,showModalRegisterPlaceAtom} from '../../atoms';
 import React from 'react'
 import { useSetAtom } from 'jotai'
@@ -35,6 +35,14 @@ import { useWindowDimensions } from 'react-native';
 import {Controller, FieldValues, useForm} from 'react-hook-form';
 import Modal from '../../components/Modal';
 type Props = NativeStackScreenProps<NavStackParamList, 'Login'>;
+
+
+type RegisterScreenParams = {
+  Register: {
+    source?: string;
+  };
+};
+
 export default (props: any) => {
   const setShowModalRegisterPlace = useSetAtom(showModalRegisterPlaceAtom)
   const {isMobile} = useIsMobile();
@@ -45,10 +53,11 @@ export default (props: any) => {
     phone: '',
     email: '',
     password: '',
-  });
+  });   
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+  const route = useRoute<RouteProp<RegisterScreenParams, 'Register'>>();
+  const [source, setSource] = useState<Boolean>(route.params?.source === 'founders' || false);
   useEffect(() => {
     authentication.check();
   }, []);
@@ -87,7 +96,7 @@ export default (props: any) => {
         password: body.password as string,
         firstName: body.firstName as string,
         surname: body.surname as string,
-
+        founder: source, 
         phone: body.phone as string,
       };
       const response = await auth.signup(signupBody);
