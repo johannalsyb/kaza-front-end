@@ -50,6 +50,7 @@ export default (props: Props) => {
   const [property, setProperty] = useState<Property | undefined>(
     props.property,
   );
+  const [openGalleryIndex, setOpenGalleryIndex] = useState<number | null>(null);
   // const setShowCalenderModel = useSetAtom(showModalCalendarAtom)
  const isCalendarOpen = useAtomValue(showModalCalendarAtom);
   
@@ -244,6 +245,7 @@ export default (props: Props) => {
             style={{
               marginBottom:  0,
             }}
+            onPress={() => setOpenGalleryIndex(0)}
           />
           </View>
           
@@ -251,7 +253,7 @@ export default (props: Props) => {
       )}
     
       <View key="leftView" style={{ width: isMobile ? '97%': '100%', maxWidth: leftColumnWidth }}>
-        <GalleryPhoto key="gallery" property={property} />
+        <GalleryPhoto key="gallery" property={property} externalOpenIndex={openGalleryIndex ?? -1} onCloseExternal={() => setOpenGalleryIndex(null)} />
         <Gap size="xsmall" vertical />   
         {!isMobile && (
           <>

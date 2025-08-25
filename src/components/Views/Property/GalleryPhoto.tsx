@@ -5,20 +5,28 @@ import variables from '../../../styles/variables';
 import KIcon from '../../KIcon/KIcon';
 import Gap from '../../Gap/Gap';
 import KImage from '../../KImage/KImage';
-import {Fragment, useState} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import FullscreenPhoto from './FullscreenPhoto';
 import useIsMobile from '../../../hooks/useIsMobile';
 
 type Props = {
   property?: Property;
+  externalOpenIndex?: number;
+  onCloseExternal?: () => void;
 };
 
 const limit = 5;
 
-export default ({property}: Props) => {
+export default ({property, externalOpenIndex, onCloseExternal}: Props) => {
   // const [mainPhotoIndex, setMainPhotoIndex] = useState(0);
   const [fullScreen, setFullScreen] = useState<number>(-1);
   const {isMobile} = useIsMobile();
+
+  useEffect(() => {
+    if (typeof externalOpenIndex === 'number' && externalOpenIndex >= 0) {
+      setFullScreen(externalOpenIndex);
+    }
+  }, [externalOpenIndex]);
 
   if (!property?.owner) return <KText>Loading...</KText>;
   else {
@@ -169,7 +177,10 @@ export default ({property}: Props) => {
           property={property}
           visible={fullScreen >= 0}
           index={fullScreen}
-          setVisible={() => setFullScreen(-1)}
+          setVisible={() => {
+            setFullScreen(-1);
+            onCloseExternal && onCloseExternal();
+          }}
         />
       </View>
     );
