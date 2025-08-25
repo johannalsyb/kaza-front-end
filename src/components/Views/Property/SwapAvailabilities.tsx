@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     height: 104,
     // aspectRatio: 620 / 155,
     borderRadius: 20,
-    backgroundColor: variables.colors.greenLight
+    backgroundColor: variables.colors.greenLight,
+    marginBottom: 50,
   },
   infoTopContainer: {
     width: '100%',
