@@ -43,6 +43,7 @@ export type Creds = {
     primaryImage?: string
     phoneVerified?: boolean
     emailVerified?: boolean
+    swapLocations?: string
 }
 
 type Props = {
@@ -61,6 +62,7 @@ export type RegisterFormError = {
     password?: string,
     phone?: string,
     image?: string,
+    swapLocations?: string
 }
 const isValid = (creds:Creds, setShowMessage: (msg: string | null) => void) => {
     const error:RegisterFormError = {}

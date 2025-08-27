@@ -33,4 +33,5 @@ export const showAlert = atom<IKAlert>({} as IKAlert)
 
 export const avilebleDatesAtom = atom<any>([])
 export const swapRequestStatusAtom = atom<Record<string, SwapRequestStatus>>({})
+export const isSideModalOpenAtom = atom<boolean>(false)
 

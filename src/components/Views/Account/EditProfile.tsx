@@ -95,7 +95,8 @@ export default (props:Props) => {
             justifyContent: "space-between",
             width: "100%",
             marginTop: 20,
-            marginBottom: 20
+            marginBottom: 20,
+            paddingHorizontal: 20
         }}>
             <KButton
                 color="greenLight"

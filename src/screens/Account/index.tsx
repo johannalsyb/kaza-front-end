@@ -1,3 +1,4 @@
+// parent index.tsx
 import { ActivityIndicator, Linking, ScrollView, View } from 'react-native'
 import KButton from '../../components/KButton/KButton'
 import useAuthentication from '../../hooks/useAuthentication'
@@ -19,8 +20,8 @@ import users from '../../api/users'
 import EditProperty from '../../components/Views/Account/EditProperty'
 import { Api } from '../../common'
 import { toastError } from '../../components/Toast/Toast'
-import { useSetAtom } from 'jotai'
-import { showSwapNowAtom } from '../../atoms'
+import { useSetAtom, useAtomValue } from 'jotai'
+import { showSwapNowAtom, isSideModalOpenAtom } from '../../atoms'
 import UserEvent from '../../events/UserEvent'
 import useConfig from '../../hooks/useConfig'
 import HeaderEvent from '../../events/HeaderEvent'
@@ -29,6 +30,8 @@ import { shareProperty } from '../../utils/Share'
 import Menu from '../../components/Menu'
 import MenuButtons from '../../components/Screens/Account/Menu'
 import EditProfileComponent from '../../components/Screens/Account/EditProfile'
+
+
 type Props = NativeStackScreenProps<
   NavStackParamList,
   'Account' | 'Swap' | 'History' | 'Myplace'
@@ -49,11 +52,33 @@ export default (props: Props) => {
   const { logout, properties } = useAuthentication()
   const { config } = useConfig()
 
+  // console.log('isSideModalOpenAtom', isSideModalOpenAtom)
+
   const [contentHeight, setContentHeight] = useState(-1)
   const [scrollViewHeight, setScrollViewHeight] = useState(-1)
 
   const swapId = (route.params as Readonly<{ id: string }>)?.id
   const edit = (route.params as Readonly<{ edit: boolean }>)?.edit
+
+  const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom);
+  const isSideModalOpen = useAtomValue(isSideModalOpenAtom);
+
+ useEffect(() => {
+    console.log("isSideModalOpen", isSideModalOpen); // Log the actual value
+    console.log("ye chl rha h");
+    if (!isSideModalOpen) { // Use the value, not the atom
+      setModal(null);
+      props.navigation.setParams({ edit: undefined });
+    }
+  }, [isSideModalOpen, props.navigation]);
+
+
+  // useEffect(() => {
+  //   console.log('isSideModalOpenAtom', isSideModalOpenAtom)
+  //   if (!isSideModalOpenAtom) {
+  //     setModal(null)
+  //   }
+  // }, [isSideModalOpenAtom.init])
 
   useEffect(() => {
     if (!prop) {
@@ -177,7 +202,10 @@ export default (props: Props) => {
   )
 
   const onEditPropertyPressed = () => setModal('property')
-  const onEditProfilePressed = () => setModal('user')
+  const onEditProfilePressed = () => {
+    setModal('user')
+    setIsSideModalOpen(true)
+  }
 
   const EditProfileText = (text: string) => (
     <KText
@@ -302,7 +330,10 @@ export default (props: Props) => {
               property={prop}
               creds={user}
               onEditPropertyPressed={() => setModal('property')}
-              onEditProfilePressed={() => setModal('user')}
+              onEditProfilePressed={() => {
+                setModal('user')
+                setIsSideModalOpen(true)
+              }}
               onHomePressed={() => props.navigation.navigate('Home')}
             />
             {/* <KButton
@@ -492,9 +523,10 @@ export default (props: Props) => {
 
       <KSideModal
         style={{
-          padding: 20,
+          // padding: 20,
         }}
         visible={!!modal}
+        showCross={false}
         onClose={() => setModal(null)}>
         {modal === 'user' &&
           <EditProfileComponent
