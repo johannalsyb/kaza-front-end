@@ -37,6 +37,7 @@ export type User = PublicUser & {
     newMatches?: number,
     payment: string | null,
     credits: number,
+    address: string,
 }
 
 export default User

@@ -148,6 +148,7 @@ export default (props: Props) => {
               width: isMobile ? '100%' : 'auto',
               maxWidth: isMobile ? undefined : 900,
               // minHeight: isMobile ? undefined : 300,
+              // position:"absolute"
             },
             !isMobile && { alignItems: 'center' },
           ]}>

@@ -30,6 +30,8 @@ import { shareProperty } from '../../utils/Share'
 import Menu from '../../components/Menu'
 import MenuButtons from '../../components/Screens/Account/Menu'
 import EditProfileComponent from '../../components/Screens/Account/EditProfile'
+import PropertyCard from '../../components/PropertyCard'
+import Property from '../../common/types/Property'
 
 
 type Props = NativeStackScreenProps<
@@ -63,7 +65,7 @@ export default (props: Props) => {
   const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom);
   const isSideModalOpen = useAtomValue(isSideModalOpenAtom);
 
- useEffect(() => {
+  useEffect(() => {
     console.log("isSideModalOpen", isSideModalOpen); // Log the actual value
     console.log("ye chl rha h");
     if (!isSideModalOpen) { // Use the value, not the atom
@@ -162,6 +164,7 @@ export default (props: Props) => {
               code: '+1',
               number: '',
             },
+            address: user!.address
           },
         }),
       )
@@ -241,8 +244,45 @@ export default (props: Props) => {
       active: route.name === 'Myplace',
     },
     {
-      text: ' History',
+      text: 'Swap History',
       icon: 'history',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    {
+      text: 'Credits',
+      icon: 'history',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    {
+      text: 'Email',
+      icon: 'email',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    {
+      text: 'Phone',
+      icon: 'phone',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    // extra
+    {
+      text: 'Credits',
+      icon: 'history',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    {
+      text: 'Email',
+      icon: 'email',
+      onPress: () => props.navigation.navigate('History'),
+      active: isHistory,
+    },
+    {
+      text: 'Phone',
+      icon: 'phone',
       onPress: () => props.navigation.navigate('History'),
       active: isHistory,
     },
@@ -253,77 +293,133 @@ export default (props: Props) => {
     return contentHeight < scrollViewHeight
   }
 
-  return (
-    <ScrollView
-      contentContainerStyle={{
-        flex: isMobile ? undefined : 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: isMobile ? variables.colors.greenLight : variables.colors.greenLight,
-      }}
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: isMobile ? variables.colors.greenLight : 'black',
-      }}>
-      {isMobile ?
-        <></>
-        : <View
-          style={{
-            display: 'flex',
-            width: '100%',
-            backgroundColor: isMobile ? variables.colors.yellow : 'black',
-          }}>
-          <View style={{
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            backgroundColor: isMobile ? variables.colors.yellow : 'white',
-            flex: 1,
-            display: "flex",
-            flexDirection: 'row',
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingLeft: 20,
-            paddingRight: 20,
-            justifyContent: 'space-around',
-          }}>
-            <View style={{ flex: 1 }}></View>
-            <MenuButtons navigation={props.navigation} route={route} />
+  const [property, setProperty] = useState<Property | undefined>(
+    // props.property,
+  );
 
-            <View style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}>
-              {route.name === "Myplace" && <>
-                <KButton
-                  color="light"
-                  onPress={() => setModal('property')}
-                  style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
-                  size={isMobile ? 'small' : 'medium'}>
-                  <KIcon name="edit" size="large" />
-                  {isMobile ? null : <KText>Edit property</KText>}
-                </KButton>
-              </>}
-            </View>
-          </View>
-        </View>}
+  return (
+    <View style={{ flex: 1, backgroundColor: variables.colors.greenLight }}>
+      {/* Fixed Yellow Container */}
+      {route.name === 'Account' && (
+        <View style={{ width: '100%' }}>
+          <MainInfo
+            onLayout={e => {
+              setContentHeight(e.nativeEvent.layout.height)
+            }}
+            property={prop}
+            creds={user}
+            onEditPropertyPressed={() => setModal('property')}
+            onEditProfilePressed={() => {
+              setModal('user')
+              setIsSideModalOpen(true)
+            }}
+            onHomePressed={() => props.navigation.navigate('Home')}
+          />
+        </View>
+      )}
+
+
+      {/* <View style={{ width: isMobile ? '97%' : '100%' }}>
+
+        <PropertyCard
+          key="property"
+          property={property}
+          favourite={
+            user &&
+              user.favourites &&
+              property &&
+              user.favourites.includes(property.id)
+              ? true
+              : false
+          }
+          isDetails={true}
+          photo={`${props.id}/${(images ?? '').split(',')[0]}`}
+          avatar={`${owner.id}/${owner.primaryImage}`}
+          location={`${city}`}
+          swapFor={owner.swapLocations || 'Flexible'}
+          availableDate={{
+            from: owner.dateFrom ? new Date(owner.dateFrom) : null,
+            to: owner.dateTo ? new Date(owner.dateTo) : null,
+          }}
+          style={{
+            marginBottom: 0,
+          }}
+          onPress={()=>{}}
+        />
+      </View> */}
+
 
       <ScrollView
-        onLayout={e => {
-          setScrollViewHeight(e.nativeEvent.layout.height)
-        }}
         contentContainerStyle={{
-          paddingTop: isMobile ? 0 : 20,
-          // flex: 1,
-          flex: isContentSmallerThanScreen() ? 1 : undefined, // This is what should change based on the size of the view
+          flex: isMobile ? undefined : 1,
           width: '100%',
+          height: '100%',
+          backgroundColor: isMobile ? variables.colors.greenLight : variables.colors.greenLight,
+          paddingBottom: 80
         }}
         style={{
-          display: 'flex',
           flex: 1,
-          backgroundColor: variables.colors.greenLight,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: isMobile ? variables.colors.greenLight : 'black',
         }}>
-        {route.name === 'Account' && (
-          <>
-            <MainInfo
+        {isMobile ?
+          <></>
+          : <View
+            style={{
+              display: 'flex',
+              width: '100%',
+              backgroundColor: isMobile ? variables.colors.yellow : 'black',
+            }}>
+            <View style={{
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              backgroundColor: isMobile ? variables.colors.yellow : 'white',
+              flex: 1,
+              display: "flex",
+              flexDirection: 'row',
+              paddingTop: 10,
+              paddingBottom: 10,
+              paddingLeft: 20,
+              paddingRight: 20,
+              justifyContent: 'space-around',
+            }}>
+              <View style={{ flex: 1 }}></View>
+              <MenuButtons navigation={props.navigation} route={route} />
+
+              <View style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}>
+                {route.name === "Myplace" && <>
+                  <KButton
+                    color="light"
+                    onPress={() => setModal('property')}
+                    style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
+                    size={isMobile ? 'small' : 'medium'}>
+                    <KIcon name="edit" size="large" />
+                    {isMobile ? null : <KText>Edit property</KText>}
+                  </KButton>
+                </>}
+              </View>
+            </View>
+          </View>}
+
+        <ScrollView
+          onLayout={e => {
+            setScrollViewHeight(e.nativeEvent.layout.height)
+          }}
+          contentContainerStyle={{
+            paddingTop: isMobile ? 0 : 20,
+            // flex: 1,
+            flex: isContentSmallerThanScreen() ? 1 : undefined, // This is what should change based on the size of the view
+            width: '100%',
+          }}
+          style={{
+            display: 'flex',
+            flex: 1,
+            backgroundColor: variables.colors.greenLight,
+          }}>
+          {route.name === 'Account' && (
+            <>
+              {/* <MainInfo
               onLayout={e => {
                 setContentHeight(e.nativeEvent.layout.height)
               }}
@@ -335,8 +431,8 @@ export default (props: Props) => {
                 setIsSideModalOpen(true)
               }}
               onHomePressed={() => props.navigation.navigate('Home')}
-            />
-            {/* <KButton
+            /> */}
+              {/* <KButton
             icon="support"
             text={config?.emails.support || 'Contact support'}
             onPress={() => {
@@ -353,59 +449,62 @@ export default (props: Props) => {
             }}
             color="greenLight" /> */}
 
-          </>
-        )}
-        {route.name === "Myplace" && <MyPlace
-          onEditPropertyPressed={onEditPropertyPressed}
-          onPropertyEdited={loadProperty}
-          privateProperty={prop}
-          id={prop?.id}
-          onBackPressed={() => props.navigation.navigate("Account", { edit: undefined })}
-          navigation={props.navigation}
-        />}
-        {isHistory && <History />}
-      </ScrollView>
-      {isMobile && route.name === "Account" && (
-        <View
-          style={{
-            alignItems: 'center',
-            width: '100%',
-            // Margin top :20px
-            marginTop: 20,
-            backgroundColor: variables.colors.greenLight,
-            paddingHorizontal: isMobile ? 10 : "5%"
-          }}>
+            </>
+          )}
+          {route.name === "Myplace" && <MyPlace
+            onEditPropertyPressed={onEditPropertyPressed}
+            onPropertyEdited={loadProperty}
+            privateProperty={prop}
+            id={prop?.id}
+            onBackPressed={() => props.navigation.navigate("Account", { edit: undefined })}
+            navigation={props.navigation}
+          />}
+          {isHistory && <History />}
+        </ScrollView>
+        {isMobile && route.name === "Account" && (
+          <View
+            style={{
+              alignItems: 'center',
+              width: '100%',
+              // Margin top :20px
+              marginTop: 20,
+              backgroundColor: variables.colors.greenLight,
+              paddingHorizontal: isMobile ? 10 : "5%"
+            }}>
 
-          {/* #TODO Check how it work  */}
+            {/* #TODO Check how it work  */}
+            {/* bottom */}
 
-          {menu.map((m, i) => (
-            <KButton
-              color={'light'}
-              text={m.text}
-              icon={m.icon as any}
-              onPress={m.onPress}
-              key={`menu_${i}`}
-              style={{
-                width: '100%',
-                display: m.active ? 'none' : 'flex',
-                borderWidth: 0,
-                height: 53,
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                flexDirection: 'row',
-                paddingLeft: 5,
-                paddingRight: 15,
-                marginBottom: 5,
-                marginTop: 5,
-              }}
-            >
-              <KIcon name={m.icon as any} style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
-              <KText style={{ flex: 1 }}>{m.text}</KText>
-              <KIcon name="chevronRight" style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
-            </KButton>
-          ))}
-          {/* ________________________________end */}
-          {/* <KButton
+            {menu.map((m, i) => (
+              <KButton
+                color={'light'}
+                text={m.text}
+                icon={m.icon as any}
+                onPress={m.onPress}
+                key={`menu_${i}`}
+                style={{
+                  width: '100%',
+                  display: m.active ? 'none' : 'flex',
+                  borderWidth: 0,
+                  height: 53,
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexDirection: 'row',
+                  paddingLeft: 5,
+                  paddingRight: 15,
+                  marginBottom: 5,
+                  marginTop: 5,
+                  position: 'relative',
+                  bottom: 0,
+                }}
+              >
+                <KIcon name={m.icon as any} style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
+                <KText style={{ flex: 1 }}>{m.text}</KText>
+                <KIcon name="chevronRight" style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
+              </KButton>
+            ))}
+            {/* ________________________________end */}
+            {/* <KButton
             color={'light'}
             onPress={() => {}}
             style={{
@@ -427,7 +526,7 @@ export default (props: Props) => {
             <VerifyButton type="email" />
           </KButton> */}
 
-          {/* <KButton
+            {/* <KButton
             color={'light'}
             onPress={() => {}}
             icon="phone"
@@ -460,83 +559,84 @@ export default (props: Props) => {
               EditProfileText('Add a phone number')
             )}
           </KButton> */}
-        </View>
-      )}
+          </View>
+        )}
 
-      {props.route.name === "Account" ? <>
-        <View
+        {props.route.name === "Account" ? <>
+          <View
+            style={{
+              width: '100%',
+              display: isMobile && route.name !== "Account" ? "none" : 'none',
+              flexDirection: isMobile ? 'column' : 'row',
+              height: 53,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingLeft: 10,
+              paddingRight: 10,
+              marginTop: 5,
+              backgroundColor: variables.colors.greenLight,
+            }}>
+            <KButton
+              icon="support"
+              text={config?.emails.support || 'Contact support'}
+              onPress={() => {
+                Linking.openURL(`mailto:${config?.emails.support}`)
+              }}
+              style={{
+                backgroundColor: variables.colors.darkYellow,
+                width: isMobile ? '100%' : 'auto',
+                display: isMobile ? 'flex' : "none",
+                paddingLeft: 5,
+                height: 53,
+                marginBottom: isMobile ? 10 : 0,
+                alignItems: 'flex-start',
+              }}
+              color="greenLight" />
+
+            <KButton
+              icon="logout"
+              text="Log out"
+              onPress={logout}
+              style={{
+                backgroundColor: variables.colors.darkYellow,
+                width: isMobile ? '100%' : 'auto',
+                display: isMobile ? 'flex' : "none",
+                paddingLeft: 5,
+                height: 53,
+                marginBottom: isMobile ? 10 : 0,
+                alignItems: 'flex-start',
+                zIndex: 1000,
+              }}
+              color="greenLight"
+            />
+          </View>
+
+        </> : null}
+
+        {isMobile ? <>
+          <View style={{ height: 190, zIndex: -1 }}></View>
+          <Menu navigate={props.navigation.navigate} style={{
+            // position: "fixed"
+          }} />
+        </> : null}
+
+        <KSideModal
           style={{
-            width: '100%',
-            display: isMobile && route.name !== "Account" ? "none" : 'none',
-            flexDirection: isMobile ? 'column' : 'row',
-            height: 53,
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingLeft: 10,
-            paddingRight: 10,
-            marginTop: 5,
-            backgroundColor: variables.colors.greenLight,
-          }}>
-          <KButton
-            icon="support"
-            text={config?.emails.support || 'Contact support'}
-            onPress={() => {
-              Linking.openURL(`mailto:${config?.emails.support}`)
-            }}
-            style={{
-              backgroundColor: variables.colors.darkYellow,
-              width: isMobile ? '100%' : 'auto',
-              display: isMobile ? 'flex' : "none",
-              paddingLeft: 5,
-              height: 53,
-              marginBottom: isMobile ? 10 : 0,
-              alignItems: 'flex-start',
-            }}
-            color="greenLight" />
-
-          <KButton
-            icon="logout"
-            text="Log out"
-            onPress={logout}
-            style={{
-              backgroundColor: variables.colors.darkYellow,
-              width: isMobile ? '100%' : 'auto',
-              display: isMobile ? 'flex' : "none",
-              paddingLeft: 5,
-              height: 53,
-              marginBottom: isMobile ? 10 : 0,
-              alignItems: 'flex-start',
-              zIndex: 1000,
-            }}
-            color="greenLight"
-          />
-        </View>
-
-      </> : null}
-
-      {isMobile ? <>
-        <View style={{ height: 190, zIndex: -1 }}></View>
-        <Menu navigate={props.navigation.navigate} style={{
-          // position: "fixed"
-        }} />
-      </> : null}
-
-      <KSideModal
-        style={{
-          // padding: 20,
-        }}
-        visible={!!modal}
-        showCross={false}
-        onClose={() => setModal(null)}>
-        {modal === 'user' &&
-          <EditProfileComponent
-            user={user}
-            setUser={setUser}
-            setModal={setModal}
-            loadUser={loadUser}
-          />}
-        {modal === 'property' && EditPropertyView}
-      </KSideModal>
-    </ScrollView>
+            // padding: 20,
+          }}
+          visible={!!modal}
+          showCross={false}
+          onClose={() => setModal(null)}>
+          {modal === 'user' &&
+            <EditProfileComponent
+              user={user}
+              setUser={setUser}
+              setModal={setModal}
+              loadUser={loadUser}
+            />}
+          {modal === 'property' && EditPropertyView}
+        </KSideModal>
+      </ScrollView>
+    </View>
   )
 }

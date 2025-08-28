@@ -266,6 +266,7 @@ export default ({
 
     // </>
 
+    console.log("bhai sahb ye h address", creds.address);
     return (
         <View style={{ flex: 1, backgroundColor: variables.colors.white }}>
             {/* Yellow Top Container */}
@@ -275,7 +276,7 @@ export default ({
                     borderBottomLeftRadius: 30,
                     borderBottomRightRadius: 30,
                     paddingTop: 50,
-                    paddingBottom: 80, // more padding to fit progress bar
+                    paddingBottom: 50, // more padding to fit progress bar
                     alignItems: "center",
                     justifyContent: "center",
                     position: "relative",
@@ -460,9 +461,9 @@ export default ({
                     <KTextInput
                         inputStyles={{ ...inputStyles }}
                         placeholder="Address"
-                        error={creds.swapLocations ? error.swapLocations : ""}
-                        value={creds.swapLocations}
-                        onChangeText={(swapLocations) => onChange({ ...creds, swapLocations })}
+                        error={creds.address ? error.address : ""}
+                        value={creds.address}
+                        onChangeText={(address) => onChange({ ...creds, address })}
                     />
                 </FormField>
 

@@ -42,7 +42,7 @@ export default forwardRef<Handle, KInputProps>((props:KInputProps, ref:Forwarded
     return <KTextInput
         {...props}
         ref={ref}
-        placeholder="Password"
+        placeholder= {props.placeholder || "Password"}
         textContentType="password"
         secureTextEntry={!isPasswordVisible}
         autoComplete="password"
