@@ -17,3 +17,15 @@ export const formatFriendlyDate = (date: Date | undefined): string => {
     day: '2-digit',
   });
 };
+
+export const formatDateRange = (dateFrom: number, dateTo: number) => {
+  const start = new Date(dateFrom).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  const end = new Date(dateTo).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  return `${start} - ${end}`;
+};

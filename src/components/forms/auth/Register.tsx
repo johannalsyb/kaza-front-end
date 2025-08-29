@@ -5,7 +5,7 @@ import KButton from "../../KButton/KButton";
 import { Pressable, TextStyle, View } from "react-native";
 import KIcon from "../../KIcon/KIcon";
 import variables from "../../../styles/variables";
-import KPasswordInput, {getError as getPasswordError} from "../../Form/KPasswordInput";
+import KPasswordInput, { getError as getPasswordError } from "../../Form/KPasswordInput";
 import KPhoneInput from "../../Form/KPhoneInput";
 import KFileUpload, { Handle as KFileUploadHandle } from "../../Form/KFileUpload/index";
 import KImage from "../../KImage/KImage";
@@ -46,15 +46,17 @@ export type Creds = {
     swapLocations?: string
     address?: string
     favourites?: string
+    dateFrom: number
+    dateTo: number
 }
 
 type Props = {
-    creds?:Creds
-    onChange?: (creds:Creds) => void
-    onCreated?: (user:Partial<User>) => void
+    creds?: Creds
+    onChange?: (creds: Creds) => void
+    onCreated?: (user: Partial<User>) => void
 }
 
-export const isEmailValid = (email:string) => {
+export const isEmailValid = (email: string) => {
     return email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 }
 export type RegisterFormError = {
@@ -67,29 +69,29 @@ export type RegisterFormError = {
     swapLocations?: string,
     address?: string,
 }
-const isValid = (creds:Creds, setShowMessage: (msg: string | null) => void) => {
-    const error:RegisterFormError = {}
+const isValid = (creds: Creds, setShowMessage: (msg: string | null) => void) => {
+    const error: RegisterFormError = {}
     const pwdError = getPasswordError(creds.password, setShowMessage)
-    if(!creds.firstName || creds.firstName.length < 2)
+    if (!creds.firstName || creds.firstName.length < 2)
         error.firstName = "Minimum 2 characters";
-    if(!creds.gender || creds.gender.length < 2)
+    if (!creds.gender || creds.gender.length < 2)
         error.gender = "Please select one"
-    if(!creds.email || !isEmailValid(creds.email))
+    if (!creds.email || !isEmailValid(creds.email))
         error.email = "Invalid Email";
-    if(!creds.password || pwdError)
+    if (!creds.password || pwdError)
         error.password = pwdError?.props.childen || "Enter a password";
-    if(!creds.phone || !isPhoneValid(creds.phone.code, creds.phone.number))
+    if (!creds.phone || !isPhoneValid(creds.phone.code, creds.phone.number))
         error.phone = "Invalid Phone Number";
-    if(!creds.image)
+    if (!creds.image)
         error.image = "Please upload a profile picture"
     // console.log(error)
     return error;
 }
 
-export default (props:Props) => {
-    const {login} = useAuthentication()
+export default (props: Props) => {
+    const { login } = useAuthentication()
     const setShowMessage = useSetAtom(showMessageAtom);
-    const {isMobile} = useIsMobile()
+    const { isMobile } = useIsMobile()
 
     const [creds, setCreds] = useState(props.creds || {
         firstName: '',
@@ -100,21 +102,23 @@ export default (props:Props) => {
         phone: {
             code: '+1',
             number: ""
-        }
+        },
+        dateFrom: Date.now(), 
+        dateTo: Date.now() + 86400000 * 90,
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<RegisterFormError>({});
 
     useEffect(() => {
-        if(creds) {
+        if (creds) {
             setError(isValid(creds, setShowMessage));
             props.onChange && props.onChange(creds)
         }
     }, [creds])
 
-    const inputStyles:TextStyle = {
+    const inputStyles: TextStyle = {
         textAlign: "left",
-        height:  variables.button.size.medium.height
+        height: variables.button.size.medium.height
     }
 
     return <>
@@ -125,15 +129,15 @@ export default (props:Props) => {
             imageStyles={isMobile ? {
                 height: 120,
                 width: 120,
-            } : {}}/>
+            } : {}} />
 
         <FormField labelAlign="left" label="Password">
             <KPasswordInput
-                inputStyles={{...inputStyles}}
+                inputStyles={{ ...inputStyles }}
                 placeholder="Password"
                 value={creds.password}
-                onChangeText={password => setCreds({...creds, password})}
-                />
+                onChangeText={password => setCreds({ ...creds, password })}
+            />
         </FormField>
 
         <KButton
@@ -142,37 +146,37 @@ export default (props:Props) => {
             disabled={loading || Object.keys(error).length > 0}
             onPress={() => {
 
-                const onLogin = (user:Partial<User>) => {
+                const onLogin = (user: Partial<User>) => {
                     props.onCreated && props.onCreated(user)
                 }
 
                 const id = UserEvent.addListener("login", onLogin)
                 setLoading(true);
-                auth.signup({...creds, phone: creds.phone.code+creds.phone.number, onboarding: JSON.stringify({step: 2, data: {}, completed: false}) as any})
-                .then(res => login(creds.email, creds.password))
-                .then(async (result) => {
-                    if (result && result.user) {
-                        props.onCreated && props.onCreated(result.user);
-                        if(creds.image) await users.postPictures(result.user.id!, [creds.image])
-                    }
-                })
-                .catch(async (err:ApiResponseError) => {
-                    const error = err.json
-                    if(error?.data?.error && error?.data?.error.indexOf("User already exists") >=0) {
-                        setError({...error, email: "Email already exists"})
-                    }
-                }).finally(() => {
-                    setLoading(false);
-                    UserEvent.removeListener("login", id)
-                })
+                auth.signup({ ...creds, phone: creds.phone.code + creds.phone.number, onboarding: JSON.stringify({ step: 2, data: {}, completed: false }) as any })
+                    .then(res => login(creds.email, creds.password))
+                    .then(async (result) => {
+                        if (result && result.user) {
+                            props.onCreated && props.onCreated(result.user);
+                            if (creds.image) await users.postPictures(result.user.id!, [creds.image])
+                        }
+                    })
+                    .catch(async (err: ApiResponseError) => {
+                        const error = err.json
+                        if (error?.data?.error && error?.data?.error.indexOf("User already exists") >= 0) {
+                            setError({ ...error, email: "Email already exists" })
+                        }
+                    }).finally(() => {
+                        setLoading(false);
+                        UserEvent.removeListener("login", id)
+                    })
             }}
             color="primary"
             style={{
                 width: "100%",
                 marginTop: 20,
                 marginBottom: 20
-            }}/>
-        <View style={{height: 10}} />
+            }} />
+        <View style={{ height: 10 }} />
 
     </>
 }

@@ -130,7 +130,7 @@ export default (props: Props) => {
     <>
       <FormField
         label="What is your exact address ?"
-        style={{zIndex: 100}}
+        style={{zIndex: 100, padding:10}}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
         <KTextInput

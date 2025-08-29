@@ -147,11 +147,28 @@ export default (props: Props) => {
               flexDirection: "column",
               width: isMobile ? '100%' : 'auto',
               maxWidth: isMobile ? undefined : 900,
-              // minHeight: isMobile ? undefined : 300,
-              // position:"absolute"
             },
             !isMobile && { alignItems: 'center' },
           ]}>
+          {isMobile &&
+            <View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <KButton
+                color="light"
+                onPress={() => props.onHomePressed && props.onHomePressed()}
+                style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
+                size={'small'}>
+                <KIcon name="search" size="large" />
+              </KButton>
+
+              <KButton
+                color="light"
+                onPress={() => props.onHomePressed && props.onHomePressed()}
+                style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
+                size={'small'}>
+                <KIcon name="share" size="large" />
+              </KButton>
+            </View>
+          }
           {/* The user picture */}
           <View
             style={[
@@ -193,97 +210,7 @@ export default (props: Props) => {
               text={propAddress}
               style={{ overflow: 'visible' }}
             />}
-
-            {/* <View style={{alignContent: "center", marginTop: marginVertical*2, marginBottom: marginVertical}}>
-              {props.creds.creds.hobby ? (
-                formatTextDescription(props.creds.creds.hobby, {textAlign: "center"})
-              ) : (
-                EditProfileText('Add a description', 'defaultIconSmile')
-              )}
-            </View> */}
-
-            {/* <View style={{alignContent: "center", marginTop: marginVertical, marginBottom: marginVertical}}>
-              {props.creds.creds.job ? (
-                <IconText
-                  size="medium"
-                  iconName="job"
-                  text={props.creds.creds.job}
-                />
-              ) : (
-                EditProfileText('Add your job', 'job')
-              )}
-            </View> */}
-
-            {/* The user contact information */}
-            <View
-              style={{
-                flex: isMobile ? undefined : 1,
-                // maxWidth: isMobile ? undefined : 300,
-                marginLeft: 0,
-                width: '100%',
-                marginTop: isMobile ? marginVertical : 10,
-                flexDirection: isMobile ? "column-reverse" : "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
-              <View style={{ marginLeft: 10, marginRight: 10, flexDirection: "row" }}>
-                {phoneValid ? (<>
-                  {/* <IconText size="medium" text={phone} iconName="phone" /> */}
-                  {config?.features.sms ? <VerifyButton type="phone" onSent={() => {
-                    setShowModalComponent(<VerifyPhone onVerified={() => {
-                      toastSuccess("Phone verified successfully")
-                      auth.check(true)
-                        .catch(err => console.error(err))
-                        .finally(() => setShowModalComponent(null))
-                    }}
-                      onClose={() => {
-                        setShowModalComponent(null);
-
-                      }}
-                    />)
-                  }} /> : null}
-                </>
-                )
-                  : (
-                    EditProfileText('Add a phone number', 'phone')
-                  )}
-                {/* <VerifyButton type="phone" /> */}
-              </View>
-              <View style={{
-                marginLeft: 10,
-                marginRight: 10,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: isMobile ? 10 : 0
-              }}>
-                {/* <IconText
-                    size="medium"
-                    text={props.creds.creds.email}
-                    iconName="email"
-                  /> */}
-                {/* <VerifyButton type="email" /> */}
-                {/* {user.emailVerified ? <KIcon name="tickWobbly" size="medium" /> : null} */}
-              </View>
-            </View>
           </View>
-
-          {/* Desktop/tablet edit button (pencil on the yellow card corner) */}
-          {!isMobile && (
-            <KButton
-              color={"primary"}
-              onPress={() => props.onEditProfilePressed && props.onEditProfilePressed()}
-              style={{
-                flexDirection: 'row',
-                borderWidth: 1,
-                marginTop: marginVertical,
-                marginBottom: marginVertical,
-              }}
-              size={'medium'}>
-              <KIcon name="edit" size="large" style={{ stroke: variables.colors.yellow }} />
-              <KText style={{ color: "white" }}>Edit Profile</KText>
-            </KButton>
-          )}
 
           {/* Mobile centered Edit Profile button under name */}
           {isMobile && (
@@ -298,32 +225,15 @@ export default (props: Props) => {
                   marginBottom: marginVertical,
                   paddingLeft: 20,
                   paddingRight: 20,
+                  gap: 15
                 }}
                 size={'medium'}
-                icon={'edit'}
+                icon={'plusCircle'}
                 text={'Edit Profile'}
               />
             </View>
           )}
-
-          {isMobile && <KButton
-            color="light"
-            onPress={() => props.onHomePressed && props.onHomePressed()}
-            style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray, position: "absolute", left: 20, top: 20 }}
-            size={'small'}>
-            <KIcon name="search" size="large" />
-          </KButton>}
         </View>
-      </View>
-      <View
-        style={{
-          display: 'flex',
-          flex: 1,
-          width: '100%',
-          justifyContent: 'flex-end',
-          marginTop: 75,
-        }}>
-        <Footer route={route.name} />
       </View>
     </View>
   );
