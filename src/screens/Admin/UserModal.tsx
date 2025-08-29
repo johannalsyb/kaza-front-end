@@ -16,10 +16,10 @@ import users from "../../api/users"
 import { toastSuccess } from "../../components/Toast/Toast"
 import variables from "../../styles/variables"
 
-export default (props:{
-    user:{user: User, phone:Phone} | undefined,
+export default (props: {
+    user: { user: User, phone: Phone } | undefined,
     hidePropertiesButton?: boolean
-    onClose:() => void
+    onClose: () => void
     onDeleted?: () => void
 }) => {
     const config = useConfig()
@@ -29,11 +29,11 @@ export default (props:{
     const [imageLoading, setImageLoading] = useState(false)
 
     const loadProperties = () => {
-        if(!props.user) return
-        admin.properties.get({filter: JSON.stringify({owner: props.user.user.id})})
-        .then(d => {
-            setProperties(d.data)
-        })
+        if (!props.user) return
+        admin.properties.get({ filter: JSON.stringify({ owner: props.user.user.id }) })
+            .then(d => {
+                setProperties(d.data)
+            })
     }
 
     useEffect(() => {
@@ -41,69 +41,71 @@ export default (props:{
     }, [props.user])
 
     return <KSideModal visible={!!props.user} onClose={props.onClose}>
-    <ScrollView style={{padding: 5}}>
+        <ScrollView style={{ padding: 5 }}>
 
-        <View style={{width: "100%", borderBottomWidth: 1, marginVertical: 5}}><KText>ADMIN</KText></View>
+            <View style={{ width: "100%", borderBottomWidth: 1, marginVertical: 5 }}><KText>ADMIN</KText></View>
 
-        {!props.hidePropertiesButton && <KButton
-            style={{width: "100%", marginBottom: 5}}
-            disabled={!properties?.length}
-            text={`Show properties (${properties?.length })`}
+            {!props.hidePropertiesButton && <KButton
+                style={{ width: "100%", marginBottom: 5 }}
+                disabled={!properties?.length}
+                text={`Show properties (${properties?.length})`}
                 onPress={() => {
-                if(!properties) return
-                if(!properties.length) return
-                setProperty(properties[0])
-            }} />}
+                    if (!properties) return
+                    if (!properties.length) return
+                    setProperty(properties[0])
+                }} />}
 
-        <KButton
-            style={{width: "100%", marginBottom: 5, backgroundColor: "red"}}
-            textStyle={{color: "white"}}
-            disabled={!!properties?.length}
-            text={!!properties?.length ? "Must delete properties first" : "!!!!! Delete User !!!!!"}
-            onPress={() => {
-                admin.users.delete(props.user!.user.id)
-                .then(d => props.onDeleted && props.onDeleted())
-            }} />
+            <KButton
+                style={{ width: "100%", marginBottom: 5, backgroundColor: "red" }}
+                textStyle={{ color: "white" }}
+                disabled={!!properties?.length}
+                text={!!properties?.length ? "Must delete properties first" : "!!!!! Delete User !!!!!"}
+                onPress={() => {
+                    admin.users.delete(props.user!.user.id)
+                        .then(d => props.onDeleted && props.onDeleted())
+                }} />
 
-        <KButton
-            style={{width: "100%", marginBottom: 5, backgroundColor: variables.colors.green}}
-            textStyle={{color: "white"}}
-            disabled={false}
-            text={"Show Matches"}
-            onPress={() => {
+            <KButton
+                style={{ width: "100%", marginBottom: 5, backgroundColor: variables.colors.green }}
+                textStyle={{ color: "white" }}
+                disabled={false}
+                text={"Show Matches"}
+                onPress={() => {
 
-            }} />
+                }} />
 
 
-        <View style={{width: "100%", borderBottomWidth: 1, marginVertical: 5}}><KText>EDIT USER</KText></View>
+            <View style={{ width: "100%", borderBottomWidth: 1, marginVertical: 5 }}><KText>EDIT USER</KText></View>
 
-        {props.user ? <ExtendedUser 
-            creds={{
-                firstName: props.user.user.firstName,
-                gender: props.user.user.gender,
-                email: props.user.user.email,
-                password: "",
-                phone: props.user.phone,
-                image: getPictureUrl(config, props.user.user.id, props.user.user.primaryImage, "users", false) || undefined
-            }}
-            error={{}}
-            onChange={(creds) => {}}
-            imageLoading={imageLoading}
-            onRotationSaved={async (d) => {
-                users.rotatePicture(props.user!.user.id, d)
-                .then(() => toastSuccess("Image rotated"))
-                .catch(() => toastSuccess("An error occured while rotating the image"))
-            }}
+            {props.user ? <ExtendedUser
+                creds={{
+                    firstName: props.user.user.firstName,
+                    gender: props.user.user.gender,
+                    email: props.user.user.email,
+                    password: "",
+                    phone: props.user.phone,
+                    image: getPictureUrl(config, props.user.user.id, props.user.user.primaryImage, "users", false) || undefined,
+                    dateFrom: props.user.user.dateFrom || Date.now(), // Adjust based on actual field name
+                    dateTo: props.user.user.dateTo || Date.now() + 86400000 * 90,
+                }}
+                error={{}}
+                onChange={(creds) => { }}
+                imageLoading={imageLoading}
+                onRotationSaved={async (d) => {
+                    users.rotatePicture(props.user!.user.id, d)
+                        .then(() => toastSuccess("Image rotated"))
+                        .catch(() => toastSuccess("An error occured while rotating the image"))
+                }}
             /> : null}
-    </ScrollView>
+        </ScrollView>
 
-    {property && <PropertyModal
-        property={property}
-        hideOwnerButton={true}
-        onClose={() => setProperty(undefined)}
-        onDeleted={() => {
-            loadProperties()
-            setProperty(undefined)
-        }} />}
-</KSideModal>
+        {property && <PropertyModal
+            property={property}
+            hideOwnerButton={true}
+            onClose={() => setProperty(undefined)}
+            onDeleted={() => {
+                loadProperties()
+                setProperty(undefined)
+            }} />}
+    </KSideModal>
 }

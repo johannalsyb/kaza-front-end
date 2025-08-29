@@ -57,7 +57,7 @@ const KModal = ({
   }, [visible, width, height, isBottom, isLeft])
 
   if (!visible) return null
-  console.log('isBottom', isBottom, position)
+  // console.log('isBottom', isBottom, position)
   const posStyle: ViewStyle = {}
   if (isBottom) {
     // Стилі для анімації з низу

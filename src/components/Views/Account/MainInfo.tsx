@@ -1,16 +1,17 @@
-import {ActivityIndicator, Pressable, View, Text, TextStyle, LayoutChangeEvent} from 'react-native';
+// Main page of edit profile
+import { ActivityIndicator, Pressable, View, Text, TextStyle, LayoutChangeEvent } from 'react-native';
 import KText from '../../KText';
 import variables from '../../../styles/variables';
-import {PropertyCard} from '../../PropertyCard/PropertyCard';
-import {CircleImage} from '../../CircleImage/CircleImage';
-import KIcon, {IconName} from '../../KIcon/KIcon';
-import {Creds} from '../../forms/auth/Register';
-import {Api, User} from '../../../common';
+import { PropertyCard } from '../../PropertyCard/PropertyCard';
+import { CircleImage } from '../../CircleImage/CircleImage';
+import KIcon, { IconName } from '../../KIcon/KIcon';
+import { Creds } from '../../forms/auth/Register';
+import { Api, User } from '../../../common';
 import useIsMobile from '../../../hooks/useIsMobile';
 import VerifyButton from '../../VerifyButton';
-import {IconText} from '../../IconText/IconText';
+import { IconText } from '../../IconText/IconText';
 import Gap from '../../Gap/Gap';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import KButton from '../../KButton/KButton';
 import Footer from '../../Footer';
 import { useRoute } from '@react-navigation/native';
@@ -23,7 +24,7 @@ import { toastSuccess } from '../../Toast/Toast';
 import useAuthentication from '../../../hooks/useAuthentication';
 
 type Props = {
-  creds?: {user: User; creds: Creds};
+  creds?: { user: User; creds: Creds };
   property?: Api.Properties.PrivateProperty;
   onEditProfilePressed?: () => void;
   onEditPropertyPressed?: () => void;
@@ -32,10 +33,10 @@ type Props = {
 };
 
 const MAX_CHARS = 200;
-const PADDING_H_MOBILE=10
+const PADDING_H_MOBILE = 10
 
 export default (props: Props) => {
-  const {isMobile} = useIsMobile();
+  const { isMobile } = useIsMobile();
   const isDescriptionTooLong =
     (props.creds?.creds.hobby?.length || 0) > MAX_CHARS;
 
@@ -44,22 +45,22 @@ export default (props: Props) => {
   const [property, setProperty] = useState(props.property);
   const route = useRoute()
 
-  const {config} = useConfig()
+  const { config } = useConfig()
   const auth = useAuthentication()
 
   useEffect(() => {
-    if(props.property) setProperty(props.property)
+    if (props.property) setProperty(props.property)
 
   }, [props.property])
 
-  const formatTextDescription = (text: string, style:TextStyle = {}) => {
+  const formatTextDescription = (text: string, style: TextStyle = {}) => {
     const str = readMore ? text.slice(0, MAX_CHARS).concat('...') : text
     return (
-      <KText style={{...style}}>
+      <KText style={{ ...style }}>
         {str}
         {isDescriptionTooLong && (
           <Pressable onPress={() => setReadMore(prev => !prev)}>
-            <Text style={{textDecorationLine: 'underline'}}>
+            <Text style={{ textDecorationLine: 'underline' }}>
               {readMore ? 'Read more' : 'Read less'}
             </Text>
           </Pressable>
@@ -72,9 +73,8 @@ export default (props: Props) => {
 
   const user = props.creds.user;
 
-  const img = `${user?.id}/${
-    props.creds.creds.image || props.creds.creds.primaryImage
-  }`;
+  const img = `${user?.id}/${props.creds.creds.image || props.creds.creds.primaryImage
+    }`;
   // const propImage =
   //   property && property.images != null
   //     ? `${property.id}/${
@@ -85,7 +85,7 @@ export default (props: Props) => {
   //     : undefined;
 
   let propAddress = property?.address.split(',').slice(1).join();
-  if(!propAddress || propAddress.length === 0) propAddress = `${property?.city ? property?.city+"," : ""} ${property?.country || ""}`
+  if (!propAddress || propAddress.length === 0) propAddress = `${property?.city ? property?.city + "," : ""} ${property?.country || ""}`
 
   const noAddress = propAddress.trim().length === 0;
 
@@ -93,7 +93,7 @@ export default (props: Props) => {
     <Pressable onPress={() => props.onEditProfilePressed?.()}>
       <IconText
         text={text}
-        textStyle={{textDecorationLine: 'underline'}}
+        textStyle={{ textDecorationLine: 'underline' }}
         iconName={iconName}
         size="medium"
       />
@@ -141,19 +141,38 @@ export default (props: Props) => {
               borderBottomLeftRadius: 20,
               flex: 1,
               marginRight: isMobile ? 0 : 20,
-              marginBottom: isMobile ? marginVertical : 0,
+              marginBottom: isMobile ? 0 : marginVertical,
               padding: 20,
               justifyContent: 'center',
               flexDirection: "column",
               width: isMobile ? '100%' : 'auto',
               maxWidth: isMobile ? undefined : 900,
-              // minHeight: isMobile ? undefined : 300,
             },
-            !isMobile && {alignItems: 'center'},
+            !isMobile && { alignItems: 'center' },
           ]}>
-          {/* The user picture */ }
+          {isMobile &&
+            <View style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <KButton
+                color="light"
+                onPress={() => props.onHomePressed && props.onHomePressed()}
+                style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
+                size={'small'}>
+                <KIcon name="search" size="large" />
+              </KButton>
+
+              <KButton
+                color="light"
+                onPress={() => props.onHomePressed && props.onHomePressed()}
+                style={{ flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray }}
+                size={'small'}>
+                <KIcon name="share" size="large" />
+              </KButton>
+            </View>
+          }
+          {/* The user picture */}
           <View
-            style={[{marginBottom: marginVertical, marginTop: marginVertical},
+            style={[
+              { marginBottom: isMobile ? 0 : marginVertical, marginTop: isMobile ? 0 : marginVertical }, // Remove margins on mobile
               isMobile && {
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -165,13 +184,14 @@ export default (props: Props) => {
                 borderRadius: 200,
                 height: 150,
                 width: 150,
-                borderWidth:  isMobile ? 8 : 3, 
+                borderWidth: isMobile ? 8 : 3,
                 borderColor: 'white',
                 borderStyle: 'solid',
               }}
               imageId={img}
               type="users"
             />
+            <KIcon name="instagram" size="large" style={{ position: 'absolute', bottom: -12, left: '45%', height: 40, width: 40 }} />
           </View>
           {/* The user name and description */}
           <View
@@ -181,126 +201,40 @@ export default (props: Props) => {
               marginBottom: marginVertical,
               alignItems: 'center',
             }}>
-            <KText style={{fontSize: 40, marginBottom: marginVertical, fontWeight: 'bold'}}>
+            <KText style={{ fontSize: 40, marginBottom: marginVertical, fontWeight: 'bold' }}>
               {props.creds.creds.firstName}
             </KText>
 
             {noAddress ? null : <IconText
-                iconName="location"
-                size="medium"
-                text={propAddress}
-                style={{overflow: 'visible'}}
-              />}
-            
-            <View style={{alignContent: "center", marginTop: marginVertical*2, marginBottom: marginVertical}}>
-              {props.creds.creds.hobby ? (
-                formatTextDescription(props.creds.creds.hobby, {textAlign: "center"})
-              ) : (
-                EditProfileText('Add a description', 'defaultIconSmile')
-              )}
-            </View>
-
-            <View style={{alignContent: "center", marginTop: marginVertical, marginBottom: marginVertical}}>
-              {props.creds.creds.job ? (
-                <IconText
-                  size="medium"
-                  iconName="job"
-                  text={props.creds.creds.job}
-                />
-              ) : (
-                EditProfileText('Add your job', 'job')
-              )}
-            </View>
-
-            {/* The user contact information */}
-            <View
-              style={{
-                flex: isMobile ? undefined : 1,
-                // maxWidth: isMobile ? undefined : 300,
-                marginLeft: 0,
-                width: '100%',
-                marginTop: isMobile ? marginVertical : 10,
-                flexDirection: isMobile ? "column-reverse" : "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
-                <View style={{marginLeft: 10, marginRight: 10, flexDirection: "row"}}>
-                  {phoneValid ? ( <>
-                    <IconText size="medium" text={phone} iconName="phone" />
-                    {config?.features.sms ? <VerifyButton type="phone" onSent={() => {
-                      setShowModalComponent(<VerifyPhone onVerified={() => {
-                        toastSuccess("Phone verified successfully")
-                        auth.check(true)
-                        .catch(err => console.error(err))
-                        .finally(() => setShowModalComponent(null))
-                      }}
-                        onClose={() => {
-          setShowModalComponent(null);
-          
-        }}
-                      />)
-                    }}/> : null}
-                    </>
-                  ) : (
-                    EditProfileText('Add a phone number', 'phone')
-                  )}
-                  {/* <VerifyButton type="phone" /> */}
-                </View>
-                <View style={{
-                  marginLeft: 10,
-                  marginRight: 10,
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: isMobile ? 10 : 0
-                }}>
-                  <IconText
-                    size="medium"
-                    text={props.creds.creds.email}
-                    iconName="email"
-                  />
-                  <VerifyButton type="email" />
-                  {/* {user.emailVerified ? <KIcon name="tickWobbly" size="medium" /> : null} */}
-                </View>
-            </View>
+              iconName="location"
+              size="medium"
+              text={propAddress}
+              style={{ overflow: 'visible' }}
+            />}
           </View>
 
-          <KButton
-            color={isMobile ? "light" : "primary"}
-            onPress={() => props.onEditProfilePressed && props.onEditProfilePressed()}
-            style={{
-              flexDirection: 'row',
-              borderWidth: isMobile ? 0 : 1,
-              marginTop: marginVertical,
-              marginBottom: marginVertical,
-              // borderColor: variables.colors.borderGray,
-              position: isMobile ? "absolute" : "relative",
-              right: isMobile ? 20 : "auto",
-              top: isMobile ? 10 : "auto",
-            }}
-            size={isMobile ? 'small' : 'medium'}>
-            <KIcon name="edit" size="large" style={{stroke: isMobile ? "black" : variables.colors.yellow}}/>
-            {!isMobile && <KText style={{color: "white"}}>Edit Profile</KText>}
-          </KButton>
-
-          {isMobile && <KButton
-            color="light"
-            onPress={() => props.onHomePressed && props.onHomePressed()}
-            style={{flexDirection: 'row', borderWidth: isMobile ? 0 : 1, borderColor: variables.colors.borderGray, position: "absolute", left: 20, top: 20}}
-            size={'small'}>
-            <KIcon name="search" size="large" />
-          </KButton>}
+          {/* Mobile centered Edit Profile button under name */}
+          {isMobile && (
+            <View style={{ width: '100%', alignItems: 'center' }}>
+              <KButton
+                color={"primary"}
+                onPress={() => props.onEditProfilePressed && props.onEditProfilePressed()}
+                style={{
+                  flexDirection: 'row',
+                  borderWidth: 0,
+                  marginTop: marginVertical,
+                  marginBottom: marginVertical,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  gap: 15
+                }}
+                size={'medium'}
+                icon={'plusCircle'}
+                text={'Edit Profile'}
+              />
+            </View>
+          )}
         </View>
-      </View>
-      <View
-        style={{
-          display: 'flex',
-          flex: 1,
-          width: '100%',
-          justifyContent: 'flex-end',
-          marginTop: 75,
-        }}>
-        <Footer route={route.name} />
       </View>
     </View>
   );

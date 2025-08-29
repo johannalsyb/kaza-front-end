@@ -47,7 +47,7 @@ export default (props:Props) => {
     useEffect(() => {
         if(code !== undefined && number !== undefined) props.onChange({code, number})
     }, [code, number])
-    console.log('countries', countries)
+    // console.log('countries', countries)
     return <View style={{
         display: 'flex',
         flexDirection: 'row',
