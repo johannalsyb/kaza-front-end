@@ -191,6 +191,7 @@ export default (props: Props) => {
               imageId={img}
               type="users"
             />
+            <KIcon name="instagram" size="large" style={{ position: 'absolute', bottom: -12, left: '45%', height: 40, width: 40 }} />
           </View>
           {/* The user name and description */}
           <View
