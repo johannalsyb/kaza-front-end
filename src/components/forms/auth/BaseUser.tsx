@@ -1,24 +1,24 @@
-import { ActivityIndicator, Pressable, TextStyle, View, ViewStyle } from "react-native";
-import FormField from "../../Form/FormField/FormField";
-import KPhoneInput from "../../Form/KPhoneInput";
-import KFileUpload, { Handle as KFileUploadHandle } from "../../Form/KFileUpload";
-import KTextInput from "../../Form/KTextInput/KTextInput";
-import variables from "../../../styles/variables";
-import { useEffect, useRef, useState } from "react";
-import { Creds, RegisterFormError } from "./Register";
-import KImage from "../../KImage/KImage";
-import KIcon from "../../KIcon/KIcon";
-import KButton from "../../KButton/KButton";
-import useConfig from "../../../hooks/useConfig";
-import { getPictureUrl } from "../../../utils/pictures";
-import useAuthentication from "../../../hooks/useAuthentication";
-import useIsMobile from "../../../hooks/useIsMobile";
-import KText from "../../KText";
-import { toastError } from "../../Toast/Toast";
-import { set } from "../../../utils/Storage/storage";
+import { ActivityIndicator, Pressable, TextStyle, View, ViewStyle } from "react-native"
+import FormField from "../../Form/FormField/FormField"
+import KPhoneInput from "../../Form/KPhoneInput"
+import KFileUpload, { Handle as KFileUploadHandle } from "../../Form/KFileUpload"
+import KTextInput from "../../Form/KTextInput/KTextInput"
+import variables from "../../../styles/variables"
+import { useEffect, useRef, useState } from "react"
+import { Creds, RegisterFormError } from "./Register"
+import KImage from "../../KImage/KImage"
+import KIcon from "../../KIcon/KIcon"
+import KButton from "../../KButton/KButton"
+import useConfig from "../../../hooks/useConfig"
+import { getPictureUrl } from "../../../utils/pictures"
+import useAuthentication from "../../../hooks/useAuthentication"
+import useIsMobile from "../../../hooks/useIsMobile"
+import KText from "../../KText"
+import { toastError } from "../../Toast/Toast"
+import { set } from "../../../utils/Storage/storage"
 import { useAtomValue, useSetAtom } from 'jotai'
 import { isSideModalOpenAtom } from '../../../atoms'
-import { resizeImage } from "../../../hooks/useResizeImage";
+import { resizeImage } from "../../../hooks/useResizeImage"
 
 type Props = {
 	creds: Creds,
@@ -42,9 +42,8 @@ export default ({
 	const config = useConfig()
 	const { user } = useAuthentication()
 	const { isMobile } = useIsMobile()
-	const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom);
-	const isSideModalOpen = useAtomValue(isSideModalOpenAtom);
-
+	const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom)
+	const isSideModalOpen = useAtomValue(isSideModalOpenAtom)
 
 	const [imageRotate, setImageRotate] = useState(0)
 	const [imgLoading, setImgLoading] = useState(true || imageLoading)
@@ -54,9 +53,9 @@ export default ({
 		height: variables.button.size.medium.height
 	}
 
-	const picRef = useRef<KFileUploadHandle>(null);
+	const picRef = useRef<KFileUploadHandle>(null)
 
-	let source = creds.image;
+	let source = creds.image
 	if (source?.startsWith("data:")) {
 		// A new image has just been added
 	} if (source?.startsWith("http")) {
@@ -65,11 +64,11 @@ export default ({
 		const ii = creds.image || creds.primaryImage
 		if (user && config && ii && !ii.startsWith("data:")) {
 			const img = getPictureUrl(config, user.id, ii, "users", false)
-			if (img) source = img + "?" + Date.now();
+			if (img) source = img + "?" + Date.now()
 		}
 	}
 
-	const iheight = ((imageStyles.height || variables.icon.size.xxlarge + 10) as number) * ((!source || !user) ? (isMobile ? 1.5 : 3) : 1);
+	const iheight = ((imageStyles.height || variables.icon.size.xxlarge + 10) as number) * ((!source || !user) ? (isMobile ? 1.5 : 3) : 1)
 
 	useEffect(() => {
 		if (imageLoading !== imgLoading) {
@@ -86,19 +85,19 @@ export default ({
 		creds.job,
 		creds.image,
 		creds.socialMedia
-	];
+	]
 
 	// count completed sections
-	const completedSections = sections.filter((s) => s && s.toString().trim().length > 0).length;
+	const completedSections = sections.filter((s) => s && s.toString().trim().length > 0).length
 
 	// calculate progress percentage
-	const progress = (completedSections / sections.length) * 100;
+	const progress = (completedSections / sections.length) * 100
 
 
 	// return <>
 	//     <Pressable onPress={() => {
 	//         if (picRef && picRef.current) {
-	//             picRef.current.open();
+	//             picRef.current.open()
 	//         }
 	//     }}>
 	//         <View
@@ -290,7 +289,7 @@ export default ({
 					onPress={() => {
 						// console.log('close modal pressed')
 						console.log('close modal pressed', isSideModalOpen)
-						setIsSideModalOpen(false);
+						setIsSideModalOpen(false)
 					}}
 				>
 					<KIcon name="backArrow" size={"large"} />
@@ -312,7 +311,7 @@ export default ({
 				<Pressable
 					onPress={() => {
 						if (picRef && picRef.current) {
-							picRef.current.open();
+							picRef.current.open()
 						}
 					}}
 				>
@@ -383,7 +382,7 @@ export default ({
 							}}
 							onPress={() => {
 								if (picRef && picRef.current) {
-									picRef.current.open();
+									picRef.current.open()
 								}
 							}}
 						>
@@ -393,14 +392,14 @@ export default ({
 						<KFileUpload
 							ref={picRef}
 							onFiles={([image]) => {
-								setImgLoading(true);
+								setImgLoading(true)
 								resizeImage(
 									image,
 									config.config?.images.users.resizePx || 800
 								)
 									.then((resized) => onChange({ ...creds, image: resized }))
 									.catch(() => toastError("Failed to load image"))
-									.finally(() => setImgLoading(false));
+									.finally(() => setImgLoading(false))
 							}}
 						/>
 					</View>
@@ -448,7 +447,7 @@ export default ({
 									code: phone.code || "",
 									number: phone.number + "",
 								},
-							});
+							})
 						}}
 					/>
 				</FormField>
@@ -503,6 +502,6 @@ export default ({
                 </FormField> */}
 			</View>
 		</View>
-	);
+	)
 
 }

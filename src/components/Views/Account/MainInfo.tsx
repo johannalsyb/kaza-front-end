@@ -1,52 +1,63 @@
 // Main page of edit profile
-import { ActivityIndicator, Pressable, View, Text, TextStyle, LayoutChangeEvent } from 'react-native';
-import KText from '../../KText';
-import variables from '../../../styles/variables';
-import { PropertyCard } from '../../PropertyCard/PropertyCard';
-import { CircleImage } from '../../CircleImage/CircleImage';
-import KIcon, { IconName } from '../../KIcon/KIcon';
-import { Creds } from '../../forms/auth/Register';
-import { Api, User } from '../../../common';
-import useIsMobile from '../../../hooks/useIsMobile';
-import VerifyButton from '../../VerifyButton';
-import { IconText } from '../../IconText/IconText';
-import Gap from '../../Gap/Gap';
-import { useEffect, useState } from 'react';
-import KButton from '../../KButton/KButton';
-import Footer from '../../Footer';
-import { useRoute } from '@react-navigation/native';
-import useConfig from '../../../hooks/useConfig';
-import users from '../../../api/users';
-import { showComponentAtom } from '../../../atoms';
-import { useSetAtom } from 'jotai';
-import VerifyPhone from '../../VerifyPhone';
-import { toastSuccess } from '../../Toast/Toast';
-import useAuthentication from '../../../hooks/useAuthentication';
+import { ActivityIndicator, Pressable, View, Text, TextStyle, LayoutChangeEvent } from 'react-native'
+import KText from '../../KText'
+import variables from '../../../styles/variables'
+import { PropertyCard } from '../../PropertyCard/PropertyCard'
+import { CircleImage } from '../../CircleImage/CircleImage'
+import KIcon, { IconName } from '../../KIcon/KIcon'
+import { Creds } from '../../forms/auth/Register'
+import { Api, User } from '../../../common'
+import useIsMobile from '../../../hooks/useIsMobile'
+import VerifyButton from '../../VerifyButton'
+import { IconText } from '../../IconText/IconText'
+import Gap from '../../Gap/Gap'
+import { useEffect, useState } from 'react'
+import KButton from '../../KButton/KButton'
+import Footer from '../../Footer'
+import { useRoute } from '@react-navigation/native'
+import useConfig from '../../../hooks/useConfig'
+import users from '../../../api/users'
+import { showComponentAtom } from '../../../atoms'
+import { useSetAtom } from 'jotai'
+import VerifyPhone from '../../VerifyPhone'
+import { toastSuccess } from '../../Toast/Toast'
+import useAuthentication from '../../../hooks/useAuthentication'
 
 type Props = {
-  creds?: { user: User; creds: Creds };
-  property?: Api.Properties.PrivateProperty;
-  onEditProfilePressed?: () => void;
-  onEditPropertyPressed?: () => void;
-  onHomePressed?: () => void;
-  onLayout?: (e: LayoutChangeEvent) => void;
-};
+  creds?: { user: User, creds: Creds }
+  property?: Api.Properties.PrivateProperty
+  onEditProfilePressed?: () => void
+  onEditPropertyPressed?: () => void
+  onHomePressed?: () => void
+  onLayout?: (e: LayoutChangeEvent) => void
+}
 
-const MAX_CHARS = 200;
-const PADDING_H_MOBILE = 10
+const MAX_CHARS = 200
+
+const getIconNameFromUrl = (url: string = 'https://x.com/share/19ZBMYegLh/') => {
+  try {
+    const domain = new URL(url).hostname.replace("www.", "")
+
+    if (domain.includes("facebook")) return "facebook"
+    if (domain.includes("instagram")) return "instagram"
+    if (domain.includes("x.com") || domain.includes("twitter")) return "twitter"
+
+    return ""
+  } catch (error) {
+    return ""
+  }
+}
 
 export default (props: Props) => {
-  const { isMobile } = useIsMobile();
+  const { isMobile } = useIsMobile()
   const isDescriptionTooLong =
-    (props.creds?.creds.hobby?.length || 0) > MAX_CHARS;
+    (props.creds?.creds.hobby?.length || 0) > MAX_CHARS
 
-  const [setShowModalComponent] = [useSetAtom(showComponentAtom)];
-  const [readMore, setReadMore] = useState(isDescriptionTooLong);
-  const [property, setProperty] = useState(props.property);
-  const route = useRoute()
-
-  const { config } = useConfig()
-  const auth = useAuthentication()
+  const [readMore, setReadMore] = useState(isDescriptionTooLong)
+  const [property, setProperty] = useState(props.property)
+  console.log("creds: ", props.creds?.creds)
+  const iconName: any = getIconNameFromUrl(props?.creds?.creds.socialMedia)
+  console.log("iconName: ", iconName)
 
   useEffect(() => {
     if (props.property) setProperty(props.property)
@@ -66,15 +77,15 @@ export default (props: Props) => {
           </Pressable>
         )}
       </KText>
-    );
-  };
+    )
+  }
 
-  if (!props.creds) return <ActivityIndicator />;
+  if (!props.creds) return <ActivityIndicator />
 
-  const user = props.creds.user;
+  const user = props.creds.user
 
   const img = `${user?.id}/${props.creds.creds.image || props.creds.creds.primaryImage
-    }`;
+    }`
   // const propImage =
   //   property && property.images != null
   //     ? `${property.id}/${
@@ -82,12 +93,12 @@ export default (props: Props) => {
   //           ? (property.images + '').split(',')[0]
   //           : property.images
   //       }`
-  //     : undefined;
+  //     : undefined
 
-  let propAddress = property?.address.split(',').slice(1).join();
+  let propAddress = property?.address.split(',').slice(1).join()
   if (!propAddress || propAddress.length === 0) propAddress = `${property?.city ? property?.city + "," : ""} ${property?.country || ""}`
 
-  const noAddress = propAddress.trim().length === 0;
+  const noAddress = propAddress.trim().length === 0
 
   const EditProfileText = (text: string, iconName: IconName) => (
     <Pressable onPress={() => props.onEditProfilePressed?.()}>
@@ -98,18 +109,18 @@ export default (props: Props) => {
         size="medium"
       />
     </Pressable>
-  );
+  )
 
   const phoneValid =
     props.creds.creds.phone &&
     props.creds.creds.phone.number &&
     props.creds.creds.phone.number.length &&
-    props.creds.creds.phone.code;
+    props.creds.creds.phone.code
   const phone = phoneValid
     ? `${props.creds.creds.phone.code}${props.creds.creds.phone.number}`
-    : undefined;
+    : undefined
 
-  const marginVertical = isMobile ? 10 : 20;
+  const marginVertical = isMobile ? 10 : 20
 
   return (
     <View
@@ -191,7 +202,7 @@ export default (props: Props) => {
               imageId={img}
               type="users"
             />
-            <KIcon name="instagram" size="large" style={{ position: 'absolute', bottom: -12, left: '45%', height: 40, width: 40 }} />
+            {iconName && <KIcon name={iconName} size="large" style={{ position: 'absolute', bottom: -12, left: '45%', height: 40, width: 40 }} />}
           </View>
           {/* The user name and description */}
           <View
@@ -239,5 +250,5 @@ export default (props: Props) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}

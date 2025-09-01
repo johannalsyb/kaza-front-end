@@ -77,6 +77,8 @@ export {ReactComponent as swap} from './swap.svg';
 export {ReactComponent as bed} from './bed.svg';
 export {ReactComponent as bath} from './bath.svg';
 export {ReactComponent as instagram} from './instagram.svg';
+export {ReactComponent as facebook} from './facebook.svg';
+export {ReactComponent as twitter} from './twitter.svg';
 export {ReactComponent as job} from './job.svg';
 export {ReactComponent as phone} from './phone.svg';
 export {ReactComponent as verified} from './verified.svg';
@@ -144,5 +146,3 @@ export {ReactComponent as sendMessage} from './sendMessage.svg';
 export {ReactComponent as creds} from './creds.svg';
 export {ReactComponent as pushNotifs} from './pushNotifs.svg';
 export {ReactComponent as settings} from './settings.svg';
-
-

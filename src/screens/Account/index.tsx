@@ -1,5 +1,5 @@
 // parent index.tsx
-import { ActivityIndicator, Linking, Pressable, ScrollView, View } from 'react-native'
+import { ActivityIndicator, Linking, Pressable, ScrollView, View, StyleSheet } from 'react-native'
 import KButton from '../../components/KButton/KButton'
 import useAuthentication from '../../hooks/useAuthentication'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -160,6 +160,7 @@ export default (props: Props) => {
               code: '+1',
               number: '',
             },
+            socialMedia: user!.socialMedia,
             address: user!.address,
             dateFrom: user!.dateFrom,
             dateTo: user!.dateTo,
@@ -230,6 +231,7 @@ export default (props: Props) => {
     trailingText?: string;
     trailingButton?: { text: string; onPress: () => void };
     trailingToggle?: { isOn: boolean; onToggle?: (isOn: boolean) => void };
+    styles?: object;
   }
 
   const menu: MenuItem[] = [
@@ -281,6 +283,7 @@ export default (props: Props) => {
       active: isHistory,
       trailingText: 'Support',
       noTrailingIcon: true,
+      styles: { backgroundColor: variables.colors.lightGrey }
     },
     {
       text: 'Logout',
@@ -288,6 +291,7 @@ export default (props: Props) => {
       onPress: () => { },
       active: isHistory,
       noTrailingIcon: true,
+      styles: { backgroundColor: variables.colors.lightGrey }
     },
   ]
 
@@ -467,15 +471,9 @@ export default (props: Props) => {
               }}>
 
               {/* #TODO Check how it work  */}
-              {menu.map((m, i) => (
-                <KButton
-                  color={'light'}
-                  text={m.text}
-                  icon={m.icon}
-                  // icon={m.icon as any}
-                  onPress={m.onPress || (() => { })}
-                  key={`menu_${i}`}
-                  style={{
+              {menu.map((m, i) => {
+                const buttonStyle = StyleSheet.flatten([
+                  {
                     width: '100%',
                     display: m.active ? 'none' : 'flex',
                     borderWidth: 0,
@@ -487,58 +485,67 @@ export default (props: Props) => {
                     paddingRight: 15,
                     marginBottom: 5,
                     marginTop: 5,
-                  }}
-                >
-                  {/* <KIcon name={m.icon as any} style={{ marginRight: 10, marginLeft: 10 }} size="medium" />
-                <KText style={{ flex: 1 }}>{m.text}</KText>
-                <KIcon name="chevronRight" style={{ marginRight: 10, marginLeft: 10 }} size="medium" /> */}
-                  {m.icon && (
-                    <KIcon
-                      name={m.icon}
-                      style={{ marginRight: 10, marginLeft: 10, opacity: 0.5 }}
-                      size="medium"
-                    />
-                  )}
-                  <KText style={{ flex: 1 }}>{m.text}</KText>
-                  {m.trailingToggle ? (
-                    <KToggle
-                      isOn={m.trailingToggle.isOn}
-                      onToggle={m.trailingToggle.onToggle}
-                      style={{ marginLeft: 10 }}
-                    />
-                  ) : m.trailingButton ? (
-                    <KButton
-                      text={m.trailingButton.text}
-                      onPress={m.trailingButton.onPress}
-                      color="primary"
-                      style={{
-                        paddingHorizontal: 10,
-                        paddingVertical: 5,
-                        height: 30,
-                      }}
-                    />
-                  ) : m.trailingText ? (
-                    <KText
-                      style={{
-                        marginRight: 10,
-                        marginLeft: 10,
-                        color: variables.colors.grey,
-                        fontSize: 14,
-                      }}
-                    >
-                      {m.trailingText}
-                    </KText>
-                  ) : (
-                    !m.noTrailingIcon && (
+                  },
+                  m.styles,
+                ]);
+
+                return (
+                  <KButton
+                    color="light"
+                    text={m.text}
+                    icon={m.icon}
+                    onPress={m.onPress || (() => { })}
+                    key={`menu_${i}`}
+                    style={buttonStyle}
+                  >
+                    {m.icon && (
                       <KIcon
-                        name="chevronRight"
-                        style={{ marginRight: 10, marginLeft: 10 }}
+                        name={m.icon}
+                        style={{ marginRight: 10, marginLeft: 10, opacity: 0.5 }}
                         size="medium"
                       />
-                    )
-                  )}
-                </KButton>
-              ))}
+                    )}
+                    <KText style={{ flex: 1 }}>{m.text}</KText>
+                    {m.trailingToggle ? (
+                      <KToggle
+                        isOn={m.trailingToggle.isOn}
+                        onToggle={m.trailingToggle.onToggle}
+                        style={{ marginLeft: 10 }}
+                      />
+                    ) : m.trailingButton ? (
+                      <KButton
+                        text={m.trailingButton.text}
+                        onPress={m.trailingButton.onPress}
+                        color="primary"
+                        style={{
+                          paddingHorizontal: 10,
+                          paddingVertical: 5,
+                          height: 30,
+                        }}
+                      />
+                    ) : m.trailingText ? (
+                      <KText
+                        style={{
+                          marginRight: 10,
+                          marginLeft: 10,
+                          color: variables.colors.grey,
+                          fontSize: 14,
+                        }}
+                      >
+                        {m.trailingText}
+                      </KText>
+                    ) : (
+                      !m.noTrailingIcon && (
+                        <KIcon
+                          name="chevronRight"
+                          style={{ marginRight: 10, marginLeft: 10 }}
+                          size="medium"
+                        />
+                      )
+                    )}
+                  </KButton>
+                );
+              })}
             </View>
           )
         }
