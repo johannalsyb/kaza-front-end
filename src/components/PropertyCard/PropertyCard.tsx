@@ -84,8 +84,6 @@ export const PropertyCard = ({
       )}`
       : 'Flexible'
 
-      console.log("property card property", photos, photo)
-
   const toggleFav = () => {
     if (!property) return
     properties.favourites

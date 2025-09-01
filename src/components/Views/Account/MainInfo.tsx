@@ -184,7 +184,7 @@ export default (props: Props) => {
                 borderRadius: 200,
                 height: 150,
                 width: 150,
-                borderWidth: isMobile ? 8 : 3,
+                borderWidth: isMobile ? 3 : 3,
                 borderColor: 'white',
                 borderStyle: 'solid',
               }}
@@ -207,31 +207,33 @@ export default (props: Props) => {
 
             {noAddress ? null : <IconText
               iconName="location"
-              size="medium"
+              size="small"
               text={propAddress}
+              textStyle={{ fontSize: 12 }}
               style={{ overflow: 'visible' }}
             />}
           </View>
 
           {/* Mobile centered Edit Profile button under name */}
           {isMobile && (
-            <View style={{ width: '100%', alignItems: 'center' }}>
-              <KButton
-                color={"primary"}
+            <View style={{ width: '100%', alignItems: 'center', marginTop: 20 }}>
+              <Pressable
                 onPress={() => props.onEditProfilePressed && props.onEditProfilePressed()}
                 style={{
                   flexDirection: 'row',
-                  borderWidth: 0,
-                  marginTop: marginVertical,
-                  marginBottom: marginVertical,
-                  paddingLeft: 20,
-                  paddingRight: 20,
-                  gap: 15
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  backgroundColor: variables.colors.black,
+                  paddingVertical: 8,
+                  paddingLeft: 16,
+                  paddingRight: 30,
+                  borderRadius: 50,
                 }}
-                size={'medium'}
-                icon={'plusCircle'}
-                text={'Edit Profile'}
-              />
+              >
+                <KIcon name='plusCircle' size={"medium"} />
+                <KText style={{ color: variables.colors.yellow }}>Edit Profile</KText>
+              </Pressable>
             </View>
           )}
         </View>

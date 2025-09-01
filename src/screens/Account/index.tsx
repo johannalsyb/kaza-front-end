@@ -72,21 +72,11 @@ export default (props: Props) => {
   const isSideModalOpen = useAtomValue(isSideModalOpenAtom);
 
   useEffect(() => {
-    console.log("isSideModalOpen", isSideModalOpen); // Log the actual value
-    console.log("ye chl rha h");
     if (!isSideModalOpen) { // Use the value, not the atom
       setModal(null);
       props.navigation.setParams({ edit: undefined });
     }
   }, [isSideModalOpen, props.navigation]);
-
-
-  // useEffect(() => {
-  //   console.log('isSideModalOpenAtom', isSideModalOpenAtom)
-  //   if (!isSideModalOpenAtom) {
-  //     setModal(null)
-  //   }
-  // }, [isSideModalOpenAtom.init])
 
   useEffect(() => {
     if (!prop) {
@@ -218,14 +208,6 @@ export default (props: Props) => {
     setIsSideModalOpen(true)
   }
 
-  const EditProfileText = (text: string) => (
-    <KText
-      style={{ textDecorationLine: 'underline' }}
-      onPress={() => onEditProfilePressed()}>
-      {text} <KIcon name="edit" />
-    </KText>
-  )
-
   const isHistory = route.name === 'History' || route.name === 'Swap'
 
   const phoneValid =
@@ -247,7 +229,7 @@ export default (props: Props) => {
     noTrailingIcon?: boolean;
     trailingText?: string;
     trailingButton?: { text: string; onPress: () => void };
-    trailingToggle?: { isOn: boolean; onToggle?: (isOn: boolean) => void }; // onToggle is optional
+    trailingToggle?: { isOn: boolean; onToggle?: (isOn: boolean) => void };
   }
 
   const menu: MenuItem[] = [
@@ -257,12 +239,6 @@ export default (props: Props) => {
       onPress: () => props.navigation.navigate('Account', { edit: undefined }),
       active: route.name === 'Account',
     },
-    // {
-    //   text: 'My Place',
-    //   icon: 'placeType',
-    //   onPress: () => props.navigation.navigate('Myplace', { edit: undefined, preview: isMobile ? undefined : true }),
-    //   active: route.name === 'Myplace',
-    // },
     {
       text: 'Credits',
       icon: 'creds' as const,
@@ -281,28 +257,22 @@ export default (props: Props) => {
       onPress: () => { },
       active: isHistory,
       trailingToggle: {
-        isOn: true, // Static value for display
-      }, // No onToggle for now
+        isOn: true,
+      },
     },
     {
       text: user?.creds.email || 'Email',
-      // noIcons: true,
       onPress: () => { },
       icon: 'email' as const,
       noTrailingIcon: true,
-      // onPress: () => props.navigation.navigate('History'),
-      // active: isHistory,
     },
     {
       text: user?.creds.phone
-        ? `${user.creds.phone.code}${user.creds.phone.number}` // Convert Phone to string
+        ? `${user.creds.phone.code}${user.creds.phone.number}`
         : 'Phone',
-      // noIcons: true,
       onPress: () => { },
       icon: 'phone' as const,
       noTrailingIcon: true,
-      // onPress: () => props.navigation.navigate('History'),
-      // active: isHistory,
     },
     {
       text: 'support@kazaswap.co',
@@ -321,21 +291,8 @@ export default (props: Props) => {
     },
   ]
 
-  const isContentSmallerThanScreen = () => {
-    if (contentHeight === -1 || scrollViewHeight === -1) return false
-    return contentHeight < scrollViewHeight
-  }
-
-  const [property, setProperty] = useState<Property | undefined>(
-    // props.property,
-  );
-  useEffect(() => {
-    console.log("prop:", prop)
-  }, [prop?.images]);
-
   return (
     <ScrollView style={{ flex: 1, backgroundColor: variables.colors.greenLight }}>
-      {/* Fixed Yellow Container */}
       {route.name === 'Account' && (
         <View style={{ width: '100%' }}>
           <MainInfo
@@ -421,21 +378,19 @@ export default (props: Props) => {
           {isHistory && <History />}
         </View>
 
-        {/* start property details*/}
-
-        <View style={{ backgroundColor: variables.colors.black, height: 330 }}>
+        <View style={{ backgroundColor: variables.colors.greenLight, padding: 10, }}>
           <Pressable
-            onPress={onEditPropertyPressed}
             style={{
               flex: 1,
               backgroundColor: variables.colors.white,
-              padding: 10,
+              borderRadius: 20,
+              marginTop: 20,
             }}>
 
             {prop && (
               <View>
                 <View style={{ position: 'relative' }}>
-                  <View style={{
+                  {/* <View style={{
                     position: 'absolute', zIndex: 10, top: 10, right: 10, backgroundColor: 'white',
                     padding: 10, gap: 8, borderRadius: 50, flexDirection: 'row', alignItems: 'flex-end'
                   }} >
@@ -445,7 +400,7 @@ export default (props: Props) => {
                       onPress={() => { }}
                     />
                     <KText>Manage my place</KText>
-                  </View>
+                  </View> */}
 
                   {/* <KImage
                      source={prop.primaryImage || 'default-image-url'}
@@ -455,10 +410,10 @@ export default (props: Props) => {
                     <KImage
                       imageId={`${prop?.id}/${prop?.primaryImage}`}
                       type="properties"
-                      style={{ width: '100%', height: 250, borderRadius: 10, objectFit: 'cover' }}
+                      style={{ width: '100%', height: 250, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
                       hideOnError={false}
                     />}
-                  <View style={{ position: 'absolute', bottom: -30, left: 0, right: 0, width: '100%', alignItems: 'center' }}>
+                  {/* <View style={{ position: 'absolute', bottom: -30, left: 0, right: 0, width: '100%', alignItems: 'center' }}>
                     <CircleImage
                       imageId={user?.creds?.image}
                       thumbnail={true}
@@ -469,7 +424,7 @@ export default (props: Props) => {
                         width: 61,
                       }}
                     />
-                  </View>
+                  </View> */}
 
                   {/* ) : ( 
                  <KImage
@@ -481,17 +436,24 @@ export default (props: Props) => {
 
                   {/* <KText>Image ID: {prop.primaryImage || 'Not available'}</KText> */}
                 </View>
-                <View style={{ flexDirection: 'row', marginTop: 40, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
-                  <KIcon name="calendar" />
-                  <KText style={{ alignContent: 'center' }}>{formatDateRange(user?.creds.dateFrom ?? 0, user?.creds.dateTo ?? 0)}</KText>
-                  <KIcon name="location" />
-                  <KText style={{ alignContent: 'center' }}>{prop.address.slice(0, 20) || 'Address'}</KText>
+                <View style={{ flexDirection: 'row', marginVertical: 16, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                    <KIcon name="location" style={{ opacity: 0.5 }} size={24} />
+                    <KText style={{ fontSize: 12 }}>{prop.address.slice(0, 20) || 'Address'}</KText>
+                  </View>
+                  <Pressable
+                    onPress={onEditPropertyPressed}
+                    style={{
+                      backgroundColor: variables.colors.yellow,
+                      paddingHorizontal: 20, paddingVertical: 10, gap: 8, borderRadius: 50, flexDirection: 'row', alignItems: 'flex-end'
+                    }} >
+                    <KText>Manage my place</KText>
+                  </Pressable>
                 </View>
               </View>
             )}
           </Pressable>
         </View >
-        {/* end property details*/}
 
         {
           isMobile && route.name === "Account" && (
@@ -505,8 +467,6 @@ export default (props: Props) => {
               }}>
 
               {/* #TODO Check how it work  */}
-              {/* menu list */}
-
               {menu.map((m, i) => (
                 <KButton
                   color={'light'}
@@ -543,7 +503,7 @@ export default (props: Props) => {
                   {m.trailingToggle ? (
                     <KToggle
                       isOn={m.trailingToggle.isOn}
-                      onToggle={m.trailingToggle.onToggle} // Safe even if undefined
+                      onToggle={m.trailingToggle.onToggle}
                       style={{ marginLeft: 10 }}
                     />
                   ) : m.trailingButton ? (
@@ -651,55 +611,5 @@ export default (props: Props) => {
         </KSideModal>
       </View >
     </ScrollView >
-
-
-
-    // <View style={{ backgroundColor: variables.colors.black, height: 300 }}>
-    //   <Pressable
-    //     onPress={onEditPropertyPressed}
-    //     style={{
-    //       flex: 1,
-    //       backgroundColor: variables.colors.white,
-    //       padding: 10,
-    //     }}>
-
-    //     {prop && (
-    //       <View>
-    //         <View style={{ position: 'relative' }}>
-    //           <KIcon
-    //             name="edit"
-    //             style={{ position: 'absolute', top: 10, right: 10 }}
-    //             onPress={() => { }}
-    //           />
-    //           {/* <KImage
-    //                  source={prop.primaryImage || 'default-image-url'}
-    //                  style={{ width: '100%', height: 200, borderRadius: 10 }}
-    //                /> */}
-    //           {prop?.primaryImage && prop?.id &&
-    //             <KImage
-    //               imageId={`${prop?.id}/${prop?.primaryImage}`}
-    //               type="properties"
-    //               style={{ width: '100%', height: 200, borderRadius: 10 }}
-    //               hideOnError={false}
-    //             />}
-    //            {/* ) : ( 
-    //              <KImage
-    //                source={variables.images.defaultImage}
-    //                type="properties"
-    //                style={{ width: '100%', height: 200, borderRadius: 10 }}
-    //              />
-    //            )}*/}
-
-    //           <KText>Image ID: {prop.primaryImage || 'Not available'}</KText>
-    //         </View>
-    //         <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between', alignItems: 'center', alignContent: 'center', alignSelf: 'center' }}>
-    //           <KText>{formatDateRange(user?.creds.dateFrom ?? 0, user?.creds.dateTo ?? 0)}</KText>
-    //           <KIcon name="location" />
-    //           <KText>{prop.address || 'Address'}</KText>
-    //         </View>
-    //       </View>
-    //     )}
-    //   </Pressable>
-    // </View>
   )
 }
