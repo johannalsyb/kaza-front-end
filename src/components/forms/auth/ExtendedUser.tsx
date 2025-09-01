@@ -72,7 +72,7 @@ export default ({
 					return
 				}
 				await auth.resetPassword.update({
-					password: creds.currentPassword!,
+					password: newPassword,
 					token: token,
 				})
 				toastSuccess("Password updated successfully")

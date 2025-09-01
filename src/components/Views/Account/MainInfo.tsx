@@ -34,7 +34,7 @@ type Props = {
 
 const MAX_CHARS = 200
 
-const getIconNameFromUrl = (url: string = 'https://x.com/share/19ZBMYegLh/') => {
+const getIconNameFromUrl = (url: string = '') => {
   try {
     const domain = new URL(url).hostname.replace("www.", "")
 
