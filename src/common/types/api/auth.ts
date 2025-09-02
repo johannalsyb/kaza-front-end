@@ -15,3 +15,4 @@ export type Logout = string
 export type Signup = Me
 export type ResetPassword = {message: string}
 export type Verify = {message: string}
+export type ChangePassword = {message: string}
