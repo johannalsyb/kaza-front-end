@@ -23,6 +23,7 @@ export namespace Api {
 		export type Signup = TAuth.Signup
 		export type ResetPassword = TAuth.ResetPassword
 		export type Verify = TAuth.Verify
+		export type ChangePassword = TAuth.ChangePassword
 	}
 
 	export namespace Users {

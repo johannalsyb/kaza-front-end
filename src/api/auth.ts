@@ -1,6 +1,7 @@
 import type { Api } from "../common/types/api/index"
 import api from "."
 import { User } from "../common/types/User"
+import { password } from "../components/KIcon/icons"
 
 export const me = () => api.get<Api.Users.Me>(`/auth/me`)
 export const login = async (email: string, password: string) => {
@@ -34,6 +35,11 @@ export const verify = (params: {
     code?: string
 }) => api.get<Api.Auth.Verify>(`/auth/verify?${new URLSearchParams(params).toString()}`)
 
+export const changePassword = async () => {
+    const res = api.get<Api.Auth.ChangePassword>(`/auth/change-password`)
+    return res
+}
+
 export default {
     me,
     login,
@@ -45,5 +51,8 @@ export default {
         request: (email: string) => resetPasswordRequest({ email }),
         isValid: (token: string) => resetPasswordRequest({ token }),
         update: resetPasswordUpdate
+    },
+    changePassword:{
+        request: (currentPassword: string | undefined, newPassword: string) => api.post<Api.Auth.ChangePassword>(`/auth/change-password`, {currentPassword, newPassword}),
     }
 }

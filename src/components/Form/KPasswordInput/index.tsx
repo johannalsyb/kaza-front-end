@@ -5,9 +5,9 @@ import KText from "../../KText";
 import { useSetAtom } from "jotai";
 import { showMessageAtom } from "../../../atoms";
 
-export const getError = (text:string, setShowMessage: (msg:string | null) => void) => {
-    if(!text || text.length < 6) return <KText>Password too small</KText>;
-    if(!text.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/))
+export const getError = (text: string, setShowMessage: (msg: string | null) => void) => {
+    if (!text || text.length < 6) return <KText>Password too small</KText>;
+    if (!text.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$/))
         return <KText
             onPress={() => {
                 setShowMessage && setShowMessage("Passwords must contain one number, one uppercase and one lowercase letter, and at least 6 characters")
@@ -20,7 +20,7 @@ export const getError = (text:string, setShowMessage: (msg:string | null) => voi
                 padding: 3
             }}>
             Wrong format
-            <KText style={{marginLeft: 10, textAlign: "center", width: 17, height: 17, borderRadius: 20, borderWidth: 1, borderColor: "white", borderStyle: "solid"}}>i</KText>
+            <KText style={{ marginLeft: 10, textAlign: "center", width: 17, height: 17, borderRadius: 20, borderWidth: 1, borderColor: "white", borderStyle: "solid" }}>i</KText>
         </KText>
     return null
 }
@@ -29,20 +29,24 @@ export type Handle = {
     isValid: () => boolean,
 }
 
-export default forwardRef<Handle, KInputProps>((props:KInputProps, ref:ForwardedRef<any>) => {
+export default forwardRef<Handle, KInputProps>((props: KInputProps, ref: ForwardedRef<any>) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [password, setPassword] = useState<string>(props.value || '');
-    const [error, setError] = useState<ReactNode>();
+    const [internalError, setInternalError] = useState<ReactNode>();
     const setShowMessage = useSetAtom(showMessageAtom);
+    const [touched, setTouched] = useState(false);
 
     useImperativeHandle(ref, () => ({
-        isValid: () => !error
+        isValid: () => !internalError && !props.error
     }));
+
+    const showError = props.error 
+    // || (touched && password.length ? internalError : undefined)
 
     return <KTextInput
         {...props}
         ref={ref}
-        placeholder= {props.placeholder || "Password"}
+        placeholder={props.placeholder || "Password"}
         textContentType="password"
         secureTextEntry={!isPasswordVisible}
         autoComplete="password"
@@ -50,12 +54,12 @@ export default forwardRef<Handle, KInputProps>((props:KInputProps, ref:Forwarded
         onRightComponentPress={() => {
             setIsPasswordVisible(!isPasswordVisible);
         }}
-        error={error}
+        error={showError}
+        onFocus={() => setTouched(true)}
         onChangeText={(text) => {
             setPassword(text);
-            setError(text.length ? getError(text, setShowMessage) : "");
             props.onChangeText && props.onChangeText(text);
         }}
         value={password}
-        />
+    />
 })

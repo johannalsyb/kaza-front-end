@@ -15,6 +15,7 @@ export default function ToastManager({children}: ToastManagerProps) {
       placement="top"
       // duration={4000}
       animationType="slide-in"
+      offset={50}
       swipeEnabled={true}
       renderType={{
         success: toast => (
