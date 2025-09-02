@@ -1,3 +1,4 @@
+// image uploads for property and save buttons 
 import {
   ActivityIndicator,
   Image,
@@ -81,7 +82,7 @@ export const PropertyImage = ({
           onLoaded(b64[0]);
         }}
       />
-      <View
+      {/* <View
         style={{
           display: showRotate ? 'flex' : 'none',
           flexDirection: 'row',
@@ -135,7 +136,7 @@ export const PropertyImage = ({
           disabled={rotate === 0}
           style={{height: 25, width: 50}}
         />
-      </View>
+      </View> */}
       <RadioButton
         checked={primaryImage === pictureId}
         name={'Main picture'}
@@ -231,6 +232,7 @@ export default (props: Props) => {
     <View
       style={{
         width: '100%',
+        paddingHorizontal: 20
       }}>
       <FormField
         label={isMobile ? '' : 'Add pictures of your place'}
@@ -244,7 +246,7 @@ export default (props: Props) => {
           onPress={() => iuRef.current?.open()}
           style={{
             width: '99%',
-            height: isMobile ? 130 : 200,
+            height: isMobile ? 170 : 200,
             borderWidth: 1,
             borderColor: variables.colors.grey,
             backgroundColor: variables.colors.greenLight,

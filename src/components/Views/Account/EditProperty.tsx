@@ -68,10 +68,11 @@ export default (props:Props) => {
     return <ScrollView style={props.style}>
 
         <Property1 property={prop} onChange={setProp} propertyExtra={prop.lat && prop.lon ? {lat: prop.lat, lng: prop.lon} : undefined} />
-        <Property2 property={prop} onChange={setProp} />
         <Property3 property={prop} onChange={setProp} showRotate={true}/>
+        <Property2 property={prop} onChange={setProp} />
+        
 
-        <FormField labelAlign="left" label="Rules of your place" style={{marginTop: 20}}>
+        <FormField labelAlign="left" label="Rules of your place" style={{marginTop: 20, paddingHorizontal: 20}}>
             <View style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -97,7 +98,7 @@ export default (props:Props) => {
             </View>
         </FormField>
 
-        <FormField labelAlign="left" label="Visibility" style={{marginTop: 20}}>
+        <FormField labelAlign="left" label="Visibility" style={{marginTop: 20,  paddingHorizontal: 20}}>
             <View style={{
                 display: 'flex',
                 flexDirection: 'row',

@@ -1,18 +1,18 @@
-import {Animated, Pressable, StyleSheet, TextStyle, View} from 'react-native';
+import { Animated, Pressable, StyleSheet, TextStyle, View } from 'react-native';
 import FormField from '../../Form/FormField/FormField';
 import KTextInput from '../../Form/KTextInput/KTextInput';
 import variables from '../../../styles/variables';
 import KIcon from '../../KIcon/KIcon';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import KButton from '../../KButton/KButton';
 import CheckBox from '../../CheckBox/CheckBox';
-import {Property} from '.';
+import { Property } from '.';
 import autocomplete from '../../../api/autocomplete';
 import MapView from '../../MapView';
 import KText from '../../KText';
 import KModal from '../../KModal/KModal';
 import useIsMobile from '../../../hooks/useIsMobile';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const inputStyles: TextStyle = {
   textAlign: 'left',
@@ -96,7 +96,7 @@ export default (props: Props) => {
   };
 
   const handleAddressChange = (location: string) => {
-    setProperty({...property, location});
+    setProperty({ ...property, location });
     validateAddress(location);
   };
 
@@ -119,18 +119,49 @@ export default (props: Props) => {
       .catch(err => [] as string[]);
   };
   const [showAllAmenities, setShowAllAmenities] = useState(false);
-  const {isMobile} = useIsMobile();
+  const { isMobile } = useIsMobile();
   const initialAmenitiesCount = Math.ceil(amenities.length / 2);
   const displayedAmenities =
     isMobile || showAllAmenities
       ? amenities
       : amenities.slice(0, initialAmenitiesCount);
 
+  const marginVertical = isMobile ? 10 : 20
+
+
   return (
-    <>
+    <View>
+      {/* top colored container */}
+      <View style={[
+        {
+          backgroundColor: variables.colors.lightGrey,
+          borderRadius: isMobile ? 0 : 20,
+          borderBottomRightRadius: 23,
+          borderBottomLeftRadius: 23,
+          flex: 1,
+          marginRight: isMobile ? 0 : 20,
+          marginBottom: isMobile ? 0 : marginVertical,
+          paddingTop: 60,
+          paddingBottom: 20,
+          paddingHorizontal: 20,
+          justifyContent: 'center',
+          flexDirection: "column",
+          width: isMobile ? '100%' : 'auto',
+          maxWidth: isMobile ? undefined : 900,
+        },
+        !isMobile && { alignItems: 'center' },
+      ]}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <KIcon name='backArrow' size={'large'} style={{ width: 40, height: 40, backgroundColor: "white", borderRadius: 100 }}></KIcon>
+          <KText style={{ fontSize: 17, fontWeight: '400' }}>Edit My Place</KText>
+          <View  style={{ width: 40, height: 40 }} />
+        </View>
+
+      </View>
+
       <FormField
-        label="What is your exact address ?"
-        style={{zIndex: 100, padding:10}}
+        label="What is your address?"
+        style={{ zIndex: 100, paddingHorizontal: 20, marginTop: isMobile ? 22 : 0 }}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
         <KTextInput
@@ -138,7 +169,7 @@ export default (props: Props) => {
             <KIcon
               name="location"
               size="medium"
-              style={{opacity: 0.5, }}
+              style={{ opacity: 0.5, }}
             />
           }
           placeholder="42 Elm Road, New York, NY 10001, USA"
@@ -150,7 +181,8 @@ export default (props: Props) => {
         />
       </FormField>
 
-      {showIncorrectAddress && (
+{/* this is the map */}
+      {/* {showIncorrectAddress && (
         <View
           style={[
             styles.incorrectAddressBox,
@@ -162,20 +194,20 @@ export default (props: Props) => {
           <KText
             style={[
               styles.incorectaddressMessage,
-              {fontSize: isMobile ? 13 : 15, paddingVertical: 6,marginRight:isMobile?20: 0},
+              { fontSize: isMobile ? 13 : 15, paddingVertical: 6, marginRight: isMobile ? 20 : 0 },
             ]}
             numberOfLines={1}>
             You need to put the exact address of your place
           </KText>
           <Pressable
             onPress={() => setShowIncorrectAddress(false)}
-            style={{position: 'absolute', right: 15,bottom: 12}}>
-            <KIcon name="closeBtn" size={'medium'} style={{color: 'black'}} />
+            style={{ position: 'absolute', right: 15, bottom: 12 }}>
+            <KIcon name="closeBtn" size={'medium'} style={{ color: 'black' }} />
           </Pressable>
         </View>
-      )}
+      )} */}
 
-      {props.propertyExtra && (
+      {/* {props.propertyExtra && (
         <MapView
           lat={props.propertyExtra?.lat}
           lng={props.propertyExtra?.lng}
@@ -188,9 +220,9 @@ export default (props: Props) => {
             marginBottom: 20,
           }}
         />
-      )}
+      )} */}
 
-      <FormField
+      {/* <FormField
         labelAlign="left"
         label="What do you want to swap?"
         style={{
@@ -207,7 +239,7 @@ export default (props: Props) => {
             }}
             color={property.type === 'room' ? 'primary' : 'light'}
             text="Room"
-            onPress={() => setProperty({...property, type: 'room'})}
+            onPress={() => setProperty({ ...property, type: 'room' })}
           />
           <KButton
             style={{
@@ -216,7 +248,7 @@ export default (props: Props) => {
             }}
             color={property.type === 'flat' ? 'primary' : 'light'}
             text="Flat"
-            onPress={() => setProperty({...property, type: 'flat'})}
+            onPress={() => setProperty({ ...property, type: 'flat' })}
           />
           <KButton
             style={{
@@ -225,7 +257,7 @@ export default (props: Props) => {
             }}
             color={property.type === 'studio' ? 'primary' : 'light'}
             text="Studio"
-            onPress={() => setProperty({...property, type: 'studio'})}
+            onPress={() => setProperty({ ...property, type: 'studio' })}
           />
           <KButton
             style={{
@@ -234,58 +266,58 @@ export default (props: Props) => {
             }}
             color={property.type === 'house' ? 'primary' : 'light'}
             text="House"
-            onPress={() => setProperty({...property, type: 'house'})}
+            onPress={() => setProperty({ ...property, type: 'house' })}
           />
         </View>
-      </FormField>
+      </FormField> */}
 
-      <FormField
+      {/* <FormField
         labelAlign="left"
         label="Pets friendly?"
-        style={{paddingTop: isMobile ? 20 : 10}}
+        style={{ paddingTop: isMobile ? 20 : 10 }}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
-        <View style={[styles.container, {gap: 8}]}>
+        <View style={[styles.container, { gap: 8 }]}>
           <KButton
-            style={{width: '48%', marginBottom: 10}}
+            style={{ width: '48%', marginBottom: 10 }}
             color={property.petFriendly ? 'primary' : 'light'}
             text="Yes"
-            onPress={() => setProperty({...property, petFriendly: true})}
+            onPress={() => setProperty({ ...property, petFriendly: true })}
           />
           <KButton
-            style={{width: '48%', marginBottom: 10}}
+            style={{ width: '48%', marginBottom: 10 }}
             color={
               property.petFriendly !== undefined && !property.petFriendly
                 ? 'primary'
                 : 'light'
             }
             text="No"
-            onPress={() => setProperty({...property, petFriendly: false})}
+            onPress={() => setProperty({ ...property, petFriendly: false })}
           />
         </View>
-      </FormField>
+      </FormField> */}
 
-      <FormField
+      {/* <FormField
         labelAlign="left"
         label="Add some amenities (3 minimum)"
-        style={{paddingTop: isMobile ? 15 : 10, marginBottom: 0}}
+        style={{ paddingTop: isMobile ? 15 : 10, marginBottom: 0 }}
         gapBeforeChildren={false}
         gapAfterChildren={false}>
-        <View style={[styles.container, {rowGap: 15, marginTop: 0}]}>
+        <View style={[styles.container, { rowGap: 15, marginTop: 0 }]}>
           {displayedAmenities.map((amenity, i) => {
             return (
               <CheckBox
                 key={i}
                 // margin bottom fixed
                 // style={{ width: "48%", marginBottom: 14 }}
-                style={{maxWidth: 150, width: '100%'}}
+                style={{ maxWidth: 150, width: '100%' }}
                 name={amenity}
                 checked={property.amenities.includes(amenity)}
                 onPress={() => {
                   const ams = property.amenities.includes(amenity)
                     ? property.amenities.filter(a => a !== amenity)
                     : [...property.amenities, amenity];
-                  setProperty({...property, amenities: ams});
+                  setProperty({ ...property, amenities: ams });
                 }}
               />
             );
@@ -307,11 +339,11 @@ export default (props: Props) => {
                 ],
                 opacity: 0.7,
               }}>
-              <KIcon name="down" size={'large'} style={{color: 'black'}} />
+              <KIcon name="down" size={'large'} style={{ color: 'black' }} />
             </Animated.View>
           </Pressable>
         )}
-      </FormField>
+      </FormField> */}
 
       <KModal
         visible={!!modal}
@@ -326,7 +358,7 @@ export default (props: Props) => {
         }}>
         <KText>{modal}</KText>
       </KModal>
-    </>
+    </View>
   );
 };
 
