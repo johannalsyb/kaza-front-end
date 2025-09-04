@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Pressable, View, ViewStyle } from "react-native"
 import { useRoute } from "@react-navigation/native"
 
@@ -11,6 +11,7 @@ import { CircleImage } from "../CircleImage/CircleImage"
 import useAuthentication from "../../hooks/useAuthentication"
 import { NavStackParamList } from "../../navigation/screens"
 import Notifications from "../Views/Notifications"
+import  storage from '../../utils/Storage/storageNew'
 
 const size = 30
 
@@ -27,9 +28,18 @@ export default ({
   const user = auth.user
   const route = useRoute()
 
-  const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
-  const nm = parseInt(localStorage.getItem("newMatches") || "0")
-  const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
+  const [bubbles, setBubbles] = useState({ notifications: 0, matches: 0 });
+
+  useEffect(() => {
+    const loadBubbles = async () => {
+      const ur = parseInt((await storage.getItem("unreadNotifications")) || "0", 10);
+      const nm = parseInt((await storage.getItem("newMatches")) || "0", 10);
+      setBubbles({ notifications: ur, matches: nm });
+    };
+
+    loadBubbles();
+  }, []);
+
   const [notificationsVisible, setNotificationsVisible] = useState(false)
 
   if (!isMobile) return <></>

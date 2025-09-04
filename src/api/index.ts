@@ -1,6 +1,6 @@
-import {HTTPError} from '../common/index';
-import type {Api} from '../common/types/api/';
-import {API_URL} from './config';
+import type { Api } from '../common/types/api/'
+import { API_URL } from './config';
+import storage from '../utils/Storage/storageNew'
 
 export type ApiResponseError = {
   error: boolean;
@@ -18,7 +18,7 @@ export const request = async <T>(
   options?: RequestInit,
 ): Promise<Api.ApiResponse<T>> => {
   const path = getUrl(url);
-  const token = localStorage.getItem('token');
+  const token = await storage.getItem('token');
   let opts = options;
   if (token) {
     opts = {

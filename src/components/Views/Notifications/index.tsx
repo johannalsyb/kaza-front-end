@@ -11,33 +11,7 @@ import KIcon from "../../KIcon/KIcon"
 import { CircleImage } from "../../CircleImage/CircleImage"
 import useIsMobile from "../../../hooks/useIsMobile"
 import KButton from "../../KButton/KButton"
-
-const mockNotifications = [
-  {
-    id: "1753961411938-5bfd6c56-02a1-4b5d-8613-e4a22b88646b",
-    time: 1753961411938,
-    text: "*New Swap Request*\n\nTo know more, please click (HERE)[http://15.237.21.24:4004//chats/565c47b6-32de-4aed-9e13-a9512d1223c5]\n\nHappy swapping ! ✈️",
-    url: "http://15.237.21.24:4004//chats/565c47b6-32de-4aed-9e13-a9512d1223c5",
-    from: "1690037805988x686939595919049400",
-    title: "New Swap Request"
-  },
-  {
-    id: "1753961456789-a48a8db2-ccd2-4781-bd9f-9eae568f3b11",
-    time: 1753961456789,
-    text: "*Elke has requested a swap*\n\nYour flight itinerary has been updated. View the new details (HERE)[http://15.237.21.24:4004//flights/123abc456def]\n\nSafe travels! 🛫",
-    url: "http://15.237.21.24:4004//flights/123abc456def",
-    from: "1690037805988x686939595919049400",
-    title: "Elke has requested a swap"
-  },
-  {
-    id: "1753961491234-bdbd78d4-2e21-4a6f-8905-3e1457e5f001",
-    time: 1753961491234,
-    text: "*Message from Admin*\n\nWe’ve introduced new features in your dashboard. Check them out (HERE)[http://15.237.21.24:4004//dashboard/features]\n\nThank you for being with us 💼",
-    url: "http://15.237.21.24:4004//dashboard/features",
-    from: "admin",
-    title: "Laura has accepted your swap request"
-  },
-];
+import storage from '../../../utils/Storage/storageNew'
 
 type Props = {
   unreadNotifications: number,
@@ -52,19 +26,22 @@ export default (props: Props) => {
 
   const readNotification = (id: string) => {
     return auth.notifications.read(id)
-      .then(() => {
-        setNotifications(notifications?.filter(nn => id !== nn.id))
-        localStorage.setItem("unreadNotifications", `${(notifications?.length || 1) - 1}`)
-      })
-  }
+      .then(async () => {
+        setNotifications(notifications?.filter(nn => id !== nn.id));
+
+        const newCount = (notifications?.length || 1) - 1;
+        await storage.setItem("unreadNotifications", `${newCount}`);
+      });
+  };
 
   const readAllNotifications = () => {
     return auth.notifications.readAll()
-      .then(() => {
-        setNotifications([])
-        localStorage.setItem("unreadNotifications", `0`)
-      })
-  }
+      .then(async () => {
+        setNotifications([]);
+        await storage.setItem("unreadNotifications", `0`);
+      });
+  };
+
 
   useEffect(() => {
     if (!auth.user) return
@@ -79,7 +56,7 @@ export default (props: Props) => {
         }
       })
       .finally(() => setLoading(false))
-    
+
   }, [props.unreadNotifications])
 
   if (!auth.user || loading) return <ActivityIndicator color={variables.colors.yellow} />

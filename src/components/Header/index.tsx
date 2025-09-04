@@ -21,6 +21,7 @@ import useConfig from '../../hooks/useConfig'
 import MenuIcon from './MenuIcon'
 import HeaderEvent from '../../events/HeaderEvent'
 import MenuItem from './MenuItem'
+import storage from '../../utils/Storage/storageNew'
 
 const NOTIFICATION_TOGGLE_ID = 'notification-toggle-button';
 let ueNotificationListenerId: string | undefined = undefined
@@ -51,9 +52,16 @@ export default (
     setNotificationsVisible,
     NOTIFICATION_TOGGLE_ID
   )
-  const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
-  const nm = parseInt(localStorage.getItem("newMatches") || "0")
-  const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
+  const [bubbles, setBubbles] = useState({ notifications: 0, matches: 0 });
+
+  useEffect(() => {
+    (async () => {
+      const ur = parseInt((await storage.getItem("unreadNotifications")) || "0", 10);
+      const nm = parseInt((await storage.getItem("newMatches")) || "0", 10);
+      setBubbles({ notifications: ur, matches: nm });
+    })();
+  }, []);
+
   const [showMobileSearchBar, setShowMobileSearchBar] =
     useState<boolean>(false)
   const [search, setSearch] = useState<string>('')
@@ -112,23 +120,35 @@ export default (
   }
 
   useEffect(() => {
-    if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId)
-    ueNotificationListenerId = UserEvent.addListener('notification', u => {
-      localStorage.setItem("unreadNotifications", `${u.unreadNotifications || 0}`)
-      setBubbles({ ...bubbles, notifications: u.unreadNotifications || 0 })
-    })
+    if (ueNotificationListenerId)
+      UserEvent.removeListener("notification", ueNotificationListenerId);
 
-    if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
-    ueNewMatchListenerId = UserEvent.addListener('match', u => {
-      localStorage.setItem("newMatches", `${u.newMatches || 0}`)
-      setBubbles({ ...bubbles, matches: u.newMatches || 0 })
-    })
+    ueNotificationListenerId = UserEvent.addListener("notification", (u) => {
+      storage.setItem("unreadNotifications", `${u.unreadNotifications || 0}`);
+      setBubbles((prev) => ({
+        ...prev,
+        notifications: u.unreadNotifications || 0,
+      }));
+    });
+
+    if (ueNewMatchListenerId)
+      UserEvent.removeListener("match", ueNewMatchListenerId);
+
+    ueNewMatchListenerId = UserEvent.addListener("match", (u) => {
+      storage.setItem("newMatches", `${u.newMatches || 0}`);
+      setBubbles((prev) => ({
+        ...prev,
+        matches: u.newMatches || 0,
+      }));
+    });
 
     return () => {
-      if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId)
-      if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
-    }
-  }, [])
+      if (ueNotificationListenerId)
+        UserEvent.removeListener("notification", ueNotificationListenerId);
+      if (ueNewMatchListenerId)
+        UserEvent.removeListener("match", ueNewMatchListenerId);
+    };
+  }, []);
 
   const searchIcon = () => <MenuIcon icon="search"
     onPress={() => {

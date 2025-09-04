@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import KIcon from '../components/KIcon/KIcon'
 import variables from '../styles/variables'
 import Notifications from "../components/Views/Notifications"
+import storage from '../utils/Storage/storageNew'
 
 const NotificationsHeader: React.FC<{ title?: string }> = ({ title = "Notifications" }) => {
 	const navigation = useNavigation()
@@ -19,9 +20,22 @@ const NotificationsHeader: React.FC<{ title?: string }> = ({ title = "Notificati
 }
 
 const NotificationsScreen = () => {
-	const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
-	const nm = parseInt(localStorage.getItem("newMatches") || "0")
-	const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
+	
+	const [bubbles, setBubbles] = useState<{ notifications: number; matches: number }>({
+		notifications: 0,
+		matches: 0,
+	});
+
+	useEffect(() => {
+		const fetchBubbles = async () => {
+			const ur = parseInt((await storage.getItem("unreadNotifications")) || "0", 10);
+			const nm = parseInt((await storage.getItem("newMatches")) || "0", 10);
+			setBubbles({ notifications: ur, matches: nm });
+		};
+
+		fetchBubbles();
+	}, []);
+
 
 	return (
 		<SafeAreaView style={[styles.container, { backgroundColor: bubbles.notifications ? variables.colors.white : variables.colors.greenLight }]}>
