@@ -32,6 +32,7 @@ type Props = {
     lat: number;
     lng: number;
   };
+  onClose?: () => void; 
 };
 
 const amenities = [
@@ -152,7 +153,8 @@ export default (props: Props) => {
         !isMobile && { alignItems: 'center' },
       ]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <KIcon name='backArrow' size={'large'} style={{ width: 40, height: 40, backgroundColor: "white", borderRadius: 100 }}></KIcon>
+          <KIcon name='backArrow' size={'large'} style={{ width: 40, height: 40, backgroundColor: "white", borderRadius: 100 }}
+          onPress={props.onClose}></KIcon>
           <KText style={{ fontSize: 17, fontWeight: '400' }}>Edit My Place</KText>
           <View  style={{ width: 40, height: 40 }} />
         </View>

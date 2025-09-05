@@ -26,6 +26,7 @@ type Props = {
   style?: ViewStyle
   onLayout?: (event: any) => void,
   title?: string
+  hideButtons?: boolean
 }
 
 const KModal = ({
@@ -39,7 +40,8 @@ const KModal = ({
   onLayout,
   clearFilters,
   clearFiltersView,
-  title = 'Filters'
+  title = '',
+  hideButtons = false,
 }: Props, ref: any) => {
   const { height } = useWindowDimensions()
 
@@ -105,7 +107,7 @@ const KModal = ({
           {showCross && !isMobile && <Pressable style={styles.close} onPress={() => setVisibility(false)}>
             <KIcon name="crossCircle" size="medium" style={{ stroke: variables.colors.grey, ...crossStyle }} />
           </Pressable>}
-          {isMobile &&
+          {!hideButtons && isMobile && (
             <View style={styles.bottomButtons}>
               <KButton
                 onPress={() => {
@@ -120,7 +122,8 @@ const KModal = ({
                 onPress={() => setVisibility(false)}
                 text={title === 'Filters' ? 'Apply' : 'Confirm'}
               />
-            </View>}
+            </View>
+          )}
         </Animated.View>
       </>
     </Modal>

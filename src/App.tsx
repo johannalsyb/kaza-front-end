@@ -21,6 +21,10 @@ import KIcon from './components/KIcon/KIcon'
 import { OnboardingInfo } from './common/types/api/auth'
 import { toastSuccess } from './components/Toast/Toast'
 import properties from './api/properties'
+import { AuthProvider } from './contexts/AuthContext'
+import { TranslationProvider } from './contexts/TranslationContext'
+import { NotificationsProvider } from './contexts/NotificationsContext'
+import { ModalProvider } from './contexts/ModalContext'
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark'
@@ -43,12 +47,12 @@ function App(): JSX.Element {
     authentication.check(true)
       .then(async (uu) => {
         if (uu) {
-          
+
           try {
             const userProperties = await properties.ofUser('me')
             const hasProperties = userProperties.data.length > 0
-            
-         
+
+
             if (!hasProperties) {
               setTimeout(() => {
                 console.log("No properties found, navigating to onboarding")
@@ -56,8 +60,8 @@ function App(): JSX.Element {
               }, 200)
               return
             }
-            
-            
+
+
             if (uu.onboarding) {
               const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
               console.log(onboarding)
@@ -70,7 +74,7 @@ function App(): JSX.Element {
             }
           } catch (error) {
             console.log("Error checking user properties:", error)
-            
+
             setTimeout(() => {
               console.log("Error checking properties, navigating to onboarding")
               navRef.current?.navigate("Onboarding", { step: 1 })
@@ -81,33 +85,33 @@ function App(): JSX.Element {
     config.load()
   }, [])
   return (
-    <SafeAreaView
-      style={[
-        backgroundStyle,
-        {
-          height: '100%',
-        },
-      ]}>
-      <ClickOutsideProvider>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ToastManager>
-          {isAuthLoading ? <View style={{
-            height: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-            <KIcon name="logoText2" size={120} style={{}} />
-            <ActivityIndicator color={"black"} />
-          </View> : <Navigation ref={navRef} />}
-        </ToastManager>
-      </ClickOutsideProvider>
-    </SafeAreaView>
-
-
+    <React.StrictMode>
+              <SafeAreaView
+                style={[
+                  backgroundStyle,
+                  {
+                    height: '100%',
+                  },
+                ]}>
+                <ClickOutsideProvider>
+                  <StatusBar
+                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                    backgroundColor={backgroundStyle.backgroundColor}
+                  />
+                  <ToastManager>
+                    {isAuthLoading ? <View style={{
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                      <KIcon name="logoText2" size={120} style={{}} />
+                      <ActivityIndicator color={"black"} />
+                    </View> : <Navigation ref={navRef} />}
+                  </ToastManager>
+                </ClickOutsideProvider>
+              </SafeAreaView>
+    </React.StrictMode>
   )
 }
 

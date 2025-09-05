@@ -62,8 +62,12 @@ export default (
   const isExplore = route.name === 'Home' || route.name === 'Property'
   const isChat = route.name === 'Chats' || route.name === 'Chat'
   const isFavourites = route.name === 'Favourites'
+  const isMyPlace = route.name === 'Myplace'
+
 
   const searchAvailable = !isFavourites
+  const searchAvailableMyPlace = !isMyPlace
+
 
   let title: React.ReactNode =
     typeof props.title === 'string' ? (
@@ -72,7 +76,24 @@ export default (
       props.title
     )
   let leftButton: "search" | "back" | "none" = "search"
-  let rightButton: "notifications" | "edit" | "none" | "share" = "notifications"
+  // let rightButton: "notifications" | "edit" | "none" | "share" = "none"
+  type RightButton = "notifications" | "edit" | "none" | "share"
+  let rightButton: RightButton = "none"
+
+  const renderRightButton = () => {
+  switch (rightButton) {
+    case "notifications":
+      return notificationsIcon()
+    case "edit":
+      return editIcon(editFn)
+    case "share":
+      return shareIcon(editFn)
+    case "none":
+    default:
+      return emptyIcon()
+  }
+}
+
   let headerText = 'Swap Your Place'
   let editFn = () => { }
 
@@ -86,14 +107,18 @@ export default (
     rightButton = "edit"
     editFn = () => HeaderEvent.emit("edit", "user")
   } else if (route.name === "Myplace") {
-    leftButton = "back"
-    const isPreview = !!((route.params as { preview?: boolean })?.preview ?? false)
-    rightButton = isPreview ? "share" : "edit"
-    headerText = 'My Place'
-    editFn = () => {
-      isPreview ? HeaderEvent.emit("share", "property") :
-        HeaderEvent.emit("edit", "property")
-    }
+    // leftButton = "back"
+    // const isPreview = !!((route.params as { preview?: boolean })?.preview ?? false)
+    // rightButton = isPreview ? "share" : "edit"
+    // headerText = 'My Place'
+    // editFn = () => {
+    //   isPreview ? HeaderEvent.emit("share", "property") :
+    //     HeaderEvent.emit("edit", "property")
+    // }
+    leftButton = "none"
+    rightButton = "none"
+    headerText = ""
+    editFn = () => { }
   } else if (route.name === 'History') {
     leftButton = "back"
     rightButton = "none"
@@ -133,10 +158,11 @@ export default (
   const searchIcon = () => <MenuIcon icon="search"
     onPress={() => {
       if (!searchAvailable) return
+      if (!searchAvailableMyPlace) return
       setShowMobileSearchBar(true)
     }}
     style={{
-      opacity: !searchAvailable ? 0 : 1,
+      opacity: !(searchAvailable && searchAvailableMyPlace) ? 0 : 1,
       // flex: 1
     }} />
   const notificationsIcon = () => <MenuIcon nativeID={NOTIFICATION_TOGGLE_ID} icon="bell" onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
@@ -287,7 +313,7 @@ export default (
           webkitBackdropFilter: "blur(3px)"
         }} />}
 
-        {isMobile && !props.leftComponent ? (
+        {isMobile && !props.leftComponent && !isMyPlace? (
           isFavourites ? (
             <KText
               style={{
@@ -478,18 +504,20 @@ export default (
                     </>
                   )
                 ) : (
-                  props.rightComponent || (
-                    <>
-                      {user ? <>
-                        {rightButton === "notifications" ? notificationsIcon() : null}
-                        {rightButton === "edit" ? editIcon(editFn) : null}
-                        {rightButton === "none" ? emptyIcon() : null}
-                        {rightButton === "share" ? shareIcon(editFn) : null}
-                      </> : (
-                        emptyIcon()
-                      )}
-                    </>
-                  )
+                  // props.rightComponent || (
+                  //   <>
+                  //     {user ? <>
+                  //       {rightButton === "notifications" ? notificationsIcon() : null}
+                  //       {rightButton === "edit" ? editIcon(editFn) : null}
+                  //       {rightButton === "none" ? emptyIcon() : null}
+                  //       {rightButton === "share" ? shareIcon(editFn) : null}
+                  //     </> : (
+                  //       emptyIcon()
+                  //     )}
+                  //   </>
+                  // )
+                  props.rightComponent || renderRightButton()
+
                 )}
               </View>
             </View>

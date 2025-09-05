@@ -22,6 +22,7 @@ import Verify from '../screens/Auth/Verify'
 import Legal from '../screens/Legal'
 import Blog from '../screens/Blog'
 import Notifications from '../screens/Notifications'
+import Credits from '../components/Credits/Credits'
 
 export type NavStackParamList = {
   Auth: undefined
@@ -37,6 +38,7 @@ export type NavStackParamList = {
   Properties: undefined
   Account: { edit?: boolean }
   Myplace: { edit?: boolean, preview?: boolean }
+  Credits: {edit?: boolean, preview?: boolean}
   History: undefined
   Onboarding: { step?: number }
   Success: undefined
@@ -73,6 +75,7 @@ export const isHeaderHidden = (
     screens.push('Account')
     // screens.push('History');
     // screens.push('Myplace');
+    screens.push('Credits');
     screens.push('Chats')
     screens.push('Chat')
     screens.push('Swap')
@@ -108,6 +111,7 @@ export const linking = (loggedIn: boolean) => {
     Splash: 'splash',
     Account: 'account',
     Myplace: 'myplace',
+    Credits: 'credits',
     History: 'swaps',
     Onboarding: 'onboarding',
     Success: 'success',
@@ -164,6 +168,7 @@ export const openScreens: Screens = {
   Favourites: [Favourites, "Favourites"],
   Property: [Property, "Property"],
   Chats: [Chats, "Chats"],
+  Credits: [Credits, "Credits"],
   Verify: [Verify, "Verification"],
   Terms: [Legal, "Terms of Use"],
   Confidentiality: [Legal, "Confidentiality"],

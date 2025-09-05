@@ -7,6 +7,12 @@ import { PublicProperty } from '../Property'
 import { Chat as TChat, ChatMessage as TCM } from '../SwapRequest'
 import Notification from '../Notification'
 
+export interface AvailableSlot {
+    id: string
+    dateFrom: string
+    dateTo: string
+}
+
 export namespace Api {
 	export type ApiResponse<T> = {
 		meta: {
@@ -34,13 +40,26 @@ export namespace Api {
 		export type Notifications = Notification[]
 	}
 
+	// export namespace Properties {
+	// 	export type Property = TProperties.Property
+	// 	export type PrivateProperty = TProperties.PrivateProperty
+	// 	export type Update = TProperties.UpdateProperty
+	// 	export type Pictures = { images: string[] }
+	// 	export type Favourites = TProperties.Property[]
+	// }
 	export namespace Properties {
-		export type Property = TProperties.Property
-		export type PrivateProperty = TProperties.PrivateProperty
-		export type Update = TProperties.UpdateProperty
-		export type Pictures = { images: string[] }
-		export type Favourites = TProperties.Property[]
-	}
+    export type Property = TProperties.Property & {
+        availableSlots: AvailableSlot[]
+    }
+    export type PrivateProperty = TProperties.PrivateProperty & {
+        availableSlots: AvailableSlot[]
+    }
+    export type Update = TProperties.UpdateProperty & {
+        availableSlots?: AvailableSlot[]
+    }
+    export type Pictures = { images: string[] }
+    export type Favourites = TProperties.Property[]
+}
 
 	export namespace Swaps {
 		export type SwapRequest = TSwapRequest

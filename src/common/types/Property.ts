@@ -1,3 +1,9 @@
+export interface AvailableSlot {
+    id: string
+    dateFrom: string
+    dateTo: string
+}
+
 export type PublicProperty = {
     id: string,
     name: string,
@@ -21,6 +27,7 @@ export type PublicProperty = {
     smokingAllowed: boolean,
     childrenAllowed: boolean,
     bedArrangements: string,
+    availableSlots: AvailableSlot[]
 }
 
 export type Property = PublicProperty & {
@@ -41,6 +48,7 @@ export type Property = PublicProperty & {
         id: number,
         value: string[]
     }[]
+    availableSlots: AvailableSlot[]
 }
 
 export default Property
