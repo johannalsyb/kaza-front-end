@@ -22,7 +22,7 @@ import MenuIcon from './MenuIcon'
 import HeaderEvent from '../../events/HeaderEvent'
 import MenuItem from './MenuItem'
 
-const NOTIFICATION_TOGGLE_ID = 'notification-toggle-button';
+const NOTIFICATION_TOGGLE_ID = 'notification-toggle-button'
 let ueNotificationListenerId: string | undefined = undefined
 let ueNewMatchListenerId: string | undefined = undefined
 
@@ -51,8 +51,8 @@ export default (
     setNotificationsVisible,
     NOTIFICATION_TOGGLE_ID
   )
-  const ur = parseInt(localStorage.getItem("unreadNotifications") || "0")
-  const nm = parseInt(localStorage.getItem("newMatches") || "0")
+  const ur = parseInt(localStorage.getItem('unreadNotifications') || '0')
+  const nm = parseInt(localStorage.getItem('newMatches') || '0')
   const [bubbles, setBubbles] = useState<{ notifications: number, matches: number }>({ notifications: ur, matches: nm })
   const [showMobileSearchBar, setShowMobileSearchBar] =
     useState<boolean>(false)
@@ -60,10 +60,11 @@ export default (
 
   const route = useRoute<RouteProp<NavStackParamList>>()
   const isExplore = route.name === 'Home' || route.name === 'Property'
-  const isChat = route.name === 'Chats' || route.name === 'Chat'
   const isFavourites = route.name === 'Favourites'
+  const isMyPlace = route.name === 'Myplace'
 
   const searchAvailable = !isFavourites
+  const searchAvailableMyPlace = !isMyPlace
 
   let title: React.ReactNode =
     typeof props.title === 'string' ? (
@@ -71,32 +72,44 @@ export default (
     ) : (
       props.title
     )
-  let leftButton: "search" | "back" | "none" = "search"
-  let rightButton: "notifications" | "edit" | "none" | "share" = "notifications"
+  let leftButton: 'search' | 'back' | 'none' = 'search'
+  type RightButton = 'notifications' | 'edit' | 'none' | 'share'
+  let rightButton: RightButton = 'none'
+
+  const renderRightButton = () => {
+    switch (rightButton) {
+      case 'notifications':
+        return notificationsIcon()
+      case 'edit':
+        return editIcon(editFn)
+      case 'share':
+        return shareIcon(editFn)
+      case 'none':
+      default:
+        return emptyIcon()
+    }
+  }
+
   let headerText = 'Swap Your Place'
   let editFn = () => { }
 
-  if (route.name === "Home") {
-    rightButton = user ? "notifications" : "none"
-  } else if (route.name === "Property") {
-    leftButton = "back"
-    rightButton = "none"
-  } else if (route.name === "Account") {
-    leftButton = "none"
-    rightButton = "edit"
-    editFn = () => HeaderEvent.emit("edit", "user")
-  } else if (route.name === "Myplace") {
-    leftButton = "back"
-    const isPreview = !!((route.params as { preview?: boolean })?.preview ?? false)
-    rightButton = isPreview ? "share" : "edit"
-    headerText = 'My Place'
-    editFn = () => {
-      isPreview ? HeaderEvent.emit("share", "property") :
-        HeaderEvent.emit("edit", "property")
-    }
+  if (route.name === 'Home') {
+    rightButton = user ? 'notifications' : 'none'
+  } else if (route.name === 'Property') {
+    leftButton = 'back'
+    rightButton = 'none'
+  } else if (route.name === 'Account') {
+    leftButton = 'none'
+    rightButton = 'edit'
+    editFn = () => HeaderEvent.emit('edit', 'user')
+  } else if (route.name === 'Myplace') {
+    leftButton = 'none'
+    rightButton = 'none'
+    headerText = ''
+    editFn = () => { }
   } else if (route.name === 'History') {
-    leftButton = "back"
-    rightButton = "none"
+    leftButton = 'back'
+    rightButton = 'none'
     headerText = 'Swap History'
   } else if (route.name === 'Matching') {
     headerText = 'Matches'
@@ -114,13 +127,13 @@ export default (
   useEffect(() => {
     if (ueNotificationListenerId) UserEvent.removeListener('notification', ueNotificationListenerId)
     ueNotificationListenerId = UserEvent.addListener('notification', u => {
-      localStorage.setItem("unreadNotifications", `${u.unreadNotifications || 0}`)
+      localStorage.setItem('unreadNotifications', `${u.unreadNotifications || 0}`)
       setBubbles({ ...bubbles, notifications: u.unreadNotifications || 0 })
     })
 
     if (ueNewMatchListenerId) UserEvent.removeListener('match', ueNewMatchListenerId)
     ueNewMatchListenerId = UserEvent.addListener('match', u => {
-      localStorage.setItem("newMatches", `${u.newMatches || 0}`)
+      localStorage.setItem('newMatches', `${u.newMatches || 0}`)
       setBubbles({ ...bubbles, matches: u.newMatches || 0 })
     })
 
@@ -130,23 +143,21 @@ export default (
     }
   }, [])
 
-  const searchIcon = () => <MenuIcon icon="search"
+  const searchIcon = () => <MenuIcon icon='search'
     onPress={() => {
       if (!searchAvailable) return
+      if (!searchAvailableMyPlace) return
       setShowMobileSearchBar(true)
     }}
     style={{
-      opacity: !searchAvailable ? 0 : 1,
-      // flex: 1
+      opacity: !searchAvailable && searchAvailableMyPlace ? 0 : 1,
     }} />
-  const notificationsIcon = () => <MenuIcon nativeID={NOTIFICATION_TOGGLE_ID} icon="bell" onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
-  const editIcon = (fn: () => void) => <MenuIcon icon="edit" onPress={fn} iconStyle={{ stroke: variables.colors.yellow, backgroundColor: "black" }} />
-  const shareIcon = (fn: () => void) => <MenuIcon icon="share" onPress={fn} />
-  const backIcon = () => <MenuIcon icon="back" onPress={() => {
-    if (route.name === "Myplace") HeaderEvent.emit("back", "")
-    // else {
-    else props.navigation.canGoBack() ? props.navigation.goBack() : props.navigation.navigate("Home")
-    // }
+  const notificationsIcon = () => <MenuIcon nativeID={NOTIFICATION_TOGGLE_ID} icon='bell' onPress={() => setNotificationsVisible(prev => !prev)} bubble={bubbles.notifications} />
+  const editIcon = (fn: () => void) => <MenuIcon icon='edit' onPress={fn} iconStyle={{ stroke: variables.colors.yellow, backgroundColor: 'black' }} />
+  const shareIcon = (fn: () => void) => <MenuIcon icon='share' onPress={fn} />
+  const backIcon = () => <MenuIcon icon='back' onPress={() => {
+    if (route.name === 'Myplace') HeaderEvent.emit('back', '')
+    else props.navigation.canGoBack() ? props.navigation.goBack() : props.navigation.navigate('Home')
   }} />
   const emptyIcon = () => <View style={{ width: 30, height: 30 }} />
 
@@ -162,7 +173,6 @@ export default (
           <Notifications unreadNotifications={bubbles.notifications || 0} />
         </KSideModal>
       )
-
     return (
       <View
         ref={popupNotificationsRef}
@@ -189,24 +199,24 @@ export default (
     {
       onPress: () => props.navigation.navigate('Home'),
       selected: isExplore,
-      icon: "search",
-      text: "Explore",
+      icon: 'search',
+      text: 'Explore',
       bubble: 0,
       hidden: false
     },
     {
       onPress: () => props.navigation.navigate('Favourites'),
       selected: route.name === 'Favourites',
-      icon: "fav",
-      text: "Favourites",
+      icon: 'fav',
+      text: 'Favourites',
       bubble: 0,
       hidden: false
     },
     {
       onPress: () => props.navigation.navigate('Chats'),
       selected: route.name === 'Chats' || route.name === 'Chat',
-      icon: "chat",
-      text: "Chats",
+      icon: 'chat',
+      text: 'Chats',
       bubble: bubbles.notifications,
       hidden: false
     },
@@ -215,24 +225,24 @@ export default (
   const menu = [
     {
       onPress: () => props.navigation.navigate('Account'),
-      icon: "profile",
-      text: "My Profile"
+      icon: 'profile',
+      text: 'My Profile'
     },
     {
       onPress: () => props.navigation.navigate('Myplace', { edit: undefined, preview: isMobile ? undefined : true }),
-      icon: "location",
-      text: "My Place"
+      icon: 'location',
+      text: 'My Place'
     },
     {
       onPress: () => props.navigation.navigate('History'),
-      icon: "history",
-      text: "Swap History"
+      icon: 'history',
+      text: 'Swap History'
     }
   ]
-  if (["admin", "superadmin"].includes(user?.role || "") && !isMobile) menu.push({
+  if (['admin', 'superadmin'].includes(user?.role || '') && !isMobile) menu.push({
     onPress: () => props.navigation.navigate('Admin'),
-    icon: "review",
-    text: "Admin"
+    icon: 'review',
+    text: 'Admin'
   })
 
   const menuItemView = (icon: string, text: string, onPress: () => void) => <KText
@@ -247,7 +257,7 @@ export default (
     onPress={onPress}>
     <KIcon
       name={icon as any}
-      size="medium"
+      size='medium'
       style={{
         marginRight: 5,
         stroke: variables.colors.blackLight,
@@ -276,25 +286,25 @@ export default (
           margin: 'auto'
         }}>
         {isMobile && overlay && (!user || !isAdmin) && <View style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
           top: 0,
           zIndex: 100,
           //@ts-ignore
-          backdropFilter: "blur(3px)",
+          backdropFilter: 'blur(3px)',
           //@ts-ignore
-          webkitBackdropFilter: "blur(3px)"
+          webkitBackdropFilter: 'blur(3px)'
         }} />}
 
-        {isMobile && !props.leftComponent ? (
+        {isMobile && !props.leftComponent && !isMyPlace ? (
           isFavourites ? (
             <KText
               style={{
                 flex: 1,
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 18,
-                fontWeight: "900",
+                fontWeight: '900',
               }}
             >
               Favourites
@@ -303,10 +313,10 @@ export default (
             : (
               <>
                 <KTextInput
-                  placeholder="Where would you like to go?"
-                  topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: "center" }}
+                  placeholder='Where would you like to go?'
+                  topStyle={{ flex: 1, height: 40, marginRight: 10, justifyContent: 'center' }}
                   inputStyles={{ textAlign: 'left' }}
-                  leftComponent={<KIcon name="search" size="small" />}
+                  leftComponent={<KIcon name='search' size='small' />}
                   value={search}
                   onChangeText={text => setSearch(text)}
                   autoFocus={true}
@@ -322,32 +332,32 @@ export default (
                   }}
                 />
                 {user && <Pressable
-                  onPress={() => { console.log("credits pressed") }}
+                  onPress={() => { console.log('credits pressed') }}
                   style={styles.creditsContainerMobile}
                 >
                   <KIcon
-                    name={"credits"}
-                    size="small"
+                    name={'credits'}
+                    size='small'
                     style={{
                       marginRight: 5,
                       stroke: variables.colors.blackLight,
                     }}
                   />
-                  <Text style={{ fontFamily: "Plus Jakarta Sans", fontSize: 18, fontWeight: '500' }}>{user?.credits}</Text>
+                  <Text style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 18, fontWeight: '500' }}>{user?.credits}</Text>
                 </Pressable>}
               </>
             )) : (
           <>
             {isMobile ? (
               props.leftComponent || <>
-                {leftButton === "search" ? searchIcon() : null}
-                {leftButton === "back" ? backIcon() : null}
-                {leftButton === "none" ? emptyIcon() : null}
+                {leftButton === 'search' ? searchIcon() : null}
+                {leftButton === 'back' ? backIcon() : null}
+                {leftButton === 'none' ? emptyIcon() : null}
               </>
             ) : (
               <View style={{ flex: .5 }}>
                 <KIcon
-                  name="logo"
+                  name='logo'
                   width={111}
                   height={40}
                   onPress={() => {
@@ -360,7 +370,7 @@ export default (
               </View>
             )}
 
-            {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: "center", fontSize: 17 }}>{title}</KText>
+            {isMobile ? <KText style={{ flex: isMobile ? 1 : undefined, textAlign: 'center', fontSize: 17 }}>{title}</KText>
               : <View
                 style={{
                   display: 'flex',
@@ -399,7 +409,7 @@ export default (
                         <CircleImage
                           thumbnail={true}
                           imageId={`${user.id}/${user.primaryImage}`}
-                          type="users"
+                          type='users'
                           style={{
                             width: user.primaryImage ? 44 : 28,
                             height: user.primaryImage ? 44 : 28,
@@ -411,12 +421,12 @@ export default (
                         />
                       </Pressable>
                       <Pressable
-                        onPress={() => { console.log("credits pressed") }}
+                        onPress={() => { console.log('credits pressed') }}
                         style={styles.creditsContainer}
                       >
                         <KIcon
-                          name={"credits"}
-                          size="small"
+                          name={'credits'}
+                          size='small'
                           style={{
                             stroke: variables.colors.blackLight,
                           }}
@@ -445,7 +455,7 @@ export default (
                             marginBottom: 5,
                             marginTop: 5,
                           }}></View>
-                        {menuItemView("logout", "Logout", () => {
+                        {menuItemView('logout', 'Logout', () => {
                           props.navigation.replace('Home')
                           auth.logout()
                         })}
@@ -454,22 +464,22 @@ export default (
                   ) : (
                     <>
                       <KButton
-                        text="Register your place"
-                        icon="register"
+                        text='Register your place'
+                        icon='register'
                         iconSize='medium'
-                        color="secondary"
+                        color='secondary'
                         textStyle={{ fontSize: 12, color: variables.colors.black }}
-                        style={{ width: "auto", backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
+                        style={{ width: 'auto', backgroundColor: variables.colors.yellow, paddingHorizontal: 10 }}
                         onPress={() => {
                           props.navigation.navigate('SignUp')
                         }}
                       />
                       <KButton
-                        text="Sign In"
-                        icon="login"
+                        text='Sign In'
+                        icon='login'
                         iconStyle={{ stroke: 'white' }}
-                        color="tertiary"
-                        style={{ backgroundColor: "transparent" }}
+                        color='tertiary'
+                        style={{ backgroundColor: 'transparent' }}
                         textStyle={{ fontSize: 12 }}
                         onPress={() => {
                           props.navigation.navigate('Login')
@@ -477,20 +487,7 @@ export default (
                       />
                     </>
                   )
-                ) : (
-                  props.rightComponent || (
-                    <>
-                      {user ? <>
-                        {rightButton === "notifications" ? notificationsIcon() : null}
-                        {rightButton === "edit" ? editIcon(editFn) : null}
-                        {rightButton === "none" ? emptyIcon() : null}
-                        {rightButton === "share" ? shareIcon(editFn) : null}
-                      </> : (
-                        emptyIcon()
-                      )}
-                    </>
-                  )
-                )}
+                ) : (props.rightComponent || renderRightButton())}
               </View>
             </View>
 

@@ -1,4 +1,3 @@
-// parent index.tsx
 import { ActivityIndicator, Linking, Pressable, ScrollView, View, StyleSheet } from 'react-native'
 import KButton from '../../components/KButton/KButton'
 import useAuthentication from '../../hooks/useAuthentication'
@@ -7,11 +6,9 @@ import { NavStackParamList } from '../../navigation/screens'
 import variables from '../../styles/variables'
 import KText from '../../components/KText'
 import KIcon from '../../components/KIcon/KIcon'
-import { Link, useRoute } from '@react-navigation/native'
 import MainInfo from '../../components/Views/Account/MainInfo'
 import History from '../../components/Views/Account/History'
-import React, { useEffect, useState } from 'react'
-import EditProfile from '../../components/Views/Account/EditProfile'
+import { useEffect, useState } from 'react'
 import { parsePhone } from '../../utils/phone'
 import KSideModal from '../../components/KModal/KSideModal'
 import useIsMobile from '../../hooks/useIsMobile'
@@ -27,17 +24,10 @@ import useConfig from '../../hooks/useConfig'
 import HeaderEvent from '../../events/HeaderEvent'
 import MyPlace from './MyPlace'
 import { shareProperty } from '../../utils/Share'
-import Menu from '../../components/Menu'
 import MenuButtons from '../../components/Screens/Account/Menu'
 import EditProfileComponent from '../../components/Screens/Account/EditProfile'
-import PropertyCard from '../../components/PropertyCard'
-import Property from '../../common/types/Property'
-import { credits } from '../../components/KIcon/icons'
 import KToggle from '../../components/KToggle'
 import KImage from '../../components/KImage/KImage'
-import { formatDateRange } from '../../utils/date'
-import { Circle } from 'react-native-svg'
-import { CircleImage } from '../../components/CircleImage/CircleImage'
 
 
 type Props = NativeStackScreenProps<
@@ -49,7 +39,7 @@ let shareEvId: string | undefined = undefined
 
 export default (props: Props) => {
   const { route } = props
-  const [modal, setModal] = useState<'user' | 'property' | 'swap' | null>(null)
+  const [modal, setModal] = useState<'user' | 'property' | 'swap' | 'Myplace' | 'Credits' | null>(null)
   const { isMobile } = useIsMobile()
   const [user, setUser] = useState<{ user: Api.Users.Me; creds: Creds }>()
   // const [property, setProperty] = useState<Property>()
@@ -114,7 +104,7 @@ export default (props: Props) => {
   useEffect(() => {
     if (edit && user && prop && !modal) {
       if (props.route.name === "Account") setModal("user")
-      else if (props.route.name === "Myplace") setModal("property")
+      else if (props.route.name === "Myplace") setModal("Myplace")
     }
 
     if (prop) {
@@ -203,7 +193,10 @@ export default (props: Props) => {
     />
   )
 
-  const onEditPropertyPressed = () => setModal('property')
+  const onEditPropertyPressed = () => {
+    props.navigation.navigate('Myplace', { edit: true });
+  };
+
   const onEditProfilePressed = () => {
     setModal('user')
     setIsSideModalOpen(true)
@@ -240,12 +233,6 @@ export default (props: Props) => {
       icon: 'user' as const,
       onPress: () => props.navigation.navigate('Account', { edit: undefined }),
       active: route.name === 'Account',
-    },
-    {
-      text: 'Credits',
-      icon: 'creds' as const,
-      onPress: () => props.navigation.navigate('History'),
-      active: isHistory,
     },
     {
       text: 'Swap History',
@@ -296,7 +283,7 @@ export default (props: Props) => {
   ]
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: variables.colors.greenLight }}>
+    <ScrollView style={{ flex: 1, backgroundColor: variables.colors.white }}>
       {route.name === 'Account' && (
         <View style={{ width: '100%' }}>
           <MainInfo
@@ -366,9 +353,8 @@ export default (props: Props) => {
             setScrollViewHeight(e.nativeEvent.layout.height)
           }}
           style={{
-            display: 'flex',
             flex: 1,
-            backgroundColor: variables.colors.greenLight,
+            backgroundColor: variables.colors.white,
           }}>
 
           {route.name === "Myplace" && <MyPlace
@@ -382,82 +368,46 @@ export default (props: Props) => {
           {isHistory && <History />}
         </View>
 
-        <View style={{ backgroundColor: variables.colors.greenLight, padding: 10, }}>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: variables.colors.white,
-              borderRadius: 20,
-              marginTop: 20,
-            }}>
+        {isMobile && route.name === "Account" &&
+          <View style={{ backgroundColor: variables.colors.greenLight, padding: 10, }}>
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: variables.colors.white,
+                borderRadius: 20,
+                marginTop: 20,
+              }}>
 
-            {prop && (
-              <View>
-                <View style={{ position: 'relative' }}>
-                  {/* <View style={{
-                    position: 'absolute', zIndex: 10, top: 10, right: 10, backgroundColor: 'white',
-                    padding: 10, gap: 8, borderRadius: 50, flexDirection: 'row', alignItems: 'flex-end'
-                  }} >
-                    <KIcon
-                      name="settings"
-                      style={{ opacity: 0.5 }}
-                      onPress={() => { }}
-                    />
-                    <KText>Manage my place</KText>
-                  </View> */}
-
-                  {/* <KImage
-                     source={prop.primaryImage || 'default-image-url'}
-                     style={{ width: '100%', height: 200, borderRadius: 10 }}
-                   /> */}
-                  {prop?.primaryImage && prop?.id &&
-                    <KImage
-                      imageId={`${prop?.id}/${prop?.primaryImage}`}
-                      type="properties"
-                      style={{ width: '100%', height: 250, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
-                      hideOnError={false}
-                    />}
-                  {/* <View style={{ position: 'absolute', bottom: -30, left: 0, right: 0, width: '100%', alignItems: 'center' }}>
-                    <CircleImage
-                      imageId={user?.creds?.image}
-                      thumbnail={true}
-                      type="users"
-                      style={{
-                        borderRadius: 100,
-                        height: 61,
-                        width: 61,
-                      }}
-                    />
-                  </View> */}
-
-                  {/* ) : ( 
-                 <KImage
-                   source={variables.images.defaultImage}
-                   type="properties"
-                   style={{ width: '100%', height: 200, borderRadius: 10 }}
-                 />
-               )}*/}
-
-                  {/* <KText>Image ID: {prop.primaryImage || 'Not available'}</KText> */}
-                </View>
-                <View style={{ flexDirection: 'row', marginVertical: 16, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <KIcon name="location" style={{ opacity: 0.5 }} size={24} />
-                    <KText style={{ fontSize: 12 }}>{prop.address.slice(0, 20) || 'Address'}</KText>
+              {prop && (
+                <View>
+                  <View style={{ position: 'relative' }}>
+                    {prop?.primaryImage && prop?.id &&
+                      <KImage
+                        imageId={`${prop?.id}/${prop?.primaryImage}`}
+                        type="properties"
+                        style={{ width: '100%', height: 250, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
+                        hideOnError={false}
+                      />}
                   </View>
-                  <Pressable
-                    onPress={onEditPropertyPressed}
-                    style={{
-                      backgroundColor: variables.colors.yellow,
-                      paddingHorizontal: 20, paddingVertical: 10, gap: 8, borderRadius: 50, flexDirection: 'row', alignItems: 'flex-end'
-                    }} >
-                    <KText>Manage my place</KText>
-                  </Pressable>
+                  <View style={{ flexDirection: 'row', marginVertical: 16, justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <KIcon name="location" style={{ opacity: 0.5 }} size={24} />
+                      <KText style={{ fontSize: 12 }}>{prop.address.slice(0, 20) || 'Address'}</KText>
+                    </View>
+                    <Pressable
+                      onPress={onEditPropertyPressed}
+                      style={{
+                        backgroundColor: variables.colors.yellow,
+                        paddingHorizontal: 20, paddingVertical: 10, gap: 8, borderRadius: 50, flexDirection: 'row', alignItems: 'flex-end'
+                      }} >
+                      <KText>Manage my place</KText>
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
-            )}
-          </Pressable>
-        </View >
+              )}
+            </Pressable>
+          </View >
+        }
 
         {
           isMobile && route.name === "Account" && (
@@ -469,8 +419,6 @@ export default (props: Props) => {
                 backgroundColor: variables.colors.greenLight,
                 paddingHorizontal: isMobile ? 10 : "5%"
               }}>
-
-              {/* #TODO Check how it work  */}
               {menu.map((m, i) => {
                 const buttonStyle = StyleSheet.flatten([
                   {
@@ -549,7 +497,6 @@ export default (props: Props) => {
             </View>
           )
         }
-
         {
           props.route.name === "Account" ? <>
             <View
@@ -580,8 +527,8 @@ export default (props: Props) => {
                   marginBottom: isMobile ? 10 : 0,
                   alignItems: 'flex-start',
                 }}
-                color="greenLight" />
-
+                color="greenLight"
+              />
               <KButton
                 icon="logout"
                 text="Log out"
@@ -599,7 +546,6 @@ export default (props: Props) => {
                 color="greenLight"
               />
             </View>
-
           </> : null
         }
 
