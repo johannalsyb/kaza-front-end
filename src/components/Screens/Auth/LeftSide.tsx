@@ -13,9 +13,6 @@ import KIcon from '../../KIcon/KIcon';
 import KText from '../../KText';
 import useResizeImage from '../../../hooks/useResizeImage';
 
-const TopImg = require('../../../assets/Auth/top.webp');
-const LeftImg = require('../../../assets/Auth/left_1920_x2.webp');
-
 interface LeftSideProps {
   style?: object;
   title?: string;
@@ -29,7 +26,7 @@ const LeftSide = (props: LeftSideProps) => {
   return (
     <>
       <Image
-        source={isMobile ? TopImg : LeftImg}
+        source={isMobile ? require('../../../assets/Auth/top.webp') : require('../../../assets/Auth/left_1920_x2.webp')}
         resizeMode={isMobile ? 'contain' : 'cover'}
         style={{
           width: isMobile ? '100%' : width * 0.5,

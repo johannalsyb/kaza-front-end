@@ -89,7 +89,7 @@ export default (props: Props) => {
       e.preventDefault()
       return
     }
-    
+
     if (currentStep === 1) return props.navigation.push('Login')
     if (!props.route?.params) return
     if (
@@ -122,7 +122,7 @@ export default (props: Props) => {
       .then(([me, properties]) => {
         // Set whether user has properties
         setHasProperties(properties.data.length > 0)
-        
+
         // const onboarding:OnboardingInfo = me.data.onboarding ? JSON.parse(me.data.onboarding) : {step: 1, data: defaultProperty, completed: false}
         let onboarding: OnboardingInfo
         if (me.data.onboarding) {
@@ -135,7 +135,7 @@ export default (props: Props) => {
             data = {}
             step = 5
             if (me.data.payment) {
-              step = 6 
+              step = 6
               completed = true
             }
           }
@@ -214,7 +214,7 @@ export default (props: Props) => {
       })
   }
 
-  
+
   const onPropertyCreated = () => {
     setHasProperties(true)
   }
@@ -248,7 +248,7 @@ export default (props: Props) => {
     <Step5
       onChange={setProperty}
       property={property || defaultProperty}
-      onNext={finish} 
+      onNext={finish}
       onPrev={() => stepDown(3)}
       onPropertyCreated={onPropertyCreated}
     />
@@ -280,7 +280,7 @@ export default (props: Props) => {
               name="backArrow"
               size={35}
               onPress={() => {
-                
+
                 if (currentStep === 1 && !hasProperties) {
                   return
                 }
@@ -293,62 +293,63 @@ export default (props: Props) => {
           </View>
         }
 
-       <ImageBackground
-        source={require('../../components/KIcon/icons/onboardingBg.jpg')}
-        style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      paddingBottom: 30,
-     
-      height: isMobile ? 228 :undefined,
-      marginBottom: isMobile? 0 :32,
-      marginLeft: isMobile ? 0 : 39,
-      marginTop: isMobile ? 0 : 55,
-      borderRadius: isMobile ? 25 : 54,
-      zIndex: 1,
-      width: isMobile ? '100%' : undefined,
-      flex: isMobile ? undefined : 1,
-      overflow: 'hidden', 
-        }}
-        resizeMode="cover">
-          {Boolean(currentStep) && <KText
-            style={[styles.title, { fontSize: isMobile ? 27 : 40, fontWeight: isMobile ? '700' : '600'}]}          
-            >
-            {currentStepObject.title} 
-          </KText>}
-            <>
-              <StepView
-                number={onboardingSteps.length}
-                current={currentStep || 1}
-                style={{
-                  height: 7,
-                  width: '100%',
-                  maxWidth: 268,
-                  marginTop: 30,
-                  opacity: !currentStep ? 0 : 1,
-                }}
-              />
-                <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1,fontSize:19, color: 'white' }}>
-                  Step {`${(currentStep ?? 0) < 10 ? '0' : ''}`}{currentStep}  <KText style={{color: '#FFE361'}}>of {onboardingSteps.length}</KText> 
-                </KText>
-              {
-                !isMobile && (
-              <Pressable
-                style={{ position: 'absolute', bottom: 32, left: 0, right: 0 ,
+        <ImageBackground
+          source={require('../../components/KIcon/icons/onboardingBg.jpg')}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            paddingBottom: 30,
 
-                   alignItems: 'center', 
-                  justifyContent: 'center', 
-                }}
-                onPress={() => {
-                  Linking.openURL('/')
-                }}>
-                <KIcon name="KazaSwaplogoblackandyellowVertical" style={{width: 70, height: 104,}} />
-              </Pressable>
-                )
-              }
-            </>
+            height: isMobile ? 228 : undefined,
+            marginBottom: isMobile ? 0 : 32,
+            marginLeft: isMobile ? 0 : 39,
+            marginTop: isMobile ? 0 : 55,
+            borderRadius: isMobile ? 25 : 54,
+            zIndex: 1,
+            width: isMobile ? '100%' : undefined,
+            flex: isMobile ? undefined : 1,
+            overflow: 'hidden',
+          }}
+          resizeMode="cover">
+          {Boolean(currentStep) && <KText
+            style={[styles.title, { fontSize: isMobile ? 27 : 40, fontWeight: isMobile ? '700' : '600' }]}
+          >
+            {currentStepObject.title}
+          </KText>}
+          <>
+            <StepView
+              number={onboardingSteps.length}
+              current={currentStep || 1}
+              style={{
+                height: 7,
+                width: '100%',
+                maxWidth: 268,
+                marginTop: 30,
+                opacity: !currentStep ? 0 : 1,
+              }}
+            />
+            <KText style={{ marginTop: 20, opacity: !currentStep ? 0 : 1, fontSize: 19, color: 'white' }}>
+              Step {`${(currentStep ?? 0) < 10 ? '0' : ''}`}{currentStep}  <KText style={{ color: '#FFE361' }}>of {onboardingSteps.length}</KText>
+            </KText>
+            {
+              !isMobile && (
+                <Pressable
+                  style={{
+                    position: 'absolute', bottom: 32, left: 0, right: 0,
+
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  onPress={() => {
+                    Linking.openURL('/')
+                  }}>
+                  <KIcon name="KazaSwaplogoblackandyellowVertical" style={{ width: 70, height: 104, }} />
+                </Pressable>
+              )
+            }
+          </>
         </ImageBackground>
         <ScrollView
           contentContainerStyle={{
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     maxWidth: 530
   },
-  
+
   iconBack: {
     position: 'absolute',
     top: 70,

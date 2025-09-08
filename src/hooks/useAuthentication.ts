@@ -98,6 +98,7 @@ const useAuthentication = (): Authentication => {
         return { user: null, needsVerification: true }
       } else {
         // For any other error (including invalid credentials), just show login failed
+        console.log("Error: ", err)
         toastError('Login failed')
         return { user: null, needsVerification: false }
       }

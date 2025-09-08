@@ -6,7 +6,7 @@ import KButton from '../../../KButton/KButton'
 import variables from '../../../../styles/variables'
 import ListAvailbleDates from './ListAvailbleDates'
 import KSideModal from '../../../KModal/KSideModal'
-import KCalendar from '../../../KCalendar'
+import KCalendar from '../../../KCalendar/index'
 import SelectDates from './SelectDates'
 import dayjs from 'dayjs'
 import { useAtom } from 'jotai'
@@ -163,6 +163,7 @@ const CalendarComponent = () => {
             onChange={handleChange}
             value={calendarSelectedDateRange}
             minDate={new Date()}
+            // @ts-ignore
             tileDisabled={({ date, view }) =>
               view === 'month' && isDateInRanges(date)
             }

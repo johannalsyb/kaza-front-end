@@ -1,1 +1,1 @@
-export const API_URL = __DEV__ ? "http://localhost:7777/api" : "https://api.kazaswap.co"
+export const API_URL = __DEV__ ? "https://staging.api.kazaswap.co" : "https://api.kazaswap.co"

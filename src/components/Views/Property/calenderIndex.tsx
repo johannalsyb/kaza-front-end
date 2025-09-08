@@ -6,7 +6,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import KButton from '../../../components/KButton/KButton';
 import ListAvailbleDates from './ListAvailableDates';
 import KSideModal from '../../../components/KModal/KSideModal';
-import KCalendar from '../../../components/KCalendar';
+import KCalendar from '../../../components/KCalendar/index';
 import SelectDates from '../../Screens/Onboarding/CalendarComponent/SelectDates';
 import { showModalCalendarAtom } from '../../../atoms';
 import useIsMobile from '../../../hooks/useIsMobile';
@@ -303,6 +303,7 @@ const CalendarComponent = (props: Props) => {
 						onChange={handleChange}
 						value={calendarSelectedDateRange}
 						minDate={new Date()}
+						// @ts-ignore
 						tileDisabled={({ date, view }) =>
 							view === 'month' && isDateInRanges(date)
 						}

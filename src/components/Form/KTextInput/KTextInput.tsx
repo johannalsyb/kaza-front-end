@@ -154,7 +154,7 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
             styles.formInput,
             focused ? styles.formFocused : {},
             !!error ? styles.formError : {},
-            leftComponent ? { paddingLeft: form.input.paddingLeft,paddingBottom:13 } : {},
+            leftComponent ? { paddingLeft: form.input.paddingLeft, paddingBottom: 13 } : {},
             inputStyles,
           ]}
           onChangeText={value => {
@@ -205,10 +205,10 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : null}
-        {showSuggestions && suggestionList.length > 0 &&  (
+        {showSuggestions && suggestionList.length > 0 && (
           <View style={styles.suggestion}>
             {suggestionList.map((suggestion, index) => (
-              
+
               <Pressable
                 // disabled={suggestion === 'No place found!'}
                 key={`suggestion_${index}`}
@@ -225,12 +225,12 @@ const KTextInput = forwardRef<TextInput, KInputProps>(
                     backgroundColor: variables.colors.yellow,
                   },
                 ]}>
-                 
+
 
                 <Text style={styles.textSuggestion} key={index}>
-                  {suggestion} 
+                  {suggestion}
                 </Text>
-                  
+
               </Pressable>
             ))}
           </View>
@@ -266,12 +266,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: form.input.lineHeight,
     fontSize: form.input.fontSize,
-    outlineStyle: 'none',
+    // outlineStyle: 'none',
+    ...(Platform.OS === "web" ? { outlineStyle: "none" } : {}),
     overflow: 'hidden',
     padding: form.input.padding,
     fontFamily: variables.font.family.regular,
     borderRadius: form.input.borderRadius,
-    maxFontSizeMultiplier: 1,
     textAlignVertical: 'center',
     includeFontPadding: false,
   },

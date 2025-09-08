@@ -13,9 +13,7 @@ import auth from '../../api/auth';
 import {toastSuccess} from '../../components/Toast/Toast';
 import KIcon from '../../components/KIcon/KIcon';
 import {Link} from '@react-navigation/native';
-const TopImg = require('../../assets/Auth/top.webp');
-// const LeftImg = require("../../assets/Auth/left_desktop.webp")
-const LeftImg = require('../../assets/Auth/left_1920_x2.webp');
+
 type Props = NativeStackScreenProps<NavStackParamList, 'ForgotPassword'>;
 
 export default ({route, navigation}: Props) => {
@@ -50,7 +48,7 @@ export default ({route, navigation}: Props) => {
         position: 'relative',
       }}>
       <Image
-        source={isMobile ? TopImg : LeftImg}
+        source={isMobile ? require('../../assets/Auth/top.webp') : require('../../assets/Auth/left_1920_x2.webp')}
         resizeMode={isMobile ? 'contain' : 'cover'}
         style={{
           width: isMobile ? '100%' : '50%',

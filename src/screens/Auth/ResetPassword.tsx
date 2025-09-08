@@ -16,9 +16,6 @@ import {getError as getPasswordError} from "../../components/Form/KPasswordInput
 import { useSetAtom } from "jotai";
 import { showMessageAtom } from "../../atoms";
 
-const TopImg = require("../../assets/Auth/top.webp")
-const LeftImg = require("../../assets/Auth/left_desktop.webp")
-
 type Props = NativeStackScreenProps<NavStackParamList, 'ResetPassword'>;
 
 export default ({
@@ -78,7 +75,7 @@ export default ({
     }}>
 
       <Image
-        source={isMobile ? TopImg : LeftImg}
+        source={isMobile ? require('../../assets/Auth/top.webp') : require('../../assets/Auth/left_desktop.webp')}
         resizeMode={isMobile ? "contain" : "cover"}
         style={{
           width: isMobile ? "100%" : "50%",

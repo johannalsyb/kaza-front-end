@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -24,10 +24,6 @@ import properties from './api/properties'
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark'
-  if (Platform.OS === 'web') {
-    require('react-datepicker/dist/react-datepicker.css');
-    require('./components/DatePicker/datepickerOverrides.css');
-  }
 
   const backgroundStyle = {
     // backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -43,12 +39,12 @@ function App(): JSX.Element {
     authentication.check(true)
       .then(async (uu) => {
         if (uu) {
-          
+
           try {
             const userProperties = await properties.ofUser('me')
             const hasProperties = userProperties.data.length > 0
-            
-         
+
+
             if (!hasProperties) {
               setTimeout(() => {
                 console.log("No properties found, navigating to onboarding")
@@ -56,8 +52,8 @@ function App(): JSX.Element {
               }, 200)
               return
             }
-            
-            
+
+
             if (uu.onboarding) {
               const onboarding = JSON.parse(uu.onboarding) as OnboardingInfo
               console.log(onboarding)
@@ -70,7 +66,7 @@ function App(): JSX.Element {
             }
           } catch (error) {
             console.log("Error checking user properties:", error)
-            
+
             setTimeout(() => {
               console.log("Error checking properties, navigating to onboarding")
               navRef.current?.navigate("Onboarding", { step: 1 })

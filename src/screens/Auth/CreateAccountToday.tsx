@@ -163,7 +163,7 @@ export default (props: any) => {
     style={{ flex: 1, backgroundColor: isMobile ? variables.colors.white : 'transparent' }}>
       
      <ImageBackground
-         source={!isMobile && require('../../components/KIcon/icons/onboardingBg.jpg')}
+         source={!isMobile ? require('../../components/KIcon/icons/onboardingBg.jpg') : undefined}
          style={{
          display: 'flex',
          justifyContent: 'center',

@@ -8,7 +8,7 @@ import { Link, useNavigation } from "@react-navigation/native"
 import KIcon from "../../components/KIcon/KIcon"
 
 
-const BackImg = require("../../assets/Auth/back.webp")
+const BackImg = "../../assets/Auth/back.webp"
 
 export default ({
     onHide
@@ -31,7 +31,7 @@ export default ({
     }}>
 
         <Image
-            source={BackImg}
+            source={require(BackImg)}
             resizeMode="cover"
             style={{
                 width: "100%",

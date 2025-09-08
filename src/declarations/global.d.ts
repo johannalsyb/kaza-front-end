@@ -4,11 +4,12 @@ declare global {
       accounts: {
         id: {
           initialize: (
-            options: { 
+            options: {
               client_id: string;
               callback: (response: GoogleCredentialResponse,
-              flow: string
-          ) => void }) => void
+                flow: string
+              ) => void
+            }) => void
           prompt: () => void
         }
       }
@@ -32,6 +33,9 @@ declare global {
     credential: string
   }
 }
-export {
 
-}
+declare module '*.css';
+declare module 'react-datepicker/dist/react-datepicker.css';
+declare module './components/DatePicker/datepickerOverrides.css';
+
+export { }
