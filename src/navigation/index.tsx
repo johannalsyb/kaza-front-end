@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {NavigationContainer, NavigationContainerRef} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useAuthentication from '../hooks/useAuthentication';
 import Splash from '../screens/Splash';
 import Header from '../components/Header';
@@ -17,25 +17,22 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import SwapNow from '../components/Views/SwapNow';
 import KModal from '../components/KModal/KModal';
 import UserEvent from '../events/UserEvent';
-import Footer from '../components/Footer';
 import SignInModal from '../components/Views/SignInModal';
-import useConfig from '../hooks/useConfig';
 import KText from '../components/KText';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 export type Handle = {
-  navigate: (screen: string, params?:any) => void
+  navigate: (screen: string, params?: any) => void
 }
 export default React.forwardRef<Handle, {}>((_, ref) => {
-  const {user, isAdmin} = useAuthentication();
-  const {config} = useConfig();
+  const { user, isAdmin } = useAuthentication();
   let stack = user ? (isAdmin ? adminScreens : authenticatedScreens) : unauthenticatedScreens;
   const [showSwapNow, setShowSwapNow] = [useAtomValue(showSwapNowAtom), useSetAtom(showSwapNowAtom)];
   const [showSignIn, setShowSignIn] = [useAtomValue(showSignInAtom), useSetAtom(showSignInAtom)];
   const [showMessage, setShowMessage] = [useAtomValue(showMessageAtom), useSetAtom(showMessageAtom)];
   const [showComponentModal, setShowComponentModal] = [useAtomValue(showComponentAtom), useSetAtom(showComponentAtom)];
 
-  const navigationRef = React.createRef<NavigationContainerRef<{[x: string]: any}>>();
+  const navigationRef = React.createRef<NavigationContainerRef<{ [x: string]: any }>>();
   const [route, setRoute] = React.useState<string>();
 
   React.useImperativeHandle(ref, () => ({
@@ -45,7 +42,6 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
   }));
 
   return (
-    // <ScrollView contentInsetAdjustmentBehavior="automatic">
     <NavigationContainer
       linking={linking(!!user)}
       fallback={<Splash />}
@@ -55,11 +51,11 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
       }}
       onReady={() => {
         const r = navigationRef.current?.getRootState().routes.slice(-1)[0].name
-        if(r) setRoute(r)
+        if (r) setRoute(r)
       }}
       onStateChange={s => {
         const r = s?.routes?.slice(-1)[0]?.name
-        if(r) setRoute(r)
+        if (r) setRoute(r)
       }}>
       <Stack.Navigator
         screenOptions={{
@@ -74,12 +70,13 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
             key={`nav_${name}`}
             name={name as keyof NavStackParamList}
             component={comp}
-            options={{title}}
+            options={{
+              title,
+              header: name === "Myplace" ? () => null : (props) => <Header {...props} />
+            }}
           />
         ))}
       </Stack.Navigator>
-      {/* <Footer route={route}/> */}
-      {/* Swap Now navigation modal */}
       {user && <KModal
         visible={showSwapNow}
         setVisibility={() => setShowSwapNow(false)}
@@ -87,17 +84,17 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
           backgroundColor: "white",
           padding: 20
         }}
-        >
+      >
         <SwapNow
-            onCancel={() => setShowSwapNow(false)}
-            onUpdated={(u) => {
-              setShowSwapNow(false)
-              new UserEvent("update").emit(u.data)
-            }}
-            preferences={{
-              location: user.swapLocations?.split("\n") || null,
-              dateFromTo: user.dateFrom && user.dateTo ? [user.dateFrom, user.dateTo] : null
-            }} />
+          onCancel={() => setShowSwapNow(false)}
+          onUpdated={(u) => {
+            setShowSwapNow(false)
+            new UserEvent("update").emit(u.data)
+          }}
+          preferences={{
+            location: user.swapLocations?.split("\n") || null,
+            dateFromTo: user.dateFrom && user.dateTo ? [user.dateFrom, user.dateTo] : null
+          }} />
       </KModal>}
 
       {/* Not signed in navigation modal */}
@@ -107,8 +104,8 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
         style={{
           padding: 20
         }}
-        >
-        <SignInModal onSelected={(type) => {setShowSignIn(false)}}/>
+      >
+        <SignInModal onSelected={(type) => { setShowSignIn(false) }} />
       </KModal>}
 
       {/* Component navigation modal */}
@@ -119,7 +116,7 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
           padding: 20,
           backgroundColor: variables.colors.white,
         }}
-        >
+      >
         {showComponentModal}
       </KModal>}
 
@@ -130,11 +127,10 @@ export default React.forwardRef<Handle, {}>((_, ref) => {
         style={{
           padding: 20
         }}
-        >
+      >
         <KText>{showMessage}</KText>
       </KModal>}
 
     </NavigationContainer>
-    // </ScrollView>
   );
 })
