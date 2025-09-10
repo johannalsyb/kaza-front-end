@@ -140,7 +140,7 @@ export default (props: Props) => {
           paddingTop: 60,
           paddingBottom: 20,
           paddingHorizontal: 20,
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           flexDirection: "column",
           width: isMobile ? '100%' : 'auto',
           maxWidth: isMobile ? undefined : 900,
