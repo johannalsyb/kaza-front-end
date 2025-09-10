@@ -243,7 +243,7 @@ export default (props: Props) => {
         <KDragAndDropZone
           onPress={() => iuRef.current?.open()}
           style={{
-            width: '99%',
+            width: isMobile ? '90%' : '99%',
             height: isMobile ? 130 : 200,
             borderWidth: 1,
             borderColor: variables.colors.grey,

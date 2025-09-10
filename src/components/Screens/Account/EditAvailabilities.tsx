@@ -324,10 +324,9 @@ export default (props: Props) => {
 				style={[
 					{
 						backgroundColor: variables.colors.lightGrey,
-						borderRadius: isMobile ? 0 : 20,
 						borderBottomRightRadius: 23,
 						borderBottomLeftRadius: 23,
-						marginRight: isMobile ? 0 : 20,
+						marginRight: isMobile ? 0 : 0,
 						marginBottom: isMobile ? 0 : marginVertical,
 						paddingTop: 60,
 						paddingBottom: 20,
@@ -342,6 +341,7 @@ export default (props: Props) => {
 				<View
 					style={{
 						flexDirection: 'row',
+						width: '100%',
 						justifyContent: 'space-between',
 						alignItems: 'center',
 					}}>
