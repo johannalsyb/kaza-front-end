@@ -3,7 +3,7 @@ import useIsMobile from "../../hooks/useIsMobile"
 import Property, { leftColumnWidth, rightColumnWidth } from "../../components/Views/Property"
 import { PrivateProperty, Property as PropertyT } from "../../common/types/api/properties"
 import propertiesApi from "../../api/properties"
-import { ActivityIndicator, Pressable, ScrollView, View, ViewStyle } from "react-native"
+import { ActivityIndicator, Pressable, ScrollView, View, ViewStyle, Dimensions } from "react-native"
 import variables from "../../styles/variables"
 import KButton from "../../components/KButton/KButton"
 import KText from "../../components/KText"
@@ -45,6 +45,10 @@ type ExtProp = { public: PropertyT, private: PrivateProperty }
 
 let lid: string | undefined = undefined
 
+const getScreenHeight = () => {
+	return Dimensions.get("window").height - 64
+}
+
 export default (props: Props) => {
 	const { isMobile } = useIsMobile()
 	const route = useRoute()
@@ -65,19 +69,25 @@ export default (props: Props) => {
 	const [showPreview, setShowPreview] = useState(preview)
 	const [property, setProperty] = useState<ExtProp | undefined>(undefined)
 	const [loading, setLoading] = useState(false)
+	const [initialLoading, setInitialLoading] = useState(true)
 	const { properties, user } = useAuthentication()
 
-	const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom);
-	const isSideModalOpen = useAtomValue(isSideModalOpenAtom);
+	const setIsSideModalOpen = useSetAtom(isSideModalOpenAtom)
+	const isSideModalOpen = useAtomValue(isSideModalOpenAtom)
 	const [ueListenerId, setUeListenerId] = useState<string>()
+
+	useEffect(() => {
+		const timer = setTimeout(() => setInitialLoading(false), 1000)
+		return () => clearTimeout(timer)
+	}, [])
 
 
 	useEffect(() => {
 		if (!isSideModalOpen) {
-			setModal(null);
-			props.navigation.setParams({ edit: undefined });
+			setModal(null)
+			props.navigation.setParams({ edit: undefined })
 		}
-	}, [isSideModalOpen, props.navigation]);
+	}, [isSideModalOpen, props.navigation])
 
 
 	useEffect(() => {
@@ -289,6 +299,14 @@ export default (props: Props) => {
 	}
 
 	const hasProperty = !!props.id
+	console.log("hasProperty: ", props)
+
+	if (initialLoading) {
+		return <View style={{ justifyContent: 'center', minHeight: 600 }}>
+			<ActivityIndicator size="large" color={variables.colors.yellow} />
+		</View>
+	}
+
 	const propVerified = user && user.verified && (property && property.private.verified)
 
 	if (!hasProperty) return <View style={{
@@ -315,7 +333,7 @@ export default (props: Props) => {
 	</View>
 
 	return (
-		<View>
+		<View style={isMobile ? {} : { flex: 1, minHeight: getScreenHeight(), display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 			{isMobile &&
 				<View style={[
 					{
@@ -443,7 +461,6 @@ export default (props: Props) => {
 							{hideMyPlaceButton(property)}
 						</>
 					: <ActivityIndicator color={variables.colors.yellow} />}
-				<Footer route={"Myplace"} />
 			</ScrollView>
 			<KSideModal
 				visible={!!modal}
@@ -467,6 +484,7 @@ export default (props: Props) => {
 						}}
 					/>}
 			</KSideModal>
+			<Footer route={"Myplace"} />
 		</View>
 	)
 }

@@ -16,7 +16,6 @@ export default ({ route }: Props) => {
   if (isFooterHidden(route as keyof NavStackParamList, isMobile)) return null
 
   return (
-
     <View style={styles.container}>
       {/* <View style={[styles.upperContainer, { paddingHorizontal: isMobile ? 5 : 20 }]}>
         <View style={{ flex: 1 }}>
@@ -81,11 +80,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  bottomText: { 
-    fontSize: 11, 
-    fontWeight: '500', 
-    color: variables.colors.white, 
-    fontFamily: 'Plus Jakarta Sans', 
+  bottomText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: variables.colors.white,
+    fontFamily: 'Plus Jakarta Sans',
   },
   communityEmailText: {
     display: 'flex',

@@ -436,7 +436,7 @@ export default (props: Props) => {
 
 				{/* Add slot button */}
 				<View style={{
-					marginTop: 20,
+					marginVertical: 20,
 					paddingHorizontal: 20,
 					justifyContent: 'center',
 					alignSelf: 'center',
