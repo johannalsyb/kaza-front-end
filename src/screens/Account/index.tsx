@@ -28,6 +28,10 @@ import MenuButtons from '../../components/Screens/Account/Menu'
 import EditProfileComponent from '../../components/Screens/Account/EditProfile'
 import KToggle from '../../components/KToggle'
 import KImage from '../../components/KImage/KImage'
+import CreditsOverview from '../../screens/Credits/CreditsOverview'
+import RewardProgram from '../../screens/Credits/RewardProgram'
+import RewardLevelDetails from '../../screens/Credits/RewardLevelDetails'
+
 
 
 type Props = NativeStackScreenProps<
@@ -48,6 +52,10 @@ export default (props: Props) => {
   const [ueListenerId, setUeListenerId] = useState<string>()
   const setShowSwapNow = useSetAtom(showSwapNowAtom)
   const { logout, properties } = useAuthentication()
+  const [creditsView, setCreditsView] = useState<'overview' | 'program' | 'level'>('overview');
+  const [selectedLevel, setSelectedLevel] = useState<any | null>(null);
+
+
   const { config } = useConfig()
 
   // console.log('isSideModalOpenAtom', isSideModalOpenAtom)
@@ -233,6 +241,12 @@ export default (props: Props) => {
       icon: 'user' as const,
       onPress: () => props.navigation.navigate('Account', { edit: undefined }),
       active: route.name === 'Account',
+    },
+    {
+      text: 'Credits',
+      icon: 'creds' as const,
+      onPress: () => setModal('Credits'),
+      active: modal === 'Credits',
     },
     {
       text: 'Swap History',
@@ -561,6 +575,38 @@ export default (props: Props) => {
               loadUser={loadUser}
             />}
           {modal === 'property' && EditPropertyView}
+          {modal === 'Credits' && (
+            <>
+              {creditsView === 'overview' && (
+                <CreditsOverview
+                  onClose={() => setModal(null)}
+                  onOpenRewardProgram={() => setCreditsView('program')}
+                />
+              )}
+
+              {creditsView === 'program' && (
+                <RewardProgram
+                  onClose={() => setModal(null)}
+                  onBack={() => setCreditsView('overview')}
+                  onSelectLevel={(tier) => {
+                  setSelectedLevel(tier);
+                  setCreditsView('level');
+                }}
+                />
+              )}
+
+              {creditsView === 'level' && selectedLevel && (
+                <RewardLevelDetails
+                  level={selectedLevel}
+                  onBack={() => setCreditsView('program')}
+                  onClose={() => setModal(null)}
+                />
+              )}
+
+            </>
+          )}
+
+
         </KSideModal>
       </View >
     </ScrollView >
