@@ -146,3 +146,15 @@ export {ReactComponent as sendMessage} from './sendMessage.svg';
 export {ReactComponent as creds} from './creds.svg';
 export {ReactComponent as pushNotifs} from './pushNotifs.svg';
 export {ReactComponent as settings} from './settings.svg';
+
+export { ReactComponent as copy } from './copy.svg';
+
+export { ReactComponent as envelope_custom } from './envelope.svg';
+export { ReactComponent as reward_program } from './reward_program.svg';
+
+export { ReactComponent as faq1 } from './faq1.svg';
+export { ReactComponent as faq2 } from './faq2.svg';
+export { ReactComponent as faq3 } from './faq3.svg';
+export { ReactComponent as faq4 } from './faq4.svg';
+export { ReactComponent as faq5 } from './faq5.svg';
+
