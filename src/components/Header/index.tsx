@@ -269,7 +269,7 @@ export default (
   if (hidden) return null
 
   return (
-    <View style={{ backgroundColor: isMobile ? variables.colors.greenLight : 'black', }}>
+    <View style={{ backgroundColor: isMobile ? variables.colors.white : 'black', }}>
       <View
         style={{
           display: 'flex',
@@ -279,7 +279,8 @@ export default (
           width: '100%',
           backgroundColor: isMobile ? variables.colors.greenLight : 'black',
           paddingHorizontal: isMobile ? 14 : 5,
-          paddingVertical: isMobile ? 12 : 20,
+          paddingTop: isMobile ? 62 : 20,
+          paddingBottom: isMobile ? 22 : 20,
           borderEndEndRadius: isMobile ? 30 : 0,
           borderEndStartRadius: isMobile ? 30 : 0,
           maxWidth: isMobile ? '100%' : '97%',
@@ -297,7 +298,7 @@ export default (
           webkitBackdropFilter: 'blur(3px)'
         }} />}
 
-        {isMobile && !props.leftComponent && !isMyPlace ? (
+        {isMobile && !props.leftComponent && !isMyPlace && isExplore ? (
           isFavourites ? (
             <KText
               style={{

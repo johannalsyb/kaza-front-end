@@ -370,6 +370,7 @@ const Filters = forwardRef<Handle, Props>(({
             <KModalWeb
               isMobile
               title={"Dates"}
+              confirmText='Apply'
               showCross={false}
               visible={showDateModal}
               setVisibility={() => setShowDateModal(false)}
