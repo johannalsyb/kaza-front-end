@@ -1,117 +1,273 @@
-import { ActivityIndicator, ScrollView, View } from "react-native"
-import KText from "../../KText"
-import { useEffect, useState } from "react"
-import swapsApi from "../../../api/swaps"
-import { Api } from "../../../common"
-import variables from "../../../styles/variables"
-import KIcon from "../../KIcon/KIcon"
-import KButton from "../../KButton/KButton"
-import { useNavigation, useRoute } from "@react-navigation/native"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { NavStackParamList } from "../../../navigation/screens"
-import PropertyCard from "../../PropertyCard"
-import useAuthentication from "../../../hooks/useAuthentication"
-import KSideModal from "../../KModal/KSideModal"
-import Swap from "../Swap"
-import useIsMobile from "../../../hooks/useIsMobile"
+import { ActivityIndicator, FlatList, View, Pressable, StyleSheet } from 'react-native'
+import KText from '../../KText'
+import { useEffect, useState } from 'react'
+import swapsApi from '../../../api/swaps'
+import { Api } from '../../../common'
+import variables from '../../../styles/variables'
+import KIcon from '../../KIcon/KIcon'
+import KButton from '../../KButton/KButton'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { NavStackParamList } from '../../../navigation/screens'
+import useAuthentication from '../../../hooks/useAuthentication'
+import useIsMobile from '../../../hooks/useIsMobile'
+import KImage from '../../KImage/KImage'
+import KTimer from '../../KTimer'
+import OldSwapsList, { formatDateRange } from './OldSwaps'
+import KModalWeb from '../../KModal/KModalWeb'
+
+const filters = ['Old Swaps', 'Current Swaps', 'Future Swaps']
+
+const mockData = {
+	currentSwap: {
+		owner: 'Elke',
+		ownerImage: 'https://picsum.photos/200/200',
+		location: 'Lisbon, Portugal',
+		checkoutTime: '15 Sep 2025, 6:00 PM',
+	},
+	oldSwaps: [
+		{
+			id: '1',
+			ownerFirstName: 'Alice',
+			ownerLastName: 'Johnson',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Paris, France',
+			dateFrom: '2025-08-12',
+			dateTo: '2025-08-20',
+			isReviewed: false,
+		},
+		{
+			id: '2',
+			ownerFirstName: 'Marco',
+			ownerLastName: 'Santos',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Lisbon, Portugal',
+			dateFrom: '2025-06-01',
+			dateTo: '2025-06-10',
+			isReviewed: true,
+		}
+	]
+}
 
 export default () => {
-    const [loading, setLoading] = useState<boolean>(false)
-    const [swaps, setSwaps] = useState<Api.Swaps.Swap[]>()
-    const {user} = useAuthentication()
-    const navigation = useNavigation<NativeStackNavigationProp<NavStackParamList, "Account" | 'Swap', undefined>>()
-    const route = useRoute()
-    //@ts-ignore
-    const swapId = route.params?.id
-    const [modal, setModal] = useState<boolean>(!!swapId)
-    const {isMobile} = useIsMobile()
+	const [loading, setLoading] = useState<boolean>(false)
+	const [swaps, setSwaps] = useState<Api.Swaps.Swap[]>()
+	const { user } = useAuthentication()
+	const navigation = useNavigation<NativeStackNavigationProp<NavStackParamList, 'Account' | 'Swap', undefined>>()
+	const route = useRoute()
+	//@ts-ignore
+	const swapId = route.params?.id
+	const [modal, setModal] = useState<boolean>(!!swapId)
+	const { isMobile } = useIsMobile()
 
-    useEffect(() => {
-        if(!swapId) return;
-        setModal(true);
-      }, [swapId])
+	const [selectedFilter, setSelectedFilter] = useState<string>('Old Swaps')
+	const [showReviewModal, setShowReviewModal] = useState(false)
+	const [selectedSwap, setSelectedSwap] = useState<any>(null)
+	const { colors } = variables
 
-    const load = () => {
-        setLoading(true)
-        swapsApi.swaps.all()
-        .then(r => {
-            setSwaps(r.data)
-        })
-        .catch(e => {
-            console.error(e)
-            setSwaps([])
-        })
-        .finally(() => {
-            setLoading(false)
-        })
-    }
+	useEffect(() => {
+		if (!swapId) return
+		setModal(true)
+	}, [swapId])
 
-    useEffect(() => {
-        if(swaps === undefined) load()
-    }, [])
+	const load = (filter: string) => {
+		setLoading(true)
+		swapsApi.swaps
+			.all()
+			.then((r) => {
+				setSwaps(r.data)
+			})
+			.catch((e) => {
+				console.error(e)
+				setSwaps([])
+			})
+			.finally(() => {
+				setLoading(false)
+			})
+	}
 
-    if(!user) return <KText>You must be logged in to view this page</KText>
+	useEffect(() => {
+		load(selectedFilter)
+	}, [selectedFilter])
 
-    return <ScrollView style={{flex: 1, minHeight: 400, paddingLeft: 20, paddingRight: 20, paddingTop: 20, display: "flex"}} contentContainerStyle={{display: "flex", flexDirection: "row", flexWrap: "wrap"}}>
-        {loading ? <ActivityIndicator color={variables.colors.yellow} style={{marginTop: 20, marginBottom: 20}}/> : 
-            <>
-                {swaps?.map(s => {
-                    const dd = new Date(s.updatedAt)
-                    return <PropertyCard
-                        key={`swap_${s.id}`}
-                        property={s.request.from === user.id ? s.request.toProperty : s.request.fromProperty}
-                        hoverable={false}
-                        style={{
-                            aspectRatio: 1/1.3,
-                            marginRight: isMobile ? 0 : 10,
-                            marginBottom: 10
-                        }}
-                        bottomComponent={<View style={{
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginTop: 0,
-                            marginBottom: 10,
-                        }}>
-                            {!isNaN(dd.getTime()) ? <KText>{dd.toLocaleDateString()}</KText> : null}
-                            <KButton style={{marginBottom:5, marginTop:5}}icon="swap" text="View swap" color="secondary" onPress={() => {navigation.navigate("Swap", {id: s.id})}}/>
-                            {/* <KButton style={{marginBottom:5, marginTop:5}}icon="contract" text="View contract" size="medium" color="secondary" onPress={() => navigation.navigate("Swap", {swapId: s.id})}/> */}
-                        </View>}
-                    />}
-                )}
-                {!swaps?.length && <View style={{
-                    flex: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 20,
-                }}>
-                    <KIcon name="swap" size="xxlarge" style={{backgroundColor: "white", borderRadius: 100, padding: 10}} />
-                    <KText style={{margin: 20}}>No swaps yet !</KText>
-                    <KButton text="Start swapping" color="primary" onPress={() => navigation.navigate("Home")}/>
-                </View>}
-            </>
-        }
+	if (!user) return <KText>You must be logged in to view this page</KText>
 
-    <KSideModal
-        style={{
-          padding: 20,
-        }}
-        visible={!!modal && swapId}
-        onClose={() => {
-            navigation.navigate("History")
-            setModal(false)
-        }}>
-            <KText style={{fontSize: 30, fontWeight: "bold", marginBottom: 20}}>Swap Details</KText>
-            <Swap id={swapId}>
-                <KButton icon="chat" text="Open Chat" color="secondary" onPress={() => {
-                    console.log(swaps)
-                    const rid = swaps?.find(s => s.id === swapId)?.request.id
-                    if(!rid) return
-                    navigation.navigate("Chat", {id: rid})
-                    setModal(false)
-                }} style={{marginTop: 20}}/>
-            </Swap>
-      </KSideModal>
+	const renderContent = () => {
+		if (selectedFilter === 'Current Swaps') {
+			return (
+				<View style={{ backgroundColor: colors.greenLight, margin: 10, borderRadius: 20, paddingBottom: 10 }}>
+					<View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', padding: 10 }}>
+						<View style={{ borderWidth: 4, borderColor: colors.white, backgroundColor: colors.white, borderRadius: 100 }}>
+							<KImage
+								source={mockData?.currentSwap?.ownerImage}
+								style={{
+									objectFit: "cover",
+									borderRadius: 100,
+									width: 60,
+									height: 60,
+									backgroundColor: colors.white,
+								}}
+							/>
+						</View>
+						<View style={{ display: 'flex', marginTop: 8, flex: 1, marginLeft: 12 }}>
+							<KText style={{ fontSize: 15, fontWeight: '400', letterSpacing: -0.5 }}>You are staying at {mockData?.currentSwap?.owner}'s place</KText>
+							<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+								<KIcon name='location' size={20} style={{ stroke: colors.black, marginRight: 4, opacity: 0.5 }} />
+								<KText style={{ fontSize: 12, fontWeight: '400', letterSpacing: -0.5, opacity: 0.5 }}>{mockData?.currentSwap?.location}</KText>
+							</View>
+						</View>
+						<KIcon name='chat' size={30} style={{ stroke: colors.yellow, backgroundColor: colors.black, padding: 6, borderRadius: 100 }} onPress={() => console.log("functionality is yet to be implemented")} />
+					</View>
+					<View style={{ padding: 10 }}>
+						<KTimer titleText='Time Remaining Before Checkout' targetDate={mockData?.currentSwap?.checkoutTime} />
+					</View>
+					<KButton text='Early check-out' color='primary' style={{ width: 160, alignSelf: 'center' }} onPress={() => console.log("functionality is yet to be implemented")} />
+				</View>
+			)
+		} else if (selectedFilter === 'Old Swaps') {
+			return <>
+				<KModalWeb
+					isMobile={isMobile}
+					clearFilters={() => null}
+					confirmText='Publish'
+					visible={showReviewModal}
+					setVisibility={() => setShowReviewModal(false)}
+					style={{ backgroundColor: variables.colors.white, padding: 20 }}
+				>
+					{selectedSwap ? (
+						<View style={{ width: '100%'}}>
+							<View style={{ backgroundColor: colors.yellow, width: 34, height: 3, alignSelf: 'center', marginTop: -20, marginBottom: 12 }} />
+							<KText style={{ fontSize: 25, fontWeight: '600', letterSpacing: -0.5, alignSelf: 'center' }}>
+								Swap Review
+							</KText>
+							<View
+								style={{
+									padding: 10,
+									borderRadius: 20,
+									marginTop: 20,
+									flexDirection: 'row',
+									alignItems: 'flex-start',
+									justifyContent: 'space-between',
+									backgroundColor: colors.greenLight,
+								}}>
+								<View style={{ borderWidth: 2, borderColor: colors.white, borderRadius: 100 }}>
+									<KImage
+										source={selectedSwap.ownerImage}
+										style={{
+											objectFit: 'cover',
+											borderRadius: 100,
+											width: 60,
+											height: 60,
+											backgroundColor: colors.white,
+										}}
+									/>
+								</View>
+								<View style={{ marginTop: 0, flex: 1, marginLeft: 12 }}>
+									<KText style={{ fontSize: 15, fontWeight: '400', letterSpacing: -0.5 }}>
+										{selectedSwap.ownerFirstName} {selectedSwap.ownerLastName}
+									</KText>
+									<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+										<KIcon name="location" size={20} style={{ stroke: colors.black, marginRight: 4, opacity: 0.5 }} />
+										<KText style={{ fontSize: 12, fontWeight: '400', letterSpacing: -0.5, opacity: 0.5 }}>
+											{selectedSwap.location}
+										</KText>
+									</View>
+									<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+										<KIcon name="calendar" size={20} style={{ stroke: colors.black, marginRight: 4, opacity: 0.5 }} />
+										<KText style={{ fontSize: 12, fontWeight: '400', letterSpacing: -0.5, opacity: 0.5 }}>
+											{formatDateRange(selectedSwap.dateFrom, selectedSwap.dateTo)}
+										</KText>
+									</View>
+								</View>
+							</View>
+						</View>
+					) : null}
+				</KModalWeb>
+				<OldSwapsList
+					data={mockData?.oldSwaps}
+					onReview={(swap) => {
+						setSelectedSwap(swap)
+						setShowReviewModal(true)
+					}}
+				/>
+			</>
+		} else return null
+	}
 
-    </ScrollView>
+	return (
+		<View style={{ flex: 1, }}>
+			<FlatList
+				data={filters}
+				horizontal
+				keyExtractor={(item) => item}
+				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{ padding: 10, gap: 8 }}
+				renderItem={({ item }) => {
+					const isSelected = item === selectedFilter
+					return (
+						<Pressable onPress={() => setSelectedFilter(item)} style={[styles.filterButton, isSelected ? styles.selectedFilterButton : {}]}>
+							<KText style={[styles.filterButtonText, isSelected ? styles.selectedFilterButtonText : {}]}>
+								{item}
+							</KText>
+						</Pressable>
+					)
+				}}
+			/>
+			{loading ? (
+				<ActivityIndicator size='large' color={colors.yellow} style={{ marginTop: 20 }} />
+			) : (
+				<>
+					{!swaps?.length ?
+						<View style={{
+							flex: 1,
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'space-between',
+							padding: 20,
+						}}>
+							<View style={{ padding: 30, borderRadius: 500, backgroundColor: colors.greenLight }}>
+								<KIcon name='credsLight' size={70} style={{ opacity: 0.5 }} />
+							</View>
+							<KText style={{ fontSize: 12, fontWeight: '400', marginTop: 20, marginBottom: isMobile ? '54%' : 40, opacity: 0.5, width: '70%', textAlign: 'center' }}>You don’t have any current swap. Find out your next Swap!</KText>
+							<KButton text='Discover your next swap' color='primary' style={{ width: isMobile ? '100%' : '20%' }} onPress={() => navigation.navigate('Home')} />
+						</View>
+						:
+						(renderContent())
+					}
+				</>
+			)}
+		</View>
+	)
 }
+
+const styles = StyleSheet.create({
+	filterButton: {
+		paddingVertical: 8,
+		paddingHorizontal: 16,
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: variables.colors.grey,
+		backgroundColor: 'transparent',
+		height: 38,
+		width: 140,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	selectedFilterButton: {
+		paddingVertical: 8,
+		paddingHorizontal: 16,
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: variables.colors.yellow,
+		backgroundColor: variables.colors.yellow,
+	},
+	filterButtonText: {
+		fontSize: 13,
+		fontWeight: '600',
+		opacity: 0.5,
+	},
+	selectedFilterButtonText: {
+		opacity: 1,
+	}
+})

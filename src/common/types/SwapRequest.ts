@@ -26,3 +26,19 @@ export type ChatMessage = ChatMessageInput & {
 }
 
 export type Chat = ChatMessage[]
+
+export type OldSwap = {
+	id: string
+	ownerFirstName: string
+	ownerLastName: string
+	ownerImage: string
+	location: string
+	dateFrom: string
+	dateTo: string
+	isReviewed: boolean
+}
+
+export type OldSwapsListProps = {
+	data: OldSwap[],
+    onReview?: (swap: any) => void
+}

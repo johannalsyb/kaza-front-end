@@ -144,6 +144,7 @@ export {ReactComponent as clearAll} from './clearAll.svg';
 export {ReactComponent as credits} from './credits.svg';
 export {ReactComponent as sendMessage} from './sendMessage.svg';
 export {ReactComponent as creds} from './creds.svg';
+export {ReactComponent as credsLight} from './credsLight.svg';
 export {ReactComponent as pushNotifs} from './pushNotifs.svg';
 export {ReactComponent as settings} from './settings.svg';
 

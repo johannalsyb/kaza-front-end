@@ -26,6 +26,7 @@ type Props = {
   style?: ViewStyle
   onLayout?: (event: any) => void,
   title?: string,
+  confirmText?: string,
   hideButtons?: boolean
 }
 
@@ -41,7 +42,8 @@ const KModal = ({
   clearFilters,
   clearFiltersView,
   title = '',
-  hideButtons = false
+  hideButtons = false,
+  confirmText
 }: Props, ref: any) => {
   const { height } = useWindowDimensions()
 
@@ -120,7 +122,7 @@ const KModal = ({
               />
               <KButton
                 onPress={() => setVisibility(false)}
-                text={title === 'Filters' ? 'Apply' : 'Confirm'}
+                text={confirmText || 'Confirm'}
               />
             </View>)}
         </Animated.View>
