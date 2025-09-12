@@ -597,9 +597,9 @@ export default (props: Props) => {
 
               {creditsView === 'level' && selectedLevel && (
                 <RewardLevelDetails
-                  level={selectedLevel}
+                  tier={selectedLevel}
                   onBack={() => setCreditsView('program')}
-                  onClose={() => setModal(null)}
+                  // onClose={() => setModal(null)}
                 />
               )}
 

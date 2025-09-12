@@ -22,14 +22,14 @@ const RewardProgram: React.FC<RewardProgramProps> = ({ onBack, onClose, onSelect
 
     const { isMobile } = useIsMobile();
 
-type IconNames = "credits" | "user" | "creds" | "copy" | "calendar" | "reward_program" ;
+type IconNames = "credits" | "user" | "creds" | "copy" | "calendar" | "rewardProgram" ;
 type Tier = {
   id: number;
   level: string;
   title: string;
   description: string;
   color: string;
-  icon: IconNames; // 👈 enforce valid icon names
+  icon: IconNames;
   subheading: string;
 };
 
@@ -39,8 +39,8 @@ const tiers: Tier[] = [
     level: "Level1 (Newbie)",
     title: "Globetrotter in Training",
     description: "Kick off your hosting journey and start earning rewards.",
-    color: "#fff",
-    icon: "reward_program", // 👈 your KIcon name here
+    color: variables.colors.greenLight,
+    icon: "rewardProgram",
     subheading: "Beginner Tier",
   },
   {
@@ -48,8 +48,8 @@ const tiers: Tier[] = [
     level: "Level2 (Medium)",
     title: "Wanderlust Explorer",
     description: "You’re becoming a trusted host with growing experience.",
-    color: "#fff",
-    icon: "reward_program", // 👈 different icon
+    color: variables.colors.greenLight,
+    icon: "rewardProgram",
     subheading: "Intermediate Tier",
   },
   {
@@ -57,8 +57,8 @@ const tiers: Tier[] = [
     level: "Level3 (Confirmed)",
     title: "Master Host Nomad",
     description: "You’ve reached the top tier with maximum benefits.",
-    color: "#fff",
-    icon: "reward_program", // 👈 crown/credits icon
+    color: variables.colors.greenLight,
+    icon: "rewardProgram", 
     subheading: "Advanced Tier",
   },
 ];
@@ -86,14 +86,14 @@ const tiers: Tier[] = [
             <Image
                 source={{ uri: "/rewardProgram.png" }}
                 style={{
-                    width: 80,
-                    height: 80,
+                    width: 65,
+                    height: 65,
                     marginBottom: 12,
-                    resizeMode: "contain",   // keeps aspect ratio
+                    resizeMode: "contain", 
                 }}
                 />
             <KText style={styles.headerDesc}>
-            Shere your home <br/>and earn rewards!
+            Share your home <br/>and earn rewards!
             </KText>
         </View>
         </View>
@@ -102,14 +102,13 @@ const tiers: Tier[] = [
 
 
       {/* Scrollable Content */}
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100, backgroundColor: variables.colors.greenLight }}>
+      <ScrollView contentContainerStyle={{ padding: 10, paddingBottom: 100, backgroundColor: variables.colors.white, }}>
         {/* Tiers Section */}
             <View
             style={{
                 alignItems: 'center',
                 width: '100%',
                 marginTop: 20,
-                paddingHorizontal: isMobile ? 10: "5%" ,
             }}
             >
                 
@@ -119,15 +118,15 @@ const tiers: Tier[] = [
                 {
                     width: "100%",
                     borderWidth: 0,
-                    minHeight: 60,
+                    minHeight: 66,
                     alignItems: "center",
                     justifyContent: "flex-start",
                     flexDirection: "row",
-                    paddingLeft: 5,
-                    paddingRight: 15,
-                    marginBottom: 10,
+                    paddingLeft: 16,
+                    paddingRight: 10,
+                    marginBottom: 8,
                     backgroundColor: tier.color,
-                    borderRadius: 10,
+                    borderRadius: 20,
                 },
                 ]);
 
@@ -139,14 +138,16 @@ const tiers: Tier[] = [
                     <KButton
                     color="light"
                     style={buttonStyle}
-                    onPress={() => {}} // navigation to rewardLevelProgram
+                    onPress={() => onSelectLevel(tier)} // navigation to rewardLevelProgram
                     >
                     {tier.icon && (
-                        <KIcon
-                        name={tier.icon}
-                        style={{ marginRight: 10, marginLeft: 10, opacity: 0.7 }}
-                        size="medium"
-                        />
+                        <View style={styles.iconCircle}>
+                          <KIcon
+                          name={tier.icon}
+                          style={{ marginRight: 10, marginLeft: 10, opacity: 0.7 }}
+                          size="medium"
+                          />                    
+                        </View>
                     )}
                     <View style={{ flex: 1 }}>
                         {/* Dynamic subheading */}
@@ -155,7 +156,7 @@ const tiers: Tier[] = [
                             marginBottom: 5,
                             marginLeft: 5,
                             color: "rgba(0, 0, 0, 0.50)",
-                            fontSize: 11,
+                            fontSize: 9,
                             fontWeight: "500",
                             fontStyle:"normal",
                             fontFamily:"Plus Jakarta Sans",
@@ -166,7 +167,7 @@ const tiers: Tier[] = [
                         {tier.level}
                         </KText>
                         <KText style={{ 
-                            fontWeight: "600",
+                            fontWeight: "500",
                             color: "#000",
                             fontSize: 15,
                             fontStyle:"normal",
@@ -178,7 +179,7 @@ const tiers: Tier[] = [
                     </View>
                     <KIcon
                         name="chevronRight"
-                        style={{ marginRight: 10, marginLeft: 10 }}
+                        style={{ marginRight: 10, marginLeft: 10, opacity:0.5, }}
                         size="medium"
                     />
                     </KButton> 
@@ -212,8 +213,8 @@ const styles = StyleSheet.create({
   paddingBottom: 20,
   paddingHorizontal: 20,
   backgroundColor: variables.colors.yellow,
-  borderBottomLeftRadius: 23,
-  borderBottomRightRadius: 23,
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
 },
 
 headerRow: {
@@ -231,11 +232,11 @@ backIcon: {
 },
 
 headerTitle: {
-  fontSize: 20,
+  fontSize: 17,
   fontWeight: '500',
   color: variables.colors.black,
   textAlign: 'center',
-  flex: 1, // ensures it's centered between back & spacer
+  flex: 1, 
 },
 
 headerIconDesc: {
@@ -351,7 +352,7 @@ cancelBtn: {
   marginRight: 10,
   paddingVertical: 12,
   backgroundColor: variables.colors.lightGrey,
-  borderRadius: 8,
+  borderRadius: 28,
   alignItems: "center",
 },
 gotItBtn: {
@@ -359,11 +360,37 @@ gotItBtn: {
   marginLeft: 10,
   paddingVertical: 12,
   backgroundColor: variables.colors.black,
-  borderRadius: 8,
+  borderRadius: 28,
   alignItems: "center",
 },
-cancelText: { color: variables.colors.black, fontWeight: "600" },
-gotItText: { color: variables.colors.yellow, fontWeight: "600" },
+// cancelText: { color: variables.colors.black, fontWeight: "600" },
+// gotItText: { color: variables.colors.yellow, fontWeight: "600" },
+
+cancelText: { 
+  color: variables.colors.black, 
+  fontWeight: "500" ,
+  textAlign:"center",
+   fontFamily:"Plus Jakarta Sans",
+   fontSize: 15,
+   fontStyle: "normal",
+   lineHeight: 15,
+   letterSpacing: -0.5,
+
+},
+
+gotItText: { 
+  color: variables.colors.yellow, 
+  fontWeight: "500",
+   textAlign:"center",
+   fontFamily:"Plus Jakarta Sans",
+   fontSize: 15,
+   fontStyle: "normal",
+   lineHeight: 15,
+   letterSpacing: -0.5,
+},
+
+
+iconCircle: { width: 46, height: 46, borderRadius: 23, backgroundColor: variables.colors.white, alignItems: "center", justifyContent: "center", marginRight: 8,  },
 
 });
 
