@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, View, Pressable, StyleSheet } from 'react-native'
+import { ActivityIndicator, FlatList, View, Pressable, StyleSheet, TextInput } from 'react-native'
 import KText from '../../KText'
 import { useEffect, useState } from 'react'
 import swapsApi from '../../../api/swaps'
@@ -15,6 +15,8 @@ import KImage from '../../KImage/KImage'
 import KTimer from '../../KTimer'
 import OldSwapsList, { formatDateRange } from './OldSwaps'
 import KModalWeb from '../../KModal/KModalWeb'
+import StarRating from '../../StarRating/StarRating'
+import FutureSwapList from './FutureSwaps'
 
 const filters = ['Old Swaps', 'Current Swaps', 'Future Swaps']
 
@@ -46,6 +48,27 @@ const mockData = {
 			dateTo: '2025-06-10',
 			isReviewed: true,
 		}
+	],
+
+	futureSwaps: [
+		{
+			id: '1',
+			ownerFirstName: 'Alice',
+			ownerLastName: 'Johnson',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Paris, France',
+			dateFrom: '2025-08-12',
+			dateTo: '2025-08-20',
+		},
+		{
+			id: '2',
+			ownerFirstName: 'Marco',
+			ownerLastName: 'Santos',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Lisbon, Portugal',
+			dateFrom: '2025-06-01',
+			dateTo: '2025-06-10',
+		}
 	]
 }
 
@@ -64,6 +87,7 @@ export default () => {
 	const [showReviewModal, setShowReviewModal] = useState(false)
 	const [selectedSwap, setSelectedSwap] = useState<any>(null)
 	const { colors } = variables
+	const [headingWidth, setHeadingWidth] = useState(0);
 
 	useEffect(() => {
 		if (!swapId) return
@@ -110,7 +134,7 @@ export default () => {
 							/>
 						</View>
 						<View style={{ display: 'flex', marginTop: 8, flex: 1, marginLeft: 12 }}>
-							<KText style={{ fontSize: 15, fontWeight: '400', letterSpacing: -0.5 }}>You are staying at {mockData?.currentSwap?.owner}'s place</KText>
+							<KText style={{ fontSize: 15, fontWeight: '500', letterSpacing: -0.5 }}>You are staying at {mockData?.currentSwap?.owner}'s place</KText>
 							<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
 								<KIcon name='location' size={20} style={{ stroke: colors.black, marginRight: 4, opacity: 0.5 }} />
 								<KText style={{ fontSize: 12, fontWeight: '400', letterSpacing: -0.5, opacity: 0.5 }}>{mockData?.currentSwap?.location}</KText>
@@ -132,11 +156,12 @@ export default () => {
 					confirmText='Publish'
 					visible={showReviewModal}
 					setVisibility={() => setShowReviewModal(false)}
+					isActionsVisible  = {true}
 					style={{ backgroundColor: variables.colors.white, padding: 20 }}
 				>
 					{selectedSwap ? (
 						<View style={{ width: '100%'}}>
-							<View style={{ backgroundColor: colors.yellow, width: 34, height: 3, alignSelf: 'center', marginTop: -20, marginBottom: 12 }} />
+							<View style={{ backgroundColor: colors.yellow, width: 34, height: 3, alignSelf: 'center', marginTop: -20, marginBottom: 12 }} ></View>
 							<KText style={{ fontSize: 25, fontWeight: '600', letterSpacing: -0.5, alignSelf: 'center' }}>
 								Swap Review
 							</KText>
@@ -179,7 +204,82 @@ export default () => {
 										</KText>
 									</View>
 								</View>
+
 							</View>
+							
+							<View style={{ marginTop: 30, width: "100%" }}>
+								<KText
+									style={{
+										fontFamily:"Plus Jakarta Sans",
+										fontStyle:"normal",
+										lineHeight:13,
+										letterSpacing:-0.5,
+										fontSize: 13,
+										fontWeight: "600",
+										marginBottom: 4,
+										alignSelf: "flex-start",
+
+									}}
+									onLayout={(e) => setHeadingWidth(e.nativeEvent.layout.width)}
+								>
+									Stars
+								</KText>
+
+								<View style={{ marginLeft: headingWidth || 0 }}>
+									<StarRating
+										maxStars={5}
+										size={34}
+										color={colors.yellow}
+										onChange={(val) => console.log("Selected rating:", val)}
+									/>
+								</View>
+							</View>
+
+							<View style={{ marginTop: 30, width: '100%' }}>
+								<KText
+									style={{
+										fontFamily: 'Plus Jakarta Sans',
+										fontStyle: 'normal',
+										lineHeight: 13,
+										letterSpacing: -0.5,
+										fontSize: 13,
+										fontWeight: '600',
+										marginBottom: 4,
+										alignSelf: 'flex-start',
+									}}
+								>
+									Message
+								</KText>
+
+								<View
+									style={{
+										padding: 15,
+										borderRadius: 20,
+										backgroundColor: '#fff',
+										elevation: 3,
+										borderColor:"#C6C5BA",
+										borderWidth: 1,
+										borderStyle:"solid",
+									}}
+								>
+									<TextInput
+										style={{
+											minHeight: 100,
+											fontSize: 14,
+											lineHeight: 20,
+											color: '#000',
+											textAlignVertical: 'top',
+											opacity: 0.5,
+											padding: 0,
+											...( { outlineStyle: 'none' } as any )
+										}}
+										placeholder="Write your review..."
+										placeholderTextColor="#999"
+										multiline
+									/>
+								</View>
+							</View>
+
 						</View>
 					) : null}
 				</KModalWeb>
@@ -191,6 +291,12 @@ export default () => {
 					}}
 				/>
 			</>
+		} else if (selectedFilter === 'Future Swaps') {
+			return <>
+			<FutureSwapList
+			data={mockData?.futureSwaps} />
+			</>
+
 		} else return null
 	}
 
