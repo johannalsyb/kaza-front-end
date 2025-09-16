@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, View, Pressable, StyleSheet, TextInput } from 'react-native'
+import { ActivityIndicator, FlatList, View, Pressable, StyleSheet, TextInput, Image, Text } from 'react-native'
 import KText from '../../KText'
 import { useEffect, useState } from 'react'
 import swapsApi from '../../../api/swaps'
@@ -72,6 +72,27 @@ const mockData = {
 	]
 }
 
+const NotificationCard = ({ message, subMessage, time, image }: any) => {
+  return (
+	
+    <View style={styles.notification}>
+      <Image
+        source={{ uri: image }} // replace with swap user image if available
+        style={styles.avatar}
+      />
+      <View style={{ flex: 1 }}>
+		<View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+			<Text style={styles.title}>{message}</Text>
+			<Text style={styles.time}>{time}</Text>	
+		</View>
+        
+        <Text style={styles.subtitle}>{subMessage}</Text>
+      </View>
+     
+    </View>
+  );
+};
+
 export default () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const [swaps, setSwaps] = useState<Api.Swaps.Swap[]>()
@@ -88,6 +109,24 @@ export default () => {
 	const [selectedSwap, setSelectedSwap] = useState<any>(null)
 	const { colors } = variables
 	const [headingWidth, setHeadingWidth] = useState(0);
+
+	const [futureSwaps, setFutureSwaps] = useState(mockData.futureSwaps);
+	const [notification, setNotification] = useState<any>(null);
+
+	const handleCancel = (item: any) => {
+    const updated = futureSwaps.filter((swap: any) => swap.id !== item.id);
+    setFutureSwaps(updated);
+	const notif = {
+		message: `You have canceled ${item.owner} Swap`,
+		subMessage: "Maybe you will swap another time",
+		time: "1 min",
+		image: item?.ownerImage,
+	};
+  	setNotification(notif);
+    setTimeout(() => {
+		setNotification(null)
+	}, 5000);
+  };
 
 	useEffect(() => {
 		if (!swapId) return
@@ -292,10 +331,47 @@ export default () => {
 				/>
 			</>
 		} else if (selectedFilter === 'Future Swaps') {
-			return <>
-			<FutureSwapList
-			data={mockData?.futureSwaps} />
-			</>
+
+			if(!futureSwaps?.length)
+			{
+				return (
+				<View style={{
+					flex: 1,
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					padding: 20,
+				}}>
+					<View style={{ padding: 30, borderRadius: 500, backgroundColor: colors.greenLight }}>
+						<KIcon name='credsLight' size={70} style={{ opacity: 0.5 }} />
+					</View>
+					<KText style={{ fontSize: 12, fontWeight: '400', marginTop: 20, marginBottom: isMobile ? '54%' : 40, opacity: 0.5, width: '70%', textAlign: 'center' }}>You don’t have any current swap. Find out your next Swap!</KText>
+					<KButton text='Discover your next swap' color='primary' style={{ width: isMobile ? '100%' : '20%' }} onPress={() => navigation.navigate('Home')} />
+				</View>
+				)
+			}
+			else
+			{
+				return (<>
+				<FutureSwapList
+				onCancel={handleCancel}
+				data={futureSwaps} />
+
+				{notification && (
+					<View style={styles.notificationWrapper}>
+					<NotificationCard
+						image={notification.image}
+						message={notification.message}
+						subMessage={notification.subMessage}
+						time={notification.time}
+					/>
+					</View>
+				)}
+				</>
+				)
+
+			}
+			
 
 		} else return null
 	}
@@ -340,6 +416,8 @@ export default () => {
 						:
 						(renderContent())
 					}
+
+					
 				</>
 			)}
 		</View>
@@ -375,5 +453,67 @@ const styles = StyleSheet.create({
 	},
 	selectedFilterButtonText: {
 		opacity: 1,
-	}
+	},
+	
+	notificationWrapper: {
+		position: "absolute",
+		top: 50, // adjust if you have header
+		left: 10,
+		right: 10,
+		zIndex: 9999,
+	},
+
+	notification: {
+		flexDirection: "row",
+		alignItems: "center",
+		backgroundColor: "#FF7043",
+		padding: 12,
+		borderRadius: 12,
+		margin: 12,
+		shadowColor: "#000",
+		shadowOpacity: 0.1,
+		shadowRadius: 5,
+		elevation: 3,
+	},
+	avatar: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		marginRight: 10,
+		borderColor: variables.colors.white,
+		borderWidth: 1,
+		borderStyle:"solid"
+	},
+	title: {
+		color: variables.colors.black,
+		fontFamily: "Plus Jakarta Sans",
+		fontSize: 13,
+		fontStyle:"normal",
+		fontWeight:"500",
+		lineHeight:13,
+		letterSpacing: -0.5,
+	},
+	subtitle: {
+		color: "#000",
+		opacity:0.4,
+		fontSize: 13,
+		fontFamily: "Plus Jakarta Sans",
+		fontStyle:"normal",
+		fontWeight:"500",
+		lineHeight:13,
+		letterSpacing: -0.5,
+		marginTop:2,
+		
+	},
+	time: {
+		color: "#000",
+		opacity:0.4,
+		fontSize: 10,
+		marginLeft: 10,
+		fontFamily: "Plus Jakarta Sans",
+		fontStyle:"normal",
+		fontWeight:"500",
+		lineHeight:13,
+		letterSpacing: -0.5,
+	},
 })

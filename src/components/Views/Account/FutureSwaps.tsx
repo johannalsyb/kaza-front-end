@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { View, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, useWindowDimensions } from 'react-native';
 import variables from '../../../styles/variables';
 import KImage from '../../KImage/KImage';
 import KText from '../../KText';
 import KIcon from '../../KIcon/KIcon';
 import KButton from '../../KButton/KButton';
+import KModal from '../../KModal/KModal';
 
 export const formatDateRange = (dateFrom: string, dateTo: string) => {
 	const from = new Date(dateFrom);
@@ -43,10 +44,18 @@ const FutureSwapList = ({
 	onSharePress
 }: FutureSwapListProps) => {
 	const { colors } = variables;
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<FutureSwap | null>(null);
+    const { width: screenWidth } = useWindowDimensions();
+    const buttonWidth = Math.min(140, screenWidth * 0.4); 
+    const buttonSpacing = Math.min(15, screenWidth * 0.03);
+
+    const handleCancelPress = (item: FutureSwap) => {
+        setSelectedItem(item);
+        setModalVisible(true);
+    };
 
     useEffect(() => {
-		console.log("Future");
-
 	}, [])
 
 	const renderItem = ({ item }: { item: FutureSwap }) => (
@@ -242,7 +251,6 @@ const FutureSwapList = ({
                             opacity: 0.5,
                             textAlign: "center",
                             marginLeft: 4,
-                            marginRight: 8,
                         }}>
                             {new Date(item.dateFrom).getFullYear()}
                         </KText>
@@ -253,7 +261,7 @@ const FutureSwapList = ({
                             fontFamily: "Plus Jakarta Sans",
                             fontWeight: "400",
                             opacity: 0.5,
-                            marginHorizontal: 8,
+                            marginHorizontal: 15,
                         }}>
                             |
                         </KText>
@@ -334,7 +342,7 @@ const FutureSwapList = ({
                         lineHeight: 15,
                         letterSpacing: -0.5
                     }}
-                    onPress={() => onCancel?.(item)}
+                    onPress={() => handleCancelPress(item)}
                 />
 
 			</View>
@@ -342,12 +350,82 @@ const FutureSwapList = ({
 	);
 
 	return (
-		<FlatList
+        <>
+        <FlatList
 			data={data}
 			keyExtractor={(item) => item.id}
 			renderItem={renderItem}
 			contentContainerStyle={{ paddingBottom: 20 }}
 		/>
+
+            <KModal
+                visible={modalVisible}
+                setVisibility={setModalVisible}
+            >
+                <KText style={{
+                    fontSize: 25,
+                    fontWeight: '600',
+                    color: colors.black,
+                    marginTop: 40,
+                    textAlign: 'center',
+                    fontFamily: "Plus Jakarta Sans",
+                    lineHeight: 29,
+                    letterSpacing: -0.5,
+                    fontStyle: "normal",
+                }}>
+                    Cancel Swap
+                </KText>
+
+                <KText style={{
+                    fontSize: 15,
+                    color: colors.black,
+                    opacity: 0.6,
+                    textAlign: 'center',
+                    marginVertical: 15,
+                    paddingHorizontal: 25,
+                    fontFamily: "Plus Jakarta Sans",
+                    lineHeight: 21,
+                    letterSpacing: -0.5,
+                    fontStyle: "normal",
+                    fontWeight: '500',
+                }}>
+                    Are you sure you want to cancel the swap with {selectedItem?.ownerFirstName}?
+                </KText>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'center', width: '100%', marginBottom: 20, paddingHorizontal: 25, }}>
+                    <KButton
+                        text="Back"
+                        style={{
+                            backgroundColor: colors.white,
+                            borderRadius: 25,
+                            paddingVertical: 12,
+                            paddingHorizontal: 30,
+                            width: buttonWidth,
+                            marginRight: buttonSpacing,
+                    
+                        }}
+                        textStyle={{ color: colors.black, fontWeight: '500', fontStyle: "normal", fontSize: 15, textAlign: 'center', fontFamily: "Plus Jakarta Sans", lineHeight: 15, letterSpacing: -0.5,}}
+                        onPress={() => setModalVisible(false)}
+                    />
+                    <KButton
+                        text="Yes I am!"
+                        style={{
+                            backgroundColor: colors.black,
+                            borderRadius: 25,
+                            paddingVertical: 12,
+                            paddingHorizontal: 30,
+                            width: buttonWidth,
+                        }}
+                        textStyle={{ color: colors.yellow, fontWeight: '500', fontStyle: "normal", fontSize: 15, textAlign: 'center', fontFamily: "Plus Jakarta Sans", lineHeight: 15, letterSpacing: -0.5, }}
+                        onPress={() => {
+                            setModalVisible(false);
+                            onCancel?.(selectedItem!);
+                        }}
+                    />
+                </View>
+            </KModal>
+        </>
+		
 	);
 };
 
