@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, View, Pressable, StyleSheet } from 'react-native'
+import { ActivityIndicator, FlatList, View, Pressable, StyleSheet, TextInput, Image, Text } from 'react-native'
 import KText from '../../KText'
 import { useEffect, useState } from 'react'
 import swapsApi from '../../../api/swaps'
@@ -15,6 +15,9 @@ import KImage from '../../KImage/KImage'
 import KTimer from '../../KTimer'
 import OldSwapsList, { formatDateRange } from './OldSwaps'
 import KModalWeb from '../../KModal/KModalWeb'
+import StarRating from '../../StarRating/StarRating'
+import FutureSwapList from './FutureSwaps'
+import { toastSuccess } from '../../Toast/Toast'
 
 const filters = ['Old Swaps', 'Current Swaps', 'Future Swaps']
 
@@ -46,7 +49,49 @@ const mockData = {
 			dateTo: '2025-06-10',
 			isReviewed: true,
 		}
+	],
+
+	futureSwaps: [
+		{
+			id: '1',
+			ownerFirstName: 'Alice',
+			ownerLastName: 'Johnson',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Paris, France',
+			dateFrom: '2025-08-12',
+			dateTo: '2025-08-20',
+		},
+		{
+			id: '2',
+			ownerFirstName: 'Marco',
+			ownerLastName: 'Santos',
+			ownerImage: 'https://picsum.photos/200/200',
+			location: 'Lisbon, Portugal',
+			dateFrom: '2025-06-01',
+			dateTo: '2025-06-10',
+		}
 	]
+}
+
+const NotificationCard = ({ message, subMessage, time, image }: any) => {
+	return (
+
+		<View style={styles.notification}>
+			<Image
+				source={{ uri: image }}
+				style={styles.avatar}
+			/>
+			<View style={{ flex: 1 }}>
+				<View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+					<Text style={styles.title}>{message}</Text>
+					<Text style={styles.time}>{time}</Text>
+				</View>
+
+				<Text style={styles.subtitle}>{subMessage}</Text>
+			</View>
+
+		</View>
+	)
 }
 
 export default () => {
@@ -64,6 +109,31 @@ export default () => {
 	const [showReviewModal, setShowReviewModal] = useState(false)
 	const [selectedSwap, setSelectedSwap] = useState<any>(null)
 	const { colors } = variables
+	const [headingWidth, setHeadingWidth] = useState(0)
+
+	const [futureSwaps, setFutureSwaps] = useState(mockData.futureSwaps)
+	const [notification, setNotification] = useState<any>(null)
+
+	// const handleCancel = (item: any) => {
+	// 	const updated = futureSwaps.filter((swap: any) => swap.id !== item.id)
+	// 	setFutureSwaps(updated)
+	// 	const notif = {
+	// 		message: `You have canceled ${item.owner} Swap`,
+	// 		subMessage: "Maybe you will swap another time",
+	// 		time: "1 min",
+	// 		image: item?.ownerImage,
+	// 	}
+	// 	setNotification(notif)
+	// 	setTimeout(() => {
+	// 		setNotification(null)
+	// 	}, 5000)
+	// }
+
+	const handleCancel = (item: any) => {
+		const updated = futureSwaps.filter((swap: any) => swap.id !== item.id)
+		setFutureSwaps(updated)
+		toastSuccess(`You have canceled ${item.ownerFirstName} Swap`, "Maybe you will swap another time")
+	}
 
 	useEffect(() => {
 		if (!swapId) return
@@ -110,7 +180,7 @@ export default () => {
 							/>
 						</View>
 						<View style={{ display: 'flex', marginTop: 8, flex: 1, marginLeft: 12 }}>
-							<KText style={{ fontSize: 15, fontWeight: '400', letterSpacing: -0.5 }}>You are staying at {mockData?.currentSwap?.owner}'s place</KText>
+							<KText style={{ fontSize: 15, fontWeight: '500', letterSpacing: -0.5 }}>You are staying at {mockData?.currentSwap?.owner}'s place</KText>
 							<View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
 								<KIcon name='location' size={20} style={{ stroke: colors.black, marginRight: 4, opacity: 0.5 }} />
 								<KText style={{ fontSize: 12, fontWeight: '400', letterSpacing: -0.5, opacity: 0.5 }}>{mockData?.currentSwap?.location}</KText>
@@ -132,11 +202,12 @@ export default () => {
 					confirmText='Publish'
 					visible={showReviewModal}
 					setVisibility={() => setShowReviewModal(false)}
+					isActionsVisible={true}
 					style={{ backgroundColor: variables.colors.white, padding: 20 }}
 				>
 					{selectedSwap ? (
-						<View style={{ width: '100%'}}>
-							<View style={{ backgroundColor: colors.yellow, width: 34, height: 3, alignSelf: 'center', marginTop: -20, marginBottom: 12 }} />
+						<View style={{ width: '100%' }}>
+							<View style={{ backgroundColor: colors.yellow, width: 34, height: 3, alignSelf: 'center', marginTop: -20, marginBottom: 12 }} ></View>
 							<KText style={{ fontSize: 25, fontWeight: '600', letterSpacing: -0.5, alignSelf: 'center' }}>
 								Swap Review
 							</KText>
@@ -179,7 +250,82 @@ export default () => {
 										</KText>
 									</View>
 								</View>
+
 							</View>
+
+							<View style={{ marginTop: 30, width: "100%" }}>
+								<KText
+									style={{
+										fontFamily: "Plus Jakarta Sans",
+										fontStyle: "normal",
+										lineHeight: 13,
+										letterSpacing: -0.5,
+										fontSize: 13,
+										fontWeight: "600",
+										marginBottom: 4,
+										alignSelf: "flex-start",
+
+									}}
+									onLayout={(e) => setHeadingWidth(e.nativeEvent.layout.width)}
+								>
+									Stars
+								</KText>
+
+								<View style={{ marginLeft: headingWidth || 0 }}>
+									<StarRating
+										maxStars={5}
+										size={34}
+										color={colors.yellow}
+										onChange={(val) => console.log("Selected rating:", val)}
+									/>
+								</View>
+							</View>
+
+							<View style={{ marginTop: 30, width: '100%' }}>
+								<KText
+									style={{
+										fontFamily: 'Plus Jakarta Sans',
+										fontStyle: 'normal',
+										lineHeight: 13,
+										letterSpacing: -0.5,
+										fontSize: 13,
+										fontWeight: '600',
+										marginBottom: 4,
+										alignSelf: 'flex-start',
+									}}
+								>
+									Message
+								</KText>
+
+								<View
+									style={{
+										padding: 15,
+										borderRadius: 20,
+										backgroundColor: '#fff',
+										elevation: 3,
+										borderColor: "#C6C5BA",
+										borderWidth: 1,
+										borderStyle: "solid",
+									}}
+								>
+									<TextInput
+										style={{
+											minHeight: 100,
+											fontSize: 14,
+											lineHeight: 20,
+											color: '#000',
+											textAlignVertical: 'top',
+											opacity: 0.5,
+											padding: 0,
+											...({ outlineStyle: 'none' } as any)
+										}}
+										placeholder="Write your review..."
+										placeholderTextColor="#999"
+										multiline
+									/>
+								</View>
+							</View>
+
 						</View>
 					) : null}
 				</KModalWeb>
@@ -191,6 +337,47 @@ export default () => {
 					}}
 				/>
 			</>
+		} else if (selectedFilter === 'Future Swaps') {
+
+			if (!futureSwaps?.length) {
+				return (
+					<View style={{
+						flex: 1,
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						padding: 20,
+					}}>
+						<View style={{ padding: 30, borderRadius: 500, backgroundColor: colors.greenLight }}>
+							<KIcon name='credsLight' size={70} style={{ opacity: 0.5 }} />
+						</View>
+						<KText style={{ fontSize: 12, fontWeight: '400', marginTop: 20, marginBottom: isMobile ? '54%' : 40, opacity: 0.5, width: '70%', textAlign: 'center' }}>You don’t have any current swap. Find out your next Swap!</KText>
+						<KButton text='Discover your next swap' color='primary' style={{ width: isMobile ? '100%' : '20%' }} onPress={() => navigation.navigate('Home')} />
+					</View>
+				)
+			}
+			else {
+				return (<>
+					<FutureSwapList
+						onCancel={handleCancel}
+						data={futureSwaps} />
+
+					{notification && (
+						<View style={styles.notificationWrapper}>
+							<NotificationCard
+								image={notification.image}
+								message={notification.message}
+								subMessage={notification.subMessage}
+								time={notification.time}
+							/>
+						</View>
+					)}
+				</>
+				)
+
+			}
+
+
 		} else return null
 	}
 
@@ -234,6 +421,8 @@ export default () => {
 						:
 						(renderContent())
 					}
+
+
 				</>
 			)}
 		</View>
@@ -269,5 +458,67 @@ const styles = StyleSheet.create({
 	},
 	selectedFilterButtonText: {
 		opacity: 1,
-	}
+	},
+
+	notificationWrapper: {
+		position: "absolute",
+		top: 50, // adjust if you have header
+		left: 10,
+		right: 10,
+		zIndex: 9999,
+	},
+
+	notification: {
+		flexDirection: "row",
+		alignItems: "center",
+		backgroundColor: "#FF7043",
+		padding: 12,
+		borderRadius: 12,
+		margin: 12,
+		shadowColor: "#000",
+		shadowOpacity: 0.1,
+		shadowRadius: 5,
+		elevation: 3,
+	},
+	avatar: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
+		marginRight: 10,
+		borderColor: variables.colors.white,
+		borderWidth: 1,
+		borderStyle: "solid"
+	},
+	title: {
+		color: variables.colors.black,
+		fontFamily: "Plus Jakarta Sans",
+		fontSize: 13,
+		fontStyle: "normal",
+		fontWeight: "500",
+		lineHeight: 13,
+		letterSpacing: -0.5,
+	},
+	subtitle: {
+		color: "#000",
+		opacity: 0.4,
+		fontSize: 13,
+		fontFamily: "Plus Jakarta Sans",
+		fontStyle: "normal",
+		fontWeight: "500",
+		lineHeight: 13,
+		letterSpacing: -0.5,
+		marginTop: 2,
+
+	},
+	time: {
+		color: "#000",
+		opacity: 0.4,
+		fontSize: 10,
+		marginLeft: 10,
+		fontFamily: "Plus Jakarta Sans",
+		fontStyle: "normal",
+		fontWeight: "500",
+		lineHeight: 13,
+		letterSpacing: -0.5,
+	},
 })

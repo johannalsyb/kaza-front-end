@@ -167,3 +167,5 @@ export { ReactComponent as wanderLust } from './wanderLust.svg';
 
 export { ReactComponent as object } from './object.svg';
 
+export { ReactComponent as starOutline } from './starOutline.svg';
+
